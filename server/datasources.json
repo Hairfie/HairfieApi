@@ -5,6 +5,7 @@
   },
   "postgreDB": {
     "name": "postgreDB",
-    "connector": "postgresql"
+    "connector": "postgresql",
+    "database": "hairfie"
   }
 }
