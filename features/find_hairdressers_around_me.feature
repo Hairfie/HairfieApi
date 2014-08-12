@@ -7,7 +7,6 @@ Feature: Find hairdressers around me
     Given the following hairdressers:
       | Name             | Distance |
       | Jacques Dessange | 200m     |
-      | Atten Tiff       | 180m     |
       | Camille Albane   | 430m     |
       | Saint Algue      | 940m     |
     And I am on the home screen
