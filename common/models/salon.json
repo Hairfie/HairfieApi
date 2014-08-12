@@ -1,0 +1,45 @@
+{
+  "name": "Salon",
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "gps": {
+      "type": "geopoint"
+    },
+    "street": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "zipcode": {
+      "type": "string"
+    },
+    "siren": {
+      "type": "string"
+    },
+    "siret": {
+      "type": "string"
+    },
+    "phone_numbers": {
+      "type": [
+        "string"
+      ]
+    },
+    "diane_data": {
+      "type": "object"
+    },
+    "pj_data": {
+      "type": "object"
+    },
+    "timetables": {
+      "type": "object"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
+}

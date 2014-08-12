@@ -23,5 +23,9 @@
   "Role": {
     "dataSource": "db",
     "public": false
+  },
+  "Salon": {
+    "dataSource": "postgreDB",
+    "public": true
   }
 }
