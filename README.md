@@ -13,3 +13,9 @@ Un fichier de 100 salons est présent dans le code source. Pour le seeder, il su
 # Useful tips
 
 * Debugging loopback : http://docs.strongloop.com/display/LB/Debugging+LoopBack+apps
+
+# Deployment
+
+    $ bundle install
+
+    $ cap staging deploy
