@@ -1,24 +1,21 @@
 module.exports = function(Business) {
 
-  Business.nearby = function(here, page, max, limit, fn) {
+  Business.nearby = function(here, page, limit, fn) {
     if (typeof page === 'function') {
       fn = page;
       page = 0;
-      max = 0;
+      limit = 10;
     }
 
-    if (typeof max === 'function') {
-      fn = max;
-      max = 0;
+    if (typeof limit === 'function') {
+      fn = limit;
+      limit = 10;
     }
 
-    var limit = limit || 10;
+    var max = 0;
     page = page || 0;
-    max = Number(max || 100000);
-
 
     Business.find({
-      // find locations near the provided GeoPoint
       where: {gps: {near: here, maxDistance: max}},
       // paging
       skip: limit * page,
@@ -55,18 +52,16 @@ module.exports = function(Business) {
     Business.base.setup.apply(this, arguments);
 
     this.remoteMethod('nearby', {
-      description: 'Find nearby locations around the geo point',
+      description: 'Find nearby locations around you',
       accepts: [
         {arg: 'here', type: 'GeoPoint', required: true,
-          description: 'geo location (lat & lng)'},
+          description: 'geo location:lng,lat. For ex : 2.30,48.87'},
         {arg: 'page', type: 'Number',
           description: 'number of pages (page size defined by limit)'},
         {arg: 'limit', type: 'Number',
-          description: 'number of businesss to get, default=10'},
-        {arg: 'max', type: 'Number',
-          description: 'max distance in miles'}
+          description: 'number of businesss to get, default=10'}
       ],
-      returns: {arg: 'locations', root: true},
+      returns: {arg: 'businesses', root: true},
       http: { verb: 'GET' }
     });
   };
