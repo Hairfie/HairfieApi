@@ -2,6 +2,6 @@
   "hairfieMongo": {
     "name": "hairfieMongo",
     "connector": "mongodb",
-    "database": "hairfieMongo-staging"
+    "database": "hairfie-staging"
   }
 }

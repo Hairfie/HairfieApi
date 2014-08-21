@@ -29,7 +29,7 @@ module.exports = function(app, cb) {
         phone_numbers: d.phone_pj,
         diane_data: d.diane_data,
         pj_data: d.pages_jaunes,
-        timetables: d.timetables
+        timetables: d.timetables_pj
       };
       console.log(business);
       Business.create(business, callback);
