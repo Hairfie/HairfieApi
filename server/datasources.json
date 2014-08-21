@@ -1,11 +1,8 @@
 {
-  "db": {
-    "name": "db",
-    "connector": "memory"
-  },
   "hairfieMongo": {
     "name": "hairfieMongo",
-    "connector": "mongodb"
+    "connector": "mongodb",
+    "debug" : true
   },
   "geo": {
     "name": "geo",

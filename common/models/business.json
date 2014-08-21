@@ -46,5 +46,11 @@
   "validations": [],
   "relations": {},
   "acls": [],
-  "methods": []
+  "methods": [],
+  "plural": "businesses",
+  "options": {
+    "mongodb": {
+      "collection": "businesses"
+    }
+  }
 }

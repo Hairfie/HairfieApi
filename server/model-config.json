@@ -6,22 +6,22 @@
     ]
   },
   "User": {
-    "dataSource": "db"
+    "dataSource": "hairfieMongo"
   },
   "AccessToken": {
-    "dataSource": "db",
+    "dataSource": "hairfieMongo",
     "public": false
   },
   "ACL": {
-    "dataSource": "db",
+    "dataSource": "hairfieMongo",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "db",
+    "dataSource": "hairfieMongo",
     "public": false
   },
   "Role": {
-    "dataSource": "db",
+    "dataSource": "hairfieMongo",
     "public": false
   },
   "Business": {
