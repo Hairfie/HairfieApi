@@ -12,7 +12,7 @@ module.exports = function(Business) {
       limit = 10;
     }
 
-    var max = 0;
+    var max = 1000;
     page = page || 0;
 
     Business.find({
