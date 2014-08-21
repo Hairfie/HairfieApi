@@ -1,3 +1,6 @@
+var async = require('async');
+var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
+
 module.exports = function(Business) {
 
   Business.nearby = function(here, page, limit, fn) {
@@ -15,12 +18,34 @@ module.exports = function(Business) {
     var max = 1000;
     page = page || 0;
 
-    Business.find({
-      where: {gps: {near: here, maxDistance: max}},
-      // paging
-      skip: limit * page,
-      limit: limit
-    }, fn);
+    var result = {};
+
+    async.series([
+        findBusinesses,
+        addDistance
+    ],
+    function(err){
+      fn(null, result);
+    });
+
+    function findBusinesses(cb) {
+      Business.find({
+        where: {gps: {near: here, maxDistance: max}},
+        // paging
+        skip: limit * page,
+        limit: limit
+      }, function(err, businesses) {
+        result = businesses;
+        cb(err);
+      });
+    }
+
+    function addDistance(cb) {
+      result.forEach(function(business) {
+          business.distance = GeoPoint.distanceBetween(here, business.gps, {type: 'meters'});
+      });
+      cb();
+    }
   };
 
   // Google Maps API has a rate limit of 10 requests per second
