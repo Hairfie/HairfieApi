@@ -4,10 +4,9 @@
 # is considered to be the first unless any hosts have the primary
 # property set.  Don't declare `role :all`, it's a meta role.
 
-role :app, %w{deploy@example.com}
-role :web, %w{deploy@example.com}
-role :db,  %w{deploy@example.com}
+set :node_env, 'staging'
 
+# role :app, %w{ns391278.ip-176-31-103.eu}
 
 # Extended Server Syntax
 # ======================
@@ -15,7 +14,7 @@ role :db,  %w{deploy@example.com}
 # server list. The second argument is a, or duck-types, Hash and is
 # used to set extended properties on the server.
 
-server 'example.com', user: 'deploy', roles: %w{web app}, my_property: :my_value
+#server 'ns391278.ip-176-31-103.eu', user: 'hairfieapi', roles: %w{app}
 
 
 # Custom SSH Options
@@ -33,13 +32,13 @@ server 'example.com', user: 'deploy', roles: %w{web app}, my_property: :my_value
 #
 # And/or per server (overrides global)
 # ------------------------------------
-# server 'example.com',
-#   user: 'user_name',
-#   roles: %w{web app},
-#   ssh_options: {
-#     user: 'user_name', # overrides user setting above
-#     keys: %w(/home/user_name/.ssh/id_rsa),
-#     forward_agent: false,
-#     auth_methods: %w(publickey password)
-#     # password: 'please use keys'
-#   }
+server 'ns391278.ip-176-31-103.eu',
+  user: 'hairfieapi',
+  roles: %w{app},
+  ssh_options: {
+    user: 'deploy', # overrides user setting above
+    # keys: %w(/home/user_name/.ssh/id_rsa),
+    forward_agent: true,
+    # auth_methods: %w(publickey password)
+    # password: 'please use keys'
+  }

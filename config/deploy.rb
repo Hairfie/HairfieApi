@@ -1,14 +1,14 @@
 # config valid only for Capistrano 3.1
 lock '3.2.1'
 
-set :application, 'my_app_name'
-set :repo_url, 'git@example.com:me/my_repo.git'
+set :application, 'HairfieApi'
+set :repo_url, 'git@github.com:Hairfie/HairfieApi.git'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
 # Default deploy_to directory is /var/www/my_app
-# set :deploy_to, '/var/www/my_app'
+set :deploy_to, '/home/hairfieapi'
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -36,23 +36,33 @@ set :repo_url, 'git@example.com:me/my_repo.git'
 
 namespace :deploy do
 
+  desc "Install node modules non-globally"
+  task :npm_install do
+    on roles(:app) do
+      execute "cd #{current_path} && npm install"
+    end
+  end
+
+  desc 'Stop Forever'
+  task :forever_stop do
+    on roles(:app) do
+      execute "forever stopall || true"
+    end
+  end
+
+  desc 'Start Forever'
+  task :forever_start do
+    on roles(:app) do
+      node_env = fetch(:node_env)
+      execute "NODE_ENV=#{node_env} forever start #{current_path}/server/server.js"
+    end
+  end
+
   desc 'Restart application'
-  task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-      # Your restart mechanism here, for example:
-      # execute :touch, release_path.join('tmp/restart.txt')
-    end
-  end
+  task :restart => [:forever_stop, :forever_start]
 
-  after :publishing, :restart
+  before 'deploy:published', 'deploy:npm_install'
 
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
-    end
-  end
+  after 'deploy:published', 'deploy:restart'
 
 end
