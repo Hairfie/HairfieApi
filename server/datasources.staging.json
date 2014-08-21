@@ -1,0 +1,7 @@
+{
+  "hairfieMongo": {
+    "name": "hairfieMongo",
+    "connector": "mongodb",
+    "database": "hairfieMongo-staging"
+  }
+}
