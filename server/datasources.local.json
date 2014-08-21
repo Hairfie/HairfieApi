@@ -2,6 +2,7 @@
   "hairfieMongo": {
     "name": "hairfieMongo",
     "connector": "mongodb",
-    "database": "hairfieMongo-dev"
+    "database": "hairfieMongo-dev",
+    "port": 27017
   }
 }

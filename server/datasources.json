@@ -5,7 +5,7 @@
   },
   "hairfieMongo": {
     "name": "hairfieMongo",
-    "connector": "mongodb",
+    "connector": "mongodb"
   },
   "geo": {
     "name": "geo",

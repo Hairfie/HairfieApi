@@ -3,6 +3,7 @@
   "properties": {
     "name": {
       "type": "string",
+      "index": "true",
       "required": true
     },
     "gps": {
@@ -18,10 +19,14 @@
       "type": "string"
     },
     "siren": {
-      "type": "string"
+      "type": "string",
+      "index": true,
+      "unique": true
     },
     "siret": {
-      "type": "string"
+      "type": "string",
+      "index": true,
+      "unique": true
     },
     "phone_numbers": {
       "type": [
