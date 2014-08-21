@@ -12,4 +12,4 @@ Un fichier de 100 salons est présent dans le code source. Pour le seeder, il su
 
 # Useful tips
 
-* Debugging loopback : (http://docs.strongloop.com/display/LB/Debugging+LoopBack+apps)[http://docs.strongloop.com/display/LB/Debugging+LoopBack+apps]
+* Debugging loopback : http://docs.strongloop.com/display/LB/Debugging+LoopBack+apps
