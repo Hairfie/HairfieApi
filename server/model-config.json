@@ -24,8 +24,8 @@
     "dataSource": "db",
     "public": false
   },
-  "Salon": {
-    "dataSource": "postgreDB",
+  "Business": {
+    "dataSource": "hairfieMongo",
     "public": true
   }
 }

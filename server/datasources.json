@@ -3,10 +3,10 @@
     "name": "db",
     "connector": "memory"
   },
-  "postgreDB": {
-    "name": "postgreDB",
-    "connector": "postgresql",
-    "database": "hairfie"
+  "hairfieMongo": {
+    "name": "hairfieMongo",
+    "connector": "mongodb",
+    "database": "hairfieMongo"
   },
   "geo": {
     "name": "geo",

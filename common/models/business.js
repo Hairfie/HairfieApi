@@ -1,6 +1,6 @@
-module.exports = function(Salon) {
+module.exports = function(Business) {
 
-  Salon.nearby = function(here, page, max, limit, fn) {
+  Business.nearby = function(here, page, max, limit, fn) {
     if (typeof page === 'function') {
       fn = page;
       page = 0;
@@ -17,7 +17,7 @@ module.exports = function(Salon) {
     max = Number(max || 100000);
 
 
-    Salon.find({
+    Business.find({
       // find locations near the provided GeoPoint
       where: {gps: {near: here, maxDistance: max}},
       // paging
@@ -29,19 +29,19 @@ module.exports = function(Salon) {
   // Google Maps API has a rate limit of 10 requests per second
   // Seems we need to enforce a lower rate to prevent errors
   var lookupGeo = require('function-rate-limit')(5, 1000, function() {
-    var geoService = Salon.app.dataSources.geo;
+    var geoService = Business.app.dataSources.geo;
     geoService.geocode.apply(geoService, arguments);
   });
 
-  Salon.beforeSave = function(next, salon) {
-    if (salon.gps) return next();
-    if(!salon.street || !salon.city || !salon.zipcode) return next();
+  Business.beforeSave = function(next, business) {
+    if (business.gps) return next();
+    if(!business.street || !business.city || !business.zipcode) return next();
 
     // geo code the address
-    lookupGeo(salon.street, salon.city, salon.zipcode,
+    lookupGeo(business.street, business.city, business.zipcode,
       function(err, result) {
         if (result && result[0]) {
-          salon.gps = result[0].lng + ',' + result[0].lat;
+          business.gps = result[0].lng + ',' + result[0].lat;
           next();
         } else {
           console.log('could not find location');
@@ -51,8 +51,8 @@ module.exports = function(Salon) {
       });
   };
 
-  Salon.setup = function() {
-    Salon.base.setup.apply(this, arguments);
+  Business.setup = function() {
+    Business.base.setup.apply(this, arguments);
 
     this.remoteMethod('nearby', {
       description: 'Find nearby locations around the geo point',
@@ -62,7 +62,7 @@ module.exports = function(Salon) {
         {arg: 'page', type: 'Number',
           description: 'number of pages (page size defined by limit)'},
         {arg: 'limit', type: 'Number',
-          description: 'number of salons to get, default=10'},
+          description: 'number of businesss to get, default=10'},
         {arg: 'max', type: 'Number',
           description: 'max distance in miles'}
       ],
@@ -71,9 +71,9 @@ module.exports = function(Salon) {
     });
   };
 
-  Salon.setup();
+  Business.setup();
 
-  Salon.prototype.gpsString = function() {
+  Business.prototype.gpsString = function() {
     if(this.gps) {
       return this.gps.lat+","+this.gps.lng;
     } else {
@@ -81,7 +81,7 @@ module.exports = function(Salon) {
     }
   };
 
-  Salon.prototype.getStreetViewPic = function (width, height) {
+  Business.prototype.getStreetViewPic = function (width, height) {
     width  = width || 400;
     height = height || 400;
     console.log(this.gpsString);
