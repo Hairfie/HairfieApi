@@ -1,6 +1,7 @@
 "use strict";
 
 var extend = require('extend');
+require('../utils/String');
 
 var Abstract = function () {};
 

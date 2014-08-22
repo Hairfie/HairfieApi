@@ -7,12 +7,22 @@ module.exports = function(Business) {
 
     Abstract.extend(Business);
 
-
-    Business.definition.settings.hidden = ['diane_data', 'pj_data'];
+    Business.definition.settings.hidden = ['diane_data', 'pj_data', 'city', 'zipcode', 'street'];
 
     Business.definition.settings.virtuals = {
         plop: function (obj) {
             return 'lala'
+        },
+        address: function(obj) {
+          return {
+            street: obj.street.upperFirst(),
+            zipcode: obj.zipcode,
+            city: obj.city.upperFirst()
+          };
+        },
+        pictures = function(obj) {
+          //return obj.gps.toString();
+          return ['http://www.grafik-coiffure.com/gifs/fond-01.jpg', 'http://www.lebristolparis.com/media/45324/salon-de-coiffure-1.jpg', 'http://www.coiffurefadia.com/images/interieur-salon-de-coiffure.jpg'];
         }
     };
 
@@ -105,14 +115,6 @@ module.exports = function(Business) {
     };
 
     Business.setup();
-
-    Business.prototype.gpsString = function() {
-        if(this.gps) {
-            return this.gps.lat+","+this.gps.lng;
-        } else {
-            return "";
-        }
-    };
 
     Business.prototype.getStreetViewPic = function (width, height) {
         width  = width || 400;
