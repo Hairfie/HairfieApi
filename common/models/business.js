@@ -10,9 +10,6 @@ module.exports = function(Business) {
     Business.definition.settings.hidden = ['diane_data', 'pj_data', 'city', 'zipcode', 'street'];
 
     Business.definition.settings.virtuals = {
-        plop: function (obj) {
-            return 'lala'
-        },
         address: function(obj) {
           return {
             street: obj.street.upperFirst(),
