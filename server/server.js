@@ -1,4 +1,6 @@
-require('newrelic');
+if ("staging" == process.env.NODE_ENV) {
+    require('newrelic');
+}
 
 var loopback = require('loopback');
 var boot = require('loopback-boot');
