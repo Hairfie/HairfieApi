@@ -9,6 +9,9 @@ module.exports = function(Business) {
     Business.definition.settings.hidden = ['diane_data', 'pj_data', 'city', 'zipcode', 'street'];
 
     Business.definition.settings.virtuals = {
+        timetables: function (obj) {
+            return obj.timetables ? obj.timetables : {};
+        },
         address: function(obj) {
           return {
             street: obj.street ? obj.street.upperFirst() : '',
