@@ -29,9 +29,9 @@ module.exports = function(app, cb) {
         phone_numbers: d.phone_pj,
         diane_data: d.diane_data,
         pj_data: d.pages_jaunes,
-        timetables: d.timetables_pj
+        timetables: parseTimetables(d.timetables_pj)
       };
-      console.log(business);
+      //console.log(business);
       Business.create(business, callback);
     }, cb);
   }
@@ -46,6 +46,21 @@ module.exports = function(app, cb) {
     cb(err);
   });
 };
+
+function parseTimetables(timetables) {
+    if (!timetables) return;
+
+    for (var day in timetables) if (timetables.hasOwnProperty(day)) {
+        if (!Array.isArray(timetables[day])) timetables[day] = [timetables[day]];
+
+        timetables[day] = timetables[day].map(function (period) {
+            var parts = period.split(' - ');
+            return {from: parts[0], to: parts[1] };
+        });
+    }
+
+    return timetables;
+}
 
 if (require.main === module) {
   module.exports(require('../../'), function(err) {
