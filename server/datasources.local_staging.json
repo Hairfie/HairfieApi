@@ -1,0 +1,8 @@
+{
+  "hairfieMongo": {
+    "name": "hairfieMongo",
+    "connector": "mongodb",
+    "host": "api.staging.hairfie.com",
+    "database": "hairfie-staging"
+  }
+}

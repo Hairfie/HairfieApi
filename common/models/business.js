@@ -11,9 +11,9 @@ module.exports = function(Business) {
     Business.definition.settings.virtuals = {
         address: function(obj) {
           return {
-            street: obj.street.upperFirst(),
+            street: obj.street ? obj.street.upperFirst() : '',
             zipcode: obj.zipcode,
-            city: obj.city.upperFirst()
+            city: obj.city ? obj.city.upperFirst() : ''
           };
         },
         pictures: function(obj) {
