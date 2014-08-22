@@ -27,19 +27,10 @@ module.exports = function(Business) {
     };
 
     Business.nearby = function(here, page, limit, fn) {
-        if (typeof page === 'function') {
-            fn = page;
-            page = 0;
-            limit = 10;
-        }
-
-        if (typeof limit === 'function') {
-            fn = limit;
-            limit = 10;
-        }
 
         var max = 1000;
         page = page || 0;
+        limit = limit || 10;
 
         var result = {};
 
