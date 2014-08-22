@@ -20,7 +20,7 @@ module.exports = function(Business) {
             city: obj.city.upperFirst()
           };
         },
-        pictures = function(obj) {
+        pictures: function(obj) {
           //return obj.gps.toString();
           return ['http://www.grafik-coiffure.com/gifs/fond-01.jpg', 'http://www.lebristolparis.com/media/45324/salon-de-coiffure-1.jpg', 'http://www.coiffurefadia.com/images/interieur-salon-de-coiffure.jpg'];
         }
