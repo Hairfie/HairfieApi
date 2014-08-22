@@ -3,6 +3,30 @@ var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 
 module.exports = function(Business) {
 
+    Business.definition.settings.hidden = ['diane_data', 'pj_data'];
+
+    // remove hidden properties from API outputs
+    Business.afterRemote('**', function (ctx, data, next) {
+        var removeHidden = function (business) {
+            for (v in Business.definition.settings.hidden) {
+                var key = Business.definition.settings.hidden[v];
+                delete business[key];
+            }
+
+            return business;
+        }
+
+        if (ctx.result) {
+            if (Array.isArray(ctx.result)) {
+                ctx.result = ctx.result.map(removeHidden);
+            } else {
+                ctx.result = removeHidden(ctx.result);
+            }
+        }
+
+        next()
+    });
+
     Business.nearby = function(here, page, limit, fn) {
         if (typeof page === 'function') {
             fn = page;
