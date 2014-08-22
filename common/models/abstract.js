@@ -1,7 +1,10 @@
 "use strict";
 
 var extend = require('extend');
+
+// Extends some basic class
 require('../utils/String');
+require('../utils/GeoPoint');
 
 var Abstract = function () {};
 

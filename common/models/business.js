@@ -1,6 +1,5 @@
 var async = require('async');
 var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
-
 var Abstract = require('./abstract.js');
 
 module.exports = function(Business) {
@@ -18,8 +17,12 @@ module.exports = function(Business) {
           };
         },
         pictures: function(obj) {
-          //return obj.gps.toString();
-          return ['http://www.grafik-coiffure.com/gifs/fond-01.jpg', 'http://www.lebristolparis.com/media/45324/salon-de-coiffure-1.jpg', 'http://www.coiffurefadia.com/images/interieur-salon-de-coiffure.jpg'];
+          var gps = GeoPoint(obj.gps);
+          return [gps.streetViewPic()];
+        },
+        thumb: function(obj) {
+          var gps = GeoPoint(obj.gps);
+          return gps.streetViewPic(120, 140);
         }
     };
 
@@ -112,12 +115,5 @@ module.exports = function(Business) {
     };
 
     Business.setup();
-
-    Business.prototype.getStreetViewPic = function (width, height) {
-        width  = width || 400;
-        height = height || 400;
-        console.log(this.gpsString);
-        return "http://maps.googleapis.com/maps/api/streetview?size="+width+"x"+height+"&location="+this.gpsString();
-    };
 
 };
