@@ -46,15 +46,14 @@ namespace :deploy do
   desc 'Stop Forever'
   task :forever_stop do
     on roles(:app) do
-      execute "forever stopall || true"
+      execute "/home/hairfieapi/stop.sh"
     end
   end
 
   desc 'Start Forever'
   task :forever_start do
     on roles(:app) do
-      node_env = fetch(:node_env)
-      execute "NODE_ENV=#{node_env} forever start #{current_path}/server/server.js"
+      execute "/home/hairfieapi/start.sh"
     end
   end
 
