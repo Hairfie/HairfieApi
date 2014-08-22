@@ -1,31 +1,20 @@
 var async = require('async');
 var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 
+var Abstract = require('./abstract.js');
+
 module.exports = function(Business) {
+
+    Abstract.extend(Business);
+
 
     Business.definition.settings.hidden = ['diane_data', 'pj_data'];
 
-    // remove hidden properties from API outputs
-    Business.afterRemote('**', function (ctx, data, next) {
-        var removeHidden = function (business) {
-            for (v in Business.definition.settings.hidden) {
-                var key = Business.definition.settings.hidden[v];
-                delete business[key];
-            }
-
-            return business;
+    Business.definition.settings.virtuals = {
+        plop: function (obj) {
+            return 'lala'
         }
-
-        if (ctx.result) {
-            if (Array.isArray(ctx.result)) {
-                ctx.result = ctx.result.map(removeHidden);
-            } else {
-                ctx.result = removeHidden(ctx.result);
-            }
-        }
-
-        next()
-    });
+    };
 
     Business.nearby = function(here, page, limit, fn) {
         if (typeof page === 'function') {
