@@ -7,6 +7,7 @@ var Abstract = function () {};
 Abstract.extend = function (Object) {
     Object.prototype = extend(Object.prototype, new Abstract);
 
+    // add support for hidden & virtual properties
     Object.afterRemote('**', function (ctx, _, next) {
         var addVirtuals = function (model) {
             if (!Object.definition.settings.virtuals) return;
