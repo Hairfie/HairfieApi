@@ -7,14 +7,8 @@ module.exports = function(Business) {
 
     Abstract.extend(Business);
 
-
     Business.definition.settings.hidden = ['diane_data', 'pj_data'];
-
-    Business.definition.settings.virtuals = {
-        plop: function (obj) {
-            return 'lala'
-        }
-    };
+    Business.definition.settings.virtuals = {};
 
     Business.nearby = function(here, page, limit, fn) {
         if (typeof page === 'function') {
