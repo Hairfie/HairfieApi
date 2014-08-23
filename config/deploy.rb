@@ -60,8 +60,20 @@ namespace :deploy do
   desc 'Restart application'
   task :restart => [:forever_stop, :forever_start]
 
+  desc 'Notify newrelic'
+  task :notify_newrelic do
+    on roles(:app) do
+      newrelic_api_key = fetch(:newrelic_api_key)
+      newrelic_app_id = fetch(:newrelic_app_id)
+      revision = capture("cd #{repo_path} && git rev-parse --short HEAD")
+      execute "curl -H 'x-api-key:#{newrelic_api_key}' -d 'deployment[app_id]=#{newrelic_app_id}' -d 'deployment[revision]=#{revision}' https://api.newrelic.com/deployments.xml"
+    end
+  end
+
   before 'deploy:published', 'deploy:npm_install'
 
   after 'deploy:published', 'deploy:restart'
+
+  after 'deploy:updated', 'deploy:notify_newrelic'
 
 end
