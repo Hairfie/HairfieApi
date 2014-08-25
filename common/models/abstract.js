@@ -13,6 +13,12 @@ Abstract.extend = function (Object) {
 
     // add support for hidden & virtual properties
     Object.afterRemote('**', function (ctx, _, next) {
+        var hasIdValues = function (model) {
+            return Object.definition._ids.every(function (id) {
+                return !!model[id.name];
+            });
+        }
+
         var addVirtuals = function (model) {
             if (!Object.definition.settings.virtuals) return;
 
@@ -29,10 +35,14 @@ Abstract.extend = function (Object) {
 
         if (ctx.result) {
             if (Array.isArray(ctx.result)) {
-                ctx.result.forEach(addVirtuals);
-                ctx.result.forEach(removeHidden);
+                ctx.result.forEach(function (item) {
+                    if (hasIdValues(item)) {
+                        addVirtuals(item);
+                        removeHidden(item);
+                    }
+                });
             } else {
-                removeHidden(addVirtuals(ctx.result));
+                if (hasIdValues(ctx.result)) removeHidden(addVirtuals(ctx.result));
             }
         }
 
