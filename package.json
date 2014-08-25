@@ -14,7 +14,8 @@
     "loopback-connector-postgresql": "^1.1.1",
     "loopback-connector-rest": "^1.2.1",
     "loopback-datasource-juggler": "~2.5.0",
-    "newrelic": "^1.10.0"
+    "newrelic": "^1.10.0",
+    "q": "^1.0.1"
   },
   "optionalDependencies": {
     "loopback-explorer": "^1.1.0"

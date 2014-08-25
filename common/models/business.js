@@ -1,6 +1,7 @@
 var async = require('async');
 var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 var Abstract = require('./abstract.js');
+var Q = require('q');
 
 module.exports = function(Business) {
 
@@ -29,39 +30,30 @@ module.exports = function(Business) {
         }
     };
 
-    Business.nearby = function(here, page, limit, fn) {
+    Business.nearby = function(here, page, limit, callback) {
+        var maxDistance = 1000,
+            page        = page || 0,
+            limit       = limit || 10;
 
-        var max = 1000;
-        page = page || 0;
-        limit = limit || 10;
+        var filter = {};
+        filter.where = {gps: {near: here}};
+        filter.skip = limit * page;
+        filter.limit = limit;
 
-        var result = {};
+        Q.denodeify(Business.find.bind(Business))(filter)
+            .catch(console.log)
+            .then(function (businesses) {
+                return businesses;
+                console.log(businesses);
+                return businesses.map(Business.addDistanceFrom(here))
+            })
+            .nodeify(callback)
+        ;
+    };
 
-        async.series([
-                findBusinesses,
-                addDistance
-                ],
-                function(err){
-                    fn(null, result);
-                });
-
-        function findBusinesses(cb) {
-            Business.find({
-                where: {gps: {near: here, maxDistance: max}},
-                // paging
-                skip: limit * page,
-                limit: limit
-            }, function(err, businesses) {
-                result = businesses;
-                cb(err);
-            });
-        }
-
-        function addDistance(cb) {
-            result.forEach(function(business) {
-                business.distance = GeoPoint.distanceBetween(here, business.gps, {type: 'meters'});
-            });
-            cb();
+    Business.addDistanceFrom = function (point) {
+        return function (business) {
+            business.distance = GeoPoint.distanceBetween(point, business.gps, {type: 'meters'});
         }
     };
 
