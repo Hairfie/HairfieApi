@@ -16,35 +16,48 @@ module.exports = function(app, cb) {
   var Business = app.models.Business;
   var db = app.dataSources.hairfieMongo;
 
-  function importBusinesses(data, cb) {
-    async.each(data, function(d, callback) {
-      var business = {
-        name: d.name,
-        gps: d.gps,
-        street: d.street,
-        city: d.city,
-        zipcode: d.zipcode,
-        siren: d.siren,
-        siret: d.siret,
-        phone_numbers: d.phone_pj,
-        diane_data: d.diane_data,
-        pj_data: d.pages_jaunes,
-        timetables: parseTimetables(d.timetables_pj)
-      };
-      //console.log(business);
-      Business.create(business, callback);
-    }, cb);
-  }
+  var SearchEngine = app.models.SearchEngine;
 
-  async.series([
-    function(cb) {
-      db.autoupdate(cb);
-    },
+  SearchEngine
+      .clear('businesses')
+      .fail(function (r) {
+          console.log('Failed to clear search index', r)
+      })
+      .then(function () {
+          console.log('Importing businesses')
 
-    importBusinesses.bind(null, businesses)
-  ], function(err/*, results*/) {
-    cb(err);
-  });
+          function importBusinesses(data, cb) {
+            async.each(data, function(d, callback) {
+              var business = {
+                name: d.name,
+                gps: d.gps,
+                street: d.street,
+                city: d.city,
+                zipcode: d.zipcode,
+                siren: d.siren,
+                siret: d.siret,
+                phone_numbers: d.phone_pj,
+                diane_data: d.diane_data,
+                pj_data: d.pages_jaunes,
+                timetables: parseTimetables(d.timetables_pj)
+              };
+              //console.log(business);
+              Business.create(business, callback);
+            }, cb);
+          }
+
+          async.series([
+            function(cb) {
+              db.autoupdate(cb);
+            },
+
+            importBusinesses.bind(null, businesses)
+          ], function(err/*, results*/) {
+            cb(err);
+          });
+
+      })
+  ;
 };
 
 function parseTimetables(timetables) {

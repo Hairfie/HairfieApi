@@ -9,6 +9,29 @@ module.exports = function(Business) {
 
     Business.definition.settings.hidden = ['diane_data', 'pj_data', 'city', 'zipcode', 'street'];
 
+    Business.afterSave = function (next) {
+      var business = this;
+
+      Business.getApp(function (_, app) {
+          // index business on search engine
+          app.models.SearchEngine.index('businesses', business.id, {
+              name: business.name,
+              gps:  business.gps
+          });
+      });
+
+      next();
+    };
+
+    Business.afterDelete = function (next) {
+        Business.getApp(function (_, app) {
+            // remove business from search index
+            app.models.SearchEngine.delete('businesses', business.id);
+        });
+
+        next();
+    };
+
     Business.definition.settings.virtuals = {
         timetables: function (obj) {
             return obj.timetables ? obj.timetables : {};

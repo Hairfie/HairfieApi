@@ -27,5 +27,9 @@
   "Business": {
     "dataSource": "hairfieMongo",
     "public": true
+  },
+  "SearchEngine": {
+    "dataSource": "hairfieMongo",
+    "public": false
   }
 }

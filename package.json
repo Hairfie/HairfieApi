@@ -5,6 +5,7 @@
   "dependencies": {
     "async": "^0.9.0",
     "compression": "^1.0.3",
+    "elasticsearch": "^2.4.0",
     "errorhandler": "^1.1.1",
     "extend": "^1.3.0",
     "function-rate-limit": "0.0.1",
