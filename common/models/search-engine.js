@@ -4,22 +4,33 @@ var elasticsearch = require('elasticsearch');
 var Q = require('q');
 
 module.exports = function (SearchEngine) {
-    var index = 'hairfie-dev'; // @todo take it from configuration
 
-    var client = elasticsearch.Client({
-        host: 'dev.hairfie.com:9200',
-    });
+    var client = null;
 
-    SearchEngine.client = client;
+    function getSettings() {
+        return SearchEngine.dataSource.settings;
+    }
+
+    function getIndex() {
+        return getSettings().index;
+    }
+
+    function getClient() {
+        if (!client) {
+            client = elasticsearch.Client({host: getSettings().host});
+        }
+
+        return client;
+    }
 
     SearchEngine.clear = function (collection) {
         var deferred = Q.defer();
 
         var params = {};
-        params.index = index;
+        params.index = getIndex();
         params.type = collection;
 
-        client.indices.deleteMapping(params, deferred.makeNodeResolver());
+        getClient().indices.deleteMapping(params, deferred.makeNodeResolver());
 
         return deferred.promise;
     }
@@ -28,12 +39,12 @@ module.exports = function (SearchEngine) {
         var deferred = Q.defer();
 
         var params = {};
-        params.index = index;
+        params.index = getIndex();;
         params.type = collection;
         params.id = ''+id;
         params.body = data;
 
-        client.index(params, deferred.makeNodeResolver());
+        getClient().index(params, deferred.makeNodeResolver());
 
         return deferred.promise;
     }
@@ -42,11 +53,11 @@ module.exports = function (SearchEngine) {
         var deferred = Q.defer();
 
         var params = {};
-        params.index = index;
+        params.index = getIndex();;
         params.type = collection;
         params.id = ''+id;
 
-        client.delete(params, deferred.makeNodeResolver());
+        getClient().delete(params, deferred.makeNodeResolver());
 
         return deferred.promise;
     }
@@ -55,11 +66,11 @@ module.exports = function (SearchEngine) {
         var deferred = Q.defer();
 
         var params = {};
-        params.index = index;
+        params.index = getIndex();;
         params.type = collection;
         params.q = query;
 
-        client.search(params, deferred.makeNodeResolver());
+        getClient().search(params, deferred.makeNodeResolver());
 
         return deferred.promise;
     }

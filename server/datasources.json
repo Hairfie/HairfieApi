@@ -31,5 +31,11 @@
         }
       }
     ]
+  },
+  "searchEngine": {
+    "name": "searchEngine",
+    "type": "memory",
+    "host": "dev.hairfie.com:9200",
+    "index": "hairfie-dev"
   }
 }

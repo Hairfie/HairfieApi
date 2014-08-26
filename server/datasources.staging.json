@@ -4,4 +4,7 @@
     "connector": "mongodb",
     "database": "hairfie-staging"
   }
+  "searchEngine": {
+    "index": "hairfie-staging"
+  }
 }
