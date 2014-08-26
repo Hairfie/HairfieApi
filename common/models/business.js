@@ -73,7 +73,9 @@ module.exports = function(Business) {
 
     Business.addDistanceFrom = function (point) {
         return function (business) {
-            business.distance = GeoPoint.distanceBetween(point, business.gps, {type: 'meters'});
+            business.distance = parseInt(GeoPoint.distanceBetween(point, business.gps, {type: 'meters'}));
+
+            return business;
         }
     };
 
