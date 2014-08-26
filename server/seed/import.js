@@ -18,32 +18,11 @@ module.exports = function(app, cb) {
 
     var SearchEngine = app.models.SearchEngine;
 
-    console.log('Droping search index');
+    console.log('Start rebuilding index');
     SearchEngine
-        .dropIndex()
+        .rebuildIndex()
         .then(function () {
-            console.log('Creating search index');
-            return SearchEngine.createIndex();
-        })
-        .then(function () {
-            console.log('Defining search mapping')
-            return SearchEngine.defineMapping('business', {
-                business: {
-                    properties: {
-                        name: {
-                            type: 'string'
-                        },
-                        gps: {
-                            type: 'geo_point',
-                            lat_lon: true,
-                            geohash: true
-                        }
-                    }
-                }
-            });
-        })
-        .then(function () {
-            console.log('Importing businesses');
+            console.log('Start importing new businesses');
 
             function importBusinesses(data, cb) {
                 async.each(data, function(d, callback) {

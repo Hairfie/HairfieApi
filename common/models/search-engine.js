@@ -99,4 +99,59 @@ module.exports = function (SearchEngine) {
 
         return deferred.promise;
     }
+
+    SearchEngine.rebuildIndex = function () {
+        console.log('Dropping search index');
+
+        return SearchEngine
+            .dropIndex()
+            .then(function() {
+                console.log('Creating search index');
+
+                return SearchEngine.createIndex()
+            })
+            .then(function() {
+                console.log('Defining search mappings');
+
+                // @todo move mapping to model's settings
+                return SearchEngine.defineMapping('business', {
+                    business: {
+                        properties: {
+                            name: {
+                                type: 'string'
+                            },
+                            gps: {
+                                type: 'geo_point',
+                                lat_lon: true,
+                                geohash: true
+                            }
+                        }
+                    }
+                });
+            })
+            .then(function () {
+                return Q.denodeify(SearchEngine.getApp.bind(SearchEngine))();
+            })
+            .then(function (app) {
+                console.log('Loading existing records');
+
+                var Business = app.models.Business;
+
+                return Q.denodeify(Business.find.bind(Business, {}))();
+            })
+            .then(function (businesses) {
+                console.log('Reindexing existing records');
+                return Q.all(businesses.map(function (business) {
+                    // @todo move search doc creation to model's settings
+                    return SearchEngine.index('business', business.id, {
+                        name: business.name,
+                        gps: {
+                            lat: business.gps.lat,
+                            lon: business.gps.lng
+                        }
+                    });
+                }));
+            })
+        ;
+    }
 }
