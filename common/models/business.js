@@ -65,8 +65,6 @@ module.exports = function(Business) {
 
         Q.denodeify(Business.find.bind(Business))(filter)
             .then(function (businesses) {
-                return businesses;
-                console.log(businesses);
                 return businesses.map(Business.addDistanceFrom(here))
             })
             .nodeify(callback)
