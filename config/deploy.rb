@@ -70,6 +70,13 @@ namespace :deploy do
     end
   end
 
+  desc 'Rebuild search index'
+  task :rebuild_search_index do
+      on roles(:app) do
+          execute "cd #{current_path} && node server/search/rebuild-index.js"
+      end
+  end
+
   before 'deploy:published', 'deploy:npm_install'
 
   after 'deploy:published', 'deploy:restart'
