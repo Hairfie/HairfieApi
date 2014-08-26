@@ -14,7 +14,7 @@ module.exports = function(Business) {
 
       Business.getApp(function (_, app) {
           // index business on search engine
-          app.models.SearchEngine.index('businesses', business.id, {
+          app.models.SearchEngine.index('business', business.id, {
               name: business.name,
               gps:  business.gps
           });
@@ -26,7 +26,7 @@ module.exports = function(Business) {
     Business.afterDelete = function (next) {
         Business.getApp(function (_, app) {
             // remove business from search index
-            app.models.SearchEngine.delete('businesses', business.id);
+            app.models.SearchEngine.delete('business', business.id);
         });
 
         next();

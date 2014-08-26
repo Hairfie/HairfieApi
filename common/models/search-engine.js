@@ -23,6 +23,19 @@ module.exports = function (SearchEngine) {
         return client;
     }
 
+    SearchEngine.defineMapping = function (collection, mapping) {
+        var deferred = Q.defer();
+
+        var params = {};
+        params.index = getIndex();
+        params.type = collection;
+        params.body = mapping;
+
+        getClient().indices.putMapping(params, deferred.makeNodeResolver());
+
+        return deferred.promise;
+    }
+
     SearchEngine.clear = function (collection) {
         var deferred = Q.defer();
 

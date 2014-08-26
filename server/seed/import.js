@@ -19,7 +19,7 @@ module.exports = function(app, cb) {
   var SearchEngine = app.models.SearchEngine;
 
   SearchEngine
-      .clear('businesses')
+      .clear('business')
       .fail(function (r) {
           console.log('Failed to clear search index', r)
       })
