@@ -17,18 +17,42 @@ module.exports = function (SearchEngine) {
 
     function getClient() {
         if (!client) {
-            client = elasticsearch.Client({host: getSettings().host});
+            client = elasticsearch.Client({
+                host: getSettings().host
+            });
         }
 
         return client;
     }
 
-    SearchEngine.defineMapping = function (collection, mapping) {
+    SearchEngine.dropIndex = function () {
         var deferred = Q.defer();
 
         var params = {};
         params.index = getIndex();
-        params.type = collection;
+
+        getClient().indices.delete(params, deferred.makeNodeResolver());
+
+        return deferred.promise;
+    }
+
+    SearchEngine.createIndex = function () {
+        var deferred = Q.defer();
+
+        var params = {};
+        params.index = getIndex();
+
+        getClient().indices.create(params, deferred.makeNodeResolver());
+
+        return deferred.promise;
+    }
+
+    SearchEngine.defineMapping = function (type, mapping) {
+        var deferred = Q.defer();
+
+        var params = {};
+        params.index = getIndex();
+        params.type = type;
         params.body = mapping;
 
         getClient().indices.putMapping(params, deferred.makeNodeResolver());
@@ -36,24 +60,12 @@ module.exports = function (SearchEngine) {
         return deferred.promise;
     }
 
-    SearchEngine.clear = function (collection) {
-        var deferred = Q.defer();
-
-        var params = {};
-        params.index = getIndex();
-        params.type = collection;
-
-        getClient().indices.deleteMapping(params, deferred.makeNodeResolver());
-
-        return deferred.promise;
-    }
-
-    SearchEngine.index = function (collection, id, data) {
+    SearchEngine.index = function (type, id, data) {
         var deferred = Q.defer();
 
         var params = {};
         params.index = getIndex();;
-        params.type = collection;
+        params.type = type;
         params.id = ''+id;
         params.body = data;
 
@@ -62,12 +74,12 @@ module.exports = function (SearchEngine) {
         return deferred.promise;
     }
 
-    SearchEngine.delete = function (collection, id) {
+    SearchEngine.delete = function (type, id) {
         var deferred = Q.defer();
 
         var params = {};
         params.index = getIndex();;
-        params.type = collection;
+        params.type = type;
         params.id = ''+id;
 
         getClient().delete(params, deferred.makeNodeResolver());
@@ -75,13 +87,13 @@ module.exports = function (SearchEngine) {
         return deferred.promise;
     }
 
-    SearchEngine.search = function (collection, query) {
+    SearchEngine.search = function (type, body) {
         var deferred = Q.defer();
 
         var params = {};
         params.index = getIndex();;
-        params.type = collection;
-        params.q = query;
+        params.type = type;
+        params.body = body;
 
         getClient().search(params, deferred.makeNodeResolver());
 
