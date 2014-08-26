@@ -64,7 +64,6 @@ module.exports = function(Business) {
         filter.limit = limit;
 
         Q.denodeify(Business.find.bind(Business))(filter)
-            .catch(console.log)
             .then(function (businesses) {
                 return businesses;
                 console.log(businesses);
