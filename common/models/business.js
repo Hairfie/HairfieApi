@@ -9,6 +9,16 @@ module.exports = function(Business) {
 
     Business.definition.settings.hidden = ['diane_data', 'pj_data', 'city', 'zipcode', 'street'];
 
+    Business.definition.settings.hidden.push('timetables');
+    Business.definition.settings.hidden.push('address');
+    Business.definition.settings.hidden.push('siren');
+    Business.definition.settings.hidden.push('pictures');
+    Business.definition.settings.hidden.push('thumb');
+    Business.definition.settings.hidden.push('name');
+    Business.definition.settings.hidden.push('gps');
+    Business.definition.settings.hidden.push('siret');
+    Business.definition.settings.hidden.push('phone_numbers');
+
     Business.afterSave = function (next) {
       var business = this;
 
@@ -99,17 +109,22 @@ module.exports = function(Business) {
                 return app.models.SearchEngine.search('business', body);
             })
             .then(function (result) {
-                return result[0].hits.hits.map(function (o) { return o._id; });
-            })
-            .then(function (ids) {
-                return Q.denodeify(Business.findByIds.bind(Business))(ids);
-            })
-            .then(function (businesses) {
-                return businesses.map(function (business) {
-                    business.distance = Math.round(here.distanceTo(business.gps, {type: 'meters'}));
-
-                    return business;
+                var ids = [], distances = {};
+                result[0].hits.hits.forEach(function (hit) {
+                    ids.push(hit._id);
+                    distances[hit._id] = Math.round(hit.sort[0]);
                 });
+
+                return Q.denodeify(Business.findByIds.bind(Business))(ids)
+                    .then(function (businesses) {
+                        // add distance to businesses
+                        return businesses.map(function (business) {
+                            business.distance = distances[business.id];
+
+                            return business;
+                        });
+                    })
+                ;
             })
             .nodeify(callback)
         ;
