@@ -2,6 +2,9 @@ if ("staging" == process.env.NODE_ENV) {
     require('newrelic');
 }
 
+// require utils
+require('../common/utils');
+
 var loopback = require('loopback');
 var boot = require('loopback-boot');
 

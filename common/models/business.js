@@ -1,12 +1,10 @@
+'use strict';
+
 var async = require('async');
 var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
-var Abstract = require('./abstract.js');
 var Q = require('q');
 
 module.exports = function(Business) {
-
-    Abstract.extend(Business);
-
     Business.definition.settings.hidden = ['diane_data', 'pj_data', 'city', 'zipcode', 'street'];
 
     Business.afterSave = function (next) {
@@ -23,7 +21,7 @@ module.exports = function(Business) {
       next();
     };
 
-    Business.afterDelete = function (next) {
+    Business.afterDestroy = function (next) {
         Business.getApp(function (_, app) {
             // remove business from search index
             app.models.SearchEngine.delete('business', business.id);
