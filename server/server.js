@@ -10,13 +10,40 @@ var boot = require('loopback-boot');
 
 var app = module.exports = loopback();
 
+var loopbackPassport = require('loopback-component-passport');
+var PassportConfigurator = loopbackPassport.PassportConfigurator;
+var passportConfigurator = new PassportConfigurator(app);
+
+var passportConfig = {};
+try {
+    passportConfig = require('./auth-providers.json');
+} catch (error) {
+    console.log(error);
+    process.exit(1);
+}
+
 // request pre-processing middleware
+app.use(loopback.token({
+    model: app.models.AccessToken
+}));
 app.use(loopback.compress());
 
 // -- Add your pre-processing middleware here --
 
 // boot scripts mount components like REST API
 boot(app, __dirname);
+
+passportConfigurator.init();
+passportConfigurator.setupModels({
+    userModel:           app.models.User,
+    userIdentityModel:   app.models.UserIdentity,
+    userCredentialModel: app.models.UserCredential
+});
+for (var s in passportConfig) {
+    var c = passportConfig[s];
+    c.session = c.session !== false;
+    passportConfigurator.configureProvider(s, c);
+}
 
 // -- Mount static files here--
 // All static middleware should be registered at the end, as all requests

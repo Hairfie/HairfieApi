@@ -1,35 +1,49 @@
 {
-  "_meta": {
-    "sources": [
-      "../common/models",
-      "./models"
-    ]
-  },
-  "User": {
-    "dataSource": "hairfieMongo"
-  },
-  "AccessToken": {
-    "dataSource": "hairfieMongo",
-    "public": false
-  },
-  "ACL": {
-    "dataSource": "hairfieMongo",
-    "public": false
-  },
-  "RoleMapping": {
-    "dataSource": "hairfieMongo",
-    "public": false
-  },
-  "Role": {
-    "dataSource": "hairfieMongo",
-    "public": false
-  },
-  "Business": {
-    "dataSource": "hairfieMongo",
-    "public": true
-  },
-  "SearchEngine": {
-    "dataSource": "searchEngine",
-    "public": false
-  }
+    "_meta": {
+        "sources": [
+            "../common/models",
+            "./models",
+            "./node_modules/loopback-component-passport/lib/models"
+        ]
+    },
+    "User": {
+        "dataSource": "hairfieMongo"
+    },
+    "AccessToken": {
+        "dataSource": "hairfieMongo",
+        "public": false
+    },
+    "ACL": {
+        "dataSource": "hairfieMongo",
+        "public": false
+    },
+    "RoleMapping": {
+        "dataSource": "hairfieMongo",
+        "public": false
+    },
+    "Role": {
+        "dataSource": "hairfieMongo",
+        "public": false
+    },
+    "Business": {
+        "dataSource": "hairfieMongo",
+        "public": true
+    },
+    "SearchEngine": {
+        "dataSource": "searchEngine",
+        "public": false
+    },
+
+    "user": {
+        "dataSource": "hairfieMongo",
+        "public": true
+    },
+    "userCredential": {
+        "dataSource": "hairfieMongo",
+        "public": true
+    },
+    "userIdentity": {
+        "dataSource": "hairfieMongo",
+        "public": true
+    }
 }
