@@ -9,16 +9,6 @@ module.exports = function(Business) {
 
     Business.definition.settings.hidden = ['diane_data', 'pj_data', 'city', 'zipcode', 'street'];
 
-    Business.definition.settings.hidden.push('timetables');
-    Business.definition.settings.hidden.push('address');
-    Business.definition.settings.hidden.push('siren');
-    Business.definition.settings.hidden.push('pictures');
-    Business.definition.settings.hidden.push('thumb');
-    Business.definition.settings.hidden.push('name');
-    Business.definition.settings.hidden.push('gps');
-    Business.definition.settings.hidden.push('siret');
-    Business.definition.settings.hidden.push('phone_numbers');
-
     Business.afterSave = function (next) {
       var business = this;
 
