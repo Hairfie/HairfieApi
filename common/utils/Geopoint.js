@@ -3,7 +3,7 @@ var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 GeoPoint.prototype.asElasticPoint = function () {
     return {
         lat: this.lat,
-            lon: this.lng
+        lon: this.lng
     }
 }
 

@@ -72,7 +72,8 @@ module.exports = function(Business) {
                         filtered: {
                             filter: {
                                 geo_distance: {
-                                    distance: '10km',
+                                    distance: maxDistance,
+                                    distance_unit: 'm',
                                     gps: here.asElasticPoint()
                                 }
                             }
@@ -81,7 +82,8 @@ module.exports = function(Business) {
                     sort: {
                         _geo_distance: {
                             gps: here.asElasticPoint(),
-                            order: 'asc'
+                            order: 'asc',
+                            unit: 'm'
                         }
                     }
                 }
@@ -104,7 +106,7 @@ module.exports = function(Business) {
             })
             .then(function (businesses) {
                 return businesses.map(function (business) {
-                    business.distance = parseInt(here.distanceTo(business.gps, {type: 'meters'}));
+                    business.distance = Math.round(here.distanceTo(business.gps, {type: 'meters'}));
 
                     return business;
                 });

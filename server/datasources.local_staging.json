@@ -4,5 +4,8 @@
     "connector": "mongodb",
     "host": "api.staging.hairfie.com",
     "database": "hairfie-staging"
+  },
+  "searchEngine": {
+    "index": "hairfie-staging"
   }
 }
