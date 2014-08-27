@@ -4,6 +4,8 @@
 # is considered to be the first unless any hosts have the primary
 # property set.  Don't declare `role :all`, it's a meta role.
 
+set :node_env, 'staging'
+
 set :newrelic_api_key, '50df3ca9caabde7c20658907c8969e0b7ea3e779f2b7664'
 set :newrelic_app_id, '3640357'
 

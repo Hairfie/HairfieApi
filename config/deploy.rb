@@ -73,7 +73,8 @@ namespace :deploy do
   desc 'Rebuild search index'
   task :rebuild_search_index do
       on roles(:app) do
-          execute "cd #{current_path} && node server/search/rebuild-index.js"
+          node_env = fetch(:node_env)
+          execute "cd #{current_path} && node NODE_ENV=#{node_env} server/search/rebuild-index.js"
       end
   end
 
