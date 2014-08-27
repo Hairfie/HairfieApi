@@ -47,7 +47,7 @@
     "relations": {},
     "acls": [],
     "methods": [],
-    "plural": "businesses",
+    "plural": "Businesses",
     "options": {
         "mongodb": {
             "collection": "businesses"
