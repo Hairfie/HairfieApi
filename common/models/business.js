@@ -161,4 +161,15 @@ module.exports = function(Business) {
 
     Business.setup();
 
+    Business.beforeRemote('**', function(ctx, business, next) {
+        if(ctx.methodString == 'Business.find') {
+            if(!ctx["args"]["filter"]) {
+                ctx["args"]["filter"] = {limit: 10};
+            } else if(!ctx["args"]["filter"]["limit"]) {
+                ctx["args"]["filter"]["limit"] = 10;
+            }
+        }
+        next();
+    });
+
 };
