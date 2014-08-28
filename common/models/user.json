@@ -28,5 +28,10 @@
     "validations": [],
     "relations": {},
     "acls": [],
-    "methods": []
+    "methods": [],
+    "options": {
+        "mongodb": {
+            "collection": "users"
+        }
+    }
 }

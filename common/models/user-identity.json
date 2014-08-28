@@ -12,5 +12,10 @@
         }
     },
     "acls": [],
-    "methods": []
+    "methods": [],
+    "options": {
+        "mongodb": {
+            "collection": "userIdentities"
+        }
+    }
 }
