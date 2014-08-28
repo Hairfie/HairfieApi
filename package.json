@@ -17,7 +17,8 @@
     "loopback-connector-rest": "^1.2.1",
     "loopback-datasource-juggler": "~2.5.0",
     "newrelic": "^1.10.0",
-    "passport-facebook": "^1.0.3",
+    "passport": "^0.2.0",
+    "passport-facebook-token": "^0.3.1",
     "q": "^1.0.1"
   },
   "optionalDependencies": {

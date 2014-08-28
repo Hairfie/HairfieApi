@@ -33,12 +33,9 @@ app.use(loopback.compress());
 // boot scripts mount components like REST API
 boot(app, __dirname);
 
+// setup passport
 passportConfigurator.init();
-passportConfigurator.setupModels({
-    userModel:           app.models.User,
-    userIdentityModel:   app.models.UserIdentity,
-    userCredentialModel: app.models.UserCredential
-});
+passportConfigurator.setupModels();
 for (var s in passportConfig) {
     var c = passportConfig[s];
     c.session = c.session !== false;
