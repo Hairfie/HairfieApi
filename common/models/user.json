@@ -1,0 +1,37 @@
+{
+    "name": "user",
+    "plural": "users",
+    "base": "User",
+    "properties": {
+        "firstName": {
+            "type": "string"
+        },
+        "lastName": {
+            "type": "string"
+        },
+        "accessTokens": {
+            "type": "hasMany",
+            "model": "accessToken",
+            "foreignKey": "userId"
+        },
+        "identities": {
+            "type": "hasMany",
+            "model": "userIdentity",
+            "foreignKey": "userId"
+        },
+        "credentials": {
+            "type": "hasMany",
+            "model": "userCredential",
+            "foreignKey": "userId"
+        }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [],
+    "methods": [],
+    "options": {
+        "mongodb": {
+            "collection": "users"
+        }
+    }
+}

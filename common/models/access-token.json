@@ -1,0 +1,15 @@
+{
+    "name": "accessToken",
+    "plural": "accessTokens",
+    "base": "AccessToken",
+    "properties": {},
+    "validations": [],
+    "relations": {},
+    "acls": [],
+    "methods": [],
+    "options": {
+        "mongodb": {
+            "collection": "accessTokens"
+        }
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "name": "userIdentity",
+    "plural": "userIdentities",
+    "base": "UserIdentity",
+    "properties": {},
+    "validations": [],
+    "relations": {
+        "user": {
+            "type": "belongsTo",
+            "model": "user",
+            "foreignKey": "userId"
+        }
+    },
+    "acls": [],
+    "methods": [],
+    "options": {
+        "mongodb": {
+            "collection": "userIdentities"
+        }
+    }
+}
