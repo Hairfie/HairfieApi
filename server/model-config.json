@@ -7,7 +7,8 @@
         ]
     },
     "User": {
-        "dataSource": "hairfieMongo"
+        "dataSource": "hairfieMongo",
+        "public": false
     },
     "AccessToken": {
         "dataSource": "hairfieMongo",
@@ -33,17 +34,40 @@
         "dataSource": "searchEngine",
         "public": false
     },
-
     "user": {
         "dataSource": "hairfieMongo",
         "public": true
     },
     "userCredential": {
         "dataSource": "hairfieMongo",
-        "public": true
+        "public": false
     },
     "userIdentity": {
         "dataSource": "hairfieMongo",
-        "public": true
+        "public": false
+    },
+    "accessToken": {
+        "dataSource": "hairfieMongo",
+        "public": false
+    },
+    "application": {
+        "dataSource": "hairfieMongo",
+        "public": false
+    },
+    "acl": {
+        "dataSource": "hairfieMongo",
+        "public": false
+    },
+    "role": {
+        "dataSource": "hairfieMongo",
+        "public": false
+    },
+    "roleMapping": {
+        "dataSource": "hairfieMongo",
+        "public": false
+    },
+    "scope": {
+        "dataSource": "hairfieMongo",
+        "public": false
     }
 }

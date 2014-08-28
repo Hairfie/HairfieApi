@@ -1,0 +1,15 @@
+{
+    "name": "acl",
+    "plural": "acls",
+    "base": "ACL",
+    "properties": {},
+    "validations": [],
+    "relations": {},
+    "acls": [],
+    "methods": [],
+    "options": {
+        "mongodb": {
+            "collections": "acls"
+        }
+    }
+}

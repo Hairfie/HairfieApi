@@ -34,13 +34,24 @@ app.use(loopback.compress());
 boot(app, __dirname);
 
 // setup passport
-passportConfigurator.init();
+var passport = passportConfigurator.init();
 passportConfigurator.setupModels();
 for (var s in passportConfig) {
     var c = passportConfig[s];
     c.session = c.session !== false;
     passportConfigurator.configureProvider(s, c);
 }
+
+// add endpoint to send token to
+app.use(
+    '/auth/facebook/token',
+    passport.authenticate('facebook-token', {
+        scope: passportConfig['facebook-token'].scope
+    }),
+    function (req, res) {
+        res.send(req.user ? 200 : 401);
+    }
+);
 
 // -- Mount static files here--
 // All static middleware should be registered at the end, as all requests
