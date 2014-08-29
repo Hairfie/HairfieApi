@@ -41,6 +41,7 @@ passportConfigurator.setupModels();
 for (var s in passportConfig) {
     var c = passportConfig[s];
     c.session = c.session !== false;
+    c.profileToUser = app.models.User.profileToUser;
     passportConfigurator.configureProvider(s, c);
 }
 
