@@ -49,7 +49,13 @@ app.use(
         scope: passportConfig['facebook-token'].scope
     }),
     function (req, res) {
-        res.send(req.user ? 200 : 401);
+        if (!req.user) res.status(401);
+        else {
+            req.user.createAccessToken(null, function (error, token) {
+                if (error) res.status(500);
+                else res.send(token);
+            });
+        }
     }
 );
 
