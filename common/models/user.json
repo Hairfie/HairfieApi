@@ -9,6 +9,16 @@
         "lastName": {
             "type": "string"
         },
+        "gender": {
+            "type": "string"
+        },
+        "newsletter": {
+            "type": "boolean",
+            "default": false
+        },
+        "picture": {
+            "type": "string"
+        },
         "accessTokens": {
             "type": "hasMany",
             "model": "accessToken",
