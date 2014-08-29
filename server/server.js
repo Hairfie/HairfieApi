@@ -27,6 +27,8 @@ app.use(loopback.token({
     model: app.models.AccessToken
 }));
 app.use(loopback.compress());
+app.use(loopback.urlencoded());
+app.use(loopback.json());
 
 // -- Add your pre-processing middleware here --
 
