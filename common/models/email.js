@@ -1,35 +1,37 @@
 'use strict';
 
 var Q = require('q');
+var loopback = require('loopback');
 
 module.exports = function (Email) {
 
+    var from = 'Hairfie <no-reply@hairfie.com>';
+
     Email.welcomeUser = function (user) {
-        var email = new Email({
-            from: 'Hairfie <no-reply@hairfie.com>',
+        return send({
             to: user.getFullEmail(),
-            subject: 'Hello %firstName%, welcome to Hairfie!',
-            headers: {
-                "X-SMTPAPI": JSON.stringify({
-                    category: ["User registrations"],
-                    unique_args: {
-                        userId: user.id
-                    },
-                    sub: {
-                        "%firstName%": [user.firstName],
-                        "%lastName%": [user.lastName],
-                        "%fullName%": [user.getFullName()]
-                    },
-                    filters: {
-                        templates: {
-                            settings: {
-                                enable: 1,
-                                template_id: "3261f067-cb5c-4c33-b22f-6cffbff40e5e"
-                            }
-                        }
-                    }
-                })
-            }
+            subject: 'Hello '+user.firstName+', welcome to Hairfie!',
+            template: 'welcomeUser',
+            templateVars: {user: user},
+        });
+    }
+
+    Email.resetUserPassword = function (user, accessToken) {
+        return send({
+            to: user.getFullEmail(),
+            subject: 'Did you forget your password?',
+            template: 'welcomeUser',
+            templateVars: {user: user},
+        });
+    }
+
+    function send(options) {
+        var email = new Email({
+            subject: options.subject,
+            from: options.from || from,
+            to: options.to,
+            text: loopback.template('server/views/email/'+options.template+'.txt.ejs')(options.templateVars),
+            html: loopback.template('server/views/email/'+options.template+'.html.ejs')(options.templateVars)
         });
 
         var deferred = Q.defer();

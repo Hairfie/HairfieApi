@@ -43,7 +43,7 @@ module.exports = function(User) {
             lastName: profile.name && profile.name.familyName,
             gender: gender,
             picture: "http://graph.facebook.com/" + profile.id + '/picture'
-        };
+       };
 
         return userObj;
     }
@@ -55,4 +55,14 @@ module.exports = function(User) {
     User.prototype.getFullName = function () {
         return this.firstName+' '+this.lastName;
     }
+
+    User.on('resetPasswordRequest', function (info) {
+        info.accessToken.user(function (error, user) {
+            if (error) return console.log(error);
+
+            User.getApp(function (app) {
+                app.models.email.resetUserPassword(user, info.accessToken);
+            });
+        });
+    });
 }
