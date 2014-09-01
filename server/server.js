@@ -14,6 +14,9 @@ var loopbackPassport = require('loopback-component-passport');
 var PassportConfigurator = loopbackPassport.PassportConfigurator;
 var passportConfigurator = new PassportConfigurator(app);
 
+var path = require('path');
+app.use(loopback.static(path.resolve(__dirname, '../client')));
+
 var passportConfig = {};
 try {
     passportConfig = require('./auth-providers.json');

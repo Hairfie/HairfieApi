@@ -37,7 +37,14 @@
     },
     "validations": [],
     "relations": {},
-    "acls": [],
+    "acls": [
+        {
+            "accessType": "EXECUTE",
+            "permission": "ALLOW",
+            "principalType": "ROLE",
+            "principalId": "$everyone"
+        }
+    ],
     "methods": [],
     "options": {
         "mongodb": {

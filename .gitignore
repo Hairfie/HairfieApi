@@ -1,4 +1,6 @@
 node_modules/*
+client/bower_components/*
+
 npm-debug.log
 server/auth-providers.json
 
