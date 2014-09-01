@@ -47,7 +47,7 @@ for (var s in passportConfig) {
 
 // add endpoint to send token to
 app.use(
-    '/api/auth/facebook/token',
+    '/auth/facebook/token',
     passport.authenticate('facebook-token', {
         scope: passportConfig['facebook-token'].scope
     }),
