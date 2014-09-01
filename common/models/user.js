@@ -39,12 +39,14 @@ module.exports = function(User) {
             username: username,
             password: password,
             email: email,
+            firstName: profile.name && profile.name.firstName,
+            lastName: profile.name && profile.name.lastName,
             gender: gender,
             picture: "http://graph.facebook.com/" + profile.id + '/picture'
         };
+
         return userObj;
     }
-}
 
     User.prototype.getFullEmail = function () {
         return this.getFullName()+ ' <'+this.email+'>';
