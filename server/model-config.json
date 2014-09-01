@@ -69,5 +69,9 @@
     "scope": {
         "dataSource": "hairfieMongo",
         "public": false
+    },
+    "Email": {
+        "dataSource": "mailer",
+        "public": false
     }
 }

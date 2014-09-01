@@ -1,41 +1,57 @@
 {
-  "hairfieMongo": {
-    "name": "hairfieMongo",
-    "connector": "mongodb",
-    "debug" : true
-  },
-  "geo": {
-    "name": "geo",
-    "connector": "rest",
-    "operations": [
-      {
-        "template": {
-          "method": "GET",
-          "url": "http://maps.googleapis.com/maps/api/geocode/{format=json}",
-          "headers": {
-            "accepts": "application/json",
-            "content-type": "application/json"
-          },
-          "query": {
-            "address": "{street},{city},{zipcode}",
-            "sensor": "{sensor=false}"
-          },
-          "responsePath": "$.results[0].geometry.location"
-        },
-        "functions": {
-          "geocode": [
-            "street",
-            "city",
-            "zipcode"
-          ]
+    "hairfieMongo": {
+        "name": "hairfieMongo",
+        "connector": "mongodb",
+        "debug" : true
+    },
+    "geo": {
+        "name": "geo",
+        "connector": "rest",
+        "operations": [
+        {
+            "template": {
+                "method": "GET",
+                "url": "http://maps.googleapis.com/maps/api/geocode/{format=json}",
+                "headers": {
+                    "accepts": "application/json",
+                    "content-type": "application/json"
+                },
+                "query": {
+                    "address": "{street},{city},{zipcode}",
+                    "sensor": "{sensor=false}"
+                },
+                "responsePath": "$.results[0].geometry.location"
+            },
+            "functions": {
+                "geocode": [
+                    "street",
+                "city",
+                "zipcode"
+                    ]
+            }
         }
-      }
-    ]
-  },
-  "searchEngine": {
-    "name": "searchEngine",
-    "type": "memory",
-    "host": "dev.hairfie.com:9200",
-    "index": "hairfie-dev"
-  }
+        ]
+    },
+    "searchEngine": {
+        "name": "searchEngine",
+        "type": "memory",
+        "host": "dev.hairfie.com:9200",
+        "index": "hairfie-dev"
+    },
+    "mailer": {
+        "name": "mailer",
+        "connector": "mail",
+        "transports": [
+            {
+                "type": "SMTP",
+                "host": "smtp.sendgrid.net",
+                "secureConnection": false,
+                "port": 587,
+                "auth": {
+                    "user": "hairfie-staging",
+                    "pass": "2g|O5Ao{L.u>|:c"
+                }
+            }
+        ]
+    }
 }
