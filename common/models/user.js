@@ -39,8 +39,8 @@ module.exports = function(User) {
             username: username,
             password: password,
             email: email,
-            firstName: profile.name && profile.name.firstName,
-            lastName: profile.name && profile.name.lastName,
+            firstName: profile.name && profile.name.givenName,
+            lastName: profile.name && profile.name.familyName,
             gender: gender,
             picture: "http://graph.facebook.com/" + profile.id + '/picture'
         };
