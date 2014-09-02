@@ -16,12 +16,12 @@ module.exports = function (Email) {
         });
     }
 
-    Email.resetUserPassword = function (user, accessToken) {
+    Email.resetUserPassword = function (user, resetUrl) {
         return send({
             to: user.getFullEmail(),
             subject: 'Did you forget your password?',
-            template: 'welcomeUser',
-            templateVars: {user: user},
+            template: 'resetUserPassword',
+            templateVars: {user: user, resetUrl: resetUrl}
         });
     }
 
