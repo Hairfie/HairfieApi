@@ -4,10 +4,12 @@
     "base": "User",
     "properties": {
         "firstName": {
-            "type": "string"
+            "type": "string",
+            "required": true
         },
         "lastName": {
-            "type": "string"
+            "type": "string",
+            "required": true
         },
         "gender": {
             "type": "string"

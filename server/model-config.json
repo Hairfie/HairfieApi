@@ -70,7 +70,7 @@
         "dataSource": "hairfieMongo",
         "public": false
     },
-    "Email": {
+    "email": {
         "dataSource": "mailer",
         "public": false
     }
