@@ -2,6 +2,7 @@
 
 var Q = require('q');
 var loopback = require('loopback');
+var path = require('path');
 
 module.exports = function (Email) {
 
@@ -30,8 +31,8 @@ module.exports = function (Email) {
             subject: options.subject,
             from: options.from || from,
             to: options.to,
-            text: loopback.template('server/views/email/'+options.template+'.txt.ejs')(options.templateVars),
-            html: loopback.template('server/views/email/'+options.template+'.html.ejs')(options.templateVars)
+            text: loopback.template(relativePath(options.template, 'txt'))(options.templateVars),
+            html: loopback.template(relativePath(options.template, 'html'))(options.templateVars)
         });
 
         var deferred = Q.defer();
@@ -39,5 +40,9 @@ module.exports = function (Email) {
         email.send(deferred.makeNodeResolver());
 
         return deferred.promise;
+    }
+
+    function relativePath(template, format) {
+        return path.resolve(__dirname, '../../server/views/email/' + template + '.' + format + '.ejs');
     }
 }
