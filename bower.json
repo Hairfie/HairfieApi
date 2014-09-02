@@ -1,10 +1,6 @@
 {
-  "name": "angular-seed",
-  "description": "A starter project for AngularJS",
+  "name": "HairfieApiClient",
   "version": "0.0.0",
-  "homepage": "https://github.com/angular/angular-seed",
-  "license": "MIT",
-  "private": true,
   "dependencies": {
     "angular": "1.2.x",
     "angular-route": "1.2.x",
