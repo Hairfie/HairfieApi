@@ -3,3 +3,6 @@ npm-debug.log
 server/auth-providers.json
 
 server/seed/export.json
+
+var/storage/*
+!var/storage/.gitkeep
