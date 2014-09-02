@@ -29,24 +29,34 @@ module.exports = function(User) {
         if (!email) {
             // Fake an e-mail
             email = (profile.username || profile.id) + '@hairfie.'
-                + (profile.provider || provider) + '.com';
-        }
+            + (profile.provider || provider) + '.com';
+          }
         var username = provider + '.' + (profile.username || profile.id);
         var password = "temporary";
         var gender = profile.gender;
 
         var userObj = {
-            username: username,
-            password: password,
-            email: email,
-            firstName: profile.name && profile.name.givenName,
-            lastName: profile.name && profile.name.familyName,
-            gender: gender,
-            picture: "http://graph.facebook.com/" + profile.id + '/picture'
-       };
-
+          username: username,
+          password: password,
+          email: email,
+          firstName: profile.name && profile.name.givenName,
+          lastName: profile.name && profile.name.familyName,
+          gender: gender,
+          picture: "http://graph.facebook.com/" + profile.id + '/picture'
+        };
         return userObj;
     }
+
+    User.on('resetPasswordRequest', function (info) {
+        var user = info.user;
+        var resetPath =  "#/reset_password?token="+ info.accessToken.id + "&uid=" + info.user.id;
+
+        User.getApp(function (error, app) {
+            var resetUrl = app.get('url') + resetPath;
+            console.log(resetUrl);
+            app.models.email.resetUserPassword(user, resetUrl);
+        });
+    });
 
     User.prototype.getFullEmail = function () {
         return this.getFullName()+ ' <'+this.email+'>';
@@ -55,14 +65,4 @@ module.exports = function(User) {
     User.prototype.getFullName = function () {
         return this.firstName+' '+this.lastName;
     }
-
-    User.on('resetPasswordRequest', function (info) {
-        info.accessToken.user(function (error, user) {
-            if (error) return console.log(error);
-
-            User.getApp(function (app) {
-                app.models.email.resetUserPassword(user, info.accessToken);
-            });
-        });
-    });
 }
