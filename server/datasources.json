@@ -43,15 +43,18 @@
         "connector": "mail",
         "transports": [
             {
-                "type": "SMTP",
-                "host": "smtp.sendgrid.net",
-                "secureConnection": false,
-                "port": 587,
+                "service": "Gmail",
                 "auth": {
-                    "user": "hairfie-staging",
-                    "pass": "2g|O5Ao{L.u>|:c"
+                    "user": "no-reply@hairfie.com",
+                    "pass": "y7Z6q*dK"
                 }
             }
         ]
+    },
+    "storage": {
+        "name": "storage",
+        "connector": "loopback-component-storage",
+        "provider": "filesystem",
+        "root": "var/storage"
     }
 }
