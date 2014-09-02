@@ -35,7 +35,11 @@ module.exports = function(User) {
     User.on('resetPasswordRequest', function (info) {
       console.log("resetPasswordRequest");
       console.log(info.email); // the email of the requested user
-      console.log(info.accessToken.id); // the temp access token to allow password reset
+
+      var url =  "http://localhost:3000/" + "#/reset_password?token="+ info.accessToken.id + "&uid=" + info.user.id;
+
+      console.log(url);
+
 
       // // requires AccessToken.belongsTo(User)
       // info.accessToken.user(function (err, user) {
