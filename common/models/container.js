@@ -7,7 +7,14 @@ var crypto = require('crypto');
 
 module.exports = function (Container) {
 
+    Container.prefixName = function (name) { throw Error('Not initialized'); };
+
     Container.on('attached', function (app) {
+
+        Container.prefixName = function (name) {
+            return ['hairfie', app.get('env'), name].join('-');
+        };
+
         // Generate random filenames
         //
         // @note Seems we need to define the remote from this hook because we
@@ -28,18 +35,15 @@ module.exports = function (Container) {
             returns: {arg: 'result', type: 'object'},
             http: {verb: 'post', path: '/:container/upload'}
         });
-
     });
 
+    // @todo As soon as we can override non-scalar values in env
+    //       specific config, take containers from config
     Container.beforeRemote('*', function (ctx, _, next) {
-        if (ctx.req.params.container) {
-            // @todo As soon as we can override non-scalar values in env
-            //       specific config, take containers from config
-            ctx.req.params.container = [
-                'hairfie',
-                process.env.NODE_ENV,
-                ctx.req.params.container
-            ].join('-');
+        if ('createContainer' == ctx.method.name) {
+            ctx.req.body.name = Container.prefixName(ctx.req.body.name);
+        } else if (ctx.args.container) {
+            ctx.args.container = Container.prefixName(ctx.args.container);
         }
         next();
     });
