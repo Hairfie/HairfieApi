@@ -10,7 +10,11 @@ module.exports = function (Container) {
     var allowedContainers = ['hairfies'];
 
     Container.on('attached', function (app) {
-        // override upload method so we can rename files
+        // @note Seems we need to define the remote from this hook because we
+        //       need to override the data store's one
+        //
+        // @todo Find a way to rename the file without copying the whole upload
+        //       function
         Container.upload = function (req, res, cb) {
             var client = Container.dataSource.connector.client;
             upload(client, req, res, req.params.container, cb);
