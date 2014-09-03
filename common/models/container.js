@@ -9,6 +9,7 @@ module.exports = function (Container) {
 
     var allowedContainers = ['hairfies'];
 
+    // generate random filenames
     Container.on('attached', function (app) {
         // @note Seems we need to define the remote from this hook because we
         //       need to override the data store's one
@@ -37,6 +38,12 @@ module.exports = function (Container) {
             return next('The specified container is not allowed');
         }
         next();
+    });
+
+    // prevent file's removal
+    Container.on('attached', function (app) {
+        Container.destroyContainer.shared = false;
+        Container.removeFile.shared = false;
     });
 
 }
@@ -76,14 +83,14 @@ function upload(provider, req, res, container, cb) {
 
         this._flushing++;
 
+        // generate random name
+        part.filename = md5(crypto.randomBytes(256))+'.'+/(?:\.([^.]+))?$/.exec(part.filename)[1];
+
         var file = {
             container: container,
             name: part.filename,
             type: part.mime
         };
-
-        // generate random name
-        file.name = md5(crypto.randomBytes(256))+'.'+/(?:\.([^.]+))?$/.exec(file.name)[1];
 
         self.emit('fileBegin', part.name, file);
 
