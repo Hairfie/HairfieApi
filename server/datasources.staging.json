@@ -1,10 +1,29 @@
 {
-  "hairfieMongo": {
-    "name": "hairfieMongo",
-    "connector": "mongodb",
-    "database": "hairfie-staging"
-  },
-  "searchEngine": {
-    "index": "hairfie-staging"
-  }
+    "hairfieMongo": {
+        "name": "hairfieMongo",
+        "connector": "mongodb",
+        "database": "hairfie-staging"
+    },
+    "searchEngine": {
+        "index": "hairfie-staging"
+    },
+    "mailer": {
+        "transports": [
+        {
+            "type": "SMTP",
+            "host": "smtp.sendgrid.net",
+            "secureConnection": false,
+            "port": 587,
+            "auth": {
+                "user": "hairfie-staging",
+                "pass": "2g|O5Ao{L.u>|:c"
+            }
+        }
+        ]
+    },
+    "storage": {
+        "provider": "amazon",
+        "key": "PrUqcGrncCKZ8mzl92ITDWNVuC74sUj7pao8V07i",
+        "keyId": "AKIAISMKKWD73GJESOJQ",
+    }
 }
