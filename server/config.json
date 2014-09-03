@@ -1,4 +1,4 @@
 {
-  "host": "localhost",
-  "restApiRoot": "/api"
+    "host": "localhost",
+    "restApiRoot": "/api"
 }

@@ -7,10 +7,9 @@ var crypto = require('crypto');
 
 module.exports = function (Container) {
 
-    var allowedContainers = ['hairfies'];
-
-    // generate random filenames
     Container.on('attached', function (app) {
+        // Generate random filenames
+        //
         // @note Seems we need to define the remote from this hook because we
         //       need to override the data store's one
         //
@@ -32,10 +31,15 @@ module.exports = function (Container) {
 
     });
 
-    // prevent creation of unwanted containers
-    Container.beforeRemote('createContainer', function (ctx, container, next) {
-        if (-1 === allowedContainers.indexOf(ctx.req.body.name)) {
-            return next('The specified container is not allowed');
+    Container.beforeRemote('*', function (ctx, _, next) {
+        if (ctx.req.params.container) {
+            // @todo As soon as we can override non-scalar values in env
+            //       specific config, take containers from config
+            ctx.req.params.container = [
+                'hairfie',
+                process.env.NODE_ENV,
+                ctx.req.params.container
+            ].join('-');
         }
         next();
     });
@@ -45,7 +49,6 @@ module.exports = function (Container) {
         Container.destroyContainer.shared = false;
         Container.removeFile.shared = false;
     });
-
 }
 
 function upload(provider, req, res, container, cb) {
