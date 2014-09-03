@@ -8,3 +8,5 @@ server/seed/export.json
 
 var/storage/*
 !var/storage/.gitkeep
+
+newrelic_agent.log
