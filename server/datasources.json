@@ -44,6 +44,10 @@
         "transports": [
             {
                 "service": "Gmail",
+                "type": "SMTP",
+                "host": "smtp.gmail.com",
+                "secureConnection": true,
+                "port": 465,
                 "auth": {
                     "user": "no-reply@hairfie.com",
                     "pass": "y7Z6q*dK"
