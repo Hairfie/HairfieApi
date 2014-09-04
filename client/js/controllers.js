@@ -8,6 +8,7 @@ angular.module('myApp.controllers', [])
         $scope.token = $routeParams.token;
         $scope.uid = $routeParams.uid;
         $scope.displayForm = false;
+        $scope.form = {password: ''};
 
         LoopBackAuth.currentUserId = $routeParams.uid;
         LoopBackAuth.accessTokenId = $routeParams.token;
@@ -24,7 +25,7 @@ angular.module('myApp.controllers', [])
 
         $scope.changePassword = function() {
             // don't submit when field is empty
-            if ($scope.password == '') return;
+            if ('' == $scope.form.password) return;
 
             $scope.ongoingProgress = true;
             $scope.successMessage = null;
@@ -32,7 +33,7 @@ angular.module('myApp.controllers', [])
 
             User.upsert({
                 id: $routeParams.uid,
-                password: $scope.password
+                password: $scope.form.password
             }).$promise
             .then(function() {
                 $scope.successMessage = 'Your password has been successfully reset, you can now log in to the app using your new password.';
@@ -43,7 +44,6 @@ angular.module('myApp.controllers', [])
                 User.logout();
             })
             .catch(function(error) {
-console.log(error);
                 $scope.errorMessage = 'Your new password is not valid, please try again.';
                 $scope.ongoingProgress = false;
             });
