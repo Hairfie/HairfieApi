@@ -38,6 +38,9 @@ angular.module('myApp.controllers', [])
                 $scope.successMessage = 'Your password has been successfully reset, you can now log in to the app using your new password.';
                 $scope.ongoingProgress = false;
                 $scope.displayForm = false;
+
+                // delete access token
+                User.logout();
             })
             .catch(function(error) {
 console.log(error);
