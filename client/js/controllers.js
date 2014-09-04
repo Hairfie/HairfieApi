@@ -23,6 +23,9 @@ angular.module('myApp.controllers', [])
         );
 
         $scope.changePassword = function() {
+            // don't submit when field is empty
+            if ($scope.password = '') return;
+
             $scope.ongoingProgress = true;
             $scope.successMessage = null;
             $scope.errorMessage = null;
