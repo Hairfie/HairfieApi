@@ -25,7 +25,7 @@ module.exports = function (Container) {
         Container.upload = function (req, res, cb) {
             var client = Container.dataSource.connector.client;
             upload(client, req, res, Container.prefixName(req.params.container), cb);
-        }
+        };
 
         Container.remoteMethod('upload', {
             accepts: [
@@ -35,6 +35,12 @@ module.exports = function (Container) {
             returns: {arg: 'result', type: 'object'},
             http: {verb: 'post', path: '/:container/upload'}
         });
+
+
+        var oldGetFile = Container.getFile;
+        Container.getFile = function (container, file, cb) {
+            oldGetFile(Container.prefixName(container), file, cb);
+        };
     });
 
     // @todo As soon as we can override non-scalar values in env

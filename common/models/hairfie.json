@@ -1,0 +1,44 @@
+{
+    "name": "Hairfie",
+    "plural": "Hairfies",
+    "properties": {
+        "image": {
+            "type": "string",
+            "required": true
+        },
+        "userId": {
+            "type": "string",
+            "required": true
+        },
+        "description": {
+            "type": "string"
+        },
+        "salonId": {
+            "type": "string"
+        },
+        "price": {
+            "amount": "number",
+            "currency": "string"
+        }
+    },
+    "validations": [],
+    "relations": {
+        "user": {
+            "type": "belongsTo",
+            "model": "user",
+            "foreignKey": "userId"
+        },
+        "business": {
+            "type": "belongsTo",
+            "model": "business",
+            "foreignKey": "businessId"
+        }
+    },
+    "acls": [],
+    "methods": [],
+    "options": {
+        "mongodb": {
+            "collection": "hairfies"
+        }
+    }
+}
