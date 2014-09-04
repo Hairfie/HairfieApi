@@ -9,11 +9,14 @@ The backend API
 
 * Mongodb
 
+* Node et divers packages en global
 
     node 0.11.33
     npm install -g strongloop
     npm install -g yo
     npm install -g node-gyp
+
+* ImageMagick
 
 ## Seed
 
