@@ -3,6 +3,7 @@
 /* Controllers */
 
 angular.module('myApp.controllers', [])
+    .controller('HomeCtrl', [function () {}])
     .controller('ResetPasswordCtrl', ['$scope', '$routeParams', 'LoopBackAuth', 'User', function($scope, $routeParams, LoopBackAuth, User) {
         $scope.token = $routeParams.token;
         $scope.uid = $routeParams.uid;
