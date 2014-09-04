@@ -12,6 +12,10 @@ angular.module('myApp.controllers', [])
         LoopBackAuth.accessTokenId = $routeParams.token;
         LoopBackAuth.save();
 
+        User.getCurrent(function () {}, function (res) {
+            $scope.errorMessage = 'The reset password token has expired, please try again.';
+        });
+
         $scope.changePassword = function() {
             $scope.ongoingProgress = true;
             $scope.successMessage = null;
@@ -25,7 +29,8 @@ angular.module('myApp.controllers', [])
                 $scope.successMessage = 'Success !';
                 $scope.ongoingProgress = false;
             })
-            .catch(function() {
+            .catch(function(error) {
+console.log(error);
                 $scope.errorMessage = 'Error !';
                 $scope.ongoingProgress = false;
             });
