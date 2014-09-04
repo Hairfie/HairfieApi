@@ -12,6 +12,6 @@ angular.module('myApp', [
 config(['$routeProvider', function($routeProvider) {
     $routeProvider
         .when('/', {templateUrl: 'partials/home.html', controller: 'HomeCtrl'})
-        .when('/reset_password', {templateUrl: 'partials/password_form.html', controller: 'ResetPasswordCtrl'})
+        .when('/reset-password', {templateUrl: 'partials/password_form.html', controller: 'ResetPasswordCtrl'})
         .otherwise({redirectTo: '/'});
 }]);

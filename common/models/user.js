@@ -49,7 +49,7 @@ module.exports = function(User) {
 
     User.on('resetPasswordRequest', function (info) {
         var user = info.user;
-        var resetPath =  "#/reset_password?token="+ info.accessToken.id + "&uid=" + info.user.id;
+        var resetPath =  "#/reset-password?token="+ info.accessToken.id + "&uid=" + info.user.id;
 
         User.getApp(function (error, app) {
             var resetUrl = app.get('url') + resetPath;
