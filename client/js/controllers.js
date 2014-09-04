@@ -3,9 +3,6 @@
 /* Controllers */
 
 angular.module('myApp.controllers', [])
-  .controller('MyCtrl1', ['$scope', 'Business', function($scope, Business) {
-     $scope.business = Business.count();
-  }])
   .controller('ResetPasswordCtrl', ['$scope', '$routeParams', 'LoopBackAuth', 'User', function($scope, $routeParams, LoopBackAuth, User) {
     $scope.token = $routeParams.token;
     $scope.uid = $routeParams.uid;
