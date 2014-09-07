@@ -1,6 +1,12 @@
 'use strict';
 
 module.exports = function (Hairfie) {
+    Hairfie.definition.settings.virtuals = {
+        publicUrl: function (hairfie) {
+            return Hairfie.app.get('url')+'/api/containers/hairfies/download/'+hairfie.image;
+        }
+    };
+
     Hairfie.validatesUniquenessOf('image');
     Hairfie.validate('price', function (onError) {
         // validate structure
@@ -43,5 +49,4 @@ module.exports = function (Hairfie) {
         ctx.req.body.userId = ctx.req.accessToken.userId;
         next();
     });
-
 };
