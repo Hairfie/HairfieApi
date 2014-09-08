@@ -32,6 +32,7 @@ app.use(loopback.token({
 app.use(loopback.compress());
 app.use(loopback.urlencoded());
 app.use(loopback.json());
+app.use(loopback.logger('dev'));
 
 // -- Add your pre-processing middleware here --
 

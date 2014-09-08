@@ -54,6 +54,12 @@ module.exports = function (Container) {
         next();
     });
 
+    Container.afterRemote('*', function (ctx, _, next) {
+        console.log("Result :")
+        console.log(JSON.stringify(ctx.result));
+        next();
+    });
+
     // prevent file's removal
     Container.on('attached', function (app) {
         Container.destroyContainer.shared = false;
@@ -111,7 +117,7 @@ function upload(provider, req, res, container, cb) {
         if ('content-type' in part.headers) {
             headers['content-type'] = part.headers['content-type'];
         }
-        var writer = provider.upload({container: container, remote: part.filename});
+        var writer = provider.upload({container: container, remote: part.filename}, console.log);
 
         var endFunc = function () {
             self._flushing--;
