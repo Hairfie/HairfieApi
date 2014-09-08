@@ -6,7 +6,7 @@ var Q = require('q');
 module.exports = function(User) {
     User.definition.settings.virtuals = {
         pictureUrl: function (user) {
-            if(user.picture.indexOf("http") == 0) {
+            if(user.picture && user.picture.indexOf("http") == 0) {
                 return user.picture;
             } else {
                 return User.app.get('url')+'/api/containers/user-profile-picture/download/'+user.picture;
@@ -31,6 +31,14 @@ module.exports = function(User) {
             .catch(console.log)
             .then(function() { next() }, next)
         ;
+    }
+
+    User.afterCreate = function (next) {
+        var user = this;
+        user.createAccessToken(null, function (error, token) {
+            user.token = token;
+            next();
+        });
     }
 
     User.profileToUser = function(provider, profile) {
