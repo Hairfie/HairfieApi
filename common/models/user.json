@@ -20,7 +20,10 @@
         },
         "picture": {
             "type": "string"
-        },
+        }
+    },
+    "validations": [],
+    "relations": {
         "accessTokens": {
             "type": "hasMany",
             "model": "accessToken",
@@ -37,8 +40,6 @@
             "foreignKey": "userId"
         }
     },
-    "validations": [],
-    "relations": {},
     "acls": [
         {
             "accessType": "EXECUTE",
