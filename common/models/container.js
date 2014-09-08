@@ -41,6 +41,11 @@ module.exports = function (Container) {
         Container.getFile = function (container, file, cb) {
             oldGetFile(Container.prefixName(container), file, cb);
         };
+
+        var oldDownload = Container.download;
+        Container.download = function (container, file, cb) {
+            oldDownload(Container.prefixName(container), file, cb);
+        };
     });
 
     // @todo As soon as we can override non-scalar values in env
