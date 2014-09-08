@@ -143,23 +143,17 @@ module.exports = function(Business) {
                 });
     };
 
-    Business.setup = function() {
-        Business.base.setup.apply(this, arguments);
-
-        this.remoteMethod('nearby', {
-            description: 'Find nearby locations around you',
-            accepts: [
-                {arg: 'here', type: 'GeoPoint', required: true, description: 'geo location:lng,lat. For ex : 2.30,48.87'},
-                {arg: 'query', type: 'String', description: 'plain text search'},
-                {arg: 'page', type: 'Number', description: 'number of pages (page size defined by limit)'},
-                {arg: 'limit', type: 'Number', description: 'number of businesss to get, default=10'}
-            ],
-            returns: {arg: 'businesses', root: true},
-            http: { verb: 'GET' }
-        });
-    };
-
-    Business.setup();
+    Business.remoteMethod('nearby', {
+        description: 'Find nearby locations around you',
+        accepts: [
+            {arg: 'here', type: 'GeoPoint', required: true, description: 'geo location:lng,lat. For ex : 2.30,48.87'},
+            {arg: 'query', type: 'String', description: 'plain text search'},
+            {arg: 'page', type: 'Number', description: 'number of pages (page size defined by limit)'},
+            {arg: 'limit', type: 'Number', description: 'number of businesss to get, default=10'}
+        ],
+        returns: {arg: 'businesses', root: true},
+        http: { verb: 'GET' }
+    });
 
     Business.beforeRemote('**', function(ctx, business, next) {
         if(ctx.methodString == 'Business.find') {
