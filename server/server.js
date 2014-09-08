@@ -26,9 +26,18 @@ try {
 }
 
 // request pre-processing middleware
-app.use(loopback.token({
-    model: app.models.AccessToken
-}));
+//app.use(loopback.token({
+//    model: app.models.AccessToken
+//}));
+app.use(function (req, res, next) {
+    // temporary replace token middleware
+    if (req.accessToken) return next();
+
+    app.models.accessToken.findForRequest(req, {}, function(err, token) {
+      req.accessToken = token || null;
+      next(err);
+    });
+});
 app.use(loopback.compress());
 app.use(loopback.urlencoded());
 app.use(loopback.json());
