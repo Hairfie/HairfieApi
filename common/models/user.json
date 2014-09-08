@@ -42,6 +42,13 @@
     },
     "acls": [
         {
+            "accessType": "READ",
+            "permission": "ALLOW",
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "property": "findById"
+        },
+        {
             "accessType": "EXECUTE",
             "permission": "ALLOW",
             "principalType": "ROLE",

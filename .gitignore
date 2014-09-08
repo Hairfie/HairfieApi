@@ -6,6 +6,8 @@ server/auth-providers.json
 
 server/seed/export.json
 
+nodemon.json
+
 var/storage/*
 !var/storage/.gitkeep
 
