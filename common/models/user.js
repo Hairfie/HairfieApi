@@ -4,6 +4,16 @@ var md5 = require('MD5');
 var Q = require('q');
 
 module.exports = function(User) {
+    User.definition.settings.virtuals = {
+        pictureUrl: function (user) {
+            if(user.picture.indexOf("http") == 0) {
+                return user.picture;
+            } else {
+                return User.app.get('url')+'/api/containers/user-profile-picture/download/'+user.picture;
+            }
+        }
+    };
+
     User.validatesInclusionOf('gender', {in: ['male', 'female']});
 
     User.beforeSave = function(next, user) {
