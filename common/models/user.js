@@ -9,7 +9,7 @@ module.exports = function(User) {
             if(user.picture && user.picture.indexOf("http") == 0) {
                 return user.picture;
             } else {
-                return User.app.get('url')+'/api/containers/user-profile-picture/download/'+user.picture;
+                return User.app.get('url')+'/api/containers/user-profile-pictures/download/'+user.picture;
             }
         }
     };
