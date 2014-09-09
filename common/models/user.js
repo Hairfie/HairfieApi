@@ -5,12 +5,8 @@ var Q = require('q');
 
 module.exports = function(User) {
     User.definition.settings.virtuals = {
-        pictureUrl: function (user) {
-            if(user.picture && user.picture.indexOf("http") == 0) {
-                return user.picture;
-            } else {
-                return User.app.get('url')+'/api/containers/user-profile-pictures/download/'+user.picture;
-            }
+        picture: function (user) {
+            return User.getPictureObj(user);
         }
     };
 
@@ -78,11 +74,11 @@ module.exports = function(User) {
 
     User.prototype.getFullEmail = function () {
         return this.getFullName()+ ' <'+this.email+'>';
-    }
+    };
 
     User.prototype.getFullName = function () {
         return this.firstName+' '+this.lastName;
-    }
+    };
 
     User.getShortUser = function (id) {
         var deferred = Q.defer();
@@ -92,9 +88,10 @@ module.exports = function(User) {
 
             if (user) {
                 deferred.resolve({
-                    id: user.id,
+                    id       : user.id,
                     firstName: user.firstName,
-                    lastName:  user.lastName
+                    lastName : user.lastName,
+                    picture  : User.getPictureObj(user)
                 });
             } else {
                 deferred.resolve(null);
@@ -102,5 +99,15 @@ module.exports = function(User) {
         });
 
         return deferred.promise;
-    }
+    };
+
+    User.getPictureObj = function (user) {
+        if (user.picture && user.picture.indexOf('http') == 0) {
+            return {publicUrl: user.picture};
+        }
+
+        var picture = new Picture(user.picture, 'user-profile-pictures', User.app.get('url'));
+
+        return picture.publicObject();
+    };
 }

@@ -34,8 +34,8 @@ app.use(function (req, res, next) {
     if (req.accessToken) return next();
 
     app.models.accessToken.findForRequest(req, {}, function(err, token) {
-      req.accessToken = token || null;
-      next(err);
+        req.accessToken = token || null;
+        next(err);
     });
 });
 app.use(loopback.compress());

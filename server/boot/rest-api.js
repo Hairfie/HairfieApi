@@ -53,17 +53,21 @@ function addVirtuals(Model, record) {
     var promises = [];
 
     for (var property in virtuals) if (virtuals.hasOwnProperty(property)) {
-        promises.push(function (record) {
-            return Promise(virtuals[property](record))
-                .then(function (value) {
-                    record[property] =  value;
-                    return record;
-                });
-        });
+        promises.push(createVirtualPromise(property, virtuals[property]));
     }
 
     // @todo optimize (// processing?)
     return Promise.sequence(promises, record);
+}
+
+function createVirtualPromise(property, func) {
+    return function (record) {
+        return Promise(func(record))
+            .then(function (value) {
+                record[property] =  value;
+                return record;
+            });
+    };
 }
 
 function removeHidden(Model, record) {
