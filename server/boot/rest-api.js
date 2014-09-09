@@ -1,3 +1,7 @@
+'use strict';
+
+var Promise = require('../../common/utils/Promise');
+
 module.exports = function mountRestApi(server) {
     var restApiRoot = server.get('restApiRoot');
     server.use(restApiRoot, server.loopback.rest());
@@ -6,44 +10,70 @@ module.exports = function mountRestApi(server) {
 
     // apply virtual & hidden properties config
     remotes.after('**', function (ctx, next, method) {
+        if (!ctx.result) next();
         var Model = method.ctor;
 
-        if (ctx.result) {
-            if (Array.isArray(ctx.result)) {
-                ctx.result.forEach(function (record) {
-                    if (isModelRecord(Model, record)) {
-                        addVirtuals(Model, record);
-                        removeHidden(Model, record);
-                    }
-                });
-            } else {
-                if (isModelRecord(Model, ctx.result)) removeHidden(Model, addVirtuals(Model, ctx.result));
-            }
-        }
-
-        next();
+        processResult(Model, ctx.result)
+            .then(
+                function (result) { ctx.result = result; next(); },
+                function (error) { next(error); }
+            );
     });
 };
 
-function isModelRecord(Model, record) {
-    if(record.constructor.definition) {
-        return Model.definition.name == record.constructor.definition.name;
-    } else {
-        return Model.definition._ids.every(function (id) {
-            return !! record[id.name];
+function processResult(Model, result) {
+    if (Array.isArray(result)) {
+        return Promise.map(result, function (record) {
+            return processResult(Model, record);
         });
     }
+
+    return isModelRecord(Model, result)
+        .then(function (isModelRecord) {
+            if (!isModelRecord) return result;
+
+            return Promise(result.toObject())
+                .then(function (record) { return addVirtuals(Model, record); })
+                .then(function (record) { return removeHidden(Model, record); });
+        });
+}
+
+function isModelRecord(Model, record) {
+    if(record.constructor.definition) {
+        return Promise(Model.definition.name == record.constructor.definition.name);
+    }
+
+    return Promise(Model.definition._ids.every(function (id) {
+        return !! record[id.name];
+    }));
 }
 
 function addVirtuals(Model, record) {
     var virtuals = Model.definition.settings.virtuals || {};
+    var promises = [];
+
     for (var property in virtuals) if (virtuals.hasOwnProperty(property)) {
-        record[property] = virtuals[property](record);
+        promises.push(createVirtualPromise(property, virtuals[property]));
     }
+
+    // @todo optimize (// processing?)
+    return Promise.sequence(promises, record);
+}
+
+function createVirtualPromise(property, func) {
+    return function (record) {
+        return Promise(func(record))
+            .then(function (value) {
+                record[property] =  value;
+                return record;
+            });
+    };
 }
 
 function removeHidden(Model, record) {
     for (var property in record) if (Model.isHiddenProperty(property)) {
         delete record[property];
     }
+
+    return Promise(record);
 }

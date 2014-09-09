@@ -13,7 +13,7 @@
         "description": {
             "type": "string"
         },
-        "salonId": {
+        "businessId": {
             "type": "string"
         },
         "price": {
