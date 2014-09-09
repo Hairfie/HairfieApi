@@ -2,7 +2,7 @@
 
 var async = require('async');
 var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
-var Promise = require('../../common/utils/promise');
+var Promise = require('../../common/utils/Promise');
 
 module.exports = function(Business) {
     Business.definition.settings.hidden = ['diane_data', 'pj_data', 'city', 'zipcode', 'street'];

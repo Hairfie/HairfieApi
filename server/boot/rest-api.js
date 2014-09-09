@@ -1,6 +1,6 @@
 'use strict';
 
-var Promise = require('../../common/utils/promise');
+var Promise = require('../../common/utils/Promise');
 
 module.exports = function mountRestApi(server) {
     var restApiRoot = server.get('restApiRoot');

@@ -1,7 +1,7 @@
 'use strict';
 
 var md5 = require('MD5');
-var Promise = require('../../common/utils/promise');
+var Promise = require('../../common/utils/Promise');
 
 module.exports = function(User) {
     User.definition.settings.virtuals = {
