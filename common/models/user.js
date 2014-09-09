@@ -83,4 +83,24 @@ module.exports = function(User) {
     User.prototype.getFullName = function () {
         return this.firstName+' '+this.lastName;
     }
+
+    User.getShortUser = function (id) {
+        var deferred = Q.defer();
+
+        User.findById(id, function (error, user) {
+            if (error) return deferred.reject(error);
+
+            if (user) {
+                deferred.resolve({
+                    id: user.id,
+                    firstName: user.firstName,
+                    lastName:  user.lastName
+                });
+            } else {
+                deferred.resolve(null);
+            }
+        });
+
+        return deferred.promise;
+    }
 }

@@ -1,10 +1,14 @@
 'use strict';
 
 module.exports = function (Hairfie) {
+    Hairfie.definition.settings.hidden = ['userId'];
     Hairfie.definition.settings.virtuals = {
         pictureObj: function (hairfie) {
             var picture = new Picture(hairfie.picture, "hairfies", Hairfie.app.get('url'));
             return picture.publicObject();
+        },
+        user: function (hairfie) {
+            return Hairfie.app.models.user.getShortUser(hairfie.userId);
         }
     };
 
