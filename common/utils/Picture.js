@@ -5,7 +5,7 @@ function Picture(picture, container, appUrl) {
 }
 
 Picture.prototype.publicObject = function() {
-    if(this.picture.indexOf("http") == 0) {
+    if(this.picture && this.picture.indexOf("http") == 0) {
         var publicUrl = this.picture;
     } else {
         var publicUrl = this.appUrl + '/api/containers/' + this.container + '/download/' + this.picture;
