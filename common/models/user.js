@@ -1,7 +1,7 @@
 'use strict';
 
 var md5 = require('MD5');
-var Q = require('q');
+var Promise = require('../../common/utils/promise');
 
 module.exports = function(User) {
     User.definition.settings.virtuals = {
@@ -81,7 +81,7 @@ module.exports = function(User) {
     };
 
     User.getShortUser = function (id) {
-        var deferred = Q.defer();
+        var deferred = Promise.defer();
 
         User.findById(id, function (error, user) {
             if (error) return deferred.reject(error);

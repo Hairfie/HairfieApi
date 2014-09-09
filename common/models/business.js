@@ -2,7 +2,7 @@
 
 var async = require('async');
 var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
-var Q = require('q');
+var Promise = require('../../common/utils/promise');
 
 module.exports = function(Business) {
     Business.definition.settings.hidden = ['diane_data', 'pj_data', 'city', 'zipcode', 'street'];
@@ -166,4 +166,22 @@ module.exports = function(Business) {
         next();
     });
 
+    Business.getShortBusiness = function (businessId) {
+        var deferred = Promise.defer();
+
+        Business.findById(businessId, function (error, business) {
+            if (error) return deferred.reject(error);
+
+            if (business) {
+                deferred.resolve({
+                    id  : business.id,
+                    name: business.name,
+                });
+            } else {
+                deferred.resolve(null);
+            }
+        });
+
+        return deferred.promise;
+    };
 };
