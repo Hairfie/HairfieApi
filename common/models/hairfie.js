@@ -2,8 +2,9 @@
 
 module.exports = function (Hairfie) {
     Hairfie.definition.settings.virtuals = {
-        pictureUrl: function (hairfie) {
-            return Hairfie.app.get('url')+'/api/containers/hairfies/download/'+hairfie.picture;
+        pictureObj: function (hairfie) {
+            var picture = new Picture(hairfie.picture, "hairfies", Hairfie.app.get('url'));
+            return picture.publicObject();
         }
     };
 
