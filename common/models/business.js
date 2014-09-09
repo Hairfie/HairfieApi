@@ -118,6 +118,33 @@ module.exports = function(Business) {
         ;
     }
 
+    Business.similar = function (businessId, limit, callback) {
+        var limit = limit || 10;
+        if (limit  > 20) return callback('limit must be <= 20');
+
+        Business.findById(businessId, function (error, business) {
+            if (error) return callback(error);
+            if (!business) return callback('business not found');
+
+            // @todo handle the case the business has no location
+            if (!business.gps) return callback('business has no location');
+
+            Business.find({
+                where: {
+                    // @todo use a not equal id in query
+                    gps: {near: business.gps, maxDistance: 1000},
+                },
+                limit: limit + 1
+            }, function (error, businesses) {
+                if (error) return callback(error);
+
+                var businesses = businesses.filter(function (business) { return business.id != businessId; });
+
+                callback(null, businesses);
+            });
+        });
+    };
+
     // Google Maps API has a rate limit of 10 requests per second
     // Seems we need to enforce a lower rate to prevent errors
     var lookupGeo = require('function-rate-limit')(5, 1000, function() {
@@ -153,6 +180,16 @@ module.exports = function(Business) {
         ],
         returns: {arg: 'businesses', root: true},
         http: { verb: 'GET' }
+    });
+
+    Business.remoteMethod('similar', {
+        description: 'Find similar businesses',
+        accepts: [
+            {arg: 'businessId', type: 'ObjectId', description: 'ID of the reference business'},
+            {arg: 'limit', type: 'Number', description: 'number of businesss to get, default=10'}
+        ],
+        returns: {arg: 'businesses', root: true},
+        http: { verb: 'GET', path: '/:businessId/similar' }
     });
 
     Business.beforeRemote('**', function(ctx, business, next) {

@@ -32,7 +32,10 @@ function processResult(Model, result) {
         .then(function (isModelRecord) {
             if (!isModelRecord) return result;
 
-            return Promise(result.toObject())
+            var record = result;
+            if (record.toObject) record = record.toObject();
+
+            return Promise(record)
                 .then(function (record) { return addVirtuals(Model, record); })
                 .then(function (record) { return removeHidden(Model, record); });
         });
