@@ -26,9 +26,13 @@ module.exports = function mountRestApi(server) {
 };
 
 function isModelRecord(Model, record) {
-    return Model.definition._ids.every(function (id) {
-        return !! record[id.name];
-    });
+    if(record.constructor.definition) {
+        return Model.definition.name == record.constructor.definition.name;
+    } else {
+        return Model.definition._ids.every(function (id) {
+            return !! record[id.name];
+        });
+    }
 }
 
 function addVirtuals(Model, record) {
