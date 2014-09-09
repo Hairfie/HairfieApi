@@ -42,7 +42,9 @@ function processResult(Model, result) {
 }
 
 function isModelRecord(Model, record) {
-    if(record.constructor.definition) {
+    if(!record) return Promise(false);
+
+    if(record.constructor && record.constructor.definition) {
         return Promise(Model.definition.name == record.constructor.definition.name);
     }
 
