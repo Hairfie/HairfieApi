@@ -2,7 +2,7 @@
     "name": "Hairfie",
     "plural": "Hairfies",
     "properties": {
-        "image": {
+        "picture": {
             "type": "string",
             "required": true
         },

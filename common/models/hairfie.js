@@ -2,12 +2,12 @@
 
 module.exports = function (Hairfie) {
     Hairfie.definition.settings.virtuals = {
-        publicUrl: function (hairfie) {
-            return Hairfie.app.get('url')+'/api/containers/hairfies/download/'+hairfie.image;
+        pictureUrl: function (hairfie) {
+            return Hairfie.app.get('url')+'/api/containers/hairfies/download/'+hairfie.picture;
         }
     };
 
-    Hairfie.validatesUniquenessOf('image');
+    Hairfie.validatesUniquenessOf('picture');
     Hairfie.validate('price', function (onError) {
         // validate structure
         if (undefined == this.price) return;
@@ -21,11 +21,11 @@ module.exports = function (Hairfie) {
         // validate currency
         if (this.price.currency != 'EUR') return onError();
     });
-    Hairfie.validateAsync('image', function (onError, onDone) {
-        var image = this.image;
+    Hairfie.validateAsync('picture', function (onError, onDone) {
+        var picture = this.picture;
 
         Hairfie.getApp(function (_, app) {
-            app.models.container.getFile('hairfies', image, function (_, file) {
+            app.models.container.getFile('hairfies', picture, function (_, file) {
                 if (!file) onError();
                 onDone();
             });
