@@ -4,6 +4,8 @@ var IncomingForm = require('formidable');
 var StringDecoder = require('string_decoder').StringDecoder;
 var md5 = require('MD5');
 var crypto = require('crypto');
+var fs = require('fs')
+  , gm = require('gm');
 
 module.exports = function (Container) {
 
@@ -36,9 +38,26 @@ module.exports = function (Container) {
             http: {verb: 'post', path: '/:container/upload'}
         });
 
+        Container.download = function (container, file, width, height, res, cb) {
+            var client = Container.dataSource.connector.client;
+            download(client, null, res, container, file, width, height, cb);
+        };
+
+        Container.remoteMethod('download', {
+            accepts: [
+                {arg: 'container', type: 'string', 'http': {source: 'path'}},
+                {arg: 'file', type: 'string', 'http': {source: 'path'}},
+                {arg: 'width', type: 'String', description: 'Desired width'},
+                {arg: 'height', type: 'String', description: 'Desired height'},
+                {arg: 'res', type: 'object', 'http': {source: 'res'}}
+            ],
+            http: {verb: 'get', path: '/:container/download/:file'}
+        });
+
 
         var oldGetFile = Container.getFile;
         Container.getFile = function (container, file, cb) {
+            console.log("getFile");
             oldGetFile(Container.prefixName(container), file, cb);
         };
     });
@@ -51,12 +70,6 @@ module.exports = function (Container) {
         } else if (ctx.args.container) {
             ctx.args.container = Container.prefixName(ctx.args.container);
         }
-        next();
-    });
-
-    Container.afterRemote('*', function (ctx, _, next) {
-        console.log("Result :")
-        console.log(JSON.stringify(ctx.result));
         next();
     });
 
@@ -144,5 +157,30 @@ function upload(provider, req, res, container, cb) {
             console.error(err);
         }
         cb && cb(err, {files: files, fields: fields});
+    });
+}
+
+function download (provider, req, res, container, file, width, height, cb) {
+    var reader = provider.download({
+        container: container || req && req.params.container,
+        remote: file || req && req.params.file
+    });
+    res.type(file);
+
+    if(width || height) {
+        gm(reader, 'img.jpg')
+        .options({imageMagick: true})
+        .resize(width, height)
+        .stream(function (err, stdout, stderr) {
+            if(err) res.status(500).send({ error: err });
+            stdout.pipe(res);
+        });
+    } else {
+        reader.pipe(res);
+    }
+
+    reader.on('error', function (err) {
+        res.type('application/json');
+        res.status(500).send({ error: err });
     });
 }
