@@ -45,7 +45,7 @@
             "accessType": "READ",
             "permission": "ALLOW",
             "principalType": "ROLE",
-            "principalId": "$everyone",
+            "principalId": "$owner",
             "property": "findById"
         },
         {
