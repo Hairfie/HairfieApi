@@ -51,15 +51,9 @@ module.exports = function (Hairfie) {
         });
     }, {message: 'exists'});
     Hairfie.validateAsync('businessId', function (onError, onDone) {
-        var businessId = this.businessId;
-
-        if (undefined == businessId) return onDone();
-
-        Hairfie.getApp(function (_, app) {
-            app.models.Business.exists(businessId, function (_, exists) {
-                if (!exists) onError();
-                onDone();
-            });
+        this.business(function (error, business) {
+            if (error || !business) onError();
+            onDone();
         });
     }, {message: 'exists'});
 
