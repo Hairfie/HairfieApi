@@ -1,0 +1,47 @@
+{
+    "name": "BusinessReview",
+    "plural": "BusinessReviews",
+    "properties": {
+        "businessId": {
+            "type": "string",
+            "index": "true",
+            "required": true
+        },
+        "userId": {
+            "type": "string",
+            "index": "true",
+            "required": true
+        },
+        "rating": {
+            "type": "number",
+            "index": "true",
+            "required": true
+        },
+        "comment": {
+            "type": "string",
+            "index": "true",
+            "required": true
+        }
+    },
+    "validations": [],
+    "relations": {
+        "business": {
+            "type": "belongsTo",
+            "model": "Business",
+            "foreignKey": "businessId"
+        },
+        "user": {
+            "type": "belongsTo",
+            "model": "user",
+            "foreignKey": "userId"
+        }
+    },
+    "acls": [],
+    "methods": [],
+    "options": {
+        "sharedMethodNames": ["create", "find", "findById"],
+        "mongodb": {
+            "collection": "businessReviews"
+        }
+    }
+}
