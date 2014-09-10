@@ -28,57 +28,13 @@ function processResult(Model, result) {
         });
     }
 
-    return isModelRecord(Model, result)
-        .then(function (isModelRecord) {
-            if (!isModelRecord) return result;
-
-            var record = result;
-            if (record.toObject) record = record.toObject();
-
-            return Promise(record)
-                .then(function (record) { return addVirtuals(Model, record); })
-                .then(function (record) { return removeHidden(Model, record); });
-        });
-}
-
-function isModelRecord(Model, record) {
-    if(!record) return Promise(false);
-
-    if(record.constructor && record.constructor.definition) {
-        return Promise(Model.definition.name == record.constructor.definition.name);
+    if (result.toRemoteObject) {
+        return Promise(result.toRemoteObject());
     }
 
-    return Promise(Model.definition._ids.every(function (id) {
-        return !! record[id.name];
-    }));
-}
-
-function addVirtuals(Model, record) {
-    var virtuals = Model.definition.settings.virtuals || {};
-    var promises = [];
-
-    for (var property in virtuals) if (virtuals.hasOwnProperty(property)) {
-        promises.push(createVirtualPromise(property, virtuals[property]));
+    if (result.toObject) {
+        return Promise(result.toObject());
     }
 
-    // @todo optimize (// processing?)
-    return Promise.sequence(promises, record);
-}
-
-function createVirtualPromise(property, func) {
-    return function (record) {
-        return Promise(func(record))
-            .then(function (value) {
-                record[property] =  value;
-                return record;
-            });
-    };
-}
-
-function removeHidden(Model, record) {
-    for (var property in record) if (Model.isHiddenProperty(property)) {
-        delete record[property];
-    }
-
-    return Promise(record);
+    return Promise(result);
 }
