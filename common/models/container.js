@@ -8,10 +8,16 @@ var fs = require('fs')
   , gm = require('gm');
 
 module.exports = function (Container) {
+    Container.definition.settings.sharedMethodNames = ['download', 'upload'];
 
     Container.prefixName = function (name) { throw Error('Not initialized'); };
 
     Container.on('attached', function (app) {
+        // remove useless methods
+        Container.createContainer.shared = false;
+        Container.getContainers.shared = false;
+        Container.getContainer.shared = false;
+        Container.getFiles.shared = false;
 
         Container.prefixName = function (name) {
             return ['hairfie', app.get('env'), name].join('-');
