@@ -1,7 +1,31 @@
 'use strict';
 
+var Promise = require('../../common/utils/Promise');
+
 module.exports = function (Hairfie) {
     Hairfie.definition.settings.hidden = ['userId', 'businessId'];
+
+    Hairfie.prototype.toRemoteObject = function () {
+        var self = this;
+
+        return Promise.spread(
+            [
+                self.user ? Promise.ninvoke(self.user) : null,
+                self.business ? Promise.ninvoke(self.business) : null
+            ],
+            function (user, business) {
+                return {
+                    id          : self.id,
+                    picture     : Hairfie.getPictureObject(self),
+                    price       : self.price,
+                    description : self.description,
+                    user        : user ? user.toRemoteShortObject() : null,
+                    business    : business ? business.toRemoteShortObject() : null
+                }
+            }
+        );
+    };
+
     Hairfie.definition.settings.virtuals = {
         picture: function (hairfie) {
             return Hairfie.getPictureObject(hairfie);

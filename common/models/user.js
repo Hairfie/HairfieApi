@@ -5,10 +5,19 @@ var Promise = require('../../common/utils/Promise');
 var Q = require('q');
 
 module.exports = function(User) {
-    User.definition.settings.virtuals = {
-        picture: function (user) {
-            return User.getPictureObj(user);
-        }
+    User.prototype.toRemoteObject = function () {
+        var user = this.toRemoteShortObject();
+        user.newsletter = this.newsletter;
+    };
+
+    User.prototype.toRemoteShortObject = function () {
+        return {
+            id          : this.id,
+            gender      : this.gender,
+            firstName   : this.firstName,
+            lastName    : this.lastName,
+            picture     : User.getPictureObj(this)
+        };
     };
 
     User.validatesInclusionOf('gender', {in: ['male', 'female']});
@@ -21,7 +30,7 @@ module.exports = function(User) {
     User.afterSave = function (next) {
         var user = this;
 
-        Q.denodeify(User.getApp.bind(User))()
+        Promise.denodeify(User.getApp.bind(User))()
             .then(function (app) {
                 return app.models.email.welcomeUser(user)
             })
@@ -79,27 +88,6 @@ module.exports = function(User) {
 
     User.prototype.getFullName = function () {
         return this.firstName+' '+this.lastName;
-    };
-
-    User.getShortUser = function (id) {
-        var deferred = Promise.defer();
-
-        User.findById(id, function (error, user) {
-            if (error) return deferred.reject(error);
-
-            if (user) {
-                deferred.resolve({
-                    id       : user.id,
-                    firstName: user.firstName,
-                    lastName : user.lastName,
-                    picture  : User.getPictureObj(user)
-                });
-            } else {
-                deferred.resolve(null);
-            }
-        });
-
-        return deferred.promise;
     };
 
     User.getPictureObj = function (user) {

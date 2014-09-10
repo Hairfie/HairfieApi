@@ -7,6 +7,31 @@ var Promise = require('../../common/utils/Promise');
 module.exports = function(Business) {
     Business.definition.settings.hidden = ['diane_data', 'pj_data', 'city', 'zipcode', 'street'];
 
+    Business.prototype.toRemoteObject = function () {
+        return {
+            id              : this.id,
+            name            : this.name,
+            gps             : this.gps,
+            phoneNumbers    : this.phone_numbers,
+            timetable       : this.timetables || {},
+            address         : {
+                street  : this.street ? this.street.upperFirst() : '',
+                zipcode : this.zipcode,
+                city    : this.city ? this.city.upperFirst() : ''
+            },
+            pictures        : [GeoPoint(this.gps).streetViewPic()],
+            thumbnail       : GeoPoint(this.gps).streetViewPic(),
+            distance        : this.distance
+        }
+    };
+
+    Business.prototype.toRemoteShortObject = function () {
+        return {
+            id      : this.id,
+            name    : this.name
+        };
+    };
+
     Business.afterSave = function (next) {
       var business = this;
 
@@ -30,35 +55,13 @@ module.exports = function(Business) {
         next();
     };
 
-    Business.definition.settings.virtuals = {
-        timetables: function (obj) {
-            return obj.timetables ? obj.timetables : {};
-        },
-        address: function(obj) {
-          return {
-            street: obj.street ? obj.street.upperFirst() : '',
-            zipcode: obj.zipcode,
-            city: obj.city ? obj.city.upperFirst() : ''
-          };
-        },
-        pictures: function(obj) {
-          var gps = GeoPoint(obj.gps);
-          return [gps.streetViewPic()];
-        },
-        thumb: function(obj) {
-          var gps = GeoPoint(obj.gps);
-          return gps.streetViewPic(120, 140);
-        }
-    };
-
     Business.nearby = function(here, query, page, limit, callback) {
         var maxDistance = 1000,
             here        = GeoPoint(here),
             page        = page || 0,
             limit       = limit || 10;
 
-
-        Q.denodeify(Business.getApp.bind(Business))()
+        Promise.denodeify(Business.getApp.bind(Business))()
             .then(function (app) {
                 var searchEngine = app.models.SearchEngine;
 
@@ -103,7 +106,7 @@ module.exports = function(Business) {
                     distances[hit._id] = Math.round(hit.sort[0]);
                 });
 
-                return Q.denodeify(Business.findByIds.bind(Business))(ids)
+                return Promise.denodeify(Business.findByIds.bind(Business))(ids)
                     .then(function (businesses) {
                         // add distance to businesses
                         return businesses.map(function (business) {
@@ -202,23 +205,4 @@ module.exports = function(Business) {
         }
         next();
     });
-
-    Business.getShortBusiness = function (businessId) {
-        var deferred = Promise.defer();
-
-        Business.findById(businessId, function (error, business) {
-            if (error) return deferred.reject(error);
-
-            if (business) {
-                deferred.resolve({
-                    id  : business.id,
-                    name: business.name,
-                });
-            } else {
-                deferred.resolve(null);
-            }
-        });
-
-        return deferred.promise;
-    };
 };
