@@ -30,7 +30,7 @@
         },
         "business": {
             "type": "belongsTo",
-            "model": "business",
+            "model": "Business",
             "foreignKey": "businessId"
         }
     },

@@ -6,13 +6,12 @@ module.exports = function (Hairfie) {
     Hairfie.definition.settings.sharedMethodNames = ['find', 'findById', 'create'];
 
     Hairfie.prototype.toRemoteObject = function () {
-        var self = this,
-            app  = Hairfie.app;
+        var self = this;
 
         return Promise.spread(
             [
-                Promise.ninvoke(app.models.user, 'findById', self.userId),
-                Promise.ninvoke(app.models.Business, 'findById', self.businessId)
+                Promise.ninvoke(self.user),
+                Promise.ninvoke(self.business)
             ],
             function (user, business) {
                 return {
