@@ -28,7 +28,12 @@ module.exports = function(Business) {
     Business.prototype.toRemoteShortObject = function () {
         return {
             id      : this.id,
-            name    : this.name
+            name    : this.name,
+            address         : {
+                street  : this.street ? this.street.upperFirst() : '',
+                zipcode : this.zipcode,
+                city    : this.city ? this.city.upperFirst() : ''
+            }
         };
     };
 
