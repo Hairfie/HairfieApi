@@ -44,11 +44,15 @@
         }
     },
     "validations": [],
-    "relations": {},
     "acls": [],
     "methods": [],
     "plural": "Businesses",
     "options": {
+        "sharedMethodNames": [
+            "findById",
+            "nearby",
+            "similar"
+        ],
         "mongodb": {
             "collection": "businesses"
         }

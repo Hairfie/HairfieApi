@@ -5,8 +5,6 @@ var Promise = require('../../common/utils/Promise');
 var Q = require('q');
 
 module.exports = function(User) {
-    User.definition.settings.sharedMethodNames = ['create', 'findById'];
-
     User.prototype.toRemoteObject = function () {
         var user = this.toRemoteShortObject();
         user.newsletter = this.newsletter;

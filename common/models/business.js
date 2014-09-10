@@ -5,8 +5,6 @@ var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 var Promise = require('../../common/utils/Promise');
 
 module.exports = function(Business) {
-    Business.definition.settings.sharedMethodNames = ['findById', 'nearby', 'similar'];
-
     Business.prototype.toRemoteObject = function () {
         return {
             id              : this.id,
