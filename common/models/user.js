@@ -2,6 +2,7 @@
 
 var md5 = require('MD5');
 var Promise = require('../../common/utils/Promise');
+var Q = require('q');
 
 module.exports = function(User) {
     User.definition.settings.virtuals = {
