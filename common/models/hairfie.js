@@ -20,7 +20,9 @@ module.exports = function (Hairfie) {
                     price       : self.price,
                     description : self.description,
                     user        : user ? user.toRemoteShortObject() : null,
-                    business    : business ? business.toRemoteShortObject() : null
+                    business    : business ? business.toRemoteShortObject() : null,
+                    createdAt   : self.createdAt,
+                    updatedAt   : self.updatedAt
                 }
             }
         );

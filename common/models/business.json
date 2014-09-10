@@ -48,6 +48,7 @@
     "methods": [],
     "plural": "Businesses",
     "options": {
+        "timestampable": true,
         "sharedMethodNames": [
             "findById",
             "nearby",

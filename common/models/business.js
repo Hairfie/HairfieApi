@@ -19,7 +19,9 @@ module.exports = function(Business) {
             },
             pictures        : [GeoPoint(this.gps).streetViewPic()],
             thumbnail       : GeoPoint(this.gps).streetViewPic(),
-            distance        : this.distance
+            distance        : this.distance,
+            createdAt       : this.createdAt,
+            updatedAt       : this.updatedAt
         }
     };
 

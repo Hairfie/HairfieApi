@@ -37,6 +37,7 @@
     "acls": [],
     "methods": [],
     "options": {
+        "timestampable": true,
         "mongodb": {
             "collection": "hairfies"
         }

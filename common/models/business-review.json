@@ -39,6 +39,7 @@
     "acls": [],
     "methods": [],
     "options": {
+        "timestampable": true,
         "sharedMethodNames": ["create", "find", "findById"],
         "mongodb": {
             "collection": "businessReviews"
