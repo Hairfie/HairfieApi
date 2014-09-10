@@ -13,7 +13,6 @@ module.exports = function (Container) {
     Container.prefixName = function (name) { throw Error('Not initialized'); };
 
     Container.on('attached', function (app) {
-
         Container.prefixName = function (name) {
             return ['hairfie', app.get('env'), name].join('-');
         };

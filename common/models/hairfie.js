@@ -3,7 +3,7 @@
 var Promise = require('../../common/utils/Promise');
 
 module.exports = function (Hairfie) {
-    Hairfie.definition.settings.hidden = ['userId', 'businessId'];
+    Hairfie.definition.settings.sharedMethodNames = ['find', 'findById', 'create'];
 
     Hairfie.prototype.toRemoteObject = function () {
         var self = this;
