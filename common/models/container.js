@@ -13,11 +13,6 @@ module.exports = function (Container) {
     Container.prefixName = function (name) { throw Error('Not initialized'); };
 
     Container.on('attached', function (app) {
-        // remove useless methods
-        Container.createContainer.shared = false;
-        Container.getContainers.shared = false;
-        Container.getContainer.shared = false;
-        Container.getFiles.shared = false;
 
         Container.prefixName = function (name) {
             return ['hairfie', app.get('env'), name].join('-');

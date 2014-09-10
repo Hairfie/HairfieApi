@@ -12,11 +12,20 @@ module.exports = function (server) {
 
         if (!names) continue;
 
-        Model.sharedClass.methods()
-            .map(function (method) { return method.name; })
-            .filter(function (name) { return -1 == names.indexOf(name); })
-            .map(function (name) {
+        // try shared class
+        Model.sharedClass.methods().map(function (method) {
+            var name = method.name;
+            if (-1 == names.indexOf(name)) {
                 (shared.find(name, true) || shared.find(name, false)).shared = false;
-            });
+            }
+        });
+
+        // and static class methods
+        for (var methodName in Model) {
+            var property = Model[methodName];
+            if ('function' == typeof property && property.shared) {
+                property.shared = false;
+            }
+        }
     }
 }
