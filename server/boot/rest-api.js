@@ -29,7 +29,7 @@ function processResult(Model, result) {
     }
 
     if (result.toRemoteObject) {
-        return Promise(result.toRemoteObject());
+        return Promise(result.toRemoteObject()).then(Promise.resolveDeep);
     }
 
     if (result.toObject) {

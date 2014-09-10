@@ -20,3 +20,20 @@ Promise.map = function (items, mapper) {
 Promise.sequence = function (funcs, initialVal) {
     return funcs.reduce(Promise.when, Promise(initialVal));
 };
+
+Promise.resolveDeep = function (obj) {
+    return Promise(obj).then(function (obj) {
+        if ('object' !== typeof obj) return obj;
+
+        var props = [];
+        for (var key in obj) if (obj.hasOwnProperty(key)) {
+            var prop = Promise
+                .all([key, Promise.resolveDeep(obj[key])])
+                .spread(function (k, v) { obj[k] = v; });
+
+            props.push(prop);
+        }
+
+        return Promise.all(props).then(function () { return obj; }, console.log);
+    });
+};

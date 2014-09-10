@@ -6,20 +6,32 @@ var Q = require('q');
 
 module.exports = function(User) {
     User.prototype.toRemoteObject = function () {
-        var user = this.toRemoteShortObject();
-        user.newsletter = this.newsletter;
+        var self = this;
 
-        return user;
+        return user.toRemoteShortObject()
+            .then(function (user) {
+                console.log(user);
+                user.newsletter = this.newsletter;
+
+                return user;
+            });
     };
 
     User.prototype.toRemoteShortObject = function () {
-        return {
-            id          : this.id,
-            gender      : this.gender,
-            firstName   : this.firstName,
-            lastName    : this.lastName,
-            picture     : User.getPictureObj(this)
-        };
+        var self    = this,
+            Hairfie = User.app.models.Hairfie;
+
+        return Promise.ninvoke(Hairfie, 'count', {userId: self.id})
+            .then(function (numHairfies) {
+                return {
+                    id          : self.id,
+                    gender      : self.gender,
+                    firstName   : self.firstName,
+                    lastName    : self.lastName,
+                    picture     : User.getPictureObj(self),
+                    numHairfies : numHairfies
+                }
+            }, console.log);
     };
 
     User.validatesInclusionOf('gender', {in: ['male', 'female']});
