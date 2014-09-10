@@ -8,6 +8,8 @@ module.exports = function(User) {
     User.prototype.toRemoteObject = function () {
         var user = this.toRemoteShortObject();
         user.newsletter = this.newsletter;
+
+        return user;
     };
 
     User.prototype.toRemoteShortObject = function () {
