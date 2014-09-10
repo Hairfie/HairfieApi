@@ -26,18 +26,6 @@ module.exports = function (Hairfie) {
         );
     };
 
-    Hairfie.definition.settings.virtuals = {
-        picture: function (hairfie) {
-            return Hairfie.getPictureObject(hairfie);
-        },
-        user: function (hairfie) {
-            return Hairfie.app.models.user.getShortUser(hairfie.userId);
-        },
-        business: function (hairfie) {
-            return Hairfie.app.models.Business.getShortBusiness(hairfie.businessId);
-        }
-    };
-
     Hairfie.validatesUniquenessOf('picture');
     Hairfie.validate('price', function (onError) {
         // validate structure
