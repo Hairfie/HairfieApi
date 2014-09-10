@@ -8,11 +8,11 @@ var fs = require('fs')
   , gm = require('gm');
 
 module.exports = function (Container) {
+    Container.definition.settings.sharedMethodNames = ['download', 'upload'];
 
     Container.prefixName = function (name) { throw Error('Not initialized'); };
 
     Container.on('attached', function (app) {
-
         Container.prefixName = function (name) {
             return ['hairfie', app.get('env'), name].join('-');
         };
