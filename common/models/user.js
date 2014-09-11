@@ -8,10 +8,10 @@ module.exports = function(User) {
     User.prototype.toRemoteObject = function () {
         var self = this;
 
-        return user.toRemoteShortObject()
+        return self.toRemoteShortObject()
             .then(function (user) {
                 console.log(user);
-                user.newsletter = this.newsletter;
+                user.newsletter = self.newsletter;
 
                 return user;
             });
