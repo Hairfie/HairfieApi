@@ -20,6 +20,7 @@ module.exports = function(Business) {
             pictures        : [GeoPoint(this.gps).streetViewPic()],
             thumbnail       : GeoPoint(this.gps).streetViewPic(),
             distance        : this.distance,
+            crossSell       : true,
             createdAt       : this.createdAt,
             updatedAt       : this.updatedAt
         }
