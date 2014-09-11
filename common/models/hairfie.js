@@ -57,6 +57,8 @@ module.exports = function (Hairfie) {
         });
     }, {message: 'exists'});
     Hairfie.validateAsync('businessId', function (onError, onDone) {
+        if (!this.businessId) return onDone(); // business is optional
+
         this.business(function (error, business) {
             if (error || !business) onError();
             onDone();
