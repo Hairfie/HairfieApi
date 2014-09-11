@@ -22,7 +22,11 @@ module.exports = function (Hairfie) {
                     user        : user ? user.toRemoteShortObject() : null,
                     business    : business ? business.toRemoteShortObject() : null,
                     createdAt   : self.createdAt,
-                    updatedAt   : self.updatedAt
+                    updatedAt   : self.updatedAt,
+
+                    // mocked properties
+                    numLikes    : 0,
+                    numComments : 0
                 }
             }
         );
