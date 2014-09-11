@@ -22,6 +22,8 @@ module.exports = function mountRestApi(server) {
 };
 
 function processResult(Model, result) {
+    if (null === result) return Promise(result);
+
     if (Array.isArray(result)) {
         return Promise.map(result, function (record) {
             return processResult(Model, record);
