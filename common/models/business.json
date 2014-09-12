@@ -31,7 +31,7 @@
         "phone_numbers": {
             "type": [
                 "string"
-                ]
+            ]
         },
         "diane_data": {
             "type": "object"
@@ -44,6 +44,7 @@
         }
     },
     "validations": [],
+    "relations": {},
     "acls": [],
     "methods": [],
     "plural": "Businesses",

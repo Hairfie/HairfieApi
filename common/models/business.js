@@ -6,6 +6,8 @@ var Promise = require('../../common/utils/Promise');
 
 module.exports = function(Business) {
     Business.prototype.toRemoteObject = function () {
+        var Hairfie = Business.app.models.Hairfie;
+
         return {
             id              : this.id,
             name            : this.name,
@@ -20,6 +22,7 @@ module.exports = function(Business) {
             pictures        : [GeoPoint(this.gps).streetViewPic()],
             thumbnail       : GeoPoint(this.gps).streetViewPic(),
             distance        : this.distance,
+            numHairfies     : Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
             crossSell       : true,
             createdAt       : this.createdAt,
             updatedAt       : this.updatedAt
