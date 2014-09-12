@@ -147,9 +147,12 @@ module.exports = function(Business) {
             }, function (error, businesses) {
                 if (error) return callback(error);
 
-                var businesses = businesses.filter(function (business) { return business.id != businessId; });
+                var businesses = businesses
+                    .filter(function (business) { return business.id != businessId; })
+                    // TODO: why not already Business instances?
+                    .map(function (business) { return new Business(business); });
 
-                callback(null, businesses.map(Business)); // TODO: why not already Business instances?
+                callback(null, businesses);
             });
         });
     };
