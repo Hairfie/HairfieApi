@@ -149,7 +149,7 @@ module.exports = function(Business) {
 
                 var businesses = businesses.filter(function (business) { return business.id != businessId; });
 
-                callback(null, businesses);
+                callback(null, businesses.map(Business)); // TODO: why not already Business instances?
             });
         });
     };
