@@ -35,7 +35,7 @@ module.exports = function (BusinessReview) {
 
     // reviews are associated to currently logged in user
     BusinessReview.beforeRemote('create', function (ctx, _, next) {
-        ctx.req.body.userId = ctx.req.accessToken.userId;
+        ctx.req.body.authorId = ctx.req.accessToken.userId;
         next();
     });
 };

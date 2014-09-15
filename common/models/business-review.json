@@ -7,7 +7,7 @@
             "index": "true",
             "required": true
         },
-        "userId": {
+        "authorId": {
             "type": "string",
             "index": "true",
             "required": true
@@ -30,10 +30,10 @@
             "model": "Business",
             "foreignKey": "businessId"
         },
-        "user": {
+        "author": {
             "type": "belongsTo",
             "model": "user",
-            "foreignKey": "userId"
+            "foreignKey": "authorId"
         }
     },
     "acls": [],

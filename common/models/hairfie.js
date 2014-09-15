@@ -63,7 +63,7 @@ module.exports = function (Hairfie) {
 
     // set user id from access token
     Hairfie.beforeRemote('create', function (ctx, _, next) {
-        ctx.req.body.userId = ctx.req.accessToken.userId;
+        ctx.req.body.authorId = ctx.req.accessToken.userId;
         next();
     });
 
