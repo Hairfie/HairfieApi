@@ -4,6 +4,29 @@ var Promise = require('../../common/utils/Promise');
 
 module.exports = function (Hairfie) {
 
+    Hairfie.prototype.toRemoteObject = function () {
+        var HairfieComment = Hairfie.app.models.HairfieComment;
+
+        return {
+            id          : this.id,
+            picture     : Hairfie.getPictureObject(this),
+            price       : this.price,
+            description : this.description,
+            author      : Promise.ninvoke(this.author).then(function (author) {
+                return author ? author.toRemoteShortObject() : null;
+            }),
+            business    : Promise.ninvoke(this.business).then(function (business) {
+                return business ? business.toRemoteShortObject() : null;
+            }),
+            numComments : Promise.ninvoke(HairfieComment, 'count', {hairfieId: this.id}),
+            createdAt   : this.createdAt,
+            updatedAt   : this.updatedAt,
+
+            // mocked properties
+            numLikes    : 0,
+        };
+    };
+
     Hairfie.validatesUniquenessOf('picture');
     Hairfie.validate('price', function (onError) {
         // validate structure
