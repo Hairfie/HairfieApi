@@ -42,6 +42,10 @@
         "dataSource": "hairfieMongo",
         "public": true
     },
+    "HairfieLike": {
+        "dataSource": "hairfieMongo",
+        "public": false
+    },
     "SearchEngine": {
         "dataSource": "searchEngine",
         "public": false

@@ -1,0 +1,37 @@
+{
+    "name": "HairfieLike",
+    "plural": "HairfieLikes",
+    "properties": {
+        "hairfieId": {
+            "type": "string",
+            "required": true,
+            "index": true
+        },
+        "userId": {
+            "type": "string",
+            "required": true,
+            "index": true
+        }
+    },
+    "validations": [],
+    "relations": {
+        "hairfie": {
+            "type": "belongsTo",
+            "model": "Hairfie",
+            "foreignKey": "hairfieId"
+        },
+        "user": {
+            "type": "belongsTo",
+            "model": "user",
+            "foreignKey": "authorId"
+        }
+    },
+    "acls": [],
+    "methods": [],
+    "options": {
+        "timestampable": true,
+        "mongodb": {
+            "collection": "hairfieLikes"
+        }
+    }
+}
