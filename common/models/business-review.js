@@ -4,25 +4,19 @@ var Promise = require('../../common/utils/Promise');
 
 module.exports = function (BusinessReview) {
     BusinessReview.prototype.toRemoteObject = function () {
-        var self = this;
-
-        return Promise.spread(
-            [
-                Promise.ninvoke(self.user),
-                Promise.ninvoke(self.business)
-            ],
-            function (user, business) {
-                return {
-                    id          : self.id,
-                    rating      : self.rating,
-                    comment     : self.comment,
-                    user        : user ? user.toRemoteShortObject() : null,
-                    business    : business ? business.toRemoteShortObject() : null,
-                    createdAt   : self.createdAt,
-                    updatedAt   : self.updatedAt
-                }
-            }
-        );
+        return {
+            id          : self.id,
+            rating      : self.rating,
+            comment     : self.comment,
+            author      : Promise.ninvoke(this.author).then(function (author) {
+                return author ? author.toRemoteShortObject() : null;
+            }),
+            business    : Promise.ninvoke(this.business).then(function (business) {
+                return business ? business.toRemoteShortObject() : null;
+            }),
+            createdAt   : self.createdAt,
+            updatedAt   : self.updatedAt
+        };
     };
 
     // @todo isn't there a way to automate this validation?
