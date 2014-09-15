@@ -1,0 +1,83 @@
+{
+    "name": "BusinessClaim",
+    "plural": "BusinessClaims",
+    "properties": {
+        "authorId": {
+            "type": "string",
+            "required": true
+        },
+        "businessId": {
+            "type": "string"
+        },
+        "authorRole": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string"
+        },
+        "street": {
+            "type": "string"
+        },
+        "city": {
+            "type": "string"
+        },
+        "zipCode": {
+            "type": "string"
+        },
+        "country": {
+            "type": "string"
+        },
+        "gps": {
+            "type": "GeoPoint"
+        },
+        "phoneNumber": {
+            "type": "string"
+        },
+        "pictures": {
+            "type": ["string"]
+        },
+        "description": {
+            "type": "string"
+        },
+        "timetable": {
+            "type": "object"
+        },
+        "prices": {
+            "type": [{
+                "label": "string",
+                "amount": "string",
+                "currency": "string"
+            }]
+        },
+        "men": {
+            "type": "boolean"
+        },
+        "women": {
+            "type": "boolean"
+        },
+        "children": {
+            "type": "boolean"
+        }
+    },
+    "validations": [],
+    "relations": {
+        "author": {
+            "type": "belongsTo",
+            "model": "user",
+            "foreignKey": "authorId"
+        },
+        "business": {
+            "type": "belongsTo",
+            "model": "Business",
+            "foreignKey": "businessId"
+        }
+    },
+    "acls": [],
+    "methods": [],
+    "options": {
+        "timestampable": true,
+        "mongodb": {
+            "collection": "businessClaims"
+        }
+    }
+}
