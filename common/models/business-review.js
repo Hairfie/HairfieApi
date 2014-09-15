@@ -5,17 +5,17 @@ var Promise = require('../../common/utils/Promise');
 module.exports = function (BusinessReview) {
     BusinessReview.prototype.toRemoteObject = function () {
         return {
-            id          : self.id,
-            rating      : self.rating,
-            comment     : self.comment,
+            id          : this.id,
+            rating      : this.rating,
+            comment     : this.comment,
             author      : Promise.ninvoke(this.author).then(function (author) {
                 return author ? author.toRemoteShortObject() : null;
             }),
             business    : Promise.ninvoke(this.business).then(function (business) {
                 return business ? business.toRemoteShortObject() : null;
             }),
-            createdAt   : self.createdAt,
-            updatedAt   : self.updatedAt
+            createdAt   : this.createdAt,
+            updatedAt   : this.updatedAt
         };
     };
 
