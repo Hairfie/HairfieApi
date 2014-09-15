@@ -18,20 +18,17 @@ module.exports = function(User) {
     };
 
     User.prototype.toRemoteShortObject = function () {
-        var self    = this,
-            Hairfie = User.app.models.Hairfie;
+        var Hairfie     = User.app.models.Hairfie,
+            numHairfies = Promise.ninvoke(Hairfie, 'count', {authorId: this.id});
 
-        return Promise.ninvoke(Hairfie, 'count', {userId: self.id})
-            .then(function (numHairfies) {
-                return {
-                    id          : self.id,
-                    gender      : self.gender,
-                    firstName   : self.firstName,
-                    lastName    : self.lastName,
-                    picture     : User.getPictureObj(self),
-                    numHairfies : numHairfies
-                }
-            }, console.log);
+        return {
+            id          : this.id,
+            gender      : this.gender,
+            firstName   : this.firstName,
+            lastName    : this.lastName,
+            picture     : User.getPictureObj(this),
+            numHairfies : numHairfies
+        };
     };
 
     User.validatesInclusionOf('gender', {in: ['male', 'female']});
