@@ -6,30 +6,26 @@ module.exports = function (Hairfie) {
     Hairfie.definition.settings.sharedMethodNames = ['find', 'findById', 'create'];
 
     Hairfie.prototype.toRemoteObject = function () {
-        var self = this;
+        var HairfieComment = Hairfie.app.models.HairfieComment;
 
-        return Promise.spread(
-            [
-                Promise.ninvoke(self.user),
-                Promise.ninvoke(self.business)
-            ],
-            function (user, business) {
-                return {
-                    id          : self.id,
-                    picture     : Hairfie.getPictureObject(self),
-                    price       : self.price,
-                    description : self.description,
-                    user        : user ? user.toRemoteShortObject() : null,
-                    business    : business ? business.toRemoteShortObject() : null,
-                    createdAt   : self.createdAt,
-                    updatedAt   : self.updatedAt,
+        return {
+            id          : this.id,
+            picture     : Hairfie.getPictureObject(this),
+            price       : this.price,
+            description : this.description,
+            user        : Promise.ninvoke(this.user).then(function (user) {
+                return user ? user.toRemoteShortObject() : null;
+            }),
+            business    : Promise.ninvoke(this.business).then(function (business) {
+                return business ? business.toRemoteShortObject() : null;
+            }),
+            numComments : Promise.ninvoke(HairfieComment, 'count', {hairfieId: this.id}),
+            createdAt   : this.createdAt,
+            updatedAt   : this.updatedAt,
 
-                    // mocked properties
-                    numLikes    : 0,
-                    numComments : 0
-                }
-            }
-        );
+            // mocked properties
+            numLikes    : 0,
+        };
     };
 
     Hairfie.validatesUniquenessOf('picture');
