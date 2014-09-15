@@ -38,6 +38,10 @@
         "dataSource": "hairfieMongo",
         "public": true
     },
+    "HairfieComment": {
+        "dataSource": "hairfieMongo",
+        "public": true
+    },
     "SearchEngine": {
         "dataSource": "searchEngine",
         "public": false
