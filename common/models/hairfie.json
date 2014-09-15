@@ -38,6 +38,7 @@
     "methods": [],
     "options": {
         "timestampable": true,
+        "sharedMethodNames": ["find", "findById", "create"],
         "mongodb": {
             "collection": "hairfies"
         }

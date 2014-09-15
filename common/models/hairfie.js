@@ -3,8 +3,6 @@
 var Promise = require('../../common/utils/Promise');
 
 module.exports = function (Hairfie) {
-    Hairfie.definition.settings.sharedMethodNames = ['find', 'findById', 'create'];
-
     Hairfie.prototype.toRemoteObject = function () {
         var HairfieComment = Hairfie.app.models.HairfieComment;
 
