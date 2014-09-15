@@ -6,7 +6,7 @@
             "type": "string",
             "required": true
         },
-        "userId": {
+        "authorId": {
             "type": "string",
             "required": true
         },
@@ -23,10 +23,10 @@
     },
     "validations": [],
     "relations": {
-        "user": {
+        "author": {
             "type": "belongsTo",
             "model": "user",
-            "foreignKey": "userId"
+            "foreignKey": "authorId"
         },
         "business": {
             "type": "belongsTo",

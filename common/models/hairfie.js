@@ -13,8 +13,8 @@ module.exports = function (Hairfie) {
             picture     : Hairfie.getPictureObject(this),
             price       : this.price,
             description : this.description,
-            user        : Promise.ninvoke(this.user).then(function (user) {
-                return user ? user.toRemoteShortObject() : null;
+            author      : Promise.ninvoke(this.author).then(function (author) {
+                return author ? author.toRemoteShortObject() : null;
             }),
             business    : Promise.ninvoke(this.business).then(function (business) {
                 return business ? business.toRemoteShortObject() : null;
