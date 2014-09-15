@@ -6,15 +6,10 @@ var Q = require('q');
 
 module.exports = function(User) {
     User.prototype.toRemoteObject = function () {
-        var self = this;
+        var user = this.toRemoteShortObject();
+        user.newsletter = this.newsletter;
 
-        return self.toRemoteShortObject()
-            .then(function (user) {
-                console.log(user);
-                user.newsletter = self.newsletter;
-
-                return user;
-            });
+        return user;
     };
 
     User.prototype.toRemoteShortObject = function () {
