@@ -22,6 +22,7 @@ module.exports = function(User) {
             firstName   : this.firstName,
             lastName    : this.lastName,
             picture     : User.getPictureObj(this),
+            phoneNumber : this.phoneNumber,
             numHairfies : numHairfies
         };
     };

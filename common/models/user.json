@@ -20,6 +20,9 @@
         },
         "picture": {
             "type": "string"
+        },
+        "phoneNumber": {
+            "type": "string"
         }
     },
     "validations": [],
