@@ -113,4 +113,73 @@ module.exports = function(User) {
 
         return picture.publicObject();
     };
+
+    User.likedHairfies = function (userId, limit, skip, callback) {
+        var Hairfie = User.app.models.Hairfie;
+
+        User.findById(userId, function (error, user) {
+            if (error) return callback(error);
+
+            Hairfie.likedByUser(user, limit, skip, function (error, hairfies) {
+                if (error) return callback(error);
+                callback(null, hairfies);
+            });
+        });
+    };
+
+    User.likeHairfie = function (userId, hairfieId, callback) {
+        var HairfieLike = User.app.models.HairfieLike,
+            likeData    = {userId: userId, hairfieId: hairfieId};
+
+        HairfieLike.findOrCreate({where: likeData}, likeData, function (error, like) {
+            if (error) return callback(error);
+            like.save(function (error, _) {
+                if (error) return callback(error);
+                callback(null, null);
+            });
+        });
+    };
+
+    User.unlikeHairfie = function (userId, hairfieId, callback) {
+        var HairfieLike = User.app.models.HairfieLike;
+
+        HairfieLike.remove({userId: userId, hairfieId: hairfieId}, function (error, _) {
+            if (error) return callback(error);
+            callback(null, null);
+        });
+    };
+
+    User.beforeRemote(['likedHairfies', 'likeHairfie', 'unlikeHairfie'], function (ctx, _, next) {
+        var accessToken = ctx.req.accessToken;
+        if (!accessToken) return next('You must be logged in.');
+        if (!accessToken.userId != ctx.req.params.userId) return next('User mismatch');
+        next();
+    });
+
+    User.remoteMethod('likedHairfies', {
+        description: 'List of hairfies liked by the user',
+        accepts: [
+            {arg: 'userId', type: 'String', required: true, description: 'Identifier of the user'},
+            {arg: 'limit', type: 'Number', description: 'Maximum number of hairfies to return'},
+            {arg: 'skip', type: 'Number', description: 'Number of hairfies to skip'}
+        ],
+        returns: {arg: 'hairfies', root: true},
+        http: { path: '/:userId/liked-hairfies', verb: 'GET' }
+    });
+    User.remoteMethod('likeHairfie', {
+        description: 'Like a hairfie',
+        accepts: [
+            {arg: 'userId', type: 'String', required: true, description: 'Identifier of the user'},
+            {arg: 'hairfieId', type: 'String', required: true, description: 'Identifier of the hairfie'},
+        ],
+        http: { path: '/:userId/liked-hairfies/:hairfieId', verb: 'PUT' }
+    });
+    User.remoteMethod('unlikeHairfie', {
+        description: 'Unlike a hairfie',
+        accepts: [
+            {arg: 'userId', type: 'String', required: true, description: 'Identifier of the user'},
+            {arg: 'hairfieId', type: 'String', required: true, description: 'Identifier of the hairfie'},
+        ],
+        http: { path: '/:userId/liked-hairfies/:hairfieId', verb: 'DELETE' }
+    });
 }

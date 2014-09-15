@@ -3,28 +3,6 @@
 var Promise = require('../../common/utils/Promise');
 
 module.exports = function (Hairfie) {
-    Hairfie.prototype.toRemoteObject = function () {
-        var HairfieComment = Hairfie.app.models.HairfieComment;
-
-        return {
-            id          : this.id,
-            picture     : Hairfie.getPictureObject(this),
-            price       : this.price,
-            description : this.description,
-            author      : Promise.ninvoke(this.author).then(function (author) {
-                return author ? author.toRemoteShortObject() : null;
-            }),
-            business    : Promise.ninvoke(this.business).then(function (business) {
-                return business ? business.toRemoteShortObject() : null;
-            }),
-            numComments : Promise.ninvoke(HairfieComment, 'count', {hairfieId: this.id}),
-            createdAt   : this.createdAt,
-            updatedAt   : this.updatedAt,
-
-            // mocked properties
-            numLikes    : 0,
-        };
-    };
 
     Hairfie.validatesUniquenessOf('picture');
     Hairfie.validate('price', function (onError) {
@@ -69,5 +47,20 @@ module.exports = function (Hairfie) {
         var picture = new Picture(hairfie.picture, "hairfies", Hairfie.app.get('url'));
 
         return picture.publicObject();
+    };
+
+    Hairfie.likedByUser = function (user, limit, skip, callback) {
+        var HairfieLike = Hairfie.app.models.HairfieLike;
+
+        HairfieLike.find({where: {userId: user.id}, limit: limit, skip: skip}, function (error, likes) {
+            if (error) return callback(error);
+
+            var ids = likes.map(function (like) { return like.hairfieId; });
+
+            Hairfie.findByIds(ids, function (error, hairfies) {
+                if (error) return callback(error);
+                callback(null, hairfies);
+            });
+        });
     };
 };
