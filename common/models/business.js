@@ -65,7 +65,7 @@ module.exports = function(Business) {
     };
 
     Business.nearby = function(here, query, page, limit, callback) {
-        var maxDistance = 1000,
+        var maxDistance = 5000,
             here        = GeoPoint(here),
             page        = page || 0,
             limit       = limit || 10;
@@ -101,7 +101,10 @@ module.exports = function(Business) {
                 if (query) {
                     body.query.filtered.query = {
                         match: {
-                            name: query
+                            name: {
+                                query: query,
+                                fuzziness: "AUTO"
+                            }
                         }
                     };
                 }
