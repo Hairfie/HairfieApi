@@ -124,9 +124,9 @@ module.exports = function(User) {
         var HairfieLike = User.app.models.HairfieLike,
             likeData    = {userId: userId, hairfieId: hairfieId};
 
-        HairfieLike.findOne({where: likeData}, likeData, function (error, like) {
+        HairfieLike.findOne({where: likeData}, function (error, like) {
             if (error) return callback(error);
-            callback(null, like);
+            callback(null, null);
         });
     };
 
@@ -163,7 +163,7 @@ module.exports = function(User) {
             {arg: 'hairfieId', type: 'String', required: true, description: 'Identifier of the hairfie'}
         ],
         returns: {arg: 'hairfie', root: true},
-        http: { path: '/:userId/liked-hairfies/:hairfieId', verb: 'GET' }
+        http: { path: '/:userId/liked-hairfies/:hairfieId', verb: 'HEAD' }
     });
     User.remoteMethod('likedHairfies', {
         description: 'List of hairfies liked by the user',

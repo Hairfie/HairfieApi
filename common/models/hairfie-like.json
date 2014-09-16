@@ -23,7 +23,7 @@
         "user": {
             "type": "belongsTo",
             "model": "user",
-            "foreignKey": "authorId"
+            "foreignKey": "userId"
         }
     },
     "acls": [],
