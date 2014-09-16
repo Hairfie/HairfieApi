@@ -5,7 +5,8 @@ var Promise = require('../../common/utils/Promise');
 module.exports = function (Hairfie) {
 
     Hairfie.prototype.toRemoteObject = function () {
-        var HairfieComment = Hairfie.app.models.HairfieComment;
+        var HairfieLike    = Hairfie.app.models.HairfieLike,
+            HairfieComment = Hairfie.app.models.HairfieComment;
 
         return {
             id          : this.id,
@@ -19,11 +20,9 @@ module.exports = function (Hairfie) {
                 return business ? business.toRemoteShortObject() : null;
             }),
             numComments : Promise.ninvoke(HairfieComment, 'count', {hairfieId: this.id}),
+            numLikes    : Promise.ninvoke(HairfieLike, 'count', {hairfieId: this.id}),
             createdAt   : this.createdAt,
             updatedAt   : this.updatedAt,
-
-            // mocked properties
-            numLikes    : 0,
         };
     };
 

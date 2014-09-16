@@ -126,10 +126,7 @@ module.exports = function(User) {
 
         HairfieLike.findOrCreate({where: likeData}, likeData, function (error, like) {
             if (error) return callback(error);
-            like.save(function (error, _) {
-                if (error) return callback(error);
-                callback(null, null);
-            });
+            callback(null, null);
         });
     };
 
