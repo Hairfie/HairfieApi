@@ -5,7 +5,7 @@ var Promise = require('../../common/utils/Promise');
 module.exports = function (Hairfie) {
 
     Hairfie.prototype.toRemoteObject = function () {
-        var HairfieLike    = Hairfie.app.models.HairfieLike;
+        var HairfieLike    = Hairfie.app.models.HairfieLike,
             HairfieComment = Hairfie.app.models.HairfieComment;
 
         return {
