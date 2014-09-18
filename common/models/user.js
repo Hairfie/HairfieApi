@@ -107,16 +107,19 @@ module.exports = function(User) {
         return picture.publicObject();
     };
 
-    User.likedHairfies = function (userId, until, limit, skip, callback) {
-        var Hairfie = User.app.models.Hairfie;
+    User.getHairfieLikes = function (userId, until, limit, skip, callback) {
+        var limit       = Math.min(limit || 10, 50),
+            skip        = skip || 0,
+            HairfieLike = User.app.models.HairfieLike
 
         User.findById(userId, function (error, user) {
             if (error) return callback(error);
+            if (!user) return callback({statusCode: 404});
 
-            Hairfie.likedByUser(user, until, limit, skip, function (error, hairfies) {
-                if (error) return callback(error);
-                callback(null, hairfies);
-            });
+            var filter = {where: {userId: user.id}, order: 'createdAt DESC', limit: limit, skip: skip};
+            if (until) filter.where.createdAt = {lte: until};
+
+            HairfieLike.find(filter, callback);
         });
     };
 
@@ -166,7 +169,7 @@ module.exports = function(User) {
         returns: {arg: 'hairfie', root: true},
         http: { path: '/:userId/liked-hairfies/:hairfieId', verb: 'HEAD' }
     });
-    User.remoteMethod('likedHairfies', {
+    User.remoteMethod('getHairfieLikes', {
         description: 'List of hairfies liked by the user',
         accepts: [
             {arg: 'userId', type: 'String', required: true, description: 'Identifier of the user'},

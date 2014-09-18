@@ -70,22 +70,4 @@ module.exports = function (Hairfie) {
 
         return picture.publicObject();
     };
-
-    Hairfie.likedByUser = function (user, until, limit, skip, callback) {
-        var HairfieLike = Hairfie.app.models.HairfieLike;
-
-        var filter = {where: {userId: user.id}, order: 'createdAt DESC', limit: limit, skip: skip};
-        if (until) filter.where.createdAt = {gte: until};
-
-        HairfieLike.find(filter, function (error, likes) {
-            if (error) return callback(error);
-
-            var ids = likes.map(function (like) { return like.hairfieId; });
-
-            Hairfie.findByIds(ids, function (error, hairfies) {
-                if (error) return callback(error);
-                callback(null, hairfies);
-            });
-        });
-    };
 };
