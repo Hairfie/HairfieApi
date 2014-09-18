@@ -107,13 +107,13 @@ module.exports = function(User) {
         return picture.publicObject();
     };
 
-    User.likedHairfies = function (userId, limit, skip, callback) {
+    User.likedHairfies = function (userId, until, limit, skip, callback) {
         var Hairfie = User.app.models.Hairfie;
 
         User.findById(userId, function (error, user) {
             if (error) return callback(error);
 
-            Hairfie.likedByUser(user, limit, skip, function (error, hairfies) {
+            Hairfie.likedByUser(user, until, limit, skip, function (error, hairfies) {
                 if (error) return callback(error);
                 callback(null, hairfies);
             });
@@ -170,6 +170,7 @@ module.exports = function(User) {
         description: 'List of hairfies liked by the user',
         accepts: [
             {arg: 'userId', type: 'String', required: true, description: 'Identifier of the user'},
+            {arg: 'until', type: 'Date', description: 'Ignore hairfies liked after this date'},
             {arg: 'limit', type: 'Number', description: 'Maximum number of hairfies to return'},
             {arg: 'skip', type: 'Number', description: 'Number of hairfies to skip'}
         ],

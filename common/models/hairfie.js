@@ -71,10 +71,13 @@ module.exports = function (Hairfie) {
         return picture.publicObject();
     };
 
-    Hairfie.likedByUser = function (user, limit, skip, callback) {
+    Hairfie.likedByUser = function (user, until, limit, skip, callback) {
         var HairfieLike = Hairfie.app.models.HairfieLike;
 
-        HairfieLike.find({where: {userId: user.id}, limit: limit, skip: skip}, function (error, likes) {
+        var filter = {where: {userId: user.id}, order: 'createdAt DESC', limit: limit, skip: skip};
+        if (until) filter.where.createdAt = {gte: until};
+
+        HairfieLike.find(filter, function (error, likes) {
             if (error) return callback(error);
 
             var ids = likes.map(function (like) { return like.hairfieId; });
