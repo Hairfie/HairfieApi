@@ -3,6 +3,7 @@
 var Q = require('q');
 var loopback = require('loopback');
 var path = require('path');
+var ejs = require('ejs');
 
 module.exports = function (Email) {
     var from      = 'Hairfie <hello@hairfie.com>',
@@ -51,7 +52,7 @@ module.exports = function (Email) {
     function getSubject(template, templateVars, language) {
         var config = require(path.resolve(__dirname, '../../server/emails/'+template+'.json'));
 
-        return loopback.template(config.subject[language])(templateVars);
+        return ejs.compile(config.subject[language])(templateVars);
     }
 
     function getHtmlBody(template, templateVars, language) {
