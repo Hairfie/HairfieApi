@@ -49,7 +49,7 @@ module.exports = function (Email) {
     }
 
     function getSubject(template, templateVars, language) {
-        var config = require(path.resolve(__dirname, '../../server/emails/'+template+'.js'));
+        var config = require(path.resolve(__dirname, '../../server/emails/'+template+'.json'));
 
         return loopback.template(config.subject[language])(templateVars);
     }
