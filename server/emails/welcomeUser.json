@@ -1,0 +1,6 @@
+{
+    "subject": {
+        "en": "Hello <%= user.firstName %>, welcome to Hairfie!",
+        "fr": "Bonjour <%= user.firstName %>, bienvenue sur Hairfie !"
+    }
+}
