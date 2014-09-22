@@ -7,6 +7,7 @@ var Q = require('q');
 module.exports = function(User) {
     User.prototype.toRemoteObject = function () {
         var user = this.toRemoteShortObject();
+        user.language   = this.language;
         user.newsletter = this.newsletter;
 
         return user;
