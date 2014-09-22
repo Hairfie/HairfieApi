@@ -24,11 +24,9 @@ module.exports = function(Business) {
             distance        : this.distance,
             numHairfies     : Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
             crossSell       : true,
+            prices          : this.prices,
             createdAt       : this.createdAt,
-            updatedAt       : this.updatedAt,
-
-            // mocked properties
-            prices          : []
+            updatedAt       : this.updatedAt
         }
     };
 
