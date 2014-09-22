@@ -36,7 +36,7 @@ module.exports = function(User) {
         next();
     }
 
-    User.afterSave = function (next) {
+    User.afterCreate = function (next) {
         var user = this;
 
         Promise.denodeify(User.getApp.bind(User))()
@@ -46,10 +46,7 @@ module.exports = function(User) {
             .catch(console.log)
             .then(function() { next() }, next)
         ;
-    }
 
-    User.afterCreate = function (next) {
-        var user = this;
         user.createAccessToken(null, function (error, token) {
             user.token = token;
             next();
