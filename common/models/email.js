@@ -56,11 +56,11 @@ module.exports = function (Email) {
     }
 
     function getHtmlBody(template, templateVars, language) {
-        return relativePath(template, language, 'html')(templateVars);
+        return loopback.template(relativePath(template, language, 'html'))(templateVars);
     }
 
     function getTextBody(template, templateVars, language) {
-        return relativePath(template, language, 'txt')(templateVars);
+        return loopback(relativePath(template, language, 'txt'))(templateVars);
     }
 
     function relativePath(template, language, format) {
