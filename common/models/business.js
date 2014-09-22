@@ -26,6 +26,9 @@ module.exports = function(Business) {
             crossSell       : true,
             createdAt       : this.createdAt,
             updatedAt       : this.updatedAt
+
+            // mocked properties
+            prices          : [],
         }
     };
 
