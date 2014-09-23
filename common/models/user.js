@@ -7,9 +7,10 @@ var Q = require('q');
 module.exports = function(User) {
     User.prototype.toRemoteObject = function () {
         var user = this.toRemoteShortObject();
+
         user.language   = this.language;
         user.newsletter = this.newsletter;
-        user.token      = this.token;
+        user.accessToken = this.accessToken;
 
         return user;
     };
@@ -44,14 +45,23 @@ module.exports = function(User) {
             .then(function (app) {
                 return app.models.email.welcomeUser(user)
             })
+            .then(function () {
+                var deferred = Q.defer();
+                user.createAccessToken(null, function (error, token) {
+                    user.accessToken = {
+                        id: token.id,
+                        ttl: token.ttl
+                    };
+                    deferred.resolve();
+                });
+                return deferred.promise;
+            })
             .catch(console.log)
-            .then(function() { next() }, next)
+            .then(function() {
+                next();
+            }, next)
         ;
 
-        user.createAccessToken(null, function (error, token) {
-            user.token = token;
-            next();
-        });
     }
 
     User.profileToUser = function(provider, profile) {
