@@ -34,6 +34,8 @@ set :linked_files, %w{server/auth-providers.json}
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
+set :copy_files, %w{node_modules}
+
 namespace :deploy do
 
   desc "Install node modules non-globally"
@@ -77,6 +79,8 @@ namespace :deploy do
           execute "cd #{current_path} && node NODE_ENV=#{node_env} server/search/rebuild-index.js"
       end
   end
+
+  before 'deploy:symlink:shared', 'deploy:copy_files'
 
   before 'deploy:published', 'deploy:npm_install'
 
