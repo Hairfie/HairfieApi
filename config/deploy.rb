@@ -34,7 +34,7 @@ set :linked_files, %w{server/auth-providers.json}
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
-set :copy_files, %w{node_modules}
+set :copy_files, %w{node_modules client/bower_components}
 
 namespace :deploy do
 
