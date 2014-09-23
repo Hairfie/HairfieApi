@@ -48,4 +48,29 @@ angular.module('myApp.controllers', [])
                 $scope.ongoingProgress = false;
             });
         };
-  }]);
+
+    }])
+    .controller('BackofficeCtrl', ['$scope', '$routeParams', 'Business', function($scope, $routeParams, Business) {
+        $scope.gPlace;
+
+        $scope.$watch('gps', function() {
+           if($scope.form) $scope.form.gps = $scope.gps;
+        });
+
+        $scope.search = function() {
+            if ('' == $scope.form.name) return;
+            if ('' == $scope.form.gps) return;
+            Business.nearby({
+                query: $scope.form.name,
+                here: $scope.form.gps
+            }).$promise
+            .then(function(result) {
+                console.log(result);
+                $scope.successMessage = 'Success';
+                $scope.businesses = result;
+            })
+            .catch(function(error) {
+                $scope.errorMessage = 'Error' + error;
+            });
+        };
+    }]);
