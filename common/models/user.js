@@ -9,6 +9,7 @@ module.exports = function(User) {
         var user = this.toRemoteShortObject();
         user.language   = this.language;
         user.newsletter = this.newsletter;
+        user.token      = this.token;
 
         return user;
     };
