@@ -27,7 +27,11 @@ module.exports = function(Business) {
             crossSell       : true,
             services        : this.services,
             createdAt       : this.createdAt,
-            updatedAt       : this.updatedAt
+            updatedAt       : this.updatedAt,
+
+            // mocked values
+            numReviews      : 3,
+            rating          : 80
         }
     };
 
