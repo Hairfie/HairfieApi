@@ -40,13 +40,23 @@
             "type": "string"
         },
         "timetable": {
-            "type": "object"
+            "type": {
+                "MON": ["object"],
+                "TUE": ["object"],
+                "THU": ["object"],
+                "WED": ["object"],
+                "FRI": ["object"],
+                "SAT": ["object"],
+                "SUN": ["object"]
+            }
         },
-        "prices": {
+        "services": {
             "type": [{
                 "label": "string",
-                "amount": "string",
-                "currency": "string"
+                "price": {
+                    "amount": "string",
+                    "currency": "string"
+                }
             }]
         },
         "men": {
