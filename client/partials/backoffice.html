@@ -46,6 +46,6 @@
         <p>N° de tel : {{ business.phoneNumbers }}</p>
         <p>Adresse : {{ business.address }}</p>
         <p ng-if="business.thumbnail"><img src="{{ business.thumbnail }}" style="width:200px" /></p>
-        <small>{{ business }}</small>
+        <pre>{{ business | json }}</pre>
     </div>
 </div>
