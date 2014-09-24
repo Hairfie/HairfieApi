@@ -17,7 +17,8 @@ module.exports = function(Business) {
             address         : {
                 street  : this.street ? this.street.upperFirst() : '',
                 zipcode : this.zipcode,
-                city    : this.city ? this.city.upperFirst() : ''
+                city    : this.city ? this.city.upperFirst() : '',
+                country : this.country ? this.country : 'FR'
             },
             pictures        : [GeoPoint(this.gps).streetViewPic()],
             thumbnail       : GeoPoint(this.gps).streetViewPic(),
