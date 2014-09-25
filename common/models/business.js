@@ -75,7 +75,7 @@ module.exports = function(Business) {
 
         Promise.denodeify(Business.getApp.bind(Business))()
             .then(function (app) {
-                var searchEngine = app.models.SearchEngine;
+                var SearchEngine = app.models.SearchEngine;
 
                 // @todo build query using elasticjs (http://docs.fullscale.co/elasticjs/)
                 var body = {
@@ -112,32 +112,21 @@ module.exports = function(Business) {
                     };
                 }
 
-                return app.models.SearchEngine.search('business', body);
+                return SearchEngine.search('business', body);
             })
-            .then(function (result) {
-                var ids = [], distances = {};
-                result[0].hits.hits.forEach(function (hit) {
-                    ids.push(hit._id);
-                    distances[hit._id] = Math.round(hit.sort[0]);
-                });
-
-                return Promise.denodeify(Business.findByIds.bind(Business))(ids)
-                    .then(function (businesses) {
-                        // add distance to businesses
-                        return businesses.map(function (business) {
-                            business.distance = distances[business.id];
-
-                            return business;
-                        });
-                    })
-                ;
-            })
+            .then(searchResultBusinesses)
             .nodeify(callback)
         ;
     }
 
+    function searchResultBusinesses(result) {
+        var ids = result[0].hits.hits.map(function (hit) { return hit._id; });
+
+        return Promise.denodeify(Business.findByIds.bind(Business))(ids);
+    }
+
     Business.similar = function (businessId, limit, callback) {
-        var limit = limit || 10;
+        var limit = Math.min(limit || 10, 20);
         if (limit  > 20) return callback('limit must be <= 20');
 
         Business.findById(businessId, function (error, business) {
@@ -147,22 +136,35 @@ module.exports = function(Business) {
             // @todo handle the case the business has no location
             if (!business.gps) return callback('business has no location');
 
-            Business.find({
-                where: {
-                    // @todo use a not equal id in query
-                    gps: {near: business.gps, maxDistance: 1000},
+            var body = {
+                size: limit,
+                query: {
+                    filtered: {
+                        filter: {
+                            geo_distance: {
+                                distance: maxDistance,
+                                distance_unit: 'm',
+                                gps: business.gps.asElasticPoint()
+                            },
+                            not: {
+                                ids: [businessId]
+                            }
+                        }
+                    }
                 },
-                limit: limit + 1
-            }, function (error, businesses) {
-                if (error) return callback(error);
+                sort: {
+                    _geo_distance: {
+                        gps: here.asElasticPoint(),
+                        order: 'asc',
+                        unit: 'm'
+                    }
+                }
+            };
 
-                var businesses = businesses
-                    .filter(function (business) { return business.id != businessId; })
-                    // TODO: why not already Business instances?
-                    .map(function (business) { return new Business(business); });
 
-                callback(null, businesses);
-            });
+            Business.app.models.SearchEngine.search('business', body)
+                .then(searchResultBusinesses)
+                .nodeify(callback)
         });
     };
 
