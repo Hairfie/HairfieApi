@@ -143,16 +143,22 @@ module.exports = function(Business) {
                 query: {
                     filtered: {
                         filter: {
-                            geo_distance: {
-                                distance: maxDistance,
-                                distance_unit: 'm',
-                                gps: here.asElasticPoint()
-                            },
-                            not: { not: { // don't know why this double not is necessary!
-                                ids: {
-                                    values: [businessId]
+                            and: [
+                                {
+                                    geo_distance: {
+                                        distance: maxDistance,
+                                        distance_unit: 'm',
+                                        gps: here.asElasticPoint()
+                                    }
+                                },
+                                {
+                                    not: {
+                                        ids: {
+                                            values: [businessId]
+                                        }
+                                    }
                                 }
-                            } }
+                            ]
                         }
                     }
                 },
