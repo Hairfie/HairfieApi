@@ -12,17 +12,11 @@ module.exports = function(Business) {
             id              : this.id,
             name            : this.name,
             gps             : this.gps,
-            phoneNumbers    : this.phone_numbers,
-            timetable       : this.timetables || {},
-            address         : {
-                street  : this.street ? this.street.upperFirst() : '',
-                zipcode : this.zipcode,
-                city    : this.city ? this.city.upperFirst() : '',
-                country : this.country ? this.country : 'FR'
-            },
+            phoneNumber     : this.phoneNumber,
+            timetable       : this.timetable || {},
+            address         : this.address || {},
             pictures        : [GeoPoint(this.gps).streetViewPic()],
             thumbnail       : GeoPoint(this.gps).streetViewPic(),
-            distance        : this.distance,
             numHairfies     : Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
             crossSell       : true,
             services        : this.services,
@@ -52,10 +46,13 @@ module.exports = function(Business) {
 
       Business.getApp(function (_, app) {
           // index business on search engine
-          app.models.SearchEngine.index('business', business.id, {
-              name: business.name,
-              gps:  {lat: business.gps.lat, lon: business.gps.lng}
-          });
+          var doc = {};
+          doc.name = business.name;
+          if (business.gps) {
+              doc.gps = {lat: business.gps.lat, lon: business.gps.lng};
+          }
+
+          app.models.SearchEngine.index('business', business.id, doc);
       });
 
       next();
@@ -167,31 +164,6 @@ module.exports = function(Business) {
                 callback(null, businesses);
             });
         });
-    };
-
-    // Google Maps API has a rate limit of 10 requests per second
-    // Seems we need to enforce a lower rate to prevent errors
-    var lookupGeo = require('function-rate-limit')(5, 1000, function() {
-        var geoService = Business.app.dataSources.geo;
-        geoService.geocode.apply(geoService, arguments);
-    });
-
-    Business.beforeSave = function(next, business) {
-        if (business.gps) return next();
-        if(!business.street || !business.city || !business.zipcode) return next();
-
-        // geo code the address
-        lookupGeo(business.street, business.city, business.zipcode,
-                function(err, result) {
-                    if (result && result[0]) {
-                        business.gps = result[0].lng + ',' + result[0].lat;
-                        next();
-                    } else {
-                        console.log('could not find location');
-                        console.log(err);
-                        next();
-                    }
-                });
     };
 
     Business.remoteMethod('nearby', {

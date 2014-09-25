@@ -1,7 +1,7 @@
 "use strict";
 
 var elasticsearch = require('elasticsearch');
-var Q = require('q');
+var Promise = require('../../common/utils/Promise');
 
 module.exports = function (SearchEngine) {
 
@@ -26,7 +26,7 @@ module.exports = function (SearchEngine) {
     }
 
     SearchEngine.dropIndex = function () {
-        var deferred = Q.defer();
+        var deferred = Promise.defer();
 
         var params = {};
         params.index = getIndex();
@@ -37,7 +37,7 @@ module.exports = function (SearchEngine) {
     }
 
     SearchEngine.createIndex = function () {
-        var deferred = Q.defer();
+        var deferred = Promise.defer();
 
         var params = {};
         params.index = getIndex();
@@ -48,7 +48,7 @@ module.exports = function (SearchEngine) {
     }
 
     SearchEngine.defineMapping = function (type, mapping) {
-        var deferred = Q.defer();
+        var deferred = Promise.defer();
 
         var params = {};
         params.index = getIndex();
@@ -61,10 +61,10 @@ module.exports = function (SearchEngine) {
     }
 
     SearchEngine.index = function (type, id, data) {
-        var deferred = Q.defer();
+        var deferred = Promise.defer();
 
         var params = {};
-        params.index = getIndex();;
+        params.index = getIndex();
         params.type = type;
         params.id = ''+id;
         params.body = data;
@@ -75,10 +75,10 @@ module.exports = function (SearchEngine) {
     }
 
     SearchEngine.delete = function (type, id) {
-        var deferred = Q.defer();
+        var deferred = Promise.defer();
 
         var params = {};
-        params.index = getIndex();;
+        params.index = getIndex();
         params.type = type;
         params.id = ''+id;
 
@@ -88,10 +88,10 @@ module.exports = function (SearchEngine) {
     }
 
     SearchEngine.search = function (type, body) {
-        var deferred = Q.defer();
+        var deferred = Promise.defer();
 
         var params = {};
-        params.index = getIndex();;
+        params.index = getIndex();
         params.type = type;
         params.body = body;
 
@@ -130,27 +130,39 @@ module.exports = function (SearchEngine) {
                 });
             })
             .then(function () {
-                return Q.denodeify(SearchEngine.getApp.bind(SearchEngine))();
+                return Promise.denodeify(SearchEngine.getApp.bind(SearchEngine))();
             })
             .then(function (app) {
-                console.log('Loading existing records');
-
+                console.log('Reindexing existing records');
                 var Business = app.models.Business;
 
-                return Q.denodeify(Business.find.bind(Business, {}))();
-            })
-            .then(function (businesses) {
-                console.log('Reindexing existing records');
-                return Q.all(businesses.map(function (business) {
-                    // @todo move search doc creation to model's settings
-                    return SearchEngine.index('business', business.id, {
-                        name: business.name,
-                        gps: {
-                            lat: business.gps.lat,
-                            lon: business.gps.lng
-                        }
+                var deferred = Promise.defer();
+
+                var limit = 100;
+
+                function loop(skip) {
+                    console.log('Chunk:', skip);
+                    Business.find({limit: limit, skip: skip}, function (error, businesses) {
+                        Promise
+                            .map(businesses, function (business) {
+                                Promise.ninvoke(business, 'save');
+                            })
+                            .fail(function (error) {
+                                deferred.reject(error);
+                            })
+                            .then(function () {
+                                if (businesses.length < limit) {
+                                    deferred.resolve(null);
+                                } else {
+                                    setTimeout(loop.bind(this, skip + limit), 1000);
+                                }
+                            });
                     });
-                }));
+                }
+
+                loop(0);
+
+                return deferred.promise;
             })
         ;
     }
