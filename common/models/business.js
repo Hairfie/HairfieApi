@@ -71,7 +71,7 @@ module.exports = function(Business) {
         var maxDistance = 5000,
             here        = GeoPoint(here),
             page        = page || 0,
-            limit       = limit || 10;
+            limit       = Math.min(limit || 10, 50);
 
         Promise.denodeify(Business.getApp.bind(Business))()
             .then(function (app) {
@@ -126,8 +126,8 @@ module.exports = function(Business) {
     }
 
     Business.similar = function (businessId, limit, callback) {
-        var limit = Math.min(limit || 10, 20);
-        if (limit  > 20) return callback('limit must be <= 20');
+        var maxDistance = 5000,
+            limit       = Math.min(limit || 10, 50);
 
         Business.findById(businessId, function (error, business) {
             if (error) return callback(error);
