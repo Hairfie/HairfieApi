@@ -136,6 +136,8 @@ module.exports = function(Business) {
             // @todo handle the case the business has no location
             if (!business.gps) return callback('business has no location');
 
+            var here = GeoPoint(business.gps);
+
             var body = {
                 size: limit,
                 query: {
@@ -144,11 +146,13 @@ module.exports = function(Business) {
                             geo_distance: {
                                 distance: maxDistance,
                                 distance_unit: 'm',
-                                gps: business.gps.asElasticPoint()
+                                gps: here.asElasticPoint()
                             },
-                            not: {
-                                ids: [businessId]
-                            }
+                            not: { not: { // don't know why this double not is necessary!
+                                ids: {
+                                    values: [businessId]
+                                }
+                            } }
                         }
                     }
                 },
