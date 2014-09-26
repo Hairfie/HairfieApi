@@ -9,38 +9,30 @@
         "gps": {
             "type": "geopoint"
         },
-        "street": {
+        "address": {
+            "type": {
+                "street" : "string",
+                "city": "string",
+                "zipCode": "string",
+                "country": "string"
+            }
+        },
+        "phoneNumber": {
             "type": "string"
         },
-        "city": {
-            "type": "string"
-        },
-        "zipcode": {
-            "type": "string"
-        },
-        "siren": {
-            "type": "string",
-            "index": true,
-            "unique": true
+        "timetable": {
+            "type": "object"
         },
         "siret": {
             "type": "string",
             "index": true,
             "unique": true
         },
-        "phone_numbers": {
-            "type": [
-                "string"
-            ]
-        },
-        "diane_data": {
-            "type": "object"
-        },
-        "pj_data": {
-            "type": "object"
-        },
-        "timetables": {
-            "type": "object"
+        "pagesJaunes": {
+            "type": {
+                "id": "string",
+                "url": "string"
+            }
         }
     },
     "validations": [],
