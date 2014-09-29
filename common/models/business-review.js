@@ -32,4 +32,30 @@ module.exports = function (BusinessReview) {
         ctx.req.body.authorId = ctx.req.accessToken.userId;
         next();
     });
+
+    BusinessReview.getBusinessRating = function (businessId, callback) {
+        var ObjectID   = BusinessReview.dataSource.ObjectID,
+            collection = BusinessReview.dataSource.connector.collection(BusinessReview.definition.name);
+
+        var pipe = [
+            {$match: {businessId: ObjectID(businessId)}},
+            {$group: {_id: null, numReviews: {$sum: 1}, rating: {$avg: "$rating"}}}
+        ];
+
+        collection.aggregate(pipe, function (error, result) {
+            if (error) return callback(error);
+
+            var rating = {
+                numReviews: 0,
+                rating:     null
+            };
+
+            if (1 === result.length) {
+                rating.numReviews = result[0].numReviews;
+                rating.rating     = result[0].rating;
+            }
+
+            callback(null, rating);
+        });
+    };
 };

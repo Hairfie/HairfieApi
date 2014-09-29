@@ -6,27 +6,29 @@ var Promise = require('../../common/utils/Promise');
 
 module.exports = function(Business) {
     Business.prototype.toRemoteObject = function () {
-        var Hairfie = Business.app.models.Hairfie;
+        var Hairfie        = Business.app.models.Hairfie,
+            BusinessReview = Business.app.models.BusinessReview;
 
-        return {
-            id              : this.id,
-            name            : this.name,
-            gps             : this.gps,
-            phoneNumber     : this.phoneNumber,
-            timetable       : this.timetable,
-            address         : this.address,
-            pictures        : [GeoPoint(this.gps).streetViewPic()],
-            thumbnail       : GeoPoint(this.gps).streetViewPic(),
-            numHairfies     : Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
-            crossSell       : true,
-            services        : this.services,
-            createdAt       : this.createdAt,
-            updatedAt       : this.updatedAt,
-
-            // mocked values
-            numReviews      : 3,
-            rating          : 80
-        }
+        return Promise.ninvoke(BusinessReview, 'getBusinessRating', this.id)
+            .then((function (rating) {
+                return {
+                    id              : this.id,
+                    name            : this.name,
+                    gps             : this.gps,
+                    phoneNumber     : this.phoneNumber,
+                    timetable       : this.timetable,
+                    address         : this.address,
+                    pictures        : [GeoPoint(this.gps).streetViewPic()],
+                    thumbnail       : GeoPoint(this.gps).streetViewPic(),
+                    numHairfies     : Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
+                    numReviews      : rating.numReviews,
+                    rating          : rating.rating,
+                    crossSell       : true,
+                    services        : this.services,
+                    createdAt       : this.createdAt,
+                    updatedAt       : this.updatedAt,
+                }
+            }).bind(this));
     };
 
     Business.prototype.toRemoteShortObject = function () {
