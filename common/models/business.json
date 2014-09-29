@@ -45,7 +45,8 @@
         "sharedMethodNames": [
             "findById",
             "nearby",
-            "similar"
+            "similar",
+            "submitErrorReport"
         ],
         "mongodb": {
             "collection": "businesses"

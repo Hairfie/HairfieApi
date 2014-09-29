@@ -4,11 +4,6 @@ var Promise = require('../../common/utils/Promise');
 
 module.exports = function (BusinessClaim) {
 
-    BusinessClaim.beforeRemote('**', function (ctx, _, next) {
-        console.log(ctx.args);
-        next();
-    });
-
     // business claims are associated to currently logged in user
     BusinessClaim.beforeRemote('create', function (ctx, _, next) {
         ctx.req.body.authorId = ctx.req.accessToken.userId;
@@ -22,9 +17,7 @@ module.exports = function (BusinessClaim) {
             if (error) return callback(error);
             if (!businessClaim) return callback({statusCode: 404});
 
-            console.log('toto');
             var business = new Business();
-            console.log('tata');
             business.name = businessClaim.name;
             business.phone_numbers = [businessClaim.phoneNumber];
             if (businessClaim.address) {
@@ -40,7 +33,6 @@ module.exports = function (BusinessClaim) {
             // TODO: complete with declaration of Hairdressers
 
             business.save(function (error, business) {
-                console.log('tutu');
                 if (error) return callback(error);
 
                 businessClaim.businessId = business.id;

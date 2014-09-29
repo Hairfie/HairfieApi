@@ -38,6 +38,10 @@
         "dataSource": "hairfieMongo",
         "public": true
     },
+    "BusinessErrorReport": {
+        "dataSource": "hairfieMongo",
+        "public": true
+    },
     "Hairfie": {
         "dataSource": "hairfieMongo",
         "public": true
