@@ -35,11 +35,7 @@ module.exports = function(Business) {
         return {
             id      : this.id,
             name    : this.name,
-            address         : {
-                street  : this.street ? this.street.upperFirst() : '',
-                zipcode : this.zipcode,
-                city    : this.city ? this.city.upperFirst() : ''
-            }
+            address : this.address
         };
     };
 
