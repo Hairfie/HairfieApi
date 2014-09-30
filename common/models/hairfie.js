@@ -9,20 +9,21 @@ module.exports = function (Hairfie) {
             HairfieComment = Hairfie.app.models.HairfieComment;
 
         return {
-            id          : this.id,
-            picture     : Hairfie.getPictureObject(this),
-            price       : this.price,
-            description : this.description,
-            author      : Promise.ninvoke(this.author).then(function (author) {
+            id           : this.id,
+            picture      : Hairfie.getPictureObject(this),
+            price        : this.price,
+            description  : this.description,
+            authorString : this.authorString,
+            author       : Promise.ninvoke(this.author).then(function (author) {
                 return author ? author.toRemoteShortObject() : null;
             }),
-            business    : Promise.ninvoke(this.business).then(function (business) {
+            business     : Promise.ninvoke(this.business).then(function (business) {
                 return business ? business.toRemoteShortObject() : null;
             }),
-            numComments : Promise.ninvoke(HairfieComment, 'count', {hairfieId: this.id}),
-            numLikes    : Promise.ninvoke(HairfieLike, 'count', {hairfieId: this.id}),
-            createdAt   : this.createdAt,
-            updatedAt   : this.updatedAt,
+            numComments  : Promise.ninvoke(HairfieComment, 'count', {hairfieId: this.id}),
+            numLikes     : Promise.ninvoke(HairfieLike, 'count', {hairfieId: this.id}),
+            createdAt    : this.createdAt,
+            updatedAt    : this.updatedAt,
         };
     };
 

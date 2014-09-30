@@ -13,6 +13,9 @@
         "description": {
             "type": "string"
         },
+        "authorString": {
+            "type": "string"
+        },
         "businessId": {
             "type": "string"
         },
