@@ -216,7 +216,7 @@ module.exports = function(Business) {
     Business.getPictureObjects = function (business) {
         var pictures = [];
         pictures.push({
-            publicUrl: GeoPoint(this.gps).streetViewPic(),
+            publicUrl: GeoPoint(business.gps).streetViewPic(),
         });
 
         if (Array.isArray(business.pictures)) {
