@@ -12,20 +12,24 @@
         "authorRole": {
             "type": "string"
         },
-        "type": {
+        "kind": {
             "type": "string"
         },
-        "street": {
-            "type": "string"
-        },
-        "city": {
-            "type": "string"
-        },
-        "zipCode": {
-            "type": "string"
-        },
-        "country": {
-            "type": "string"
+        "address": {
+            "type": {
+                "street": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "zipCode": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                }
+            }
         },
         "gps": {
             "type": "GeoPoint"
@@ -43,8 +47,8 @@
             "type": {
                 "MON": ["object"],
                 "TUE": ["object"],
-                "THU": ["object"],
                 "WED": ["object"],
+                "THU": ["object"],
                 "FRI": ["object"],
                 "SAT": ["object"],
                 "SUN": ["object"]
@@ -58,6 +62,9 @@
                     "currency": "string"
                 }
             }]
+        },
+        "hairdressers": {
+            "type": ["object"]
         },
         "men": {
             "type": "boolean"

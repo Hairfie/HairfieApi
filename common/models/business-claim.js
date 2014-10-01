@@ -19,6 +19,7 @@ module.exports = function (BusinessClaim) {
 
             var business = new Business();
             business.name = businessClaim.name;
+            business.kind = businessClaim.kind;
             business.ownerId = businessClaim.authorId;
             business.phoneNumber = businessClaim.phoneNumber;
             business.address = businessClaim.address;
@@ -26,6 +27,9 @@ module.exports = function (BusinessClaim) {
             business.pictures = businessClaim.pictures;
             business.services = businessClaim.services;
             business.hairdressers = businessClaim.hairdressers;
+            business.men = businessClaim.men;
+            business.women = businessClaim.women;
+            business.children = businessClaim.children;
 
             business.save(function (error, business) {
                 if (error) return callback(error);
