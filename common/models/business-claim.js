@@ -4,6 +4,13 @@ var Promise = require('../../common/utils/Promise');
 
 module.exports = function (BusinessClaim) {
 
+    BusinessClaim.prototype.toRemoteObject = function () {
+        var obj = this.toObject();
+        obj.pictures = BusinessClaim.getPictureObjects(this);
+
+        return obj;
+    };
+
     // business claims are associated to currently logged in user
     BusinessClaim.beforeRemote('create', function (ctx, _, next) {
         ctx.req.body.authorId = ctx.req.accessToken.userId;
@@ -52,4 +59,12 @@ module.exports = function (BusinessClaim) {
         returns: {arg: 'Business', root: true},
         http: { verb: 'GET', path: '/:businessClaimId/submit' }
     });
+
+    BusinessClaim.getPictureObjects = function (businessClaim) {
+        if (!Array.isArray(businessClaim.pictures)) return [];
+
+        return businessClaim.pictures.map(function (picture) {
+            return (new Picture(picture, 'business-pictures', BusinessClaim.app.get('url'))).publicObject();
+        });
+    };
 }
