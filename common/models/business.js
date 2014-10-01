@@ -28,6 +28,7 @@ module.exports = function(Business) {
                     rating          : rating.rating,
                     crossSell       : true,
                     services        : this.services,
+                    hairdressers    : this.hairdressers,
                     createdAt       : this.createdAt,
                     updatedAt       : this.updatedAt,
                 }
