@@ -19,18 +19,13 @@ module.exports = function (BusinessClaim) {
 
             var business = new Business();
             business.name = businessClaim.name;
-            business.phone_numbers = [businessClaim.phoneNumber];
-            if (businessClaim.address) {
-                business.street = businessClaim.address.street;
-                business.city = businessClaim.address.city;
-                business.zipcode = businessClaim.address.zipCode;
-                business.country = businessClaim.address.country;
-            }
+            business.ownerId = businessClaim.authorId;
+            business.phoneNumber = businessClaim.phoneNumber;
+            business.address = businessClaim.address;
             business.gps = businessClaim.gps;
             business.pictures = businessClaim.pictures;
             business.services = businessClaim.services;
-
-            // TODO: complete with declaration of Hairdressers
+            business.hairdressers = businessClaim.hairdressers;
 
             business.save(function (error, business) {
                 if (error) return callback(error);
