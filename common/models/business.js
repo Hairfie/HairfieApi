@@ -21,7 +21,7 @@ module.exports = function(Business) {
                     phoneNumber     : this.phoneNumber,
                     timetable       : this.timetable,
                     address         : this.address,
-                    pictures        : [GeoPoint(this.gps).streetViewPic()],
+                    pictures        : Business.getPictureObjects(this),
                     thumbnail       : GeoPoint(this.gps).streetViewPic(),
                     numHairfies     : Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
                     numReviews      : rating.numReviews,
@@ -212,4 +212,19 @@ module.exports = function(Business) {
         }
         next();
     });
+
+    Business.getPictureObjects = function (business) {
+        var pictures = [];
+        pictures.push({
+            publicUrl: GeoPoint(this.gps).streetViewPic(),
+        });
+
+        if (Array.isArray(business.pictures)) {
+            business.pictures.forEach(function (picture) {
+                pictures.push((new Picture(picture, 'business-pictures', Business.app.get('url'))).publicObject());
+            });
+        }
+
+        return pictures;
+    };
 };
