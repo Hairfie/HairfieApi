@@ -36,7 +36,13 @@
         }
     },
     "validations": [],
-    "relations": {},
+    "relations": {
+        "owner": {
+            "type": "belongsTo",
+            "model": "user",
+            "foreignKey": "ownerId"
+        }
+    },
     "acls": [],
     "methods": [],
     "plural": "Businesses",

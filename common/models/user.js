@@ -163,6 +163,20 @@ module.exports = function(User) {
         });
     };
 
+    User.managedBusinesses = function (userId, callback) {
+        var BusinessClaim = User.app.models.BusinessClaim;
+
+        User.findById(userId, function (error, user) {
+            if (error) return callback(error)
+            if (!user) return callback({statusCode: 404});
+
+            Business.find({ownerId: user.id}, function (error, businesses) {
+                if (error) return callback(error);
+                callback(null, businesses);
+            });
+        });
+    };
+
     User.beforeRemote(['likedHairfie', 'likedHairfies', 'likeHairfie', 'unlikeHairfie'], function (ctx, _, next) {
         var accessToken = ctx.req.accessToken;
         if (!accessToken) return next('You must be logged in.');
@@ -205,5 +219,11 @@ module.exports = function(User) {
             {arg: 'hairfieId', type: 'String', required: true, description: 'Identifier of the hairfie'},
         ],
         http: { path: '/:userId/liked-hairfies/:hairfieId', verb: 'DELETE' }
+    });
+    User.remoteMethod('managedBusinesses', {
+        description: 'Gets the businesses managed by the user',
+        accepts: [
+            {arg: 'userId', type: 'String', required: true, description: 'Identifier of the user'}
+        ]
     });
 }

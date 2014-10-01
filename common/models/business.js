@@ -13,6 +13,9 @@ module.exports = function(Business) {
             .then((function (rating) {
                 return {
                     id              : this.id,
+                    owner           : Promise.ninvoke(this, 'owner').then(function (user) {
+                        return user ? user.toRemoteShortObject() : null;
+                    }),
                     name            : this.name,
                     gps             : this.gps,
                     phoneNumber     : this.phoneNumber,
