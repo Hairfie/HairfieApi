@@ -17,14 +17,15 @@ module.exports = function(User) {
 
     User.prototype.toRemoteShortObject = function () {
         var Hairfie     = User.app.models.Hairfie,
-            numHairfies = Promise.ninvoke(Hairfie, 'count', {authorId: this.id});
+            numHairfies = Promise.ninvoke(Hairfie, 'count', {authorId: this.id}),
+            picture     = Picture.fromDatabaseValue(this.picture, 'user-profile-pictures', User.app);
 
         return {
             id          : this.id,
             gender      : this.gender,
             firstName   : this.firstName,
             lastName    : this.lastName,
-            picture     : Picture.fromDatabaseValue(this.picture, 'user-profile-pictures', User.app).toRemoteObject(),
+            picture     : picture ? picture.toRemoteObject() : null,
             phoneNumber : this.phoneNumber,
             email       : this.email,
             numHairfies : numHairfies
