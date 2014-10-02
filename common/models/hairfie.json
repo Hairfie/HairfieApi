@@ -13,7 +13,7 @@
         "description": {
             "type": "string"
         },
-        "authorString": {
+        "hairdresserName": {
             "type": "string"
         },
         "businessId": {
