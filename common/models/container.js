@@ -14,7 +14,10 @@ module.exports = function (Container) {
 
     Container.on('attached', function (app) {
         Container.prefixName = function (name) {
-            return ['hairfie', app.get('env'), name].join('-');
+            var env = app.get('env');
+            if ('local_staging' == env) env = 'staging';
+
+            return ['hairfie', env, name].join('-');
         };
 
         // Generate random filenames

@@ -7,8 +7,6 @@ module.exports.GeoPoint.prototype.asElasticPoint = function () {
     }
 }
 
-module.exports.GeoPoint.prototype.streetViewPic = function(width, height) {
-    width = width || 600;
-    height = height|| 400;
-    return "http://maps.googleapis.com/maps/api/streetview?size="+width+"x"+height+"&location="+this.lat + ',' + this.lng;
+module.exports.GeoPoint.prototype.streetViewPic = function(app) {
+    return app.get('url')+'/service/google/streetview/'+this.lat+'/'+this.lng;
 };

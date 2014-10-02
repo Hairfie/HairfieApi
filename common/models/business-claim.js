@@ -5,8 +5,15 @@ var Promise = require('../../common/utils/Promise');
 module.exports = function (BusinessClaim) {
 
     BusinessClaim.prototype.toRemoteObject = function () {
+        var pictures = [];
+        if (Array.isArray(this.pictures)) {
+            pictures.map(function (picture) {
+                return Picture.fromDatabaseValue(picture, 'business-pictures', BusinessClaim.app).toRemoteObject();
+            });
+        }
+
         var obj = this.toObject();
-        obj.pictures = BusinessClaim.getPictureObjects(this);
+        obj.pictures = pictures;
 
         return obj;
     };
@@ -59,12 +66,4 @@ module.exports = function (BusinessClaim) {
         returns: {arg: 'Business', root: true},
         http: { verb: 'GET', path: '/:businessClaimId/submit' }
     });
-
-    BusinessClaim.getPictureObjects = function (businessClaim) {
-        if (!Array.isArray(businessClaim.pictures)) return [];
-
-        return businessClaim.pictures.map(function (picture) {
-            return (new Picture(picture, 'business-pictures', BusinessClaim.app.get('url'))).publicObject();
-        });
-    };
 }

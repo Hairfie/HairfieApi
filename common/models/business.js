@@ -11,6 +11,20 @@ module.exports = function(Business) {
 
         return Promise.ninvoke(BusinessReview, 'getBusinessRating', this.id)
             .then((function (rating) {
+                var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject();
+
+                var pictures = [];
+                if (Array.isArray(this.pictures)) {
+                    pictures = this.pictures.map(function (picture) {
+                        return Picture.fromDatabaseValue(picture, 'business-pictures', Business.app).toRemoteObject();
+                    });
+                }
+
+                // add street view when business has no picture
+                if (0 == pictures.length) {
+                    pictures.push(streetViewPicture);
+                }
+
                 return {
                     id              : this.id,
                     owner           : Promise.ninvoke(this, 'owner').then(function (user) {
@@ -21,8 +35,8 @@ module.exports = function(Business) {
                     phoneNumber     : this.phoneNumber,
                     timetable       : this.timetable,
                     address         : this.address,
-                    pictures        : Business.getPictureObjects(this),
-                    thumbnail       : GeoPoint(this.gps).streetViewPic(),
+                    thumbnail       : streetViewPicture,
+                    pictures        : pictures,
                     numHairfies     : Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
                     numReviews      : rating.numReviews,
                     rating          : rating.rating,
@@ -212,19 +226,4 @@ module.exports = function(Business) {
         }
         next();
     });
-
-    Business.getPictureObjects = function (business) {
-        var pictures = [];
-        pictures.push({
-            publicUrl: GeoPoint(business.gps).streetViewPic(),
-        });
-
-        if (Array.isArray(business.pictures)) {
-            business.pictures.forEach(function (picture) {
-                pictures.push((new Picture(picture, 'business-pictures', Business.app.get('url'))).publicObject());
-            });
-        }
-
-        return pictures;
-    };
 };

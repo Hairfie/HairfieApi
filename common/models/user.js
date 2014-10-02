@@ -24,7 +24,7 @@ module.exports = function(User) {
             gender      : this.gender,
             firstName   : this.firstName,
             lastName    : this.lastName,
-            picture     : User.getPictureObj(this),
+            picture     : Picture.fromDatabaseValue(this.picture, 'user-profile-pictures', User.app),
             phoneNumber : this.phoneNumber,
             email       : this.email,
             numHairfies : numHairfies
@@ -105,16 +105,6 @@ module.exports = function(User) {
 
     User.prototype.getFullName = function () {
         return this.firstName+' '+this.lastName;
-    };
-
-    User.getPictureObj = function (user) {
-        if (user.picture && user.picture.indexOf('http') == 0) {
-            return {publicUrl: user.picture};
-        }
-
-        var picture = new Picture(user.picture, 'user-profile-pictures', User.app.get('url'));
-
-        return picture.publicObject();
     };
 
     User.getHairfieLikes = function (userId, until, limit, skip, callback) {

@@ -10,7 +10,7 @@ module.exports = function (Hairfie) {
 
         return {
             id           : this.id,
-            picture      : Hairfie.getPictureObject(this),
+            picture      : Picture.fromDatabaseValue(this.picture, 'hairfies', Hairfie.app).toRemoteObject(),
             price        : this.price,
             description  : this.description,
             authorString : this.authorString,
@@ -65,10 +65,4 @@ module.exports = function (Hairfie) {
         ctx.req.body.authorId = ctx.req.accessToken.userId;
         next();
     });
-
-    Hairfie.getPictureObject = function (hairfie) {
-        var picture = new Picture(hairfie.picture, "hairfies", Hairfie.app.get('url'));
-
-        return picture.publicObject();
-    };
 };

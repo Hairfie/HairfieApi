@@ -7,5 +7,10 @@
   },
   "searchEngine": {
     "index": "hairfie-staging"
+  },
+  "storage": {
+      "provider": "amazon",
+      "key": "PrUqcGrncCKZ8mzl92ITDWNVuC74sUj7pao8V07i",
+      "keyId": "AKIAISMKKWD73GJESOJQ"
   }
 }
