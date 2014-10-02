@@ -29,7 +29,18 @@ module.exports = function (Container) {
         //       function
         Container.upload = function (req, res, cb) {
             var client = Container.dataSource.connector.client;
-            upload(client, req, res, Container.prefixName(req.params.container), cb);
+
+            upload(client, req, res, Container.prefixName(req.params.container), function (error, result) {
+                if (error) return cb(error);
+
+                for (var name in result.files) if (result.files.hasOwnProperty(name)) {
+                     result.files[name] = Picture
+                         .fromContainer(result.files[name][0].name, req.params.container, app.get('url'))
+                         .toRemoteObject();
+                }
+
+                cb(null, result);
+            });
         };
 
         Container.remoteMethod('upload', {
