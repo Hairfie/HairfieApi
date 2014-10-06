@@ -210,6 +210,7 @@ module.exports = function(User) {
         description: 'Gets the businesses managed by the user',
         accepts: [
             {arg: 'userId', type: 'String', required: true, description: 'Identifier of the user'}
-        ]
+        ],
+        http: { path: '/:userId/managed-businesses', verb: 'GET' }
     });
 }
