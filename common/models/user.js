@@ -156,10 +156,7 @@ module.exports = function(User) {
             if (error) return callback(error)
             if (!user) return callback({statusCode: 404});
 
-            Business.find({ownerId: user.id}, function (error, businesses) {
-                if (error) return callback(error);
-                callback(null, businesses);
-            });
+            Business.find({where: {ownerId: user.id}}, callback);
         });
     };
 
@@ -211,6 +208,7 @@ module.exports = function(User) {
         accepts: [
             {arg: 'userId', type: 'String', required: true, description: 'Identifier of the user'}
         ],
+        returns: {arg: 'businesses', root: true},
         http: { path: '/:userId/managed-businesses', verb: 'GET' }
     });
 }
