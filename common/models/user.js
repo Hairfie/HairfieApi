@@ -150,7 +150,7 @@ module.exports = function(User) {
     };
 
     User.managedBusinesses = function (userId, callback) {
-        var BusinessClaim = User.app.models.BusinessClaim;
+        var Business = User.app.models.Business;
 
         User.findById(userId, function (error, user) {
             if (error) return callback(error)
