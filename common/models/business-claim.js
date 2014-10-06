@@ -64,6 +64,6 @@ module.exports = function (BusinessClaim) {
             {arg: 'businessClaimId', type: 'ObjectId', description: 'Identifier of the business claim'}
         ],
         returns: {arg: 'Business', root: true},
-        http: { verb: 'GET', path: '/:businessClaimId/submit' }
+        http: { verb: 'POST', path: '/:businessClaimId/submit' }
     });
 }
