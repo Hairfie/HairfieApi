@@ -1,7 +1,10 @@
 {
   "name": "HairfieApi",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "main": "server/server.js",
+  "engines": {
+    "node": "~0.11.13"
+  },
   "dependencies": {
     "MD5": "^1.2.1",
     "async": "^0.9.0",
