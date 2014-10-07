@@ -214,10 +214,10 @@ module.exports = function(Business) {
     Business.remoteMethod('nearby', {
         description: 'Find nearby locations around you',
         accepts: [
-            {arg: 'here', type: 'GeoPoint', required: true, description: 'geo location:lng,lat. For ex : 2.30,48.87'},
-            {arg: 'query', type: 'String', description: 'plain text search'},
-            {arg: 'page', type: 'Number', description: 'number of pages (page size defined by limit)'},
-            {arg: 'limit', type: 'Number', description: 'number of businesss to get, default=10'}
+            {arg: 'here', type: 'string', required: true, description: 'geo location:lng,lat. For ex : 2.30,48.87'},
+            {arg: 'query', type: 'string', description: 'plain text search'},
+            {arg: 'page', type: 'number', description: 'number of pages (page size defined by limit)'},
+            {arg: 'limit', type: 'number', description: 'number of businesss to get, default=10'}
         ],
         returns: {arg: 'businesses', root: true},
         http: { verb: 'GET' }
@@ -227,7 +227,7 @@ module.exports = function(Business) {
         description: 'Find similar businesses',
         accepts: [
             {arg: 'businessId', type: 'ObjectId', description: 'ID of the reference business'},
-            {arg: 'limit', type: 'Number', description: 'number of businesss to get, default=10'}
+            {arg: 'limit', type: 'number', description: 'number of businesss to get, default=10'}
         ],
         returns: {arg: 'businesses', root: true},
         http: { verb: 'GET', path: '/:businessId/similar' }
