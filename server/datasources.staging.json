@@ -3,6 +3,8 @@
         "name": "hairfieMongo",
         "connector": "mongodb",
         "host": "mongo.staging.hairfie.com",
+        "user": "staging",
+        "password": "stagingpass",
         "database": "hairfie-staging"
     },
     "searchEngine": {
