@@ -27,6 +27,8 @@ module.exports = function (SearchEngine) {
                 };
             }
 
+            console.log(searchParams);
+
             client = elasticsearch.Client(params);
         }
 
