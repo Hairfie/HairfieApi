@@ -58,7 +58,8 @@
             "findById",
             "nearby",
             "similar",
-            "submitErrorReport"
+            "submitErrorReport",
+            "updateAttributes"
         ],
         "mongodb": {
             "collection": "businesses"

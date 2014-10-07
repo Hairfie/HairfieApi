@@ -194,6 +194,23 @@ module.exports = function(Business) {
         });
     };
 
+    Business.beforeRemote('*.updateAttributes', function (ctx, _, next) {
+        // user must be logged in
+        if (!ctx.req.accessToken) {
+            return next({errorCode: 401});
+        }
+
+        // only the owner can update a business
+        if (!ctx.req.accessToken.userId != ctx.instance.ownerId) {
+            return next({errorCode: 403});
+        }
+
+        // remove some fields if present
+        delete ctx.req.body.ownerId;
+
+        next();
+    });
+
     Business.remoteMethod('nearby', {
         description: 'Find nearby locations around you',
         accepts: [
