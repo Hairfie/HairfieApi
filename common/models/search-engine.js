@@ -17,9 +17,17 @@ module.exports = function (SearchEngine) {
 
     function getClient() {
         if (!client) {
-            client = elasticsearch.Client({
-                host: getSettings().host
-            });
+            var params = {};
+            params.host = getSettings().host;
+            params.port = getSettings().port;
+            if (getSettings().user && getSettings().pass) {
+                params.auth = {
+                    username: getSettings().user,
+                    password: getSettings().pass
+                };
+            }
+
+            client = elasticsearch.Client(params);
         }
 
         return client;

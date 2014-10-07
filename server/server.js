@@ -1,5 +1,4 @@
-if (!!process.env.NEW_RELIC_ENABLED) {
-    console.log('Newrelic in da place!');
+if (process.env.NEW_RELIC_LICENSE_KEY) {
     require('newrelic');
 }
 
@@ -124,7 +123,7 @@ app.use(loopback.errorHandler());
 
 app.start = function() {
   // start the web server
-  return app.listen(function() {
+  return app.listen(process.env.PORT, function() {
     app.emit('started');
     console.log('Web server listening at: %s', app.get('url'));
   });
