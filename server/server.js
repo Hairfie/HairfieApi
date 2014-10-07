@@ -123,7 +123,7 @@ app.use(loopback.errorHandler());
 
 app.start = function() {
   // start the web server
-  return app.listen(process.env.PORT, function() {
+  return app.listen(process.env.PORT || 3000, function() {
     app.emit('started');
     console.log('Web server listening at: %s', app.get('url'));
   });
