@@ -1,6 +1,8 @@
 'use strict';
 
-module.exports = Promise = require('q');
+var Promise = require('q');
+
+module.exports = Promise;
 
 /**
  * Items can be an array or a promise for an array. Each item can be a promise too.

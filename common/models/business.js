@@ -226,7 +226,7 @@ module.exports = function(Business) {
     Business.remoteMethod('similar', {
         description: 'Find similar businesses',
         accepts: [
-            {arg: 'businessId', type: 'ObjectId', description: 'ID of the reference business'},
+            {arg: 'businessId', type: 'string', description: 'ID of the reference business'},
             {arg: 'limit', type: 'number', description: 'number of businesss to get, default=10'}
         ],
         returns: {arg: 'businesses', root: true},

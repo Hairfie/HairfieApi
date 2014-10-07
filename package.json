@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server/server.js",
   "engines": {
-    "node": "~0.11.13"
+    "node": "~0.10.0"
   },
   "dependencies": {
     "MD5": "^1.2.1",
@@ -27,7 +27,7 @@
     "loopback-connector-rest": "^1.2.1",
     "loopback-datasource-juggler": "^2.5.2",
     "morgan": "^1.3.0",
-    "newrelic": "^1.10.0",
+    "newrelic": "^1.11.5",
     "passport": "^0.2.0",
     "passport-facebook-token": "^0.3.1",
     "q": "^1.0.1"

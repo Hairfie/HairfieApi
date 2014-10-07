@@ -126,7 +126,7 @@ module.exports = function(User) {
         HairfieLike.findOne({where: likeData}, function (error, like) {
             if (error) return callback(error);
             if (!like) return callback({statusCode: 404});
-            callback(null, like);
+            callback();
         });
     };
 

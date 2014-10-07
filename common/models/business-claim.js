@@ -61,7 +61,7 @@ module.exports = function (BusinessClaim) {
     BusinessClaim.remoteMethod('submit', {
         description: 'Submit the business claim',
         accepts: [
-            {arg: 'businessClaimId', type: 'ObjectId', description: 'Identifier of the business claim'}
+            {arg: 'businessClaimId', type: 'string', description: 'Identifier of the business claim'}
         ],
         returns: {arg: 'Business', root: true},
         http: { verb: 'POST', path: '/:businessClaimId/submit' }

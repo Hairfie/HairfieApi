@@ -59,8 +59,8 @@ module.exports = function (Container) {
             accepts: [
                 {arg: 'container', type: 'string', 'http': {source: 'path'}},
                 {arg: 'file', type: 'string', 'http': {source: 'path'}},
-                {arg: 'width', type: 'String', description: 'Desired width'},
-                {arg: 'height', type: 'String', description: 'Desired height'},
+                {arg: 'width', type: 'string', description: 'Desired width'},
+                {arg: 'height', type: 'string', description: 'Desired height'},
                 {arg: 'res', type: 'object', 'http': {source: 'res'}}
             ],
             http: {verb: 'get', path: '/:container/download/:file'}
