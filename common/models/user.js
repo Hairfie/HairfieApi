@@ -126,7 +126,7 @@ module.exports = function(User) {
         HairfieLike.findOne({where: likeData}, function (error, like) {
             if (error) return callback(error);
             if (!like) return callback({statusCode: 404});
-            callback(null, null);
+            callback(null, like);
         });
     };
 
@@ -170,19 +170,18 @@ module.exports = function(User) {
     User.remoteMethod('likedHairfie', {
         description: 'Returns a hairfie liked by the user (or 404 if not liked)',
         accepts: [
-            {arg: 'userId', type: 'String', required: true, description: 'Identifier of the user'},
-            {arg: 'hairfieId', type: 'String', required: true, description: 'Identifier of the hairfie'}
+            {arg: 'userId', type: 'string', required: true, description: 'Identifier of the user'},
+            {arg: 'hairfieId', type: 'string', required: true, description: 'Identifier of the hairfie'}
         ],
-        returns: {arg: 'hairfie', root: true},
         http: { path: '/:userId/liked-hairfies/:hairfieId', verb: 'HEAD' }
     });
     User.remoteMethod('getHairfieLikes', {
         description: 'List of hairfies liked by the user',
         accepts: [
-            {arg: 'userId', type: 'String', required: true, description: 'Identifier of the user'},
-            {arg: 'until', type: 'Date', description: 'Ignore hairfies liked after this date'},
-            {arg: 'limit', type: 'Number', description: 'Maximum number of hairfies to return'},
-            {arg: 'skip', type: 'Number', description: 'Number of hairfies to skip'}
+            {arg: 'userId', type: 'string', required: true, description: 'Identifier of the user'},
+            {arg: 'until', type: 'string', description: 'Ignore hairfies liked after this date'},
+            {arg: 'limit', type: 'number', description: 'Maximum number of hairfies to return'},
+            {arg: 'skip', type: 'number', description: 'Number of hairfies to skip'}
         ],
         returns: {arg: 'hairfies', root: true},
         http: { path: '/:userId/liked-hairfies', verb: 'GET' }
@@ -190,23 +189,23 @@ module.exports = function(User) {
     User.remoteMethod('likeHairfie', {
         description: 'Like a hairfie',
         accepts: [
-            {arg: 'userId', type: 'String', required: true, description: 'Identifier of the user'},
-            {arg: 'hairfieId', type: 'String', required: true, description: 'Identifier of the hairfie'},
+            {arg: 'userId', type: 'string', required: true, description: 'Identifier of the user'},
+            {arg: 'hairfieId', type: 'string', required: true, description: 'Identifier of the hairfie'},
         ],
         http: { path: '/:userId/liked-hairfies/:hairfieId', verb: 'PUT' }
     });
     User.remoteMethod('unlikeHairfie', {
         description: 'Unlike a hairfie',
         accepts: [
-            {arg: 'userId', type: 'String', required: true, description: 'Identifier of the user'},
-            {arg: 'hairfieId', type: 'String', required: true, description: 'Identifier of the hairfie'},
+            {arg: 'userId', type: 'string', required: true, description: 'Identifier of the user'},
+            {arg: 'hairfieId', type: 'string', required: true, description: 'Identifier of the hairfie'},
         ],
         http: { path: '/:userId/liked-hairfies/:hairfieId', verb: 'DELETE' }
     });
     User.remoteMethod('managedBusinesses', {
         description: 'Gets the businesses managed by the user',
         accepts: [
-            {arg: 'userId', type: 'String', required: true, description: 'Identifier of the user'}
+            {arg: 'userId', type: 'string', required: true, description: 'Identifier of the user'}
         ],
         returns: {arg: 'businesses', root: true},
         http: { path: '/:userId/managed-businesses', verb: 'GET' }
