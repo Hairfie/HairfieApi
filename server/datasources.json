@@ -2,12 +2,14 @@
     "hairfieMongo": {
         "name": "hairfieMongo",
         "connector": "mongodb",
-        "debug" : true
+        "database": "hairfie-dev",
+        "debug": true
     },
     "searchEngine": {
         "name": "searchEngine",
         "type": "memory",
-        "host": "dev.hairfie.com:9200",
+        "host": "dev.hairfie.com",
+        "port": 9200,
         "index": "hairfie-dev"
     },
     "mailer": {

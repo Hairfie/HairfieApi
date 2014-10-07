@@ -14,6 +14,8 @@ module.exports = {
         type: 'memory',
         host: process.env.ELASTIC_HOST,
         port: process.env.ELASTIC_PORT,
+        user: process.env.ELASTIC_USER,
+        pass: process.env.ELASTIC_PASS,
         index: process.env.ELASTIC_INDEX
     },
     mailer: {

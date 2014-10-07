@@ -2,12 +2,19 @@
     "hairfieMongo": {
         "name": "hairfieMongo",
         "connector": "mongodb",
+        "host": "mongo.staging.hairfie.com",
         "database": "hairfie-staging"
     },
     "searchEngine": {
+        "name": "searchEngine",
+        "type": "memory",
+        "host": "elastic.staging.hairfie.com",
+        "port": 9200,
         "index": "hairfie-staging"
     },
     "storage": {
+        "name": "storage",
+        "connector": "loopback-component-storage",
         "provider": "amazon",
         "key": "PrUqcGrncCKZ8mzl92ITDWNVuC74sUj7pao8V07i",
         "keyId": "AKIAISMKKWD73GJESOJQ"

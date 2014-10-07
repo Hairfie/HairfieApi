@@ -1,8 +1,0 @@
-{
-    "hairfieMongo": {
-        "name": "hairfieMongo",
-        "connector": "mongodb",
-        "database": "hairfie-dev",
-        "port": 27017
-    }
-}
