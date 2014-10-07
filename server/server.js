@@ -121,6 +121,8 @@ app.use(loopback.urlNotFound());
 // The ultimate error handler.
 app.use(loopback.errorHandler());
 
+console.log(process.env.PORT);
+
 app.start = function() {
   // start the web server
   return app.listen(function() {
