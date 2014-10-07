@@ -71,7 +71,6 @@ module.exports = function (Container) {
 
         var oldGetFile = Container.getFile;
         Container.getFile = function (container, file, cb) {
-            console.log("getFile");
             oldGetFile(Container.prefixName(container), file, cb);
         };
     });
@@ -144,7 +143,9 @@ function upload(provider, req, res, container, cb) {
         if ('content-type' in part.headers) {
             headers['content-type'] = part.headers['content-type'];
         }
-        var writer = provider.upload({container: container, remote: part.filename}, console.log);
+        var writer = provider.upload({container: container, remote: part.filename}, function (error) {
+            if (error) console.log('Error uploading file:', error);
+        });
 
         var endFunc = function () {
             self._flushing--;
