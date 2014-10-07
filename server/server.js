@@ -1,4 +1,5 @@
-if (process.env.NEW_RELIC_LICENSE_KEY) {
+if (!!process.env.NEW_RELIC_ENABLED) {
+    console.log('Newrelic in da place!');
     require('newrelic');
 }
 
