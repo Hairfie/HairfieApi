@@ -8,8 +8,6 @@ var fs = require('fs')
   , gm = require('gm');
 
 module.exports = function (Container) {
-    Container.definition.settings.sharedMethodNames = ['download', 'upload'];
-
     Container.prefixName = function (name) { throw Error('Not initialized'); };
 
     Container.on('attached', function (app) {
@@ -84,12 +82,6 @@ module.exports = function (Container) {
             ctx.args.container = Container.prefixName(ctx.args.container);
         }
         next();
-    });
-
-    // prevent file's removal
-    Container.on('attached', function (app) {
-        Container.destroyContainer.shared = false;
-        Container.removeFile.shared = false;
     });
 }
 

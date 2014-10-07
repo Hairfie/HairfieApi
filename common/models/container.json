@@ -5,5 +5,8 @@
     "validations": [],
     "relations": {},
     "acls": [],
-    "methods": []
+    "methods": [],
+    "options": {
+        "sharedMethodNames": ["download", "upload"]
+    }
 }

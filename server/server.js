@@ -17,11 +17,11 @@ var passportConfigurator = new PassportConfigurator(app);
 var path = require('path');
 app.use(loopback.static(path.resolve(__dirname, '../client')));
 
-function getAuthProvidersConfig() {
+function loadConfig(name, env) {
     var candidates = [
-        './auth-providers.'+process.env.NODE_ENV,
-        './auth-providers.local',
-        './auth-providers'
+        './'+name,
+        './'+name+'.local',
+        './'+name+'.'+process.env.NODE_ENV
     ];
 
     var configs = candidates
@@ -47,7 +47,8 @@ function getAuthProvidersConfig() {
 
     return result;
 }
-var passportConfig = getAuthProvidersConfig();
+
+var passportConfig = loadConfig('auth-providers', process.env.NODE_ENV);
 if (!passportConfig) {
     console.log('Unable to load passport config.');
     process.exit(1);
@@ -74,7 +75,10 @@ app.use(loopback.logger('dev'));
 // -- Add your pre-processing middleware here --
 
 // boot scripts mount components like REST API
-boot(app, __dirname);
+boot(app, {
+    appRootDir: __dirname,
+    dataSources: loadConfig('datasources', process.env.NODE_ENV)
+});
 
 // setup passport
 var passport = passportConfigurator.init();
