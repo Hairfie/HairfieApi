@@ -1,0 +1,9 @@
+{
+    "facebook-token": {
+        "provider": "facebook",
+        "module": "passport-facebook-token",
+        "clientID": "769129339805904",
+        "clientSecret": "d7dd8b46d70355d908e2b43414cc54ac",
+        "scope": ["email"]
+    }
+}

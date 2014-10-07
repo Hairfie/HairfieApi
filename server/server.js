@@ -1,4 +1,4 @@
-if ("staging" == process.env.NODE_ENV) {
+if (process.env.NEW_RELIC_LICENSE_KEY) {
     require('newrelic');
 }
 
@@ -17,11 +17,39 @@ var passportConfigurator = new PassportConfigurator(app);
 var path = require('path');
 app.use(loopback.static(path.resolve(__dirname, '../client')));
 
-var passportConfig = {};
-try {
-    passportConfig = require('./auth-providers.json');
-} catch (error) {
-    console.log(error);
+function getAuthProvidersConfig() {
+    var candidates = [
+        './auth-providers.'+process.env.NODE_ENV,
+        './auth-providers.local',
+        './auth-providers'
+    ];
+
+    var configs = candidates
+        .map(function (candidate) {
+            try { return require(candidate+'.js'); } catch(e) {}
+            try { return require(candidate+'.json'); } catch(e) {}
+        })
+        .filter(function (config) {
+            return !!config;
+        })
+    ;
+
+    if (configs.length === 0) {
+        return;
+    }
+
+    var result = {};
+    configs.forEach(function (config) {
+        for (var key in config) if (config.hasOwnProperty(key)) {
+            result[key] = config[key];
+        }
+    });
+
+    return result;
+}
+var passportConfig = getAuthProvidersConfig();
+if (!passportConfig) {
+    console.log('Unable to load passport config.');
     process.exit(1);
 }
 
