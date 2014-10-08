@@ -1,3 +1,3 @@
 module.exports = {
-    url: 'https://'+process.env.HOST
+    url: process.env.URL
 };
