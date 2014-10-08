@@ -5,6 +5,9 @@ var Promise = require('../../common/utils/Promise');
 var Q = require('q');
 
 module.exports = function(User) {
+    User.GENDER_MALE = 'MALE';
+    User.GENDER_FEMALE = 'FEMALE';
+
     User.prototype.toRemoteObject = function () {
         var user = this.toRemoteShortObject();
 
@@ -32,7 +35,7 @@ module.exports = function(User) {
         };
     };
 
-    User.validatesInclusionOf('gender', {in: ['male', 'female']});
+    User.validatesInclusionOf('gender', {in: [User.GENDER_MALE, User.GENDER_FEMALE]});
 
     User.afterCreate = function (next) {
         var user = this;
