@@ -197,12 +197,12 @@ module.exports = function(Business) {
     Business.beforeRemote('*.updateAttributes', function (ctx, _, next) {
         // user must be logged in
         if (!ctx.req.accessToken) {
-            return next({errorCode: 401});
+            return next({statusCode: 401});
         }
 
         // only the owner can update a business
-        if (!ctx.req.accessToken.userId != ctx.instance.ownerId) {
-            return next({errorCode: 403});
+        if (ctx.req.accessToken.userId.toString() != ctx.instance.ownerId.toString()) {
+            return next({statusCode: 403});
         }
 
         // remove some fields if present
