@@ -4,6 +4,8 @@ var Q = require('q');
 var loopback = require('loopback');
 var path = require('path');
 var ejs = require('ejs');
+var juice = require('juice');
+var fs = require('fs');
 
 module.exports = function (Email) {
     var from      = 'Hairfie <hello@hairfie.com>',
@@ -38,7 +40,7 @@ module.exports = function (Email) {
             subject : getSubject(options.template, options.templateVars, language),
             from    : options.from || from,
             to      : options.to,
-            html    : getHtmlBody(options.template, options.templateVars, language),
+            html    : getHtmlStyledBody(options.template, options.templateVars, language),
             text    : getTextBody(options.template, options.templateVars, language)
         });
 
@@ -57,6 +59,14 @@ module.exports = function (Email) {
 
     function getHtmlBody(template, templateVars, language) {
         return loopback.template(relativePath(template, language, 'html'))(templateVars);
+    }
+
+    function getHtmlStyledBody(template, templateVars, language) {
+        var deferred = Q.defer();
+        var cssFile = path.resolve(__dirname, '../../server/emails/stylesheets/email.css');
+        var css = fs.readFileSync(cssFile, 'utf8');
+        var html = getHtmlBody(template, templateVars, language);
+        return juice.inlineContent(html, css);
     }
 
     function getTextBody(template, templateVars, language) {

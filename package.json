@@ -18,6 +18,7 @@
     "formidable": "^1.0.15",
     "function-rate-limit": "0.0.1",
     "gm": "^1.16.0",
+    "juice": "^0.5.0",
     "loopback": "~2.1.0",
     "loopback-boot": "~2.0.0",
     "loopback-component-passport": "^1.0.6",
