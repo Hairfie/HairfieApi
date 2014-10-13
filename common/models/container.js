@@ -175,12 +175,15 @@ function download (provider, req, res, container, file, width, height, cb) {
     res.type(file);
 
     if(width || height) {
-        gm(reader, 'img.jpg')
-        .options({imageMagick: true})
-        .resize(width, height, '^')
-        .gravity('Center')
-        .crop(width, height)
-        .stream(function (err, stdout, stderr) {
+        var resize = gm(reader, 'img.jpg')
+            .options({imageMagick: true})
+            .resize(width, height, '^');
+
+        if (width && height) {
+            resize.gravity('Center').crop(width, height);
+        }
+
+        resize.stream(function (err, stdout, stderr) {
             if(err) res.status(500).send({ error: err });
             stdout.pipe(res);
         });
