@@ -178,6 +178,8 @@ function download (provider, req, res, container, file, width, height, cb) {
         gm(reader, 'img.jpg')
         .options({imageMagick: true})
         .resize(width, height, '^')
+        .gravity('Center')
+        .crop(width, height)
         .stream(function (err, stdout, stderr) {
             if(err) res.status(500).send({ error: err });
             stdout.pipe(res);
