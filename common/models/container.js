@@ -177,7 +177,7 @@ function download (provider, req, res, container, file, width, height, cb) {
     if(width || height) {
         gm(reader, 'img.jpg')
         .options({imageMagick: true})
-        .resize(width, height)
+        .resize(width, height, '^')
         .stream(function (err, stdout, stderr) {
             if(err) res.status(500).send({ error: err });
             stdout.pipe(res);
