@@ -66,6 +66,7 @@ module.exports = function (BusinessClaim) {
                                     hairdresser.lastName = values.lastName;
                                     hairdresser.email = values.email;
                                     hairdresser.phoneNumber = values.phoneNumber;
+                                    hairdresser.active = true;
 
                                     return Promise.npost(hairdresser, 'save');
                                 })
