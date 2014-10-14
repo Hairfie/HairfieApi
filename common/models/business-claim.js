@@ -25,11 +25,13 @@ module.exports = function (BusinessClaim) {
     });
 
     BusinessClaim.submit = function (businessClaimId, callback) {
-        var Business = BusinessClaim.app.models.Business;
+        var Business    = BusinessClaim.app.models.Business,
+            Hairdresser = BusinessClaim.app.models.Hairdresser;
 
         BusinessClaim.findById(businessClaimId, function (error, businessClaim) {
             if (error) return callback(error);
             if (!businessClaim) return callback({statusCode: 404});
+            if (businessClaim.businessId) return callback({statusCode: 500, message: 'Already submited'});
 
             var business = new Business();
             business.name = businessClaim.name;
@@ -40,21 +42,37 @@ module.exports = function (BusinessClaim) {
             business.gps = businessClaim.gps;
             business.pictures = businessClaim.pictures;
             business.services = businessClaim.services;
-            business.hairdressers = businessClaim.hairdressers;
             business.men = businessClaim.men;
             business.women = businessClaim.women;
             business.children = businessClaim.children;
 
-            business.save(function (error, business) {
-                if (error) return callback(error);
+            Promise
+                .npost(business, 'save')
+                .then(function (business) {
+                    businessClaim.businessId = business.id;
 
-                businessClaim.businessId = business.id;
-                businessClaim.save(function (error, _) {
-                    if (error) return callback(error);
+                    var hairdressers = businessClaim.hairdressers;
+                    if (!Array.isArray(hairdressers)) {
+                        hairdressers = [];
+                    }
 
-                    callback(null, business);
-                });
-            });
+                    return Promise
+                        .all([
+                                Promise.npost(businessClaim, 'save'),
+                                Promise.map(hairdressers, function (values) {
+                                    var hairdresser = new Hairdresser();
+                                    hairdresser.businessId = business.id;
+                                    hairdresser.firstName = values.firstName;
+                                    hairdresser.lastName = values.lastName;
+                                    hairdresser.email = values.email;
+                                    hairdresser.phoneNumber = values.phoneNumber;
+
+                                    return Promise.npost(hairdresser, 'save');
+                                })
+                        ])
+                        .then(function () { return business; })
+                })
+                .nodeify(callback);
         });
     };
 

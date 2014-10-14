@@ -42,6 +42,10 @@
         "dataSource": "hairfieMongo",
         "public": true
     },
+    "Hairdresser": {
+        "dataSource": "hairfieMongo",
+        "public": false
+    },
     "Hairfie": {
         "dataSource": "hairfieMongo",
         "public": true

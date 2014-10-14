@@ -7,6 +7,7 @@ var Promise = require('../../common/utils/Promise');
 module.exports = function(Business) {
     Business.prototype.toRemoteObject = function () {
         var Hairfie        = Business.app.models.Hairfie,
+            Hairdresser    = Business.app.models.Hairdresser,
             BusinessReview = Business.app.models.BusinessReview;
 
         return Promise.ninvoke(BusinessReview, 'getBusinessRating', this.id)
@@ -25,6 +26,14 @@ module.exports = function(Business) {
                     pictures.push(streetViewPicture);
                 }
 
+                var hairdressers = Promise
+                    .npost(Hairdresser, 'find', {where: {businessId: this.id}})
+                    .then(function (hairdressers) {
+                        return hairdressers.map(function (hairdresser) {
+                            return hairdresser.toRemoteShortObject();
+                        });
+                    });
+
                 return {
                     id              : this.id,
                     owner           : Promise.ninvoke(this, 'owner').then(function (user) {
@@ -42,7 +51,7 @@ module.exports = function(Business) {
                     rating          : rating.rating,
                     crossSell       : true,
                     services        : this.services,
-                    hairdressers    : this.hairdressers,
+                    hairdressers    : hairdressers,
                     createdAt       : this.createdAt,
                     updatedAt       : this.updatedAt,
                 }
