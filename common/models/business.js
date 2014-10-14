@@ -26,8 +26,8 @@ module.exports = function(Business) {
                     pictures.push(streetViewPicture);
                 }
 
-                var hairdressers = Promise
-                    .npost(Hairdresser, 'find', {where: {businessId: this.id}})
+                var activeHairdressers = Promise
+                    .npost(Hairdresser, 'find', {where: {businessId: this.id, active: true}})
                     .then(function (hairdressers) {
                         return hairdressers.map(function (hairdresser) {
                             return hairdresser.toRemoteShortObject();
@@ -35,25 +35,25 @@ module.exports = function(Business) {
                     });
 
                 return {
-                    id              : this.id,
-                    owner           : Promise.ninvoke(this, 'owner').then(function (user) {
+                    id                 : this.id,
+                    owner              : Promise.ninvoke(this, 'owner').then(function (user) {
                         return user ? user.toRemoteShortObject() : null;
                     }),
-                    name            : this.name,
-                    gps             : this.gps,
-                    phoneNumber     : this.phoneNumber,
-                    timetable       : this.timetable,
-                    address         : this.address,
-                    thumbnail       : streetViewPicture,
-                    pictures        : pictures,
-                    numHairfies     : Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
-                    numReviews      : rating.numReviews,
-                    rating          : rating.rating,
-                    crossSell       : true,
-                    services        : this.services,
-                    hairdressers    : hairdressers,
-                    createdAt       : this.createdAt,
-                    updatedAt       : this.updatedAt,
+                    name               : this.name,
+                    gps                : this.gps,
+                    phoneNumber        : this.phoneNumber,
+                    timetable          : this.timetable,
+                    address            : this.address,
+                    thumbnail          : streetViewPicture,
+                    pictures           : pictures,
+                    numHairfies        : Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
+                    numReviews         : rating.numReviews,
+                    rating             : rating.rating,
+                    crossSell          : true,
+                    services           : this.services,
+                    activeHairdressers : activeHairdressers,
+                    createdAt          : this.createdAt,
+                    updatedAt          : this.updatedAt,
                 }
             }).bind(this));
     };

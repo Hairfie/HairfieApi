@@ -18,6 +18,10 @@
         },
         "phoneNumber": {
             "type": "string"
+        },
+        "active": {
+            "type": "boolean",
+            "required": true
         }
     },
     "validations": [],
@@ -32,6 +36,11 @@
     "methods": [],
     "options": {
         "timestampable": true,
+        "sharedMethodNames": [
+            "findById",
+            "create",
+            "updateAttributes"
+        ],
         "mongodb": {
             "collection": "hairdressers"
         }
