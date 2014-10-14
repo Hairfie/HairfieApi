@@ -107,13 +107,6 @@ module.exports = function(Business) {
                                 }
                             }
                         }
-                    },
-                    sort: {
-                        _geo_distance: {
-                            gps: here.asElasticPoint(),
-                            order: 'asc',
-                            unit: 'm'
-                        }
                     }
                 }
 
@@ -124,6 +117,14 @@ module.exports = function(Business) {
                                 query: query,
                                 fuzziness: "AUTO"
                             }
+                        }
+                    };
+                } else {
+                    body.sort = {
+                        _geo_distance: {
+                            gps: here.asElasticPoint(),
+                            order: 'asc',
+                            unit: 'm'
                         }
                     };
                 }
