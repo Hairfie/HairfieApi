@@ -27,7 +27,7 @@ module.exports = function(Business) {
                 }
 
                 var activeHairdressers = Promise
-                    .npost(Hairdresser, 'find', {where: {businessId: this.id, active: true}})
+                    .npost(Hairdresser, 'find', [{where: {businessId: this.id, active: true}}])
                     .then(function (hairdressers) {
                         return hairdressers.map(function (hairdresser) {
                             return hairdresser.toRemoteShortObject();
