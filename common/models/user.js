@@ -163,10 +163,22 @@ module.exports = function(User) {
         });
     };
 
+    User.beforeRemote('findById', function (ctx, _, next) {
+        var accessToken = ctx.req.accessToken;
+        if (!accessToken) return next({statusCode: 401});
+        if (accessToken.userId.toString() != ctx.req.params.id.toString()) return next({statusCode: 403});
+        next();
+    });
+
     User.beforeRemote(['likedHairfie', 'likedHairfies', 'likeHairfie', 'unlikeHairfie'], function (ctx, _, next) {
         var accessToken = ctx.req.accessToken;
-        if (!accessToken) return next('You must be logged in.');
-        if (!accessToken.userId != ctx.req.params.userId) return next('User mismatch');
+        if (!accessToken) return next({statusCode: 401});
+        if (!accessToken.userId != ctx.req.params.userId) return next({statusCode: 403});
+        next();
+    });
+
+    User.afterRemote('create', function (ctx, _, next) {
+        ctx.res.status(201);
         next();
     });
 

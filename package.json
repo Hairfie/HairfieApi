@@ -33,6 +33,11 @@
     "passport-facebook-token": "^0.3.1",
     "q": "^1.0.1"
   },
+  "devDependencies": {
+    "chai": "^1.9.2",
+    "mocha": "^1.21.5",
+    "supertest": "^0.14.0"
+  },
   "optionalDependencies": {
     "loopback-explorer": "^1.1.0"
   },
