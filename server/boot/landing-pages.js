@@ -29,6 +29,9 @@ module.exports = function (app) {
                     metas.push({property: "og:url", content: canonicalUrl});
                     metas.push({property: "og:title", content: title});
                     metas.push({property: "og:image", content: hairfie.pictureObject().url()});
+                    if (hairfie.description) {
+                        metas.push({property: "og:description", content: hairfie.description});
+                    }
                     if (authorUrl) {
                         metas.push({property: "hairfie:author", content: authorUrl});
                     }
