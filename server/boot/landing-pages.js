@@ -82,8 +82,8 @@ module.exports = function (app) {
                     var timeWindows = business.timetable[day];
                     for (var i = 0; i < Math.min(timeWindows.length, 2); i++) {
                         var timeWindow = timeWindows[i];
-                        metas.push({property: "hours:"+day.toLowerCase()+"_"+(i+1)+"_open", content: timeWindow.startTime});
-                        metas.push({property: "hours:"+day.toLowerCase()+"_"+(i+1)+"_close", content: timeWindow.endTime});
+                        metas.push({property: "business:hours:"+day.toLowerCase()+"_"+(i+1)+"_open", content: timeWindow.startTime});
+                        metas.push({property: "business:hours:"+day.toLowerCase()+"_"+(i+1)+"_close", content: timeWindow.endTime});
                     }
                 }
             }
