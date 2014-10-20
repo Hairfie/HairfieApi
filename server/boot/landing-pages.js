@@ -40,7 +40,7 @@ module.exports = function (app) {
                     }
 
                     res.status(200);
-                    res.send(loopback.template('server/views/landingPages/landingPage.html.ejs')({
+                    res.send(loopback.template(__dirname+'/../views/landingPages/landingPage.html.ejs')({
                         title           : title,
                         metas           : metas,
                         canonicalUrl    : canonicalUrl,
