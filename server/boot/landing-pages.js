@@ -6,6 +6,20 @@ module.exports = function (app) {
     var Hairfie  = app.models.Hairfie,
         Business = app.models.Business;
 
+    var daysOfWeek = {
+        MON: 'monday',
+        TUE: 'tuesday',
+        WED: 'wednesday',
+        THU: 'thursday',
+        FRI: 'friday',
+        SAT: 'saturday',
+        SUN: 'sunday'
+    };
+
+    function fullDayOfWeek(abbr) {
+        return daysOfWeek[abbr];
+    }
+
     app.get('/hairfie/:id', function (req, res) {
         Hairfie.findById(req.params.id, function (error, hairfie) {
             if (error) return res.status(500);
@@ -80,10 +94,14 @@ module.exports = function (app) {
             if (business.timetable) {
                 for (var day in business.timetable) {
                     var timeWindows = business.timetable[day];
+
+                    if (0 == timeWindows.length) continue;
+
+                    metas.push({property: "business:hours:day", content: fullDayOfWeek(day)});
                     for (var i = 0; i < Math.min(timeWindows.length, 2); i++) {
                         var timeWindow = timeWindows[i];
-                        metas.push({property: "business:hours:"+day.toLowerCase()+"_"+(i+1)+"_open", content: timeWindow.startTime});
-                        metas.push({property: "business:hours:"+day.toLowerCase()+"_"+(i+1)+"_close", content: timeWindow.endTime});
+                        metas.push({property: "business:hours:start", content: timeWindow.startTime});
+                        metas.push({property: "business:hours:end", content: timeWindow.endTime});
                     }
                 }
             }
