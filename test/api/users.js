@@ -5,7 +5,6 @@ var should = require('chai').should(),
     helper = require('./helper.js')(app);
 
 describe('POST /api/users', function ()  {
-
     beforeEach(function (done) {
         helper.clearEverything().then(done.bind(null, null), done);
     });
@@ -40,7 +39,6 @@ describe('POST /api/users', function ()  {
             })
         ;
     });
-
 });
 
 describe('POST /api/users/login', function () {
@@ -155,7 +153,7 @@ describe('PUT /api/users/:id', function () {
         sarah       = null,
         georgeToken = null;
 
-    beforeEach(function (done) {
+    before(function (done) {
         helper.clearEverything()
             .then(function () {
                 return helper.createUser({firstName: 'George'});
@@ -171,10 +169,97 @@ describe('PUT /api/users/:id', function () {
             .then(function (user) {
                 sarah = user;
             })
-            .then(done, done);
+            .then(done.bind(null, null), done);
     });
 
-    it('should update user');
-    it('should reject non authenticated requests');
-    it('should reject requests from another user');
+    it('should update user', function (done) {
+        api
+            .put('/api/users/'+george.id)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .set('Authorization', georgeToken.id)
+            .send({
+                phoneNumber: '+33 2 11 22 33 44'
+            })
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+            .end(function (error, response) {
+                should.not.exist(error);
+
+                response.body.should.be.an('object');
+                response.body.should.have.property('id', george.id.toString());
+                response.body.should.have.property('firstName', 'George', 'property not sent');
+                response.body.should.have.property('phoneNumber', '+33 2 11 22 33 44', 'property changed');
+
+                done();
+            })
+
+    });
+
+    it('should reject non authenticated requests', function (done) {
+        api
+            .put('/api/users/'+george.id)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .send({
+                phoneNumber: '+33 2 11 22 33 44'
+            })
+            .expect(401, done)
+        ;
+    });
+
+    it('should reject requests from another user', function (done) {
+        api
+            .put('/api/users/'+sarah.id)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .set('Authorization', georgeToken.id)
+            .send({
+                phoneNumber: '+33 2 11 22 33 44'
+            })
+            .expect(403, done)
+        ;
+    });
+});
+
+describe('HEAD /api/users/:userId/liked-hairfies/:hairfieId', function () {
+    var george, firstHairfie, secondHairfie;
+
+    before(function (done) {
+        helper.clearEverything()
+            .then(function () {
+                return helper.createUser({firstName: 'George'});
+            })
+            .then(function (user) {
+                george = user;
+                return helper.createHairfie({author: george});
+            })
+            .then(function (hairfie) {
+                firstHairfie = hairfie;
+                return helper.createHairfie({author: george});
+            })
+            .then(function (hairfie) {
+                secondHairfie = hairfie;
+                return helper.createHairfieLikeForUserAndHairfie(george, firstHairfie);
+            })
+            .then(done.bind(null, null), done);
+    });
+
+    /**
+     * There is some issue with 204 responses, @see https://github.com/visionmedia/superagent/issues/472
+     */
+
+    //it('should return 204 response when user likes hairfie', function (done) {
+    //    api
+    //        .head('/api/users/'+george.id+'/liked-hairfies/'+firstHairfie.id)
+    //        .expect(204, done)
+    //    ;
+    //});
+
+    //it('should return 404 response when user does not like hairfie', function (done) {
+    //    api
+    //        .head('/api/users/'+george.id+'/liked-hairfies/'+secondHairfie.id)
+    //        .expect(404, done)
+    //    ;
+    //});
 });

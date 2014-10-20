@@ -2,6 +2,10 @@
 
 var Q = require('q');
 var extend = require('extend');
+var http = require('http');
+var fs = require("fs");
+var md5 = require('MD5');
+var crypto = require('crypto');
 
 function Helper(app) {
     if (!this) return new Helper(app);
@@ -41,4 +45,34 @@ Helper.prototype.createUser = function (values) {
 
 Helper.prototype.createAccessTokenForUser = function (user) {
     return Q.npost(this.app.models.accessToken, 'create', [{userId: user.id}]);
+};
+
+Helper.prototype.createHairfie = function (values) {
+    var values  = values || {};
+
+    return Q(values.picture || this.uploadPicture('hairfies', 'hairfie.jpg'))
+        .then((function (picture) {
+            values.picture = picture;
+
+            return Q.npost(this.app.models.Hairfie, 'create', [values]);
+        }).bind(this));
+};
+
+Helper.prototype.createHairfieLikeForUserAndHairfie = function (user, hairfie) {
+    return Q.npost(this.app.models.HairfieLike, 'create', [{userId: user.id, hairfieId: hairfie.id}]);
+};
+
+Helper.prototype.uploadPicture = function (container, assetName) {
+    var deferred     = Q.defer(),
+        targetName   = md5(crypto.randomBytes(256))+'.'+/(?:\.([^.]+))?$/.exec(assetName)[1],
+        assetStream  = fs.createReadStream(__dirname+'/../assets/'+assetName),
+        uploadStream = this.app.models.Container.uploadStream(container, targetName);
+
+    assetStream.on('end', function () {
+        deferred.resolve(targetName);
+    });
+
+    assetStream.pipe(uploadStream);
+
+    return deferred.promise;
 };

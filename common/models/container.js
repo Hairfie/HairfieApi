@@ -18,6 +18,11 @@ module.exports = function (Container) {
             return ['hairfie', env, name].join('-');
         };
 
+        var originalUploadStream = Container.uploadStream;
+        Container.uploadStream = function (container, file, options, cb) {
+            return originalUploadStream(Container.prefixName(container), file, options, cb);
+        };
+
         // Generate random filenames
         //
         // @note Seems we need to define the remote from this hook because we
