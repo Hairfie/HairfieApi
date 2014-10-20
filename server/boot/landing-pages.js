@@ -89,8 +89,8 @@ module.exports = function (app) {
             }
 
             if (business.gps) {
-                metas.push({property: "business:location:latitude", content: business.gps.lat});
-                metas.push({property: "business:location:longitude", content: business.gps.lng});
+                metas.push({property: "place:location:latitude", content: business.gps.lat});
+                metas.push({property: "place:location:longitude", content: business.gps.lng});
             }
 
             business.pictureObjects().map(function (picture) {
