@@ -49,6 +49,7 @@ module.exports = function(Business) {
                     crossSell          : true,
                     services           : this.services,
                     activeHairdressers : activeHairdressers,
+                    landingPageUrl     : Business.app.urlGenerator.business(this),
                     createdAt          : this.createdAt,
                     updatedAt          : this.updatedAt,
                 }
@@ -67,7 +68,7 @@ module.exports = function(Business) {
         return getSlug(this.name);
     };
 
-    Business.pictureObjects = function () {
+    Business.prototype.pictureObjects = function () {
         if (!Array.isArray(this.pictures)) {
             return [];
         }
