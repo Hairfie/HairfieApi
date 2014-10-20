@@ -36,6 +36,7 @@ module.exports = function(Business) {
                         return user ? user.toRemoteShortObject() : null;
                     }),
                     name               : this.name,
+                    description        : this.description,
                     gps                : this.gps,
                     phoneNumber        : this.phoneNumber,
                     timetable          : this.timetable,
