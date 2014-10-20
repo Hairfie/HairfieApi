@@ -1,14 +1,10 @@
 'use strict';
 
-function Picture(values, appUrl) {
-    if (!this instanceof Picture) return new Picture(values, url);
+function Picture(values, app) {
+    if (!this instanceof Picture) return new Picture(values, app);
 
-    values = values || {};
-
-    this.name = values.name;
-    this.container = values.container;
-    this.url = values.url;
-    this.appUrl = appUrl;
+    this.values = values || {};
+    this.app = app;
 }
 
 module.exports = Picture;
@@ -17,22 +13,22 @@ Picture.fromUrl = function (url) {
     return new Picture({url: url});
 };
 
-Picture.fromContainer = function (name, container, appUrl) {
-    return new Picture({name: name, container: container}, appUrl);
+Picture.fromContainer = function (name, container, app) {
+    return new Picture({name: name, container: container}, app);
 };
 
 Picture.fromDatabaseValue = function (value, container, app) {
     if (!value) return;
 
     if (isUrl(value)) {
-        return Picture.fromUrl(value, app.get('url'));
+        return Picture.fromUrl(value, app);
     }
 
-    return Picture.fromContainer(value, container, app.get('url'));
+    return Picture.fromContainer(value, container, app);
 };
 
 Picture.prototype.toDatabaseValue = function () {
-    return this.name ? this.name : this.url;
+    return this.values.name ? this.values.name : this.url();
 };
 
 Picture.fromRemoteObject = function (obj, app) {
@@ -46,17 +42,25 @@ Picture.fromRemoteObject = function (obj, app) {
 };
 
 Picture.prototype.toRemoteObject = function () {
-    if (this.name) {
-        return {
-            name        : this.name,
-            container   : this.container,
-            url         : this.appUrl + '/api/containers/'+this.container+'/download/'+this.name
-        };
+    var obj = {url: this.url()};
+
+    if (this.values.name) {
+        obj.name = this.values.name;
+        obj.container = this.values.container;
     }
 
-    return {
-        url : this.url
-    };
+    return obj;
+};
+
+Picture.prototype.url = function () {
+    if (this.values.name) {
+        return this.app.generateUrl('pictureDownload', {
+            container: this.values.container,
+            name: this.values.name
+        });
+    }
+
+    return this.url;
 };
 
 function isUrl(name) {

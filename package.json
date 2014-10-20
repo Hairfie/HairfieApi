@@ -31,7 +31,8 @@
     "newrelic": "^1.11.5",
     "passport": "^0.2.0",
     "passport-facebook-token": "^0.3.1",
-    "q": "^1.0.1"
+    "q": "^1.0.1",
+    "speakingurl": "^0.15.0"
   },
   "devDependencies": {
     "chai": "^1.9.2",

@@ -3,6 +3,7 @@
 var async = require('async');
 var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 var Promise = require('../../common/utils/Promise');
+var getSlug = require('speakingurl');
 
 module.exports = function(Business) {
     Business.prototype.toRemoteObject = function () {
@@ -14,12 +15,7 @@ module.exports = function(Business) {
             .then((function (rating) {
                 var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject();
 
-                var pictures = [];
-                if (Array.isArray(this.pictures)) {
-                    pictures = this.pictures.map(function (picture) {
-                        return Picture.fromDatabaseValue(picture, 'business-pictures', Business.app).toRemoteObject();
-                    });
-                }
+                var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
 
                 // add street view when business has no picture
                 if (0 == pictures.length) {
@@ -64,6 +60,20 @@ module.exports = function(Business) {
             name    : this.name,
             address : this.address
         };
+    };
+
+    Business.prototype.slug = function () {
+        return getSlug(this.name);
+    };
+
+    Business.pictureObjects = function () {
+        if (!Array.isArray(this.pictures)) {
+            return [];
+        }
+
+        return this.pictures.map(function (picture) {
+            return Picture.fromDatabaseValue(picture, 'business-pictures', Business.app);
+        });
     };
 
     Business.afterSave = function (next) {

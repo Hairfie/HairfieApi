@@ -20,12 +20,24 @@ UrlGenerator.prototype.generate = function (name, params) {
     }
 
     return this.pathToUrl(path);
-}
+};
+
+UrlGenerator.prototype.home = function () {
+    return this.pathToUrl('/');
+};
 
 UrlGenerator.prototype.hairfie = function (hairfie) {
     return this.generate('hairfie', {id: hairfie.id});
-}
+};
+
+UrlGenerator.prototype.user = function (user) {
+    return this.generate('user', {id: user.id});
+};
+
+UrlGenerator.prototype.business = function (business) {
+    return this.generate('business', {id: business.id, slug: business.slug()});
+};
 
 UrlGenerator.prototype.pathToUrl = function (path) {
-    return this.options.baseUrl+path;
-}
+    return this.options.baseUrl.replace(/\/$/, '')+path;
+};

@@ -10,7 +10,7 @@ module.exports = function (Hairfie) {
 
         return {
             id              : this.id,
-            picture         : Picture.fromDatabaseValue(this.picture, 'hairfies', Hairfie.app).toRemoteObject(),
+            picture         : this.pictureObject().toRemoteObject(),
             price           : this.price,
             description     : this.description,
             hairdresserName : this.hairdresserName,
@@ -26,6 +26,10 @@ module.exports = function (Hairfie) {
             createdAt       : this.createdAt,
             updatedAt       : this.updatedAt,
         };
+    };
+
+    Hairfie.prototype.pictureObject = function () {
+        return Picture.fromDatabaseValue(this.picture, 'hairfies', Hairfie.app);
     };
 
     Hairfie.validatesUniquenessOf('picture');

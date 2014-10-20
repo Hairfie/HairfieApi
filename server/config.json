@@ -1,4 +1,6 @@
 {
+    "facebookAppId": "726709544031609",
+    "facebookAppNamespace": "hairfie",
     "host": "localhost",
     "restApiRoot": "/api"
 }

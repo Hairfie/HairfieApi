@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# hairfie: http://ogp.me/ns/fb/hairfie#">
+    <meta charset="utf-8">
+    <% for (var i = 0; i < metas.length; i++) { %>
+        <meta property="<%= metas[i].property %>" content="<%= metas[i].content %>" />
+    <% } %>
+    <title><%= title %></title>
+</head>
+<body>
+    <script type="text/javascript">
+        window.location.href = "<%= homeUrl %>";
+    </script>
+</body>
+</html>

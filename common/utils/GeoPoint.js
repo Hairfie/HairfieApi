@@ -8,5 +8,8 @@ module.exports.GeoPoint.prototype.asElasticPoint = function () {
 }
 
 module.exports.GeoPoint.prototype.streetViewPic = function(app) {
-    return app.get('url')+'/service/google/streetview/'+this.lat+'/'+this.lng;
+    return app.generateUrl('streetView', {
+        latitude: this.lat,
+        longitude: this.lng
+    });
 };
