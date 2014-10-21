@@ -38,7 +38,7 @@ module.exports = function (Container) {
 
                 for (var name in result.files) if (result.files.hasOwnProperty(name)) {
                      result.files[name] = Picture
-                         .fromContainer(result.files[name][0].name, req.params.container, app.get('url'))
+                         .fromContainer(result.files[name][0].name, req.params.container, app)
                          .toRemoteObject();
                 }
 
