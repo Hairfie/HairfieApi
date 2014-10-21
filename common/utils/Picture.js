@@ -60,7 +60,7 @@ Picture.prototype.url = function () {
         });
     }
 
-    return this.url;
+    return this.values.url;
 };
 
 function isUrl(name) {
