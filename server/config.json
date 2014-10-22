@@ -2,5 +2,6 @@
     "facebookAppId": "726709544031609",
     "facebookAppNamespace": "hairfie",
     "host": "localhost",
-    "restApiRoot": "/api"
+    "restApiRoot": "/api",
+    "locales": ["en", "fr"]
 }

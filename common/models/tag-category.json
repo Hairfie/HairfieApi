@@ -1,0 +1,20 @@
+{
+    "name": "TagCategory",
+    "plural": "TagCategories",
+    "properties": {
+        "name": {
+            "type": "object",
+            "required": true
+        }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [],
+    "methods": [],
+    "options": {
+        "timestampable": true,
+        "mongodb": {
+            "collection": "tagCategories"
+        }
+    }
+}

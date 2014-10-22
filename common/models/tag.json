@@ -1,0 +1,31 @@
+{
+    "name": "Tag",
+    "plural": "Tags",
+    "properties": {
+        "categoryId": {
+            "type": "string",
+            "index": "true",
+            "required": true
+        },
+        "name": {
+            "type": "object",
+            "required": true
+        }
+    },
+    "validations": [],
+    "relations": {
+        "category": {
+            "type": "belongsTo",
+            "model": "TagCategory",
+            "foreignKey": "categoryId"
+        }
+    },
+    "acls": [],
+    "methods": [],
+    "options": {
+        "timestampable": true,
+        "mongodb": {
+            "collection": "tags"
+        }
+    }
+}

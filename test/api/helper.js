@@ -17,7 +17,7 @@ function Helper(app) {
 
 module.exports = Helper;
 
-Helper.prototype.clearEverything = function (callback) {
+Helper.prototype.clearEverything = function () {
     var models = this.app.models.User.dataSource.connector._models;
 
     return Q.all(Object.keys(models).map(function (modelName) {
@@ -75,4 +75,28 @@ Helper.prototype.uploadPicture = function (container, assetName) {
     assetStream.pipe(uploadStream);
 
     return deferred.promise;
+};
+
+Helper.prototype.createTagCategory = function (values) {
+    var values = extend({
+        name: {
+            fr: 'Une Catégorie',
+            en: 'Some Category',
+        }
+    }, values || {});
+
+    return Q.npost(this.app.models.TagCategory, 'create', [values]);
+};
+
+Helper.prototype.createTagWithCategory = function (category, values) {
+    var values = extend({
+        name: {
+            fr: 'Un Tag',
+            en: 'Some Tag',
+        }
+    }, values || {});
+
+    values.categoryId = category.id;
+
+    return Q.npost(this.app.models.Tag, 'create', [values]);
 };

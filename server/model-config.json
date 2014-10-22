@@ -105,5 +105,13 @@
     "container": {
         "dataSource": "storage",
         "public": true
+    },
+    "TagCategory": {
+        "dataSource": "hairfieMongo",
+        "public": false
+    },
+    "Tag": {
+        "dataSource": "hairfieMongo",
+        "public": true
     }
 }
