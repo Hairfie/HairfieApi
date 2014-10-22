@@ -3,7 +3,9 @@
 /* Controllers */
 
 angular.module('myApp.controllers', [])
-    .controller('HomeCtrl', [function () {}])
+    .controller('HomeCtrl', [function () {
+        window.location.href = 'http://soon.hairfie.com';
+    }])
     .controller('ResetPasswordCtrl', ['$scope', '$routeParams', 'LoopBackAuth', 'User', function($scope, $routeParams, LoopBackAuth, User) {
         $scope.token = $routeParams.token;
         $scope.uid = $routeParams.uid;
