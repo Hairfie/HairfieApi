@@ -64,7 +64,15 @@ app.use(function (req, res, next) {
 
     app.models.accessToken.findForRequest(req, {}, function(err, token) {
         req.accessToken = token || null;
-        next(err);
+
+        if (req.accessToken) {
+            app.models.user.findById(req.accessToken.userId, function (error, user) {
+                if (error) return next({statusCode: 500, message: 'Error retrieving user'});
+                if (!user) return next({statusCode: 500, message: 'Access token\'s user not found'});
+                req.user = user;
+                next();
+            });
+        }
     });
 });
 app.use(loopback.compress());
@@ -93,8 +101,8 @@ for (var s in passportConfig) {
 // add endpoint to send token to
 app.use(
     '/auth/facebook/token',
-    passport.authenticate('facebook-token', {
-        scope: passportConfig['facebook-token'].scope
+    passport.authenticate('facebook-token-auth', {
+        scope: passportConfig['facebook-token-auth'].scope
     }),
     function (req, res) {
         if (!req.user) return res.status(401);
@@ -106,6 +114,18 @@ app.use(
         });
     }
 );
+
+app.use(
+    '/link/facebook/token',
+    passport.authorize('facebook-token-link', {
+        scope: passportConfig['facebook-token-link'].scope
+    }),
+    function (req, res) {
+        if (!req.account) return res.status(401);
+        res.send({});
+    }
+);
+
 
 // -- Mount static files here--
 // All static middleware should be registered at the end, as all requests

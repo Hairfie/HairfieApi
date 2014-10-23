@@ -1,9 +1,17 @@
 {
-    "facebook-token": {
+    "facebook-token-auth": {
         "provider": "facebook",
         "module": "passport-facebook-token",
-        "clientID": "769129339805904",
-        "clientSecret": "d7dd8b46d70355d908e2b43414cc54ac",
+        "clientID": "1567052370184577",
+        "clientSecret": "ece9f21981bfc95113171d5ef23d38ce",
+        "scope": ["email"]
+    },
+    "facebook-token-link": {
+        "provider": "facebook",
+        "link": true,
+        "module": "passport-facebook-token",
+        "clientID": "1567052370184577",
+        "clientSecret": "ece9f21981bfc95113171d5ef23d38ce",
         "scope": ["email"]
     }
 }

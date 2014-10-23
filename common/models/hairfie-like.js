@@ -3,7 +3,6 @@
 var Promise = require('../../common/utils/Promise');
 
 module.exports = function (HairfieLike) {
-
     HairfieLike.prototype.toRemoteObject = function () {
         return {
             hairfie : Promise.ninvoke(this.hairfie).then(function (hairfie) {
@@ -12,5 +11,4 @@ module.exports = function (HairfieLike) {
             createdAt: this.createdAt
         };
     };
-
 };
