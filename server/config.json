@@ -1,6 +1,7 @@
 {
-    "facebookAppId": "726709544031609",
-    "facebookAppNamespace": "hairfie",
+    "facebookAppId": "1567052370184577",
+    "facebookAppNamespace": "hairfie-dev",
+    "facebookAppAccessToken": "1567052370184577|C2qSlkEfz8-XtgZZzdLJFslO9SE",
     "host": "localhost",
     "restApiRoot": "/api",
     "locales": ["en", "fr"]

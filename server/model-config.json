@@ -58,6 +58,10 @@
         "dataSource": "hairfieMongo",
         "public": false
     },
+    "HairfieShare": {
+        "dataSource": "hairfieMongo",
+        "public": false
+    },
     "SearchEngine": {
         "dataSource": "searchEngine",
         "public": false
