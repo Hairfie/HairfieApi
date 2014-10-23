@@ -91,3 +91,49 @@ describe('GET /api/tags', function () {
         });
     });
 });
+
+describe('POST /api/tags', function () {
+    it('should not be allowed', function (done) {
+            api.post('/api/tags').expect(404, done);
+    });
+});
+
+describe('PUT /api/tags', function () {
+    var tag;
+
+    before(function (done) {
+        helper
+            .clearEverything()
+            .then(helper.createTagCategory.bind(helper, {}))
+            .then(helper.createTagWithCategory.bind(helper))
+            .then(function (t) {
+                tag = t;
+                done();
+            })
+        ;
+    });
+
+    it('should not be allowed', function (done) {
+        api.post('/api/tags/'+tag.id).expect(404, done);
+    });
+});
+
+describe('DELETE /api/tags', function () {
+    var tag;
+
+    before(function (done) {
+        helper
+            .clearEverything()
+            .then(helper.createTagCategory.bind(helper, {}))
+            .then(helper.createTagWithCategory.bind(helper))
+            .then(function (t) {
+                tag = t;
+                done();
+            })
+        ;
+    });
+
+    it('should not be allowed', function (done) {
+        api.delete('/api/tags/'+tag.id).expect(404, done);
+    });
+});
