@@ -143,6 +143,7 @@ app.use(
     }
 );
 
+app.emit('routes defined');
 
 // -- Mount static files here--
 // All static middleware should be registered at the end, as all requests

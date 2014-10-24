@@ -4,12 +4,14 @@ var Promise = require('../../common/utils/Promise');
 var locale = require('locale');
 
 module.exports = function mountRestApi(server) {
-    var restApiRoot = server.get('restApiRoot');
-    server.use(restApiRoot, server.loopback.rest());
+    // we need to wait for the custom routes to be defined
+    server.on('routes defined', function () {
+        var restApiRoot = server.get('restApiRoot');
+        server.use(restApiRoot, server.loopback.rest());
+    });
 
     var remotes = server.remotes();
 
-    // apply virtual & hidden properties config
     remotes.after('**', function (ctx, next, method) {
         if (!ctx.result) next();
         var Model   = method.ctor,
