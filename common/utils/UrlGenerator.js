@@ -39,5 +39,6 @@ UrlGenerator.prototype.business = function (business) {
 };
 
 UrlGenerator.prototype.pathToUrl = function (path) {
+    return 'http://staging.hairfie.com'+path;
     return this.options.baseUrl.replace(/\/$/, '')+path;
 };

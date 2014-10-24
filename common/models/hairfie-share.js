@@ -3,10 +3,6 @@
 var Promise = require('../../common/utils/Promise');
 
 module.exports = function (HairfieShare) {
-    var networkCredentialProviders = {
-        facebook: 'facebook-token-link',
-    };
-
     HairfieShare.validateAsync('authorId', function (onError, onDone) {
         this.author(function (error, user) {
             if (error || !user) onError();
@@ -49,8 +45,7 @@ module.exports = function (HairfieShare) {
     };
 
     function tryShareOnNetwork(user, hairfie, network) {
-        return requireCredential(user, network)
-            .then(shareOnNetworkWithCredential.bind(null, hairfie, network))
+        return shareOnNetwork(user, hairfie, network)
             .then(function (result) {
                 return {
                     network: network,
@@ -64,43 +59,27 @@ module.exports = function (HairfieShare) {
         ;
     }
 
-    function shareOnNetworkWithCredential(hairfie, network, credential) {
-        var deferred       = Promise.defer(),
-            fbGraph        = HairfieShare.app.fbGraph,
-            urlGenerator   = HairfieShare.app.urlGenerator,
-            hairfieUrl     = urlGenerator.hairfie(hairfie);
-
+    function shareOnNetwork(user, hairfie, network) {
         switch (network) {
             case 'facebook':
-                fbGraph.post(credential.externalId+'/feed', {link: hairfieUrl}, function (error, result) {
-                    if (error) return deferred.reject(error);
-                    return deferred.resolve({externalId: result.id});
-                });
+                return shareOnFacebook(user, hairfie);
                 break;
 
             default:
-                deferred.reject(new Error("Unsupported network: "+network));
+                return Promise.reject('Unsupported network: '+network);
         }
-
-        return deferred.promise;
     }
 
-    function requireCredential(user, network) {
-        var deferred = Promise.defer(),
-            provider = networkCredentialProviders[network];
+    function shareOnFacebook(user, hairfie) {
+        if (!user.facebookId) return Promise.reject('User has no Facebook ID');
 
-        if (!provider) {
-            return deferred.reject(new Error("Unsupported network"));
-        }
+        var app          = HairfieShare.app,
+            fbGraph      = app.fbGraph,
+            urlGenerator = app.urlGenerator,
+            requestPath  = user.facebookId+'/feed',
+            requestBody  = {link: urlGenerator.hairfie(hairfie)};
 
-        var criteria = {where: {userId: user.id, provider: provider}};
-
-        HairfieShare.app.models.userCredential.findOne(criteria, function (error, credential) {
-            if (error) return deferred.reject(error);
-            if (!credential) return deferred.reject(new Error("No credential found"));
-            deferred.resolve(credential);
-        });
-
-        return deferred.promise;
+        return Promise.npost(fbGraph, 'post', [requestPath, requestBody])
+            .then(function (result) { return {externalId: result.id}; });
     }
 };

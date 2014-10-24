@@ -26,6 +26,9 @@
         },
         "phoneNumber": {
             "type": "string"
+        },
+        "facebookId": {
+            "type": "string"
         }
     },
     "validations": [],

@@ -63,6 +63,17 @@ module.exports = function(User) {
 
     }
 
+    User.afterIdentityCreate = function (identity, next) {
+        if (identity.profile.provider != 'facebook') return next();
+        identity.user(function (error, user) {
+            if (error) return next(error);
+            if (!user) return next('Identity\'s user not found');
+
+            user.facebookId = identity.externalId;
+            user.save(next);
+        });
+    };
+
     User.profileToUser = function(provider, profile) {
         // Let's create a user for that
         var email = profile.emails && profile.emails[0] && profile.emails[0].value;
