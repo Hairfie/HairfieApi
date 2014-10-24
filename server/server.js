@@ -100,8 +100,7 @@ for (var s in passportConfig) {
     passportConfigurator.configureProvider(s, c);
 }
 
-// add endpoint to send token to
-app.use(
+app.use( // TODO remove me
     '/auth/facebook/token',
     passport.authenticate('facebook-token-auth', {
         scope: passportConfig['facebook-token-auth'].scope
@@ -118,7 +117,23 @@ app.use(
 );
 
 app.use(
-    '/link/facebook/token',
+    '/api/auth/facebook/token',
+    passport.authenticate('facebook-token-auth', {
+        scope: passportConfig['facebook-token-auth'].scope
+    }),
+    function (req, res) {
+        if (!req.user) return res.status(401);
+
+        req.user.createAccessToken(null, function (error, token) {
+            if (error) return res.status(500);
+
+            res.send(token);
+        });
+    }
+);
+
+app.use(
+    '/api/link/facebook/token',
     passport.authorize('facebook-token-link', {
         scope: passportConfig['facebook-token-link'].scope
     }),
