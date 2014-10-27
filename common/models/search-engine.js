@@ -155,20 +155,21 @@ module.exports = function (SearchEngine) {
                 function loop(skip) {
                     console.log('Chunk:', skip);
                     Business.find({limit: limit, skip: skip}, function (error, businesses) {
-                        Promise
-                            .map(businesses, function (business) {
-                                Promise.ninvoke(business, 'save');
-                            })
-                            .fail(function (error) {
-                                deferred.reject(error);
-                            })
-                            .then(function () {
-                                if (businesses.length < limit) {
-                                    deferred.resolve(null);
-                                } else {
-                                    setTimeout(loop.bind(this, skip + limit), 1000);
-                                }
-                            });
+                        var body = [];
+                        businesses.map(function (business) {
+                            body.push({index: {_index:getIndex(), _type:'business', _id:business.id.toString()}});
+                            body.push(business.toSearchIndexObject());
+                        });
+
+                        getClient().bulk({body:body}, function (error) {
+                            if (error) return deferred.reject(error);
+
+                            if (businesses.length < limit) {
+                                deferred.resolve(null);
+                            } else {
+                                loop(skip + limit);
+                            }
+                        });
                     });
                 }
 
