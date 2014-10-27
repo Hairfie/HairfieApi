@@ -66,21 +66,20 @@ module.exports = function(Business) {
         };
     };
 
-    Business.afterSave = function (next) {
-      var business = this;
-
-      Business.getApp(function (_, app) {
-          // index business on search engine
+    Business.prototype.toSearchIndexObject = function () {
           var doc = {};
-          doc.name = business.name;
-          if (business.gps) {
-              doc.gps = {lat: business.gps.lat, lon: business.gps.lng};
+          doc.name = this.name;
+          if (this.gps) {
+              doc.gps = {lat: this.gps.lat, lon: this.gps.lng};
           }
 
-          app.models.SearchEngine.index('business', business.id, doc);
-      });
+          return doc;
+    };
 
-      next();
+    Business.afterSave = function (next) {
+        var SearchEngine = app.models.SearchEngine;
+        SearchEngine.index('business', this.id, this.toSearchIndexObject());
+        next();
     };
 
     Business.afterDestroy = function (next) {
