@@ -35,6 +35,14 @@ module.exports = function (Hairfie) {
             onDone();
         });
     }, {message: 'exists'});
+    Hairfie.validateAsync('tags', function (onError, onDone) {
+        if (!Array.isArray(this.tags) || 0 == this.tags.length) return onDone();
+
+        Hairfie.app.models.Tag.find({where:{id: {in: this.tags}}}, function (error, tags) {
+            if (tags.length != this.tags.length) return onError();
+            onDone();
+        });
+    }, {message: 'all exist'});
 
     Hairfie.prototype.toRemoteObject = function () {
         var HairfieLike    = Hairfie.app.models.HairfieLike,
