@@ -22,6 +22,10 @@
         "price": {
             "amount": "number",
             "currency": "string"
+        },
+        "tags": {
+            "type": ["string"],
+            "index": true
         }
     },
     "validations": [],
