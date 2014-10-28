@@ -12,3 +12,5 @@ var/storage/*
 !var/storage/.gitkeep
 
 newrelic_agent.log
+
+.DS_Store
