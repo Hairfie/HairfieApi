@@ -41,8 +41,8 @@ module.exports = function (Hairfie) {
         this.tagObjects((function (error, tags) {
             if (tags.length != this.tags.length) return onError();
             onDone();
-        });
-    }).bind(this), {message: 'all exist'});
+        }).bind(this));
+    }, {message: 'all exist'});
 
     Hairfie.prototype.toRemoteObject = function () {
         var HairfieLike    = Hairfie.app.models.HairfieLike,
