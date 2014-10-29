@@ -11,7 +11,7 @@ module.exports = function (Tag) {
                 });
 
                 return obj;
-            });
+            }).bind(this));
     };
 
     Tag.prototype.toRemoteShortObject = function (context) {
