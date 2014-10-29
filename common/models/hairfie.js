@@ -53,7 +53,7 @@ module.exports = function (Hairfie) {
             picture         : this.pictureObject().toRemoteObject(),
             price           : this.price,
             tags            : Promise.npost(this, 'tagObjects').then(function (tags) {
-                return Promise.map(tags || [], function (tag) { return tag.toRemoteShortObject(); });
+                return Promise.map(tags, function (tag) { return tag.toRemoteShortObject(); });
             }),
             description     : this.description,
             hairdresserName : this.hairdresserName,
@@ -76,6 +76,7 @@ module.exports = function (Hairfie) {
     };
 
     Hairfie.prototype.tagObjects = function (callback) {
+        if (!Array.isArray(this.tags)) return [];
         Hairfie.app.models.Tag.find({where:{id: {in: this.tags}}}, callback);
     };
 
