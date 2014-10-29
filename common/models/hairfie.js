@@ -38,11 +38,11 @@ module.exports = function (Hairfie) {
     Hairfie.validateAsync('tags', function (onError, onDone) {
         if (!Array.isArray(this.tags) || 0 == this.tags.length) return onDone();
 
-        this.tagObjects(function (error, tags) {
+        this.tagObjects((function (error, tags) {
             if (tags.length != this.tags.length) return onError();
             onDone();
         });
-    }, {message: 'all exist'});
+    }).bind(this), {message: 'all exist'});
 
     Hairfie.prototype.toRemoteObject = function () {
         var HairfieLike    = Hairfie.app.models.HairfieLike,
