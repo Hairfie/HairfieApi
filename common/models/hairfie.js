@@ -76,7 +76,7 @@ module.exports = function (Hairfie) {
     };
 
     Hairfie.prototype.tagObjects = function (callback) {
-        if (!Array.isArray(this.tags)) return [];
+        if (!Array.isArray(this.tags)) return callback(null, []);
         Hairfie.app.models.Tag.find({where:{id: {in: this.tags}}}, callback);
     };
 
