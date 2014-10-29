@@ -35,14 +35,14 @@ module.exports = function (Hairfie) {
             onDone();
         });
     }, {message: 'exists'});
-    Hairfie.validateAsync('tags', function (onError, onDone) {
-        if (!Array.isArray(this.tags) || 0 == this.tags.length) return onDone();
+    //Hairfie.validateAsync('tags', function (onError, onDone) {
+    //    if (!Array.isArray(this.tags) || 0 == this.tags.length) return onDone();
 
-        this.tagObjects((function (error, tags) {
-            if (tags.length != this.tags.length) return onError();
-            onDone();
-        }).bind(this));
-    }, {message: 'all exist'});
+    //    this.tagObjects((function (error, tags) {
+    //        if (tags.length != this.tags.length) return onError();
+    //        onDone();
+    //    }).bind(this));
+    //}, {message: 'all exist'});
 
     Hairfie.prototype.toRemoteObject = function () {
         var HairfieLike    = Hairfie.app.models.HairfieLike,
