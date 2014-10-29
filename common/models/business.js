@@ -90,7 +90,7 @@ module.exports = function(Business) {
     };
 
     Business.afterSave = function (next) {
-        var SearchEngine = app.models.SearchEngine;
+        var SearchEngine = Business.app.models.SearchEngine;
         SearchEngine.index('business', this.id, this.toSearchIndexObject());
         next();
     };
