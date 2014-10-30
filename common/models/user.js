@@ -92,7 +92,7 @@ module.exports = function(User) {
           email: email,
           firstName: profile.name && profile.name.givenName,
           lastName: profile.name && profile.name.familyName,
-          gender: gender.toUpperCase(),
+          gender: gender ? gender.toUpperCase() : null,
           picture: "http://graph.facebook.com/" + profile.id + '/picture'
         };
         return userObj;
