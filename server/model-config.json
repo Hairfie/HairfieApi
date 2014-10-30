@@ -46,6 +46,10 @@
         "dataSource": "hairfieMongo",
         "public": true
     },
+    "HairdresserSuggestion": {
+        "dataSource": "hairfieMongo",
+        "public": true
+    },
     "Hairfie": {
         "dataSource": "hairfieMongo",
         "public": true

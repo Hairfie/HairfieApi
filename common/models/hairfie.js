@@ -38,13 +38,13 @@ module.exports = function (Hairfie) {
     Hairfie.validateAsync('tags', function (onError, onDone) {
         if (!Array.isArray(this.tags) || 0 == this.tags.length) return onDone();
 
-        this.tagObjects(function (error, tags) {
+        this.tagObjects((function (error, tags) {
             if (tags.length != this.tags.length) return onError();
             onDone();
-        });
+        }).bind(this));
     }, {message: 'all exist'});
 
-    Hairfie.prototype.toRemoteObject = function () {
+    Hairfie.prototype.toRemoteObject = function (context) {
         var HairfieLike    = Hairfie.app.models.HairfieLike,
             HairfieComment = Hairfie.app.models.HairfieComment;
 
@@ -53,7 +53,7 @@ module.exports = function (Hairfie) {
             picture         : this.pictureObject().toRemoteObject(),
             price           : this.price,
             tags            : Promise.npost(this, 'tagObjects').then(function (tags) {
-                return Promise.map(tags, function (tag) { return tag.toRemoteShortObject(); });
+                return Promise.map(tags, function (tag) { return tag.toRemoteShortObject(context); });
             }),
             description     : this.description,
             hairdresserName : this.hairdresserName,
@@ -77,7 +77,7 @@ module.exports = function (Hairfie) {
 
     Hairfie.prototype.tagObjects = function (callback) {
         if (!Array.isArray(this.tags)) return callback(null, []);
-        Hairfie.app.models.Tag.find({where:{id: {in: this.tags}}}, callback);
+        Hairfie.app.models.Tag.findByIds(this.tags, callback);
     };
 
     Hairfie.share = function (req, next) {
