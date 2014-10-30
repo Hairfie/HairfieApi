@@ -118,26 +118,24 @@ module.exports = function(Business) {
                 var body = {
                     from: page * limit,
                     size: limit,
-                    query: {
-                        filtered: {
-                            filter: {
-                                geo_distance: {
-                                    distance: maxDistance,
-                                    distance_unit: 'm',
-                                    gps: here.asElasticPoint()
-                                }
-                            }
-                        }
-                    }
+                    explain: true,
                 }
 
                 if (query) {
-                    body.query.filtered.query = {
-                        match: {
-                            name: {
-                                query: query,
-                                fuzziness: "AUTO"
-                            }
+                    body.query = {
+                        function_score: {
+                            functions: [
+                                { gauss:  { gps:   { origin: here.asElasticPoint(), scale: "3km" }}},
+                            ],
+                            query: {
+                                match: {
+                                    name: {
+                                        query: query,
+                                        fuzziness: "AUTO"
+                                    }
+                                }
+                            },
+                            score_mode: 'multiply'
                         }
                     };
                 } else {
@@ -158,6 +156,9 @@ module.exports = function(Business) {
     }
 
     function searchResultBusinesses(result) {
+        // var explanations = result[0].hits.hits.map(function (hit) { return JSON.stringify(hit._explanation); });
+        // console.log("EXPLANATION :",explanations);
+
         var ids = result[0].hits.hits.map(function (hit) { return hit._id; });
 
         return Promise.denodeify(Business.findByIds.bind(Business))(ids);
