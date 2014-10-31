@@ -10,7 +10,8 @@ module.exports = function(User) {
 
     User.prototype.toRemoteObject = function () {
         var user = this.toRemoteShortObject();
-
+        user.phoneNumber = this.phoneNumber;
+        user.email = this.email;
         user.language   = this.language;
         user.newsletter = this.newsletter;
         user.accessToken = this.accessToken;
@@ -31,8 +32,6 @@ module.exports = function(User) {
             firstName           : this.firstName,
             lastName            : this.lastName,
             picture             : picture ? picture.toRemoteObject() : null,
-            phoneNumber         : this.phoneNumber,
-            email               : this.email,
             numHairfies         : numHairfies,
             numBusinessReviews  : numBusinessReviews
         };
