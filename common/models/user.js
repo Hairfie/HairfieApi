@@ -19,19 +19,22 @@ module.exports = function(User) {
     };
 
     User.prototype.toRemoteShortObject = function () {
-        var Hairfie     = User.app.models.Hairfie,
-            numHairfies = Promise.ninvoke(Hairfie, 'count', {authorId: this.id}),
-            picture     = Picture.fromDatabaseValue(this.picture, 'user-profile-pictures', User.app);
+        var Hairfie             = User.app.models.Hairfie,
+            BusinessReview      = User.app.models.BusinessReview,
+            numHairfies         = Promise.ninvoke(Hairfie, 'count', {authorId: this.id}),
+            numBusinessReviews  = Promise.ninvoke(BusinessReview, 'count', {authorId: this.id}),
+            picture             = Picture.fromDatabaseValue(this.picture, 'user-profile-pictures', User.app);
 
         return {
-            id          : this.id,
-            gender      : this.gender,
-            firstName   : this.firstName,
-            lastName    : this.lastName,
-            picture     : picture ? picture.toRemoteObject() : null,
-            phoneNumber : this.phoneNumber,
-            email       : this.email,
-            numHairfies : numHairfies
+            id                  : this.id,
+            gender              : this.gender,
+            firstName           : this.firstName,
+            lastName            : this.lastName,
+            picture             : picture ? picture.toRemoteObject() : null,
+            phoneNumber         : this.phoneNumber,
+            email               : this.email,
+            numHairfies         : numHairfies,
+            numBusinessReviews  : numBusinessReviews
         };
     };
 
