@@ -26,6 +26,9 @@
         "tags": {
             "type": ["string"],
             "index": true
+        },
+        "selfmade": {
+            "type": "boolean"
         }
     },
     "validations": [],

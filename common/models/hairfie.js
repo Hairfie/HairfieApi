@@ -66,6 +66,7 @@ module.exports = function (Hairfie) {
             numComments     : Promise.ninvoke(HairfieComment, 'count', {hairfieId: this.id}),
             numLikes        : Promise.ninvoke(HairfieLike, 'count', {hairfieId: this.id}),
             landingPageUrl  : Hairfie.app.urlGenerator.hairfie(this),
+            selfmade        : this.selfmade,
             createdAt       : this.createdAt,
             updatedAt       : this.updatedAt,
         };
