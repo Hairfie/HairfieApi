@@ -13,10 +13,13 @@
         "description": {
             "type": "string"
         },
-        "hairdresserName": {
+        "businessId": {
             "type": "string"
         },
-        "businessId": {
+        "hairdresserId": {
+            "type": "string"
+        },
+        "hairdresserName": {
             "type": "string"
         },
         "price": {
@@ -42,6 +45,11 @@
             "type": "belongsTo",
             "model": "Business",
             "foreignKey": "businessId"
+        },
+        "hairdresser": {
+            "type": "belongsTo",
+            "model": "Hairdresser",
+            "foreignKey": "hairdresserId"
         }
     },
     "acls": [],

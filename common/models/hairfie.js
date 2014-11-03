@@ -43,6 +43,22 @@ module.exports = function (Hairfie) {
             onDone();
         }).bind(this));
     }, {message: 'all exist'});
+    Hairfie.validateAsync('hairdresserId', function (onError, onDone) {
+        if (!this.hairdresserId) return onDone();
+        this.hairdresser(function (error, hairdresser) {
+            if (error || !hairdresser) onError();
+            onDone();
+        });
+    }, {message: 'exists'});
+    Hairfie.validateAsync('hairdresserId', function (onError, onDone) {
+        if (!this.hairdresserId) return onDone();
+        if (!this.businessId) return onError();
+        this.hairdress(function (error, hairdresser) {
+            if (error || !hairdresser) return onError();
+            if (hairdresser.businessId.toString() != this.businessId.toString()) onError();
+            onDone();
+        });
+    }, {message: 'belongs to business');
 
     Hairfie.prototype.toRemoteObject = function (context) {
         var HairfieLike    = Hairfie.app.models.HairfieLike,
@@ -62,6 +78,9 @@ module.exports = function (Hairfie) {
             }),
             business        : Promise.ninvoke(this.business).then(function (business) {
                 return business ? business.toRemoteShortObject() : null;
+            }),
+            hairdresser     : Promise.npost(this, 'hairdresser').then(function (hairdresser) {
+                return hairdresser ? hairdresser.toRemoteShortObject() : null;
             }),
             numComments     : Promise.ninvoke(HairfieComment, 'count', {hairfieId: this.id}),
             numLikes        : Promise.ninvoke(HairfieLike, 'count', {hairfieId: this.id}),
