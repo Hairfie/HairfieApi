@@ -32,6 +32,7 @@ module.exports = function(Business) {
 
                 return {
                     id                 : this.id,
+                    slug               : this.slug(),
                     kind               : this.kind ? this.kind : 'SALON',
                     owner              : Promise.ninvoke(this, 'owner').then(function (user) {
                         return user ? user.toRemoteShortObject() : null;
