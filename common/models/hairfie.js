@@ -58,7 +58,7 @@ module.exports = function (Hairfie) {
             if (hairdresser.businessId.toString() != this.businessId.toString()) onError();
             onDone();
         });
-    }, {message: 'belongs to business');
+    }, {message: 'belongs to business'});
 
     Hairfie.prototype.toRemoteObject = function (context) {
         var HairfieLike    = Hairfie.app.models.HairfieLike,
