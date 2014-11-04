@@ -109,7 +109,7 @@ module.exports = function(Business) {
         var maxDistance = 5000,
             here        = GeoPoint(here),
             page        = page || 0,
-            limit       = Math.min(limit || 10, 50);
+            limit       = Math.min(limit || 10, 100);
 
         Promise.denodeify(Business.getApp.bind(Business))()
             .then(function (app) {
