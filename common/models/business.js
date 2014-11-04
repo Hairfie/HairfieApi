@@ -167,7 +167,7 @@ module.exports = function(Business) {
 
     Business.similar = function (businessId, limit, callback) {
         var maxDistance = 5000,
-            limit       = Math.min(limit || 10, 50);
+            limit       = Math.min(limit || 10, 100);
 
         Business.findById(businessId, function (error, business) {
             if (error) return callback(error);
