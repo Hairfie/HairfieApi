@@ -32,6 +32,9 @@
         },
         "selfmade": {
             "type": "boolean"
+        },
+        "customerEmail": {
+            "type": "string"
         }
     },
     "validations": [],
