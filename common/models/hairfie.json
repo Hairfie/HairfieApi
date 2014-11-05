@@ -30,7 +30,7 @@
             "type": ["string"],
             "index": true
         },
-        "selfmade": {
+        "selfMade": {
             "type": "boolean"
         },
         "customerEmail": {
