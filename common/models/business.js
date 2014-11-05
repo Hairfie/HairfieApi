@@ -40,7 +40,6 @@ module.exports = function(Business) {
                     name               : this.name,
                     description        : this.description,
                     gps                : this.gps,
-                    phoneNumber        : this.phoneNumber,
                     timetable          : this.timetable,
                     address            : this.address,
                     thumbnail          : streetViewPicture,
@@ -60,9 +59,10 @@ module.exports = function(Business) {
 
     Business.prototype.toRemoteShortObject = function () {
         return {
-            id      : this.id,
-            name    : this.name,
-            address : this.address
+            id          : this.id,
+            name        : this.name,
+            phoneNumber : this.phoneNumber,
+            address     : this.address
         };
     };
 
