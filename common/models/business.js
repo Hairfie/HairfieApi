@@ -34,7 +34,7 @@ module.exports = function(Business) {
                     id                 : this.id,
                     name               : this.name,
                     phoneNumber        : this.phoneNumber,
-                    address            : this.address
+                    address            : this.address,
                     slug               : this.slug(),
                     kind               : this.kind ? this.kind : 'SALON',
                     owner              : Promise.ninvoke(this, 'owner').then(function (user) {
