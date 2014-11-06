@@ -16,8 +16,9 @@ module.exports = function (Tag) {
 
     Tag.prototype.toRemoteShortObject = function (context) {
         return {
-            id      : this.id,
-            name    : context.localized(this.name)
+            id          : this.id,
+            name        : context.localized(this.name),
+            position    : this.position,
         };
     };
 };

@@ -18,8 +18,11 @@ function saveCategories(categoriesValues) {
     return q.all(categoriesValues.map(saveCategory));
 }
 
-function saveCategory(categoryValues) {
-    return q.npost(TagCategory, 'create', [{name: categoryValues.name}])
+function saveCategory(categoryValues, position) {
+    return q.npost(TagCategory, 'create', [{
+            name    : categoryValues.name,
+            position: position
+        }])
         .then(function (category) {
             return saveTags(category, categoryValues.tags);
         });
@@ -29,6 +32,10 @@ function saveTags(category, tagsValues) {
     return q.all(tagsValues.map(saveTag.bind(null, category)));
 }
 
-function saveTag(category, tagValues) {
-    return q.npost(Tag, 'create', [{categoryId: category.id, name: tagValues.name}]);
+function saveTag(category, tagValues, position) {
+    return q.npost(Tag, 'create', [{
+        categoryId  : category.id,
+        name        : tagValues.name,
+        position    : position
+    }]);
 }

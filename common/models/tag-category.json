@@ -5,6 +5,9 @@
         "name": {
             "type": "object",
             "required": true
+        },
+        "position": {
+            "type": "number"
         }
     },
     "validations": [],
