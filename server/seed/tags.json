@@ -1,0 +1,113 @@
+[
+    {
+        "name": {
+            "fr": "Pour qui ?",
+            "en": "For who?"
+        },
+        "tags": [
+            { "name": { "fr": "Homme", "en": "Man" } },
+            { "name": { "fr": "Femme", "en": "Woman" } },
+            { "name": { "fr": "Enfant", "en": "Child" } }
+        ]
+    },
+    {
+        "name": {
+            "fr": "Service",
+            "en": "Service"
+        },
+        "tags": [
+            { "name": { "fr": "Coupe", "en": "Cut" } },
+            { "name": { "fr": "Coiffage", "en": "Styling" } },
+            { "name": { "fr": "Couleur", "en": "Color" } },
+            { "name": { "fr": "Brushing", "en": "Blow-dry" } },
+            { "name": { "fr": "Lissage", "en": "Straightening" } },
+            { "name": { "fr": "Balayage", "en": "Highlighting" } },
+            { "name": { "fr": "Extension", "en": "Extension" } },
+            { "name": { "fr": "Mèches", "en": "Strands" } },
+            { "name": { "fr": "Tye & Die", "en": "Tye & Die" } }
+        ]
+    },
+    {
+        "name": {
+            "fr": "Coiffure",
+            "en": "Haircut"
+        },
+        "tags": [
+            { "name": { "fr": "Tresse", "en": "Braid" } },
+            { "name": { "fr": "Chignon", "en": "Bun" } },
+            { "name": { "fr": "Frange", "en": "Fringe" } },
+            { "name": { "fr": "Carré", "en": "Squarely" } },
+            { "name": { "fr": "Mariage", "en": "Wedding" } },
+            { "name": { "fr": "Raie", "en": "Parting" } },
+            { "name": { "fr": "Queue de cheval", "en": "Ponytail" } },
+            { "name": { "fr": "Mèches", "en": "Strands" } },
+            { "name": { "fr": "Dégradés", "en": "Layered" } },
+            { "name": { "fr": "Coiffé décoiffé", "en": "Disheveled-capped" } }
+        ]
+    },
+    {
+        "name": {
+            "fr": "Couleur",
+            "en": "Color"
+        },
+        "tags": [
+            { "name": { "fr": "Blonde", "en": "Blonde" } },
+            { "name": { "fr": "Brune", "en": "Brown" } },
+            { "name": { "fr": "Rousse", "en": "Redhead" } },
+            { "name": { "fr": "Chatain", "en": "Chestnut" } },
+            { "name": { "fr": "Grise", "en": "Grey" } },
+            { "name": { "fr": "Bronde", "en": "Bronde" } }
+        ]
+    },
+    {
+        "name": {
+            "fr": "Longueur",
+            "en": "Length"
+        },
+        "tags": [
+            { "name": { "fr": "Long", "en": "Long" } },
+            { "name": { "fr": "Moyen", "en": "Medium" } },
+            { "name": { "fr": "Court", "en": "Short" } }
+        ]
+    },
+    {
+        "name": {
+            "fr": "Type de cheveux",
+            "en": "Hair Type"
+        },
+        "tags": [
+            { "name": { "fr": "Raides", "en": "Straight" } },
+            { "name": { "fr": "Ondulés", "en": "Wavy" } },
+            { "name": { "fr": "Bouclés", "en": "Curly" } },
+            { "name": { "fr": "Crépus", "en": "Frizzy" } }
+        ]
+    },
+    {
+        "name": {
+            "fr": "Epaisseur",
+            "en": "Thickness"
+        },
+        "tags": [
+            { "name": { "fr": "Fins", "en": "Thin" } },
+            { "name": { "fr": "Medium", "en": "Medium" } },
+            { "name": { "fr": "Epais", "en": "Thick" } }
+        ]
+    },
+    {
+        "name": {
+            "fr": "Style",
+            "en": "Style"
+        },
+        "tags": [
+            { "name": { "fr": "Afro", "en": "African" } },
+            { "name": { "fr": "Asiatique", "en": "Asian" } },
+            { "name": { "fr": "Occidental", "en": "Western" } },
+            { "name": { "fr": "Rétro", "en": "Retro" } },
+            { "name": { "fr": "Décalé", "en": "Quirky" } },
+            { "name": { "fr": "Classique", "en": "Classic" } },
+            { "name": { "fr": "Jeune", "en": "Young" } },
+            { "name": { "fr": "Tendance", "en": "Trendy" } },
+            { "name": { "fr": "BCBG", "en": "Chic" } }
+        ]
+    }
+]
