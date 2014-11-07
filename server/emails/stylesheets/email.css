@@ -1,29 +1,29 @@
-/* ------------------------------------- 
-		GLOBAL 
+/* -------------------------------------
+		GLOBAL
 ------------------------------------- */
-* { 
+* {
 	margin:0;
 	padding:0;
 }
 * { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; background: #FFFFFF; }
 
-img { 
-	max-width: 100%; 
+img {
+	max-width: 100%;
 }
 .collapse {
 	margin:0;
 	padding:0;
 }
 body {
-	-webkit-font-smoothing:antialiased; 
-	-webkit-text-size-adjust:none; 
-	width: 100%!important; 
+	-webkit-font-smoothing:antialiased;
+	-webkit-text-size-adjust:none;
+	width: 100%!important;
 	height: 100%;
 }
 
 
-/* ------------------------------------- 
-		ELEMENTS 
+/* -------------------------------------
+		ELEMENTS
 ------------------------------------- */
 a { color: #2BA6CB;}
 
@@ -54,7 +54,7 @@ table.social {
 /* 	padding:15px; */
 	background-color: #ebebeb;
 	margin-bottom : 52px;
-	
+
 }
 .social .soc-btn {
 	padding: 3px 7px;
@@ -64,7 +64,7 @@ table.social {
 	color: #FFF;font-weight:bold;
 	display:block;
 	text-align:center;
-	float:left;	
+	float:left;
 	margin-left: 12px;
 	border-radius: 3px;
 }
@@ -73,13 +73,17 @@ a.tw { background-color: #1daced!important; }
 a.gp { background-color: #DB4A39!important; }
 a.ms { background-color: #000!important; }
 
-.sidebar .soc-btn { 
+.sidebar .soc-btn {
 	display:block;
 	width:100%;
 }
 
-/* ------------------------------------- 
-		HEADER 
+img.store {
+	max-width: 50%;
+}
+
+/* -------------------------------------
+		HEADER
 ------------------------------------- */
 table.head-wrap { width: 100%;}
 
@@ -87,14 +91,14 @@ table.head-wrap { width: 100%;}
 .header.container table td.label { padding: 15px; padding-left:0px;}
 
 
-/* ------------------------------------- 
-		BODY 
+/* -------------------------------------
+		BODY
 ------------------------------------- */
 table.body-wrap { width: 100%;}
 
 
-/* ------------------------------------- 
-		FOOTER 
+/* -------------------------------------
+		FOOTER
 ------------------------------------- */
 table.footer-wrap { width: 100%;	clear:both!important;
 }
@@ -102,12 +106,12 @@ table.footer-wrap { width: 100%;	clear:both!important;
 .footer-wrap .container td.content p {
 	font-size:10px;
 	font-weight: bold;
-	
+
 }
 
 
-/* ------------------------------------- 
-		TYPOGRAPHY 
+/* -------------------------------------
+		TYPOGRAPHY
 ------------------------------------- */
 h1,h2,h3,h4,h5,h6 {
 font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; line-height: 1.1; margin-bottom:15px; color:#9ba0a8;
@@ -124,11 +128,11 @@ h6 { font-weight:900; font-size: 14px; text-transform: uppercase; color:#444;}
 
 .collapse { margin:0!important;}
 
-p, ul { 
+p, ul {
 	color :#9ba0a8;
-	margin-bottom: 20px; 
-	font-weight: normal; 
-	font-size:14px; 
+	margin-bottom: 20px;
+	font-weight: normal;
+	font-size:14px;
 	line-height:1.6;
 }
 p.lead { font-size:16px; color: #9ba0a8;/* text-align: center*/; /*border-bottom: 1px #e9e9ea solid;*/ border-top: 1px #e9e9ea solid; padding:25px 0 25px 0; margin-bottom: 0px;}
@@ -139,8 +143,8 @@ ul li {
 	list-style-position: inside;
 }
 
-/* ------------------------------------- 
-		SIDEBAR 
+/* -------------------------------------
+		SIDEBAR
 ------------------------------------- */
 ul.sidebar {
 	background:#ebebeb;
@@ -166,9 +170,9 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 
 
 
-/* --------------------------------------------------- 
+/* ---------------------------------------------------
 		RESPONSIVENESS
-		Nuke it from orbit. It's the only way to be sure. 
+		Nuke it from orbit. It's the only way to be sure.
 ------------------------------------------------------ */
 
 /* Set a max-width, and make it display as block so it will automatically stretch to that width, but will also shrink down on a phone or something */
@@ -184,7 +188,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 	padding:15px;
 	max-width:600px;
 	margin:0 auto;
-	display:block; 
+	display:block;
 }
 
 /* Let's make sure tables in the content area are 100% wide */
@@ -197,9 +201,9 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 	float:left;
 }
 .column tr td { padding: 25px; }
-.column-wrap { 
-	padding:0!important; 
-	margin:0 auto; 
+.column-wrap {
+	padding:0!important;
+	margin:0 auto;
 	max-width:600px!important;
 }
 .column table { width:100%;}
@@ -216,17 +220,17 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 .clear { display: block; clear: both; }
 
 
-/* ------------------------------------------- 
+/* -------------------------------------------
 		PHONE
 		For clients that support media queries.
-		Nothing fancy. 
+		Nothing fancy.
 -------------------------------------------- */
 @media only screen and (max-width: 600px) {
-	
+
 	a[class="btn"] { display:block!important; margin-bottom:10px!important; background-image:none!important; margin-right:0!important;}
 
 	div[class="column"] { width: auto!important; float:none!important;}
-	
+
 	table.social div[class="column"] {
 		width:auto!important;
 	}

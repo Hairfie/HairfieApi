@@ -29,6 +29,15 @@ module.exports = function (Email) {
         });
     }
 
+    Email.sendHairfie = function (hairfie, pictureObject, author) {
+        return send({
+            to: hairfie.customerEmail,
+            language: hairfie.author.language,
+            template: 'sendHairfie',
+            templateVars: {hairfie: hairfie, hairfieUrl: pictureObject.url, author: author}
+        });
+    }
+
     function send(options) {
         var language = options.language || languages[0];
 

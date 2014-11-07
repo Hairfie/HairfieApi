@@ -1,0 +1,6 @@
+{
+    "subject": {
+        "en": "Your Hairfie taken by <%= author.firstName %>",
+        "fr": "Votre Hairfie pris par <%= author.firstName %>"
+    }
+}

@@ -1,6 +1,7 @@
 'use strict';
 
-var Promise = require('../../common/utils/Promise');
+var Promise = require('../../common/utils/Promise'),
+    Q = require('q');
 
 module.exports = function (Hairfie) {
     Hairfie.validatesUniquenessOf('picture');
@@ -116,6 +117,29 @@ module.exports = function (Hairfie) {
         ctx.req.body.authorId = ctx.req.accessToken.userId;
         next();
     });
+
+    Hairfie.afterCreate = function (next) {
+        var hairfie = this;
+        if(hairfie.customerEmail) {
+            Q.all([
+                    Promise.denodeify(Hairfie.getApp.bind(Hairfie))(),
+                    Promise.ninvoke(hairfie.author).then(function (author) {
+                        return author ? author.toRemoteShortObject() : null;
+                    })
+                ])
+                .spread(function (app, author) {
+                    var pictureObject = hairfie.pictureObject().toRemoteObject();
+                    return app.models.email.sendHairfie(hairfie, pictureObject, author);
+                })
+                .catch(console.log)
+                .then(function() {
+                    next();
+                }, next)
+            ;
+        } else {
+            next();
+        }
+    }
 
     Hairfie.remoteMethod('share', {
         description: 'Shares a hairfie on social networks',
