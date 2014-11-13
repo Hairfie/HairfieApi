@@ -57,6 +57,8 @@ module.exports = function (app) {
                         metas.push({property: "hairfie:hairdresser", content: hairdresserUrl});
                     }
 
+                    console.log("Meta :", metas);
+
                     res.status(200);
                     res.send(loopback.template(__dirname+'/../views/landingPages/landingPage.html.ejs')({
                         title           : title,
