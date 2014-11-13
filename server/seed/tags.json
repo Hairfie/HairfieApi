@@ -21,6 +21,7 @@
             { "name": { "fr": "Couleur", "en": "Color" } },
             { "name": { "fr": "Brushing", "en": "Blow-dry" } },
             { "name": { "fr": "Lissage", "en": "Straightening" } },
+            { "name": { "fr": "Tissage", "en": "Weaving" } },
             { "name": { "fr": "Balayage", "en": "Highlighting" } },
             { "name": { "fr": "Extension", "en": "Extension" } },
             { "name": { "fr": "Mèches", "en": "Strands" } },
