@@ -1,3 +1,5 @@
 {
-  "url": "http://staging.hairfie.com"
+  "url": "http://staging.hairfie.com",
+  "webUrl": "http://hairfie-website-staging.herokuapp.com"
+
 }

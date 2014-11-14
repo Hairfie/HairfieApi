@@ -6,6 +6,7 @@ module.exports = function (app) {
     app.on('started', function () {
         var urlGenerator = new UrlGenerator({
             baseUrl: app.get('url'),
+            webUrl: app.get('webUrl'),
             routes:  require('../routes.js')
         });
 

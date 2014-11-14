@@ -7,7 +7,7 @@ function UrlGenerator(options) {
 
 module.exports = UrlGenerator;
 
-UrlGenerator.prototype.generate = function (name, params) {
+UrlGenerator.prototype.generate = function (name, params, webUrl) {
     var route  = this.options.routes[name],
         params = params || {};
 
@@ -19,7 +19,11 @@ UrlGenerator.prototype.generate = function (name, params) {
         path = path.replace(':'+k, params[k]);
     }
 
-    return this.pathToUrl(path);
+    if(webUrl) {
+        return this.pathToWebUrl(path);
+    } else {
+        return this.pathToUrl(path);
+    }
 };
 
 UrlGenerator.prototype.home = function () {
@@ -27,7 +31,7 @@ UrlGenerator.prototype.home = function () {
 };
 
 UrlGenerator.prototype.hairfie = function (hairfie) {
-    return this.generate('hairfie', {id: hairfie.id});
+    return this.generate('hairfies', {id: hairfie.id}, true);
 };
 
 UrlGenerator.prototype.user = function (user) {
@@ -35,9 +39,13 @@ UrlGenerator.prototype.user = function (user) {
 };
 
 UrlGenerator.prototype.business = function (business) {
-    return this.generate('business', {id: business.id, slug: business.slug()});
+    return this.generate('businesses', {id: business.id, slug: business.slug()}, true);
 };
 
 UrlGenerator.prototype.pathToUrl = function (path) {
     return this.options.baseUrl.replace(/\/$/, '')+path;
+};
+
+UrlGenerator.prototype.pathToWebUrl = function (path) {
+    return this.options.webUrl.replace(/\/$/, '')+path;
 };

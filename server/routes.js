@@ -9,9 +9,17 @@ module.exports = {
         verb: 'GET',
         path: '/hairfie/:id'
     },
+    hairfies: {
+        verb: 'GET',
+        path: '/hairfies/:id'
+    },
     business: {
         verb: 'GET',
         path: '/business/:id/:slug'
+    },
+    businesses: {
+        verb: 'GET',
+        path: '/businesses/:id/:slug'
     },
     pictureDownload: {
         verb: 'GET',
