@@ -150,7 +150,7 @@ module.exports = function(User) {
         var HairfieLike = User.app.models.HairfieLike,
             likeData    = {userId: userId, hairfieId: hairfieId};
 
-        HairfieLike.findOrCreate({where: likeData}, likeData, function (error, like) {
+        HairfieLike.findOrCreate({where: likeData}, likeData, function (error) {
             if (error) return callback(error);
             callback(null, null);
         });
@@ -159,7 +159,51 @@ module.exports = function(User) {
     User.unlikeHairfie = function (userId, hairfieId, callback) {
         var HairfieLike = User.app.models.HairfieLike;
 
-        HairfieLike.remove({userId: userId, hairfieId: hairfieId}, function (error, _) {
+        HairfieLike.remove({userId: userId, hairfieId: hairfieId}, function (error) {
+            if (error) return callback(error);
+            callback(null, null);
+        });
+    };
+
+    User.isFavoriteBusiness = function (userId, businessId, callback) {
+        var BusinessFavorite = User.app.models.BusinessFavorite,
+            favoriteData     = {userId: userId, businessId: businessId};
+
+        BusinessFavorite.findOne({where: favoriteData}, function (error, favorite) {
+            if (error) return callback(error);
+            if (!favorite) return callback({statusCode: 404});
+            callback();
+        });
+    };
+    User.getFavoriteBusinesses = function (userId, until, limit, skip, callback) {
+        var limit            = Math.min(limit || 10, 50),
+            skip             = skip || 0,
+            BusinessFavorite = User.app.models.BusinessFavorite;
+
+        User.findById(userId, function (error, user) {
+            if (error) return callback(error);
+            if (!user) return callback({statusCode: 404});
+
+            var filter = {where: {userId: user.id}, order: 'createdAt DESC', limit: limit, skip: skip};
+            if (until) filter.where.createdAt = {lte: until};
+
+            BusinessFavorite.find(filter, callback);
+        });
+    };
+    User.favoriteBusiness = function (userId, businessId, callback) {
+        var BusinessFavorite = User.app.models.BusinessFavorite,
+            favoriteData     = {userId: userId, businessId: businessId};
+
+        BusinessFavorite.findOrCreate({where: favoriteData}, favoriteData, function (error) {
+            if (error) return callback(error);
+            callback(null, null);
+        });
+    };
+    User.unfavoriteBusiness = function (userId, businessId, callback) {
+        var BusinessFavorite = User.app.models.BusinessFavorite,
+            favoriteData     = {userId: userId, businessId: businessId};
+
+        BusinessFavorite.remove(favoriteData, function (error) {
             if (error) return callback(error);
             callback(null, null);
         });
@@ -232,6 +276,41 @@ module.exports = function(User) {
             {arg: 'hairfieId', type: 'string', required: true, description: 'Identifier of the hairfie'},
         ],
         http: { path: '/:userId/liked-hairfies/:hairfieId', verb: 'DELETE' }
+    });
+    User.remoteMethod('isFavoriteBusiness', {
+        description: 'Indicates if a business is one of the user\'s favorites (or 404 if not liked)',
+        accepts: [
+            {arg: 'userId', type: 'string', required: true, description: 'Identifier of the user'},
+            {arg: 'businessId', type: 'string', required: true, description: 'Identifier of the business'}
+        ],
+        http: { path: '/:userId/favorite-businesses/:businessId', verb: 'HEAD' }
+    });
+    User.remoteMethod('getFavoriteBusinesses', {
+        description: 'List of user\'s favorite businesses',
+        accepts: [
+            {arg: 'userId', type: 'string', required: true, description: 'Identifier of the user'},
+            {arg: 'until', type: 'string', description: 'Ignore businesses favorited after this date'},
+            {arg: 'limit', type: 'number', description: 'Maximum number of businesses to return'},
+            {arg: 'skip', type: 'number', description: 'Number of businesses to skip'}
+        ],
+        returns: {arg: 'busineses', root: true},
+        http: { path: '/:userId/favorite-businesses', verb: 'GET' }
+    });
+    User.remoteMethod('favoriteBusiness', {
+        description: 'Favorites a business',
+        accepts: [
+            {arg: 'userId', type: 'string', required: true, description: 'Identifier of the user'},
+            {arg: 'businessId', type: 'string', required: true, description: 'Identifier of the business'},
+        ],
+        http: { path: '/:userId/favorite-businesses/:businessId', verb: 'PUT' }
+    });
+    User.remoteMethod('unfavoriteBusiness', {
+        description: 'Unfavorite a business',
+        accepts: [
+            {arg: 'userId', type: 'string', required: true, description: 'Identifier of the user'},
+            {arg: 'businessId', type: 'string', required: true, description: 'Identifier of the business'},
+        ],
+        http: { path: '/:userId/favorite-businesses/:businessId', verb: 'DELETE' }
     });
     User.remoteMethod('managedBusinesses', {
         description: 'Gets the businesses managed by the user',

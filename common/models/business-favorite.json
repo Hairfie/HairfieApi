@@ -1,0 +1,37 @@
+{
+    "name": "BusinessFavorite",
+    "plural": "BusinessFavorites",
+    "properties": {
+        "businessId": {
+            "type": "string",
+            "required": true,
+            "index": true
+        },
+        "userId": {
+            "type": "string",
+            "required": true,
+            "index": true
+        }
+    },
+    "validations": [],
+    "relations": {
+        "business": {
+            "type": "belongsTo",
+            "model": "Business",
+            "foreignKey": "businessId"
+        },
+        "user": {
+            "type": "belongsTo",
+            "model": "user",
+            "foreignKey": "userId"
+        }
+    },
+    "acls": [],
+    "methods": [],
+    "options": {
+        "timestampable": true,
+        "mongodb": {
+            "collection": "businessFavorites"
+        }
+    }
+}
