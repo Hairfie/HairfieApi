@@ -230,7 +230,7 @@ module.exports = function(User) {
     User.beforeRemote('findById', loggedInAsSubjectUser);
     User.beforeRemote('*.updateAttributes', loggedInAsSubjectUser);
 
-    User.beforeRemote(['likedHairfie', 'likedHairfies', 'likeHairfie', 'unlikeHairfie'], function (ctx, _, next) {
+    User.beforeRemote(['likedHairfie', 'likedHairfies', 'likeHairfie', 'unlikeHairfie', 'isBusinessFavorite', 'favoriteBusinesses', 'favoriteBusiness', 'unfavoriteBusiness'], function (ctx, _, next) {
         var accessToken = ctx.req.accessToken;
         if (!accessToken) return next({statusCode: 401});
         if (!accessToken.userId != ctx.req.params.userId) return next({statusCode: 403});
