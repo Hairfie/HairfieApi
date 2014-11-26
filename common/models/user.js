@@ -165,20 +165,20 @@ module.exports = function(User) {
         });
     };
 
-    User.isFavoriteBusiness = function (userId, businessId, callback) {
-        var BusinessFavorite = User.app.models.BusinessFavorite,
-            favoriteData     = {userId: userId, businessId: businessId};
+    User.isFavoriteHairdresser = function (userId, hairdresserId, callback) {
+        var HairdresserFavorite = User.app.models.HairdresserFavorite,
+            favoriteData        = {userId: userId, hairdresserId: hairdresserId};
 
-        BusinessFavorite.findOne({where: favoriteData}, function (error, favorite) {
+        HairdresserFavorite.findOne({where: favoriteData}, function (error, favorite) {
             if (error) return callback(error);
             if (!favorite) return callback({statusCode: 404});
             callback();
         });
     };
-    User.getFavoriteBusinesses = function (userId, until, limit, skip, callback) {
-        var limit            = Math.min(limit || 10, 50),
-            skip             = skip || 0,
-            BusinessFavorite = User.app.models.BusinessFavorite;
+    User.getFavoriteHairdressers = function (userId, until, limit, skip, callback) {
+        var limit               = Math.min(limit || 10, 50),
+            skip                = skip || 0,
+            HairdresserFavorite = User.app.models.HairdresserFavorite;
 
         User.findById(userId, function (error, user) {
             if (error) return callback(error);
@@ -187,23 +187,23 @@ module.exports = function(User) {
             var filter = {where: {userId: user.id}, order: 'createdAt DESC', limit: limit, skip: skip};
             if (until) filter.where.createdAt = {lte: until};
 
-            BusinessFavorite.find(filter, callback);
+            HairdresserFavorite.find(filter, callback);
         });
     };
-    User.favoriteBusiness = function (userId, businessId, callback) {
-        var BusinessFavorite = User.app.models.BusinessFavorite,
-            favoriteData     = {userId: userId, businessId: businessId};
+    User.favoriteBusiness = function (userId, hairdresserId, callback) {
+        var HairdresserFavorite = User.app.models.HairdresserFavorite,
+            favoriteData        = {userId: userId, hairdresserId: hairdresserId};
 
-        BusinessFavorite.findOrCreate({where: favoriteData}, favoriteData, function (error) {
+        HairdresserFavorite.findOrCreate({where: favoriteData}, favoriteData, function (error) {
             if (error) return callback(error);
             callback(null, null);
         });
     };
-    User.unfavoriteBusiness = function (userId, businessId, callback) {
-        var BusinessFavorite = User.app.models.BusinessFavorite,
-            favoriteData     = {userId: userId, businessId: businessId};
+    User.unfavoriteBusiness = function (userId, hairdresserId, callback) {
+        var HairdresserFavorite = User.app.models.HairdresserFavorite,
+            favoriteData        = {userId: userId, hairdresserId: hairdresserId};
 
-        BusinessFavorite.remove(favoriteData, function (error) {
+        HairdresserFavorite.remove(favoriteData, function (error) {
             if (error) return callback(error);
             callback(null, null);
         });
@@ -230,7 +230,7 @@ module.exports = function(User) {
     User.beforeRemote('findById', loggedInAsSubjectUser);
     User.beforeRemote('*.updateAttributes', loggedInAsSubjectUser);
 
-    User.beforeRemote(['likedHairfie', 'likedHairfies', 'likeHairfie', 'unlikeHairfie', 'isBusinessFavorite', 'favoriteBusinesses', 'favoriteBusiness', 'unfavoriteBusiness'], function (ctx, _, next) {
+    User.beforeRemote(['likedHairfie', 'likedHairfies', 'likeHairfie', 'unlikeHairfie', 'isHairdresserFavorite', 'favoriteHairdressers', 'favoriteHairdresser', 'unfavoriteHairdresser'], function (ctx, _, next) {
         var accessToken = ctx.req.accessToken;
         if (!accessToken) return next({statusCode: 401});
         if (!accessToken.userId != ctx.req.params.userId) return next({statusCode: 403});
@@ -277,40 +277,40 @@ module.exports = function(User) {
         ],
         http: { path: '/:userId/liked-hairfies/:hairfieId', verb: 'DELETE' }
     });
-    User.remoteMethod('isFavoriteBusiness', {
-        description: 'Indicates if a business is one of the user\'s favorites (or 404 if not liked)',
+    User.remoteMethod('isFavoriteHairdresser', {
+        description: 'Indicates if a hairdresser is one of the user\'s favorites (or 404 if not liked)',
         accepts: [
             {arg: 'userId', type: 'string', required: true, description: 'Identifier of the user'},
-            {arg: 'businessId', type: 'string', required: true, description: 'Identifier of the business'}
+            {arg: 'hairdresserId', type: 'string', required: true, description: 'Identifier of the hairdresser'}
         ],
-        http: { path: '/:userId/favorite-businesses/:businessId', verb: 'HEAD' }
+        http: { path: '/:userId/favorite-hairdressers/:hairdresserId', verb: 'HEAD' }
     });
-    User.remoteMethod('getFavoriteBusinesses', {
-        description: 'List of user\'s favorite businesses',
+    User.remoteMethod('getFavoriteHairdressers', {
+        description: 'List of user\'s favorite hairdressers',
         accepts: [
             {arg: 'userId', type: 'string', required: true, description: 'Identifier of the user'},
-            {arg: 'until', type: 'string', description: 'Ignore businesses favorited after this date'},
-            {arg: 'limit', type: 'number', description: 'Maximum number of businesses to return'},
-            {arg: 'skip', type: 'number', description: 'Number of businesses to skip'}
+            {arg: 'until', type: 'string', description: 'Ignore hairdressers favorited after this date'},
+            {arg: 'limit', type: 'number', description: 'Maximum number of hairdressers to return'},
+            {arg: 'skip', type: 'number', description: 'Number of hairdressers to skip'}
         ],
         returns: {arg: 'busineses', root: true},
-        http: { path: '/:userId/favorite-businesses', verb: 'GET' }
+        http: { path: '/:userId/favorite-hairdressers', verb: 'GET' }
     });
-    User.remoteMethod('favoriteBusiness', {
-        description: 'Favorites a business',
+    User.remoteMethod('favoriteHairdresser', {
+        description: 'Favorites a hairdresser',
         accepts: [
             {arg: 'userId', type: 'string', required: true, description: 'Identifier of the user'},
-            {arg: 'businessId', type: 'string', required: true, description: 'Identifier of the business'},
+            {arg: 'hairdresserId', type: 'string', required: true, description: 'Identifier of the hairdresser'},
         ],
-        http: { path: '/:userId/favorite-businesses/:businessId', verb: 'PUT' }
+        http: { path: '/:userId/favorite-hairdressers/:hairdresserId', verb: 'PUT' }
     });
-    User.remoteMethod('unfavoriteBusiness', {
-        description: 'Unfavorite a business',
+    User.remoteMethod('unfavoriteHairdresser', {
+        description: 'Unfavorite a hairdresser',
         accepts: [
             {arg: 'userId', type: 'string', required: true, description: 'Identifier of the user'},
-            {arg: 'businessId', type: 'string', required: true, description: 'Identifier of the business'},
+            {arg: 'hairdresserId', type: 'string', required: true, description: 'Identifier of the hairdresser'},
         ],
-        http: { path: '/:userId/favorite-businesses/:businessId', verb: 'DELETE' }
+        http: { path: '/:userId/favorite-hairdressers/:hairdresserId', verb: 'DELETE' }
     });
     User.remoteMethod('managedBusinesses', {
         description: 'Gets the businesses managed by the user',

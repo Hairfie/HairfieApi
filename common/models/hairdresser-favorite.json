@@ -1,8 +1,8 @@
 {
-    "name": "BusinessFavorite",
-    "plural": "BusinessFavorites",
+    "name": "HairdresserFavorite",
+    "plural": "HairdresserFavorites",
     "properties": {
-        "businessId": {
+        "haidresserId": {
             "type": "string",
             "required": true,
             "index": true
@@ -15,10 +15,10 @@
     },
     "validations": [],
     "relations": {
-        "business": {
+        "haidresser": {
             "type": "belongsTo",
-            "model": "Business",
-            "foreignKey": "businessId"
+            "model": "Hairdresser",
+            "foreignKey": "haidresserId"
         },
         "user": {
             "type": "belongsTo",
@@ -31,7 +31,7 @@
     "options": {
         "timestampable": true,
         "mongodb": {
-            "collection": "businessFavorites"
+            "collection": "haidresserFavorites"
         }
     }
 }
