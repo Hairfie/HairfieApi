@@ -190,7 +190,7 @@ module.exports = function(User) {
             HairdresserFavorite.find(filter, callback);
         });
     };
-    User.favoriteBusiness = function (userId, hairdresserId, callback) {
+    User.favoriteHairdresser = function (userId, hairdresserId, callback) {
         var HairdresserFavorite = User.app.models.HairdresserFavorite,
             favoriteData        = {userId: userId, hairdresserId: hairdresserId};
 
@@ -199,7 +199,7 @@ module.exports = function(User) {
             callback(null, null);
         });
     };
-    User.unfavoriteBusiness = function (userId, hairdresserId, callback) {
+    User.unfavoriteHairdresser = function (userId, hairdresserId, callback) {
         var HairdresserFavorite = User.app.models.HairdresserFavorite,
             favoriteData        = {userId: userId, hairdresserId: hairdresserId};
 
