@@ -2,7 +2,7 @@
     "name": "HairdresserFavorite",
     "plural": "HairdresserFavorites",
     "properties": {
-        "haidresserId": {
+        "hairdresserId": {
             "type": "string",
             "required": true,
             "index": true
@@ -15,10 +15,10 @@
     },
     "validations": [],
     "relations": {
-        "haidresser": {
+        "hairdresser": {
             "type": "belongsTo",
             "model": "Hairdresser",
-            "foreignKey": "haidresserId"
+            "foreignKey": "hairdresserId"
         },
         "user": {
             "type": "belongsTo",
