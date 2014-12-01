@@ -4,12 +4,14 @@ var async = require('async');
 var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 var Promise = require('../../common/utils/Promise');
 var getSlug = require('speakingurl');
+var _ = require('lodash');
 
 module.exports = function(Business) {
     Business.prototype.toRemoteObject = function () {
         var Hairfie        = Business.app.models.Hairfie,
             Hairdresser    = Business.app.models.Hairdresser,
-            BusinessReview = Business.app.models.BusinessReview;
+            BusinessReview = Business.app.models.BusinessReview,
+            User           = Business.app.models.User;
 
         return Promise.ninvoke(BusinessReview, 'getBusinessRating', this.id)
             .then((function (rating) {
@@ -29,6 +31,15 @@ module.exports = function(Business) {
                             return hairdresser.toRemoteShortObject();
                         });
                     });
+
+                var owner = null;
+                if(this.managerIds && this.managerIds.length > 0) {
+                    Promise
+                        .ninvoke(User, 'findById', this.managerIds[0])
+                        .then(function(user) {
+                            return user ? user.toRemoteShortObject() : null;
+                        });
+                }
 
                 return {
                     id                 : this.id,
@@ -226,12 +237,13 @@ module.exports = function(Business) {
         }
 
         // only the owner can update a business
-        if (ctx.req.accessToken.userId.toString() != ctx.instance.ownerId.toString()) {
+
+        if (!_.contains(ctx.instance.managerIds, ctx.req.accessToken.userId.toString())) {
             return next({statusCode: 403});
         }
 
         // remove some fields if present
-        delete ctx.req.body.ownerId;
+        delete ctx.req.body.managerIds;
 
         next();
     });

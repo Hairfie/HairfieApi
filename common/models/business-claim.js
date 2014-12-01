@@ -36,7 +36,7 @@ module.exports = function (BusinessClaim) {
             var business = new Business();
             business.name = businessClaim.name;
             business.kind = businessClaim.kind;
-            business.ownerId = businessClaim.authorId;
+            business.managerIds.push(businessClaim.authorId);
             business.phoneNumber = businessClaim.phoneNumber;
             business.address = businessClaim.address;
             business.gps = businessClaim.gps;

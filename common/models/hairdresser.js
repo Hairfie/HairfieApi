@@ -1,6 +1,7 @@
 'use strict';
 
 var Promise = require('../../common/utils/Promise');
+var _ = require('lodash');
 
 module.exports = function (Hairdresser) {
     Hairdresser.validateAsync('businessId', function (onError, onDone) {
@@ -50,7 +51,7 @@ module.exports = function (Hairdresser) {
             if (!business) next({statusCode: 500, message: 'Could not load hairdresser\'s business'});
 
             // only the business's owner can update a hairdresser
-            if (!business.ownerId || ctx.req.accessToken.userId.toString() != business.ownerId.toString()) {
+            if (!_.contains(business.managerIds, ctx.req.accessToken.userId.toString())) {
                 return next({statusCode: 403, message: 'You must be the business\' owner'});
             }
 
