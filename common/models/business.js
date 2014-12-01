@@ -68,11 +68,14 @@ module.exports = function(Business) {
     };
 
     Business.prototype.toRemoteShortObject = function () {
+        var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
+
         return {
             id          : this.id,
             name        : this.name,
             phoneNumber : this.phoneNumber,
-            address     : this.address
+            address     : this.address,
+            pictures    : pictures
         };
     };
 
