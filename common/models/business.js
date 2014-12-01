@@ -68,7 +68,13 @@ module.exports = function(Business) {
     };
 
     Business.prototype.toRemoteShortObject = function () {
+        var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject();
+
         var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
+
+        if (0 == pictures.length) {
+            pictures.push(streetViewPicture);
+        }
 
         return {
             id          : this.id,
