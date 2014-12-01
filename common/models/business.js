@@ -248,15 +248,10 @@ module.exports = function(Business) {
             return next({statusCode: 403});
         }
 
-        console.log("pictures beforeRemote", ctx.req.body.pictures);
-
         if(ctx.req.body.pictures) {
             var pattern = /^((http|https):\/\/)/;
             ctx.req.body.pictures = lodash.filter(ctx.req.body.pictures, function(url) { return !pattern.test(url)});
         }
-
-                console.log("pictures after Remote", ctx.req.body.pictures);
-
 
         // remove some fields if present
         delete ctx.req.body.managerIds;

@@ -179,8 +179,15 @@ function download (provider, req, res, container, file, width, height, cb) {
     });
     res.type(file);
 
+    var watermarked = gm(reader, 'tmp.jpg')
+        .options({imageMagick: true})
+        // .resize(200, 200)
+        // //.stroke("#FFFFFF")
+        // .drawText(100, 100, "AAAAAAAAAAAAAAAAAAAAA!")
+        .stream();
+
     if(width || height) {
-        var resize = gm(reader, 'img.jpg')
+        var resize = gm(watermarked, 'img.jpg')
             .options({imageMagick: true})
             .resize(width, height, '^');
 
@@ -188,12 +195,17 @@ function download (provider, req, res, container, file, width, height, cb) {
             resize.gravity('Center').crop(width, height);
         }
 
-        resize.stream(function (err, stdout, stderr) {
-            if(err) res.status(500).send({ error: err });
-            stdout.pipe(res);
-        });
+        // resize.subCommand('composite')
+        //       .gravity('NorthEast')
+        //       .in('-compose', 'Over', '../public/img/logo@2x.png', 'tmp.jpg')
+
+        resize
+            .stream(function (err, stdout, stderr) {
+                if(err) res.status(500).send({ error: err });
+                stdout.pipe(res);
+            });
     } else {
-        reader.pipe(res);
+        watermarked.pipe(res);
     }
 
     reader.on('error', function (err) {
