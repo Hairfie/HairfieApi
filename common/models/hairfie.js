@@ -88,14 +88,13 @@ module.exports = function (Hairfie) {
     };
 
     Hairfie.prototype.displayBusiness = function(authorId) {
-        return false;
-        // return Promise.ninvoke(this.business).then(function (business) {
-        //     if(business && _.contains(business.managerIds, authorId)) {
-        //         return true;
-        //     } else {
-        //         return false;
-        //     }
-        // });
+        return Promise.ninvoke(this.business).then(function (business) {
+            if(business && _.contains(business.managerIds, authorId)) {
+                return true;
+            } else {
+                return false;
+            }
+        });
     };
 
     Hairfie.prototype.pictureObject = function () {
