@@ -1,6 +1,7 @@
 'use strict';
 
 var Promise = require('../../common/utils/Promise');
+var lodash = require('lodash');
 
 module.exports = function (BusinessClaim) {
 
@@ -21,6 +22,11 @@ module.exports = function (BusinessClaim) {
     // business claims are associated to currently logged in user
     BusinessClaim.beforeRemote('create', function (ctx, _, next) {
         ctx.req.body.authorId = ctx.req.accessToken.userId;
+        if(ctx.req.body.pictures) {
+            var pattern = /^((http|https):\/\/)/;
+            ctx.req.body.pictures = lodash.filter(ctx.req.body.pictures, function(url) { return !pattern.test(url)});
+        }
+
         next();
     });
 
@@ -36,7 +42,7 @@ module.exports = function (BusinessClaim) {
             var business = new Business();
             business.name = businessClaim.name;
             business.kind = businessClaim.kind;
-            business.managerIds.push(businessClaim.authorId);
+            business.managerIds = [businessClaim.authorId];
             business.phoneNumber = businessClaim.phoneNumber;
             business.address = businessClaim.address;
             business.gps = businessClaim.gps;

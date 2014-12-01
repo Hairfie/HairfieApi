@@ -4,7 +4,6 @@ var Promise = require('../../common/utils/Promise'),
     Q = require('q'),
     _ = require('lodash');
 
-
 module.exports = function (Hairfie) {
     Hairfie.validatesUniquenessOf('picture');
     Hairfie.validate('price', function (onError) {

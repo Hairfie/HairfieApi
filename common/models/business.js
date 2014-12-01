@@ -4,7 +4,7 @@ var async = require('async');
 var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 var Promise = require('../../common/utils/Promise');
 var getSlug = require('speakingurl');
-var _ = require('lodash');
+var lodash = require('lodash');
 
 module.exports = function(Business) {
     Business.prototype.toRemoteObject = function () {
@@ -244,10 +244,19 @@ module.exports = function(Business) {
         }
 
         // only the owner can update a business
-
-        if (!_.contains(ctx.instance.managerIds, ctx.req.accessToken.userId.toString())) {
+        if (! lodash.contains(ctx.instance.managerIds, ctx.req.accessToken.userId.toString())) {
             return next({statusCode: 403});
         }
+
+        console.log("pictures beforeRemote", ctx.req.body.pictures);
+
+        if(ctx.req.body.pictures) {
+            var pattern = /^((http|https):\/\/)/;
+            ctx.req.body.pictures = lodash.filter(ctx.req.body.pictures, function(url) { return !pattern.test(url)});
+        }
+
+                console.log("pictures after Remote", ctx.req.body.pictures);
+
 
         // remove some fields if present
         delete ctx.req.body.managerIds;
