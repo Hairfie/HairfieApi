@@ -211,12 +211,10 @@ module.exports = function(User) {
 
     User.managedBusinesses = function (userId, callback) {
         var Business = User.app.models.Business;
-
-        User.findById(userId, function (error, user) {
+        Business.find({where: {managerIds: userId}}, function(error, businesses) {
             if (error) return callback(error)
-            if (!user) return callback({statusCode: 404});
-
-            Business.find({where: {ownerId: user.id}}, callback);
+            if (!businesses || businesses.length === 0) return callback({statusCode: 404});
+            callback(null, businesses);
         });
     };
 
