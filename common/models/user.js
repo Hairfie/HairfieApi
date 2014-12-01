@@ -213,13 +213,13 @@ module.exports = function(User) {
         var Business = User.app.models.Business;
         Business.find({where: {managerIds: userId}}, function(error, businesses) {
             if (error) return callback(error)
-            if (!businesses || businesses.length === 0) return callback({statusCode: 404});
             callback(null, businesses);
         });
     };
 
     function loggedInAsSubjectUser(ctx, _, next) {
         var accessToken = ctx.req.accessToken;
+        console.log("accessToken", accessToken);
         if (!accessToken) return next({statusCode: 401});
         if (accessToken.userId.toString() != ctx.req.params.id.toString()) return next({statusCode: 403});
         next();
