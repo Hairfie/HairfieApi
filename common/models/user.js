@@ -3,6 +3,8 @@
 var md5 = require('MD5');
 var Promise = require('../../common/utils/Promise');
 var Q = require('q');
+var _ = require('lodash');
+
 
 module.exports = function(User) {
     User.GENDER_MALE = 'MALE';
@@ -211,10 +213,7 @@ module.exports = function(User) {
 
     User.managedBusinesses = function (userId, callback) {
         var Business = User.app.models.Business;
-        Business.find({where: {managerIds: userId}}, function(error, businesses) {
-            if (error) return callback(error)
-            callback(null, businesses);
-        });
+        Business.find({where: {managerIds: userId}}, callback);
     };
 
     function loggedInAsSubjectUser(ctx, _, next) {
@@ -291,7 +290,7 @@ module.exports = function(User) {
             {arg: 'limit', type: 'number', description: 'Maximum number of hairdressers to return'},
             {arg: 'skip', type: 'number', description: 'Number of hairdressers to skip'}
         ],
-        returns: {arg: 'busineses', root: true},
+        returns: {arg: 'businesses', root: true},
         http: { path: '/:userId/favorite-hairdressers', verb: 'GET' }
     });
     User.remoteMethod('favoriteHairdresser', {

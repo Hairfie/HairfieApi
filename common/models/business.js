@@ -48,9 +48,7 @@ module.exports = function(Business) {
                     address            : this.address,
                     slug               : this.slug(),
                     kind               : this.kind ? this.kind : 'SALON',
-                    owner              : Promise.ninvoke(this, 'owner').then(function (user) {
-                        return user ? user.toRemoteShortObject() : null;
-                    }),
+                    owner              : owner,
                     description        : this.description,
                     gps                : this.gps,
                     timetable          : this.timetable,
