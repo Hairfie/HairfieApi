@@ -181,27 +181,19 @@ function download (provider, req, res, container, file, width, height, cb) {
 
     var watermarked = gm(reader, 'tmp.jpg')
         .options({imageMagick: true})
-        // .subCommand('composite')
-        // .gravity('NorthEast')
-        // .in('-compose', 'Over', 'client/public/img/logo@2x.png', 'tmp.jpg')
-        // .resize(200, 200)
-        // .drawText(100, 100, "AAAAAAAAAAAAAAAAAAAAA!")
+        .subCommand('composite')
+        .gravity('NorthEast')
+        .in('-compose', 'Over', 'client/img/watermark.png')
         .stream();
 
     if(width || height) {
-        var resize = gm(watermarked, 'img.jpg')
+        var resize = gm(watermarked)
             .options({imageMagick: true})
             .resize(width, height, '^');
 
         if (width && height) {
             resize.gravity('Center').crop(width, height);
         }
-
-        console.log(resize);
-
-        // resize.subCommand('composite')
-        //       .gravity('NorthEast')
-        //       .in('-compose', 'Over', '../public/img/logo@2x.png', 'tmp.jpg')
 
         resize
             .stream(function (err, stdout, stderr) {
