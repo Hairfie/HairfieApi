@@ -34,7 +34,7 @@ module.exports = function(Business) {
 
                 var owner = null;
                 if(this.managerIds && this.managerIds.length > 0) {
-                    Promise
+                    owner = Promise
                         .ninvoke(User, 'findById', this.managerIds[0])
                         .then(function(user) {
                             return user ? user.toRemoteShortObject() : null;
