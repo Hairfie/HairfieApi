@@ -56,7 +56,8 @@
             "nearby",
             "similar",
             "submitErrorReport",
-            "updateAttributes"
+            "updateAttributes",
+            "getHairdressers"
         ],
         "mongodb": {
             "collection": "businesses"
