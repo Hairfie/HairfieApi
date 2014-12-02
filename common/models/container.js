@@ -57,7 +57,8 @@ module.exports = function (Container) {
 
         Container.download = function (container, file, width, height, res, cb) {
             var client = Container.dataSource.connector.client;
-            var watermarkUrl = Container.app.urlGenerator.watermark('/img/watermark.png');
+            var watermarkUrl = (container.indexOf("hairfies") > -1) ? Container.app.urlGenerator.watermark('/img/watermark.png') : null;
+
             download(client, null, res, container, file, width, height, watermarkUrl, cb);
         };
 
@@ -180,20 +181,24 @@ function download (provider, req, res, container, file, width, height, watermark
     });
     res.type(file);
 
-    gm(watermarkUrl).size(function(err, value){
-        console.log("Size of watermark", value);
-        console.log("Error", err);
-    });
+    if(watermarkUrl) {
+        gm(watermarkUrl).size(function(err, value){
+            console.log("Size of watermark", value);
+            console.log("Error", err);
+        });
 
-    var watermarked = gm(reader)
-        .options({imageMagick: true})
-        .subCommand('composite')
-        .gravity('NorthEast')
-        .in('-compose', 'Over', watermarkUrl)
-        .stream();
+        var tmpPicture = gm(reader)
+            .options({imageMagick: true})
+            .subCommand('composite')
+            .gravity('NorthEast')
+            .in('-compose', 'Over', watermarkUrl)
+            .stream();
+    } else {
+        var tmpPicture = reader;
+    }
 
     if(width || height) {
-        var resize = gm(watermarked)
+        var resize = gm(tmpPicture)
             .options({imageMagick: true})
             .resize(width, height, '^');
 
@@ -207,7 +212,7 @@ function download (provider, req, res, container, file, width, height, watermark
                 stdout.pipe(res);
             });
     } else {
-        watermarked.pipe(res);
+        tmpPicture.pipe(res);
     }
 
     reader.on('error', function (err) {
