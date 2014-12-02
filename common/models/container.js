@@ -57,7 +57,8 @@ module.exports = function (Container) {
 
         Container.download = function (container, file, width, height, res, cb) {
             var client = Container.dataSource.connector.client;
-            download(client, null, res, container, file, width, height, cb);
+            var watermarkUrl = Container.app.urlGenerator.watermark('/img/watermark.png');
+            download(client, null, res, container, file, width, height, watermarkUrl, cb);
         };
 
         Container.remoteMethod('download', {
@@ -172,23 +173,23 @@ function upload(provider, req, res, container, cb) {
     });
 }
 
-function download (provider, req, res, container, file, width, height, cb) {
+function download (provider, req, res, container, file, width, height, watermarkUrl, cb) {
     var reader = provider.download({
         container: container || req && req.params.container,
         remote: file || req && req.params.file
     });
     res.type(file);
 
-    gm("client/img/watermark.png").size(function(err, value){
+    gm(watermarkUrl).size(function(err, value){
         console.log("Size of watermark", value);
         console.log("Error", err);
     });
 
-    var watermarked = gm(reader, 'tmp.jpg')
+    var watermarked = gm(reader)
         .options({imageMagick: true})
         .subCommand('composite')
         .gravity('NorthEast')
-        .in('-compose', 'Over', 'client/img/watermark.png')
+        .in('-compose', 'Over', watermarkUrl)
         .stream();
 
     if(width || height) {

@@ -42,6 +42,10 @@ UrlGenerator.prototype.business = function (business) {
     return this.generate('businesses', {id: business.id, slug: business.slug()}, true);
 };
 
+UrlGenerator.prototype.watermark = function (picture_path) {
+    return this.options.baseUrl.replace(/\/$/, '')+picture_path;
+};
+
 UrlGenerator.prototype.pathToUrl = function (path) {
     return this.options.baseUrl.replace(/\/$/, '')+path;
 };
