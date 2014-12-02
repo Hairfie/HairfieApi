@@ -36,7 +36,7 @@ module.exports = function (Hairdresser) {
         };
     };
 
-    Hairdresser.beforeRemote('create', function (ctx, _, next) {
+    Hairdresser.beforeRemote('create', function (ctx, v, next) {
         // user must be logged in
         if (!ctx.req.accessToken) {
             return next({statusCode: 401});
