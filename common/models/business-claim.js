@@ -27,6 +27,10 @@ module.exports = function (BusinessClaim) {
             ctx.req.body.pictures = lodash.filter(ctx.req.body.pictures, function(url) { return !pattern.test(url)});
         }
 
+        if(ctx.req.body.phoneNumber) {
+            ctx.req.body.phoneNumber = ctx.req.body.phoneNumber.replace(/\s/g, '');
+        }
+
         next();
     });
 
