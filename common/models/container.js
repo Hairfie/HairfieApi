@@ -179,6 +179,11 @@ function download (provider, req, res, container, file, width, height, cb) {
     });
     res.type(file);
 
+    gm("client/img/watermark.png").size(function(err, value){
+        console.log("Size of watermark", value);
+        console.log("Error", err);
+    });
+
     var watermarked = gm(reader, 'tmp.jpg')
         .options({imageMagick: true})
         .subCommand('composite')
