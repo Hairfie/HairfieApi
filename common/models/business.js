@@ -237,6 +237,17 @@ module.exports = function(Business) {
         });
     };
 
+    Business.getHairdressers = function (businessId, callback) {
+        var Hairdresser = Business.app.models.Hairdresser;
+
+        Business.findById(businessId, function (error, business) {
+            if (error) return callback(error);
+            if (!business) return callback({statusCode: 404});
+
+            Hairdresser.find({where: {businessId: business.id}}, callback);
+        });
+    };
+
     Business.beforeRemote('*.updateAttributes', function (ctx, _, next) {
         // user must be logged in
         if (!ctx.req.accessToken) {
@@ -283,6 +294,15 @@ module.exports = function(Business) {
         ],
         returns: {arg: 'businesses', root: true},
         http: { verb: 'GET', path: '/:businessId/similar' }
+    });
+
+    Business.remoteMethod('getHairdressers', {
+        description: 'Returns the business\'s hairdressers',
+        accepts: [
+            {arg: 'businessId', type: 'string', description: 'ID of the business'},
+        ],
+        returns: {arg: 'hairdressers', root: true},
+        http: {verb: 'GET', path: '/:businessId/hairdressers'}
     });
 
     Business.beforeRemote('**', function(ctx, business, next) {
