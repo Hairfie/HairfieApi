@@ -3,13 +3,13 @@
 var Promise = require('../../common/utils/Promise');
 
 module.exports = function (BusinessService) {
-    BusinessService.prototype.toRemoteObject = function () {
+    BusinessService.prototype.toRemoteObject = function (context) {
         return {
             business        : Promise.npost(this, 'business').then(function (business) {
-                return business ? business.toRemoteShortObject() : null;
+                return business ? business.toRemoteShortObject(context) : null;
             }),
             service         : Promise.npost(this, 'service').then(function (service) {
-                return service ? service.toRemoteShortObject() : null;
+                return service ? service.toRemoteShortObject(context) : null;
             }),
             price           : this.price,
             durationMinutes : this.durationMinutes
