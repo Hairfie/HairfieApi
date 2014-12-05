@@ -5,6 +5,7 @@ var Promise = require('../../common/utils/Promise');
 module.exports = function (BusinessService) {
     BusinessService.prototype.toRemoteObject = function (context) {
         return {
+            id              : this.id,
             business        : Promise.npost(this, 'business').then(function (business) {
                 return business ? business.toRemoteShortObject(context) : null;
             }),
