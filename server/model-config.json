@@ -42,6 +42,10 @@
         "dataSource": "hairfieMongo",
         "public": true
     },
+    "BusinessService": {
+        "dataSource": "hairfieMongo",
+        "public": true
+    },
     "Hairdresser": {
         "dataSource": "hairfieMongo",
         "public": true
@@ -123,6 +127,10 @@
         "public": false
     },
     "Tag": {
+        "dataSource": "hairfieMongo",
+        "public": true
+    },
+    "Service": {
         "dataSource": "hairfieMongo",
         "public": true
     }
