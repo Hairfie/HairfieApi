@@ -45,7 +45,7 @@
             "create",
             "updateAttributes",
             "find",
-            "delete"
+            "destroyById"
         ],
         "mongodb": {
             "collection": "businessServices"
