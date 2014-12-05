@@ -37,6 +37,7 @@
     "options": {
         "timestampable": true,
         "sharedMethodNames": [
+            "find",
             "findById",
             "create",
             "updateAttributes"
