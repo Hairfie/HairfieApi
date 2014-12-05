@@ -285,24 +285,6 @@ module.exports = function(Business) {
         http: { verb: 'GET', path: '/:businessId/similar' }
     });
 
-    Business.remoteMethod('getHairdressers', {
-        description: 'Returns the business\'s hairdressers',
-        accepts: [
-            {arg: 'businessId', type: 'string', description: 'ID of the business'},
-        ],
-        returns: {arg: 'hairdressers', root: true},
-        http: {verb: 'GET', path: '/:businessId/hairdressers'}
-    });
-
-    Business.remoteMethod('getServices', {
-        description: 'Returns the business\'s services',
-        accepts: [
-            {arg: 'businessId', type: 'string', description: 'ID of the business'},
-        ],
-        returns: {arg: 'businessServices', root: true},
-        http: {verb: 'GET', path: '/:businessId/services'}
-    });
-
     Business.beforeRemote('**', function(ctx, business, next) {
         if(ctx.methodString == 'Business.find') {
             if(!ctx["args"]["filter"]) {
