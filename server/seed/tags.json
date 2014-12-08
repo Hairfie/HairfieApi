@@ -111,5 +111,21 @@
             { "name": { "fr": "Tendance", "en": "Trendy" } },
             { "name": { "fr": "BCBG", "en": "Chic" } }
         ]
+    },
+    {
+        "name": {
+            "fr": "Marques",
+            "en": "Brands"
+        },
+        "tags": [
+            { "name": { "fr": "L'Oréal", "en": "L'Oréal" } },
+            { "name": { "fr": "Wella", "en": "Wella" } },
+            { "name": { "fr": "Schwarzkopf", "en": "Schwarzkopf" } },
+            { "name": { "fr": "Eugène-Perma", "en": "Eugène-Perma" } },
+            { "name": { "fr": "Generik", "en": "Generik" } },
+            { "name": { "fr": "Hairgum", "en": "Hairgum" } },
+            { "name": { "fr": "Jacques Seban", "en": "Jacques Seban" } },
+            { "name": { "fr": "René Furterer", "en": "René Furterer" } }
+        ]
     }
 ]
