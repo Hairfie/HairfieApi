@@ -259,6 +259,7 @@ module.exports = function(Business) {
 
         // remove some fields if present
         delete ctx.req.body.managerIds;
+        delete ctx.req.body.slug;
 
         next();
     });
