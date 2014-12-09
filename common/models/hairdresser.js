@@ -59,7 +59,7 @@ module.exports = function (Hairdresser) {
         });
     });
 
-    Hairdresser.beforeRemote('*.updateAttributes', function (ctx, _, next) {
+    Hairdresser.beforeRemote('*.updateAttributes', function (ctx, v, next) {
         // user must be logged in
         if (!ctx.req.accessToken) {
             return next({statusCode: 401});
