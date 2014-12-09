@@ -12,6 +12,8 @@ module.exports = function (Hairdresser) {
     }, {message: 'exists'});
 
     Hairdresser.prototype.toRemoteObject = function () {
+        var Hairfie = Hairdresser.app.models.Hairfie;
+
         var obj = this.toRemoteShortObject();
         obj.business = Promise
             .npost(this, 'business')
@@ -19,6 +21,7 @@ module.exports = function (Hairdresser) {
                 return business ? business.toRemoteShortObject() : null;
             })
         ;
+        obj.numHairfies = Promise.ninvoke(Hairfie, 'count', {hairdresserId: this.id});
         obj.createdAt = this.createdAt;
         obj.updatedAt = this.updatedAt;
 
