@@ -70,7 +70,7 @@ module.exports = function (Hairdresser) {
             if (!business) next({statusCode: 500, message: 'Could not load hairdresser\'s business'});
 
             // only the business's owner can update a hairdresser
-            if (ctx.req.accessToken.userId.toString() != business.ownerId.toString()) {
+            if (!_.contains(business.managerIds, ctx.req.accessToken.userId.toString())) {
                 return next({statusCode: 403});
             }
 
