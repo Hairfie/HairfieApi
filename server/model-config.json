@@ -46,6 +46,10 @@
         "dataSource": "hairfieMongo",
         "public": true
     },
+    "BusinessMember": {
+        "dataSource": "hairfieMongo",
+        "public": true
+    },
     "Hairdresser": {
         "dataSource": "hairfieMongo",
         "public": true

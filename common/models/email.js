@@ -6,6 +6,7 @@ var path = require('path');
 var ejs = require('ejs');
 var juice = require('juice');
 var fs = require('fs');
+var debug = require('debug')('Model:Email');
 
 module.exports = function (Email) {
     var from      = 'Hairfie <hello@hairfie.com>',
@@ -38,7 +39,21 @@ module.exports = function (Email) {
         });
     }
 
+    Email.welcomeBusinessMember = function (business, user) {
+        return send({
+            to: user.email,
+            language: user.language,
+            template: 'welcomeBusinessMember',
+            templateVars: {
+                user    : user,
+                business: business
+            }
+        });
+    };
+
     function send(options) {
+        debug('Sending email', options)
+
         var language = options.language || languages[0];
 
         if (-1 === languages.indexOf(language)) {
@@ -55,7 +70,15 @@ module.exports = function (Email) {
 
         var deferred = Q.defer();
 
-        email.send(deferred.makeNodeResolver());
+        email.send(function (error) {
+            if (error) {
+                debug('Failed to send email', error);
+                deferred.reject(error);
+            } else {
+                debug('Email successfully sent');
+                deferred.resolve();
+            }
+        });
 
         return deferred.promise;
     }

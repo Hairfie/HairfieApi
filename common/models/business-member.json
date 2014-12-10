@@ -1,0 +1,51 @@
+{
+    "name": "BusinessMember",
+    "plural": "BusinessMembers",
+    "properties": {
+        "businessId": {
+            "type": "string",
+            "index": true,
+            "required": true
+        },
+        "userId": {
+            "type": "string",
+            "index": true,
+            "required": true
+        },
+        "hidden": {
+            "type": "boolean",
+            "required": true
+        },
+        "active": {
+            "type": "boolean",
+            "required": true
+        }
+    },
+    "validations": [],
+    "relations": {
+        "business": {
+            "type": "belongsTo",
+            "model": "Business",
+            "foreignKey": "businessId"
+        },
+        "user": {
+            "type": "belongsTo",
+            "model": "user",
+            "foreignKey": "userId"
+        }
+    },
+    "acls": [],
+    "methods": [],
+    "options": {
+        "timestampable": true,
+        "sharedMethodNames": [
+            "find",
+            "findById",
+            "create",
+            "updateAttributes"
+        ],
+        "mongodb": {
+            "collection": "businessMembers"
+        }
+    }
+}
