@@ -175,29 +175,30 @@ function upload(provider, req, res, container, cb) {
 }
 
 function download (provider, req, res, container, file, width, height, watermarkUrl, cb) {
+    console.time('download');
     var reader = provider.download({
         container: container || req && req.params.container,
         remote: file || req && req.params.file
     });
     res.type(file);
+    console.timeEnd('download');
+
 
     if(watermarkUrl) {
-        gm(watermarkUrl).size(function(err, value){
-            console.log("Size of watermark", value);
-            console.log("Error", err);
-        });
-
+        console.time('watermark');
         var tmpPicture = gm(reader)
             .options({imageMagick: true})
             .subCommand('composite')
             .gravity('NorthEast')
             .in('-compose', 'Over', watermarkUrl)
             .stream();
+        console.timeEnd('watermark');
     } else {
         var tmpPicture = reader;
     }
 
     if(width || height) {
+        console.time('resize');
         var resize = gm(tmpPicture)
             .options({imageMagick: true})
             .resize(width, height, '^');
@@ -211,6 +212,7 @@ function download (provider, req, res, container, file, width, height, watermark
                 if(err) res.status(500).send({ error: err });
                 stdout.pipe(res);
             });
+        console.timeEnd('resize');
     } else {
         tmpPicture.pipe(res);
     }
