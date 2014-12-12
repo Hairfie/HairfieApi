@@ -6,9 +6,10 @@ var validateExists = require('../utils/validator/exists');
 var Control = require('../utils/AccessControl');
 
 module.exports = function (BusinessMember) {
-    BusinessMember.validateAsync('businessId', validateExists('business'), {message: 'exists'});
-    BusinessMember.validateAsync('userId', validateExists('user'), {message: 'exists'});
-    BusinessMember.validatesUniquenessOf('userId', {scopedTo: ['businessId']});
+    // TODO: validation generates timeouts now...
+    //BusinessMember.validateAsync('businessId', validateExists('business'), {message: 'exists'});
+    //BusinessMember.validateAsync('userId', validateExists('user'), {message: 'exists'});
+    //BusinessMember.validatesUniquenessOf('userId', {scopedTo: ['businessId']});
 
     BusinessMember.prototype.toRemoteObject = function (context) {
         return {

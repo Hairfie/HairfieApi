@@ -10,6 +10,6 @@ function related(model, name, context) {
     return Promise
         .npost(model, name)
         .then(function (relatedModel) {
-            return relatedModel.toRemoteShortObject(context);
+            return relatedModel && relatedModel.toRemoteShortObject(context);
         });
 }

@@ -9,8 +9,7 @@
         },
         "userId": {
             "type": "string",
-            "index": true,
-            "required": true
+            "index": true
         },
         "firstName": {
             "type": "string",
