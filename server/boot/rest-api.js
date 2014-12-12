@@ -61,3 +61,7 @@ Context.prototype.localized = function (value) {
 
     return value[best];
 };
+
+Context.prototype.getUser = function () {
+    return this.options.request.user;
+};

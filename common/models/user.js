@@ -10,8 +10,18 @@ module.exports = function(User) {
     User.GENDER_MALE = 'MALE';
     User.GENDER_FEMALE = 'FEMALE';
 
-    User.prototype.toRemoteObject = function () {
+    User.prototype.equals = function (user) {
+        console.log(user.id, this.id);
+        return user && this.id.toString() == user.id.toString();
+    };
+
+    User.prototype.toRemoteObject = function (context) {
         var user = this.toRemoteShortObject();
+
+        if (!this.equals(context.getUser())) {
+            return user;
+        }
+
         user.phoneNumber = this.phoneNumber;
         user.email = this.email;
         user.language   = this.language;
@@ -21,7 +31,7 @@ module.exports = function(User) {
         return user;
     };
 
-    User.prototype.toRemoteShortObject = function () {
+    User.prototype.toRemoteShortObject = function (context) {
         var Hairfie             = User.app.models.Hairfie,
             BusinessReview      = User.app.models.BusinessReview,
             numHairfies         = Promise.ninvoke(Hairfie, 'count', {authorId: this.id}),
@@ -37,6 +47,22 @@ module.exports = function(User) {
             numHairfies         : numHairfies,
             numBusinessReviews  : numBusinessReviews
         };
+    };
+
+    User.prototype.isManagerOfBusiness = function (businessId) {
+        var deferred = Q.defer();
+        var BusinessMember = User.app.models.BusinessMember;
+        var where = {};
+        where.userId = this.id;
+        where.businessId = businessId;
+        where.active = true;
+
+        BusinessMember.findOne({where: where}, function (error, bm) {
+            if (error) deferred.reject(error);
+            deferred.resolve(!!bm);
+        });
+
+        return deferred.promise;
     };
 
     User.validatesInclusionOf('gender', {in: [User.GENDER_MALE, User.GENDER_FEMALE]});
@@ -212,8 +238,32 @@ module.exports = function(User) {
     };
 
     User.managedBusinesses = function (userId, callback) {
-        var Business = User.app.models.Business;
-        Business.find({where: {managerIds: userId}}, callback);
+        var Business       = User.app.models.Business,
+            BusinessMember = User.app.models.BusinessMember;
+
+        BusinessMember.find({where: {userId: userId}}, function (error, bms) {
+            if (error) return callback(error);
+
+            var ids = bms.map(function (bm) { return bm.businessId; });
+
+            Business.findByIds(ids, callback);
+        });
+    };
+
+    User.query = function (q, cb) {
+        var collection = User.dataSource.connector.collection(User.definition.name);
+
+        var pipe = [];
+        pipe.push({$match: {$text: {$search: q}}});
+        pipe.push({$project: {_id: true}});
+        pipe.push({$sort: {score: {$meta: "textScore"}}});
+
+        collection.aggregate(pipe, function (error, results) {
+            if (error) return cb(error);
+
+            var ids = results.map(function (r) { return r._id});
+            User.findByIds(ids, cb);
+        });
     };
 
     function loggedInAsSubjectUser(ctx, _, next) {
@@ -239,6 +289,14 @@ module.exports = function(User) {
         next();
     });
 
+    User.remoteMethod('query', {
+        description: 'Returns users list',
+        accepts: [
+            {arg: 'q', type: 'string', required: true, description: 'Fulltext search query'}
+        ],
+        returns: {arg: 'users', root: true},
+        http: { path: '/', verb: 'GET' }
+    });
     User.remoteMethod('likedHairfie', {
         description: 'Returns a hairfie liked by the user (or 404 if not liked)',
         accepts: [

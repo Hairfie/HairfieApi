@@ -5,9 +5,10 @@ var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 var Promise = require('../../common/utils/Promise');
 var getSlug = require('speakingurl');
 var lodash = require('lodash');
+var Control = require('../utils/AccessControl');
 
 module.exports = function(Business) {
-    Business.prototype.toRemoteObject = function () {
+    Business.prototype.toRemoteObject = function (context) {
         var Hairfie        = Business.app.models.Hairfie,
             Hairdresser    = Business.app.models.Hairdresser,
             BusinessReview = Business.app.models.BusinessReview,
@@ -32,14 +33,9 @@ module.exports = function(Business) {
                         });
                     });
 
-                var owner = null;
-                if(this.managerIds && this.managerIds.length > 0) {
-                    owner = Promise
-                        .ninvoke(User, 'findById', this.managerIds[0])
-                        .then(function(user) {
-                            return user ? user.toRemoteShortObject() : null;
-                        });
-                }
+                var owner = Promise.npost(this, 'owner').then(function (user) {
+                    return user ? user.toRemoteShortObject(user) : null;
+                });
 
                 return {
                     id                 : this.id,
@@ -96,6 +92,22 @@ module.exports = function(Business) {
 
         return this.pictures.map(function (picture) {
             return Picture.fromDatabaseValue(picture, 'business-pictures', Business.app);
+        });
+    };
+
+    Business.prototype.owner = function (cb) {
+        if (!this.id) cb(null, null);
+
+        var BusinessMember = Business.app.models.BusinessMember;
+
+        var where = {};
+        where.active = true;
+        where.businessId = this.id;
+
+        BusinessMember.findOne({where: where}, function (error, businessMember) {
+            if (error) cb(error);
+            else if (!businessMember) cb(null, null);
+            else businessMember.business(cb);
         });
     };
 
@@ -237,32 +249,25 @@ module.exports = function(Business) {
         });
     };
 
-    Business.beforeRemote('*.updateAttributes', function (ctx, _, next) {
-        // user must be logged in
-        if (!ctx.req.accessToken) {
-            return next({statusCode: 401});
-        }
+    Business.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, _, next) {
+        ctx.req.user.isManagerOfBusiness(ctx.instance.id)
+            .then(function (isManager) {
+                if (ctx.req.body.pictures) {
+                    var pattern = /^((http|https):\/\/)/;
+                    ctx.req.body.pictures = lodash.filter(ctx.req.body.pictures, function(url) { return !pattern.test(url)});
+                }
 
-        // only the owner can update a business
-        if (! lodash.contains(ctx.instance.managerIds, ctx.req.accessToken.userId.toString())) {
-            return next({statusCode: 403});
-        }
+                if (ctx.req.body.phoneNumber) {
+                    ctx.req.body.phoneNumber = ctx.req.body.phoneNumber.replace(/\s/g, '');
+                }
 
-        if(ctx.req.body.pictures) {
-            var pattern = /^((http|https):\/\/)/;
-            ctx.req.body.pictures = lodash.filter(ctx.req.body.pictures, function(url) { return !pattern.test(url)});
-        }
+                // remove some fields if present
+                delete ctx.req.body.slug;
 
-        if(ctx.req.body.phoneNumber) {
-            ctx.req.body.phoneNumber = ctx.req.body.phoneNumber.replace(/\s/g, '');
-        }
-
-        // remove some fields if present
-        delete ctx.req.body.managerIds;
-        delete ctx.req.body.slug;
-
-        next();
-    });
+                next();
+            })
+            .fail(next);
+    }));
 
     Business.remoteMethod('nearby', {
         description: 'Find nearby locations around you',

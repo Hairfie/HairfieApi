@@ -2,6 +2,7 @@
 
 var Promise = require('../../common/utils/Promise');
 var _ = require('lodash');
+var Control = require('../utils/AccessControl');
 
 module.exports = function (Hairdresser) {
     Hairdresser.validateAsync('businessId', function (onError, onDone) {
@@ -39,48 +40,23 @@ module.exports = function (Hairdresser) {
         };
     };
 
-    Hairdresser.beforeRemote('create', function (ctx, v, next) {
-        // user must be logged in
-        if (!ctx.req.accessToken) {
-            return next({statusCode: 401});
-        }
+    Hairdresser.beforeRemote('create', Control.isAuthenticated(function (ctx, _, next) {
+        ctx.req.user.isManagerOfBusiness(ctx.args.data.businessId)
+            .then(function (isManager) {
+                if (!isManager) return next({statusCode: 403});
+                next();
+            })
+            .fail(next);
+    }));
 
-        // user must be the business's owner
-        var Business = Hairdresser.app.models.Business;
+    Hairdresser.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, v, next) {
+        ctx.req.user.isManagerOfBusiness(ctx.instance.businessId)
+            .then(function (isManager) {
+                if (!isManager) return next({statusCode: 403});
 
-        // TODO: should be in vaidation
-        Business.findById(ctx.args.data.businessId, function (error, business) {
-            if (error) next(error);
-            if (!business) next({statusCode: 500, message: 'Could not load hairdresser\'s business'});
-
-            // only the business's owner can update a hairdresser
-            if (!_.contains(business.managerIds, ctx.req.accessToken.userId.toString())) {
-                return next({statusCode: 403, message: 'You must be the business\' owner'});
-            }
-
-            next();
-        });
-    });
-
-    Hairdresser.beforeRemote('*.updateAttributes', function (ctx, v, next) {
-        // user must be logged in
-        if (!ctx.req.accessToken) {
-            return next({statusCode: 401});
-        }
-
-        ctx.instance.business(function (error, business) {
-            if (error) next(error);
-            if (!business) next({statusCode: 500, message: 'Could not load hairdresser\'s business'});
-
-            // only the business's owner can update a hairdresser
-            if (!_.contains(business.managerIds, ctx.req.accessToken.userId.toString())) {
-                return next({statusCode: 403});
-            }
-
-            // prevent owner change
-            delete ctx.req.body.businessId;
-
-            next();
-        });
-    });
+                delete ctx.req.body.businessId;
+                next();
+            })
+            .fail(next);
+    }));
 };

@@ -68,32 +68,32 @@ module.exports = function (Hairfie) {
             description     : this.description,
             hairdresserName : this.hairdresserName,
             author          : Promise.ninvoke(this.author).then(function (author) {
-                return author ? author.toRemoteShortObject() : null;
+                return author ? author.toRemoteShortObject(context) : null;
             }),
             business        : Promise.ninvoke(this.business).then(function (business) {
-                return business ? business.toRemoteShortObject() : null;
+                return business ? business.toRemoteShortObject(context) : null;
             }),
             hairdresser     : Promise.npost(this, 'hairdresser').then(function (hairdresser) {
-                return hairdresser ? hairdresser.toRemoteShortObject() : null;
+                return hairdresser ? hairdresser.toRemoteShortObject(context) : null;
             }),
             numComments     : Promise.ninvoke(HairfieComment, 'count', {hairfieId: this.id}),
             numLikes        : Promise.ninvoke(HairfieLike, 'count', {hairfieId: this.id}),
             landingPageUrl  : Hairfie.app.urlGenerator.hairfie(this),
             selfMade        : !!this.selfMade,
-            displayBusiness : this.displayBusiness(this.authorId.toString()),
+            displayBusiness : this.displayBusiness(),
             createdAt       : this.createdAt,
             updatedAt       : this.updatedAt,
         };
     };
 
     Hairfie.prototype.displayBusiness = function(authorId) {
-        return Promise.ninvoke(this.business).then(function (business) {
-            if(business && _.contains(business.managerIds, authorId)) {
-                return true;
-            } else {
-                return false;
-            }
-        });
+        if (!this.businessId) return Promise(false);
+
+        var businessId = this.businessId;
+        return Promise.npost(this, 'author')
+            .then(function (user) {
+                return user ? user.isManagerOfBusiness(businessId) : Promise(null);
+            });
     };
 
     Hairfie.prototype.pictureObject = function () {

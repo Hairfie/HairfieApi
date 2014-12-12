@@ -39,9 +39,6 @@
         },
         "googleMapsGeo": {
             "type": "object"
-        },
-        "managerIds": {
-            "type": ["string"]
         }
     },
     "validations": [],
