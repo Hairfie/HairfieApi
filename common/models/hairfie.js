@@ -20,7 +20,6 @@ module.exports = function (Hairfie) {
     });
     Hairfie.validateAsync('pictures', function (onError, onDone) {
         // Check only first picture, bad
-        // FIXME : check every picture
         var picture = this.pictures[0];
 
         Hairfie.getApp(function (_, app) {
@@ -29,6 +28,20 @@ module.exports = function (Hairfie) {
                 onDone();
             });
         });
+
+        // var pictures = this.pictures;
+        // Hairfie.getApp(function (_, app) {
+        //     return Q.all(pictures.map(function(picture) {
+        //         return Q.nfcall(app.models.container.getFile, 'hairfies', picture);
+        //     }))
+        //     .then(function (files) {
+        //         console.log(files);
+        //         onDone();
+        //     })
+        //     .fail((function (err) {
+        //         onError();
+        //     }).bind(this));
+        // });
     }, {message: 'should exists'});
 
     Hairfie.validateAsync('businessId', function (onError, onDone) {
