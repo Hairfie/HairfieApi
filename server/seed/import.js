@@ -28,16 +28,16 @@ module.exports = function(app, cb) {
                 async.each(data, function(d, callback) {
                     var business = {
                         name: d.name,
-                    gps: d.gps,
-                    street: d.street,
-                    city: d.city,
-                    zipcode: d.zipcode,
-                    siren: d.siren,
-                    siret: d.siret,
-                    phone_numbers: d.phone_pj,
-                    diane_data: d.diane_data,
-                    pj_data: d.pages_jaunes,
-                    timetables: parseTimetables(d.timetables_pj)
+                        gps: d.gps,
+                        street: d.street,
+                        city: d.city,
+                        zipcode: d.zipcode,
+                        siren: d.siren,
+                        siret: d.siret,
+                        phone_numbers: d.phone_pj,
+                        diane_data: d.diane_data,
+                        pj_data: d.pages_jaunes,
+                        timetables: parseTimetables(d.timetables_pj)
                     };
                     //console.log(business);
                     Business.create(business, callback);

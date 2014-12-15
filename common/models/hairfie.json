@@ -3,8 +3,10 @@
     "plural": "Hairfies",
     "properties": {
         "picture": {
-            "type": "string",
-            "required": true
+            "type": "string"
+        },
+        "pictures": {
+            "type": ["string"]
         },
         "authorId": {
             "type": "string",

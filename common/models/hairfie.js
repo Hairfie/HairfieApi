@@ -2,10 +2,9 @@
 
 var Promise = require('../../common/utils/Promise'),
     Q = require('q'),
-    _ = require('lodash');
+    lodash = require('lodash');
 
 module.exports = function (Hairfie) {
-    Hairfie.validatesUniquenessOf('picture');
     Hairfie.validate('price', function (onError) {
         // validate structure
         if (undefined == this.price) return;
@@ -19,8 +18,10 @@ module.exports = function (Hairfie) {
         // validate currency
         if (this.price.currency != 'EUR') return onError();
     });
-    Hairfie.validateAsync('picture', function (onError, onDone) {
-        var picture = this.picture;
+    Hairfie.validateAsync('pictures', function (onError, onDone) {
+        // Check only first picture, bad
+        // FIXME : check every picture
+        var picture = this.pictures[0];
 
         Hairfie.getApp(function (_, app) {
             app.models.container.getFile('hairfies', picture, function (_, file) {
@@ -28,7 +29,8 @@ module.exports = function (Hairfie) {
                 onDone();
             });
         });
-    }, {message: 'exists'});
+    }, {message: 'should exists'});
+
     Hairfie.validateAsync('businessId', function (onError, onDone) {
         if (!this.businessId) return onDone(); // business is optional
 
@@ -56,11 +58,13 @@ module.exports = function (Hairfie) {
 
     Hairfie.prototype.toRemoteObject = function (context) {
         var HairfieLike    = Hairfie.app.models.HairfieLike,
-            HairfieComment = Hairfie.app.models.HairfieComment;
+            HairfieComment = Hairfie.app.models.HairfieComment,
+            pictures       = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
 
         return {
             id              : this.id,
-            picture         : this.pictureObject().toRemoteObject(),
+            picture         : pictures[0],
+            pictures        : pictures,
             price           : this.price,
             tags            : Promise.npost(this, 'tagObjects').then(function (tags) {
                 return Promise.map(tags, function (tag) { return tag.toRemoteShortObject(context); });
@@ -82,7 +86,7 @@ module.exports = function (Hairfie) {
             selfMade        : !!this.selfMade,
             displayBusiness : this.displayBusiness(),
             createdAt       : this.createdAt,
-            updatedAt       : this.updatedAt,
+            updatedAt       : this.updatedAt
         };
     };
 
@@ -96,8 +100,16 @@ module.exports = function (Hairfie) {
             });
     };
 
-    Hairfie.prototype.pictureObject = function () {
-        return Picture.fromDatabaseValue(this.picture, 'hairfies', Hairfie.app);
+    // Hairfie.prototype.pictureObject = function () {
+    //     return Picture.fromDatabaseValue(this.picture, 'hairfies', Hairfie.app);
+    // };
+
+    Hairfie.prototype.pictureObjects = function () {
+        var pictures = !Array.isArray(this.pictures) ? [this.picture] : this.pictures;
+
+        return pictures.map(function (picture) {
+            return Picture.fromDatabaseValue(picture, 'hairfies', Hairfie.app);
+        });
     };
 
     Hairfie.prototype.tagObjects = function (callback) {
@@ -127,6 +139,12 @@ module.exports = function (Hairfie) {
     // set user id from access token
     Hairfie.beforeRemote('create', function (ctx, _, next) {
         ctx.req.body.authorId = ctx.req.accessToken.userId;
+
+        if (ctx.req.body.picture) {
+            ctx.req.body.pictures = [ctx.req.body.picture];
+            delete ctx.req.body.picture;
+        }
+
         next();
     });
 

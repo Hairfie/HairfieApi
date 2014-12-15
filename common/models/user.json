@@ -62,6 +62,7 @@
     ],
     "methods": [],
     "options": {
+        "timestampable": true,
         "mongodb": {
             "collection": "users"
         }
