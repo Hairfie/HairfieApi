@@ -50,13 +50,9 @@
         "dataSource": "hairfieMongo",
         "public": true
     },
-    "Hairdresser": {
+    "BusinessMemberFavorite": {
         "dataSource": "hairfieMongo",
-        "public": true
-    },
-    "HairdresserFavorite": {
-        "dataSource": "hairfieMongo",
-        "public": true
+        "public": false
     },
     "HairdresserSuggestion": {
         "dataSource": "hairfieMongo",

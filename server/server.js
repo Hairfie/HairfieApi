@@ -98,6 +98,34 @@ app.use(corsMiddleware);
 
 // -- Add your pre-processing middleware here --
 
+// setup rewriting rules for backward compatibility
+
+app.post('/api/hairdressers', function (req, res, next) {
+    req.body.hidden = false;
+    next();
+});
+app.get('/api/hairfies', function (req, res, next) {
+    // rewrite businessId filter
+    var hairdresserId = req.query && req.query.filter && req.query.filter.where && req.query.filter.where.hairdresserId;
+    if (hairdresserId) {
+        req.query.filter.where.businessMemberId = hairdresserId;
+        delete req.query.filter.where.hairdresserId;
+    }
+
+    next();
+});
+
+var rewriteModule = require('http-rewrite-middleware');
+app.use(rewriteModule.getMiddleware([
+    // hairdresser-favorites -> business-member-favorites
+    {from: '^/api/users/([a-z0-9]+)/favorite-hairdressers$', to: '/api/users/$1/favorite-business-members'},
+    {from: '^/api/users/([a-z0-9]+)/favorite-hairdressers/([a-z0-9]+)$', to: '/api/users/$1/favorite-business-members/$2'},
+
+    // hairdressers -> business members
+    {from: '^/api/hairdressers$', to: '/api/businessMembers'},
+    {from: '^/api/hairdressers/([a-z0-9]+)$', to: '/api/businessMembers/$1'},
+]));
+
 // boot scripts mount components like REST API
 boot(app, {
     appRootDir: __dirname,

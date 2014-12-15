@@ -19,6 +19,12 @@
             "type": "string",
             "required": true
         },
+        "email": {
+            "type": "string"
+        },
+        "phoneNumber": {
+            "type": "string"
+        },
         "hidden": {
             "type": "boolean",
             "required": true

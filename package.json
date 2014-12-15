@@ -20,6 +20,7 @@
     "formidable": "^1.0.15",
     "function-rate-limit": "0.0.1",
     "gm": "^1.16.0",
+    "http-rewrite-middleware": "^0.1.6",
     "juice": "^0.5.0",
     "locale": "0.0.20",
     "lodash": "^2.4.1",

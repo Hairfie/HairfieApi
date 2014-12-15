@@ -47,19 +47,15 @@ module.exports = function (Hairfie) {
             onDone();
         }).bind(this));
     }, {message: 'all exist'});
-    //Hairfie.validateAsync('hairdresserId', function (onError, onDone) {
-    //    if (!this.hairdresserId) return onDone();
-    //    this.hairdresser((function (error, hairdresser) {
-    //        if (error || !hairdresser) return onError();
-    //        if (hairdresser.businessId.toString() != this.businessId.toString()) onError();
-    //        onDone();
-    //    }).bind(this));
-    //}, {message: 'exists & belongs to business'});
 
     Hairfie.prototype.toRemoteObject = function (context) {
         var HairfieLike    = Hairfie.app.models.HairfieLike,
             HairfieComment = Hairfie.app.models.HairfieComment,
             pictures       = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
+
+        var businessMember = Promise.npost(this, 'businessMember').then(function (businessMember) {
+            return businessMember && businessMember.toRemoteShortObject(context);
+        });
 
         return {
             id              : this.id,
@@ -70,16 +66,14 @@ module.exports = function (Hairfie) {
                 return Promise.map(tags, function (tag) { return tag.toRemoteShortObject(context); });
             }),
             description     : this.description,
-            hairdresserName : this.hairdresserName,
             author          : Promise.ninvoke(this.author).then(function (author) {
                 return author ? author.toRemoteShortObject(context) : null;
             }),
             business        : Promise.ninvoke(this.business).then(function (business) {
                 return business ? business.toRemoteShortObject(context) : null;
             }),
-            hairdresser     : Promise.npost(this, 'hairdresser').then(function (hairdresser) {
-                return hairdresser ? hairdresser.toRemoteShortObject(context) : null;
-            }),
+            hairdresser     : businessMember, // NOTE: BC
+            businessMember  : businessMember,
             numComments     : Promise.ninvoke(HairfieComment, 'count', {hairfieId: this.id}),
             numLikes        : Promise.ninvoke(HairfieLike, 'count', {hairfieId: this.id}),
             landingPageUrl  : Hairfie.app.urlGenerator.hairfie(this),
@@ -144,6 +138,10 @@ module.exports = function (Hairfie) {
             ctx.req.body.pictures = [ctx.req.body.picture];
             delete ctx.req.body.picture;
         }
+
+        // keep backward compatibility (hairdressers -> business members)
+        if (!ctx.req.body.businessMemberId) ctx.req.body.businessMemberId = ctx.req.body.hairdresserId;
+        delete ctx.req.body.hairdresserId;
 
         next();
     });
