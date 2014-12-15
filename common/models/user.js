@@ -11,8 +11,7 @@ module.exports = function(User) {
     User.GENDER_FEMALE = 'FEMALE';
 
     User.prototype.equals = function (user) {
-        console.log(user.id, this.id);
-        return user && this.id.toString() == user.id.toString();
+        return this.id && user && this.id.toString() == user.id.toString();
     };
 
     User.prototype.toRemoteObject = function (context) {

@@ -34,7 +34,7 @@ module.exports = function(Business) {
                     });
 
                 var owner = Promise.npost(this, 'owner').then(function (user) {
-                    return user ? user.toRemoteShortObject(user) : null;
+                    return user && user.toRemoteShortObject(user);
                 });
 
                 return {
@@ -263,6 +263,7 @@ module.exports = function(Business) {
 
                 // remove some fields if present
                 delete ctx.req.body.slug;
+                delete ctx.req.body.owner;
 
                 next();
             })
