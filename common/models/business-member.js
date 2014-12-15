@@ -12,15 +12,28 @@ module.exports = function (BusinessMember) {
     //BusinessMember.validatesUniquenessOf('userId', {scopedTo: ['businessId']});
 
     BusinessMember.prototype.toRemoteObject = function (context) {
+        var obj = this.toRemoteShortObject();
+        obj.business = RemoteObject.related(this, 'business', context);
+        obj.user = RemoteObject.related(this, 'user', context);
+        obj.numHairfies = Promise.npost(this, 'getNumHairfies');
+
+        return obj;
+    };
+
+    BusinessMember.prototype.toRemoteShortObject = function (context) {
         return {
             id          : this.id,
-            business    : RemoteObject.related(this, 'business', context),
-            user        : RemoteObject.related(this, 'user', context),
             firstName   : this.firstName,
             lastName    : this.lastName,
             hidden      : this.hidden,
             active      : this.active
         };
+    };
+
+    BusinessMember.prototype.getNumHairfies = function (cb) {
+        if (!this.id) cb(null, 0);
+        var Hairfie = BusinessMember.app.models.Hairfie;
+        Hairfie.count({businessMemberId: this.id}, cb);
     };
 
     BusinessMember.afterCreate = function (next) {

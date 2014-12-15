@@ -12,6 +12,7 @@ module.exports = function(Business) {
         var Hairfie        = Business.app.models.Hairfie,
             Hairdresser    = Business.app.models.Hairdresser,
             BusinessReview = Business.app.models.BusinessReview,
+            BusinessMember = Business.app.models.BusinessMember,
             User           = Business.app.models.User;
 
         return Promise.ninvoke(BusinessReview, 'getBusinessRating', this.id)
@@ -26,11 +27,11 @@ module.exports = function(Business) {
                 }
 
                 var activeHairdressers = Promise
-                    .npost(Hairdresser, 'find', [{where: {businessId: this.id, active: true}}])
-                    .then(function (hairdressers) {
-                        return hairdressers.map(function (hairdresser) {
-                            return hairdresser.toRemoteShortObject();
-                        });
+                    .npost(this, 'getVisibleActiveMembers')
+                    .then(function (members) {
+                        return Promise.all(members.map(function (member) {
+                                return member.toRemoteShortObject(context);
+                        }));
                     });
 
                 var owner = Promise.npost(this, 'owner').then(function (user) {
@@ -96,19 +97,34 @@ module.exports = function(Business) {
     };
 
     Business.prototype.owner = function (cb) {
-        if (!this.id) cb(null, null);
+        if (!this.id) return cb(null, null);
 
         var BusinessMember = Business.app.models.BusinessMember;
 
         var where = {};
         where.active = true;
         where.businessId = this.id;
+        where.userId = {neq: null};
 
         BusinessMember.findOne({where: where}, function (error, businessMember) {
             if (error) cb(error);
             else if (!businessMember) cb(null, null);
-            else businessMember.business(cb);
+            else businessMember.user(cb);
         });
+    };
+
+    Business.prototype.getVisibleActiveMembers = function (cb) {
+        if (!this.id) cb(null, []);
+
+        var BusinessMember = Business.app.models.BusinessMember;
+
+        var where = {};
+        where.businessId = this.id;
+        where.active = true;
+        where.hidden = false;
+        console.log(where);
+
+        BusinessMember.find({where: where}, cb);
     };
 
     Business.prototype.toSearchIndexObject = function () {
