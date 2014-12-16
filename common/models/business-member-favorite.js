@@ -1,5 +1,7 @@
 'use strict';
 
+var Promise = require('../utils/Promise');
+
 module.exports = function (BusinessMemberFavorite) {
     BusinessMemberFavorite.validateAsync('businessMemberId', function (onError, onDone) {
         this.businessMember(function (error, businessMember) {
