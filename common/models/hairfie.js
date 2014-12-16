@@ -128,8 +128,6 @@ module.exports = function (Hairfie) {
     Hairfie.hide = function (req, next) {
         if (!req.user) return next({statusCode: 401});
 
-        console.log("user:", req.user.id.toString());
-
         Hairfie.findById(req.params.hairfieId, function (error, hairfie) {
             if (error) return next({statusCode: 500});
             if (!hairfie) return next({statusCode: 404});
@@ -213,6 +211,6 @@ module.exports = function (Hairfie) {
         accepts: [
             {arg: 'req', type: 'object', 'http': {source: 'req'}}
         ],
-        http: { path: '/:hairfieId/hide', verb: 'PUT' }
+        http: { path: '/:hairfieId', verb: 'DELETE' }
     });
 };
