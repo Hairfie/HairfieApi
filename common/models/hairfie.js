@@ -92,6 +92,7 @@ module.exports = function (Hairfie) {
             landingPageUrl  : Hairfie.app.urlGenerator.hairfie(this),
             selfMade        : !!this.selfMade,
             displayBusiness : this.displayBusiness(),
+            hidden          : this.hidden,
             createdAt       : this.createdAt,
             updatedAt       : this.updatedAt
         };
@@ -122,6 +123,22 @@ module.exports = function (Hairfie) {
     Hairfie.prototype.tagObjects = function (callback) {
         if (!Array.isArray(this.tags)) return callback(null, []);
         Hairfie.app.models.Tag.findByIds(this.tags, callback);
+    };
+
+    Hairfie.hide = function (req, next) {
+        if (!req.user) return next({statusCode: 401});
+
+        console.log("user:", req.user.id.toString());
+
+        Hairfie.findById(req.params.hairfieId, function (error, hairfie) {
+            if (error) return next({statusCode: 500});
+            if (!hairfie) return next({statusCode: 404});
+            if (hairfie.authorId.toString() != req.user.id.toString()) return next({statusCode: 403});
+            hairfie.updateAttributes({hidden: true}, function(error, hairfie) {
+                if (error) return next({statusCode: 500});
+                return next();
+            })
+        });
     };
 
     Hairfie.share = function (req, next) {
@@ -189,5 +206,13 @@ module.exports = function (Hairfie) {
         ],
         returns: {arg: 'result', root: true},
         http: { path: '/:hairfieId/share', verb: 'POST' }
+    });
+
+    Hairfie.remoteMethod('hide', {
+        description: 'Delete the hairfie',
+        accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}}
+        ],
+        http: { path: '/:hairfieId/hide', verb: 'PUT' }
     });
 };
