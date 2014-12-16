@@ -60,11 +60,6 @@
     },
     "acls": [],
     "methods": [],
-    "scope": {
-        "where": {
-          "hidden": false
-        }
-    },
     "options": {
         "timestampable": true,
         "sharedMethodNames": [
