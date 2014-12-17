@@ -1,5 +1,5 @@
 {
-  "url": "http://staging.hairfie.com",
-  "webUrl": "http://hairfie-website-staging.herokuapp.com"
-
+  "url": "http://api-staging.hairfie.com",
+  "webUrl": "http://www-staging.hairfie.com",
+  "cdnUrl": "http://api-staging.hairfie.com"
 }

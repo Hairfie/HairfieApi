@@ -7,7 +7,7 @@ function UrlGenerator(options) {
 
 module.exports = UrlGenerator;
 
-UrlGenerator.prototype.generate = function (name, params, webUrl) {
+UrlGenerator.prototype.generate = function (name, params, customUrlType) {
     var route  = this.options.routes[name],
         params = params || {};
 
@@ -19,7 +19,9 @@ UrlGenerator.prototype.generate = function (name, params, webUrl) {
         path = path.replace(':'+k, params[k]);
     }
 
-    if(webUrl) {
+    if(customUrlType == 'cdn') {
+        return this.pathToCdnUrl(path);
+    } else if(customUrlType == 'web'){
         return this.pathToWebUrl(path);
     } else {
         return this.pathToUrl(path);
@@ -31,7 +33,7 @@ UrlGenerator.prototype.home = function () {
 };
 
 UrlGenerator.prototype.hairfie = function (hairfie) {
-    return this.generate('hairfies', {id: hairfie.id}, true);
+    return this.generate('hairfies', {id: hairfie.id}, 'web');
 };
 
 UrlGenerator.prototype.user = function (user) {
@@ -39,7 +41,7 @@ UrlGenerator.prototype.user = function (user) {
 };
 
 UrlGenerator.prototype.business = function (business) {
-    return this.generate('businesses', {id: business.id, slug: business.slug()}, true);
+    return this.generate('businesses', {id: business.id, slug: business.slug()}, 'web');
 };
 
 UrlGenerator.prototype.watermark = function (picture_path) {
@@ -52,4 +54,8 @@ UrlGenerator.prototype.pathToUrl = function (path) {
 
 UrlGenerator.prototype.pathToWebUrl = function (path) {
     return this.options.webUrl.replace(/\/$/, '')+path;
+};
+
+UrlGenerator.prototype.pathToCdnUrl = function (path) {
+    return this.options.cdnUrl.replace(/\/$/, '')+path;
 };

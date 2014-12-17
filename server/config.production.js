@@ -3,5 +3,6 @@ module.exports = {
     facebookAppNamespace: process.env.FACEBOOK_APP_NAMESPACE,
     facebookAppAccessToken: process.env.FACEBOOK_APP_ACCESS_TOKEN,
     url: process.env.URL,
-    webUrl: process.env.WEB_URL
+    webUrl: process.env.WEB_URL,
+    cdnUrl: process.env.CDN_URL
 };
