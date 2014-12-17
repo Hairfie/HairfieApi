@@ -4,8 +4,9 @@ var IncomingForm = require('formidable');
 var StringDecoder = require('string_decoder').StringDecoder;
 var md5 = require('MD5');
 var crypto = require('crypto');
-var fs = require('fs')
-  , gm = require('gm');
+var fs = require('fs'),
+    gm = require('gm'),
+    imageMagick = gm.subClass({ imageMagick: true });
 
 module.exports = function (Container) {
     Container.prefixName = function (name) { throw Error('Not initialized'); };
@@ -192,29 +193,30 @@ function download (provider, req, res, container, file, width, height, watermark
 
     switch (true) {
         case typeof(watermarkUrl) != 'undefined' && typeof(width) != 'undefined' && typeof(height) != 'undefined':
-            var tmpPicture = gm(reader)
-                .options({imageMagick: true})
+            var tmpPicture = imageMagick(reader)
                 .subCommand('composite')
                 .gravity('NorthEast')
                 .in('-compose', 'Over', watermarkUrl)
+                .stream();
+            tmpPicture = imageMagick(tmpPicture)
                 .resize(width, height, '^')
                 .gravity('Center').crop(width, height)
                 .stream();
             break;
 
         case typeof(watermarkUrl) != 'undefined' && (typeof(width) != 'undefined' || typeof(height) != 'undefined'):
-            var tmpPicture = gm(reader)
-                .options({imageMagick: true})
+            var tmpPicture = imageMagick(reader)
                 .subCommand('composite')
                 .gravity('NorthEast')
                 .in('-compose', 'Over', watermarkUrl)
+                .stream();
+            tmpPicture = imageMagick(tmpPicture)
                 .resize(width, height, '^')
                 .stream();
             break;
 
         case typeof(watermarkUrl) != 'undefined':
-            var tmpPicture = gm(reader)
-                .options({imageMagick: true})
+            var tmpPicture = imageMagick(reader)
                 .subCommand('composite')
                 .gravity('NorthEast')
                 .in('-compose', 'Over', watermarkUrl)
@@ -222,15 +224,13 @@ function download (provider, req, res, container, file, width, height, watermark
             break;
 
         case (typeof(width) != 'undefined' && typeof(height) != 'undefined'):
-            var tmpPicture = gm(reader)
-                .options({imageMagick: true})
+            var tmpPicture = imageMagick(reader)
                 .resize(width, height, '^')
                 .stream();
             break;
 
         case (typeof(width) != 'undefined' || typeof(height) != 'undefined'):
-            var tmpPicture = gm(reader)
-                .options({imageMagick: true})
+            var tmpPicture = imageMagick(reader)
                 .resize(width, height, '^')
                 .gravity('Center').crop(width, height)
                 .stream();
