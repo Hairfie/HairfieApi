@@ -90,6 +90,12 @@ module.exports = function (Container) {
         }
         next();
     });
+
+    // Container.afterRemote('create', function (ctx, _, next) {
+    //     if(ctx.methodString === 'upload') {
+    //         console.log("upload");
+    //     }
+    // }
 }
 
 function upload(provider, req, res, container, cb) {
@@ -175,6 +181,7 @@ function upload(provider, req, res, container, cb) {
 }
 
 function download (provider, req, res, container, file, width, height, watermarkUrl, cb) {
+    console.time('imageProcessing');
     console.time('download');
     var reader = provider.download({
         container: container || req && req.params.container,
@@ -211,10 +218,13 @@ function download (provider, req, res, container, file, width, height, watermark
             .stream(function (err, stdout, stderr) {
                 if(err) res.status(500).send({ error: err });
                 stdout.pipe(res);
+                console.timeEnd('resize');
+                console.timeEnd('imageProcessing');
             });
-        console.timeEnd('resize');
+
     } else {
         tmpPicture.pipe(res);
+        console.timeEnd('imageProcessing');
     }
 
     reader.on('error', function (err) {
