@@ -57,7 +57,7 @@ module.exports = function (Container) {
 
         Container.download = function (container, file, width, height, res, cb) {
             var client = Container.dataSource.connector.client;
-            var watermarkUrl = (container.indexOf("hairfies") > -1) ? Container.app.urlGenerator.watermark('/img/watermark.png') : null;
+            var watermarkUrl = (container.indexOf("hairfies") > -1) ? Container.app.urlGenerator.watermark('/img/watermark.png') : undefined;
 
             download(client, null, res, container, file, width, height, watermarkUrl, cb);
         };
@@ -190,42 +190,59 @@ function download (provider, req, res, container, file, width, height, watermark
     res.type(file);
     console.timeEnd('download');
 
+    switch (true) {
+        case typeof(watermarkUrl) != 'undefined' && typeof(width) != 'undefined' && typeof(height) != 'undefined':
+            var tmpPicture = gm(reader)
+                .options({imageMagick: true})
+                .subCommand('composite')
+                .gravity('NorthEast')
+                .in('-compose', 'Over', watermarkUrl)
+                .resize(width, height, '^')
+                .gravity('Center').crop(width, height)
+                .stream();
+            break;
 
-    if(watermarkUrl) {
-        console.time('watermark');
-        var tmpPicture = gm(reader)
-            .options({imageMagick: true})
-            .subCommand('composite')
-            .gravity('NorthEast')
-            .in('-compose', 'Over', watermarkUrl)
-            .stream();
-        console.timeEnd('watermark');
-    } else {
-        var tmpPicture = reader;
+        case typeof(watermarkUrl) != 'undefined' && (typeof(width) != 'undefined' || typeof(height) != 'undefined'):
+            var tmpPicture = gm(reader)
+                .options({imageMagick: true})
+                .subCommand('composite')
+                .gravity('NorthEast')
+                .in('-compose', 'Over', watermarkUrl)
+                .resize(width, height, '^')
+                .stream();
+            break;
+
+        case typeof(watermarkUrl) != 'undefined':
+            var tmpPicture = gm(reader)
+                .options({imageMagick: true})
+                .subCommand('composite')
+                .gravity('NorthEast')
+                .in('-compose', 'Over', watermarkUrl)
+                .stream();
+            break;
+
+        case (typeof(width) != 'undefined' && typeof(height) != 'undefined'):
+            var tmpPicture = gm(reader)
+                .options({imageMagick: true})
+                .resize(width, height, '^')
+                .stream();
+            break;
+
+        case (typeof(width) != 'undefined' || typeof(height) != 'undefined'):
+            var tmpPicture = gm(reader)
+                .options({imageMagick: true})
+                .resize(width, height, '^')
+                .gravity('Center').crop(width, height)
+                .stream();
+            break;
+
+        default:
+            var tmpPicture = reader;
+            break;
     }
 
-    if(width || height) {
-        console.time('resize');
-        var resize = gm(tmpPicture)
-            .options({imageMagick: true})
-            .resize(width, height, '^');
-
-        if (width && height) {
-            resize.gravity('Center').crop(width, height);
-        }
-
-        resize
-            .stream(function (err, stdout, stderr) {
-                if(err) res.status(500).send({ error: err });
-                stdout.pipe(res);
-                console.timeEnd('resize');
-                console.timeEnd('imageProcessing');
-            });
-
-    } else {
-        tmpPicture.pipe(res);
-        console.timeEnd('imageProcessing');
-    }
+    tmpPicture.pipe(res);
+    console.timeEnd('imageProcessing');
 
     reader.on('error', function (err) {
         res.type('application/json');
