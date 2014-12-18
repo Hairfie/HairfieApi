@@ -57,7 +57,10 @@
             "similar",
             "submitErrorReport",
             "updateAttributes",
-            "getHairdressers"
+            "getHairdressers",
+            "getFacebookPage",
+            "saveFacebookPage",
+            "deleteFacebookPage"
         ],
         "mongodb": {
             "collection": "businesses"
