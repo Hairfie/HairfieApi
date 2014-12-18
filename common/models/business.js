@@ -82,6 +82,25 @@ module.exports = function(Business) {
         };
     };
 
+    Business.getFacebookPageObject = function () {
+        var User = Business.app.models.user;
+
+        var facebookPage = this.facebookPage || {},
+            graphData = facebookPage.graphData || {};
+
+        return {
+            toRemoteObject: function (context) {
+                return {
+                    name      : graphData.name,
+                    user      : Promise.ninvoke(User, 'findById', facebookPage.userId).then(function (user) {
+                        return user && user.toRemoteShortObject(context);
+                    }),
+                    createdAt : facebookPage.createdAt
+                };
+            }
+        };
+    };
+
     Business.prototype.slug = function () {
         return getSlug(this.name);
     };
@@ -265,6 +284,27 @@ module.exports = function(Business) {
         });
     };
 
+    Business.getFacebookPage = function (businessId, cb) {
+        Business.findById(businessId, function (error, business) {
+            if (error) return cb(error);
+            if (!business || !business.facebookPage) return cb({statusCode: 404});
+            cb(null, business.getFacebookPageObject());
+        });
+    };
+    Business.saveFacebookPage = function (businessId, user, data, cb) {
+        Business.findById(businessId, function (error, business) {
+            if (error) return cb(error);
+            if (!business) return cb({statusCode: 404});
+
+            var fb = Business.app.fbGraph;
+
+            fb.get('/'+data.id+'?access_token='+data.access_token, function (error, response) {
+                var facebookPage = {};
+                var
+            });
+        });
+    };
+
     Business.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, _, next) {
         ctx.req.user.isManagerOfBusiness(ctx.instance.id)
             .then(function (isManager) {
@@ -306,6 +346,35 @@ module.exports = function(Business) {
         ],
         returns: {arg: 'businesses', root: true},
         http: { verb: 'GET', path: '/:businessId/similar' }
+    });
+
+    Business.remoteMethod('getFacebookPage', {
+        description: 'Returns the facebook page of the business',
+        accepts: [
+            {arg: 'businessId', type: 'string', description: 'Identifier of the business'}
+        ],
+        returns: {arg: 'facebookPage', root: true},
+        http: {verb: 'GET', path: '/:businessId/facebook-page'}
+    });
+    Business.remoteMethod('saveFacebookPage', {
+        description: 'Saves the facebook page of the business',
+        accepts: [
+            {arg: 'businessId', type: 'string', description: 'Identifier of the business'},
+            {arg: 'data', type: 'object', http: {source: 'body'}},
+            {arg: 'data', type: 'object', http: function (ctx) {
+                return ctx.req.user;
+            }}
+        ],
+        returns: {arg: 'facebookPage', root: true},
+        http: {verb: 'PUT', path: '/:businessId/facebook-page'}
+    });
+    Business.remoteMethod('deleteFacebookPage', {
+        description: 'Deletes the facebook page of the business',
+        accepts: [
+            {arg: 'businessId', type: 'string', description: 'Identifier of the business'}
+        ],
+        returns: {arg: 'facebookPage', root: true},
+        http: {verb: 'DELETE', path: '/:businessId/facebook-page'}
     });
 
     Business.beforeRemote('**', function(ctx, business, next) {

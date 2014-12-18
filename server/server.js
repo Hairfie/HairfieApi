@@ -134,7 +134,11 @@ boot(app, {
 
 // setup passport
 var passport = passportConfigurator.init();
-passportConfigurator.setupModels();
+passportConfigurator.setupModels({
+  userModel: app.models.user,
+  userCredentialModel: app.models.userCredential,
+  userIdentityModel: app.models.userIdentity,
+});
 for (var s in passportConfig) {
     var c = passportConfig[s];
     c.session = c.session !== false;

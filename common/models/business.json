@@ -39,6 +39,9 @@
         },
         "googleMapsGeo": {
             "type": "object"
+        },
+        "facebookPage": {
+            "type": "object"
         }
     },
     "validations": [],
