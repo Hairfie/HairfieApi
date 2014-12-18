@@ -83,6 +83,25 @@ module.exports = function(Business) {
         };
     };
 
+    Business.prototype.getFacebookPageObject = function () {
+        var User = Business.app.models.user;
+
+        var facebookPage = this.facebookPage || {},
+            graphData = facebookPage.graphData || {};
+
+        return {
+            toRemoteObject: function (context) {
+                return {
+                    name      : graphData.name,
+                    user      : Promise.ninvoke(User, 'findById', facebookPage.userId).then(function (user) {
+                        return user && user.toRemoteShortObject(context);
+                    }),
+                    createdAt : facebookPage.createdAt
+                };
+            }
+        };
+    };
+
     Business.prototype.slug = function () {
         return getSlug(this.name);
     };
@@ -266,6 +285,74 @@ module.exports = function(Business) {
         });
     };
 
+    Business.getFacebookPage = function (businessId, user, cb) {
+        if (!user) return cb({statusCode: 401});
+
+        user.isManagerOfBusiness(businessId)
+            .then(function (isManager) {
+                if (!isManager) return cb({statusCode: 403});
+
+                return Promise.ninvoke(Business, 'findById', businessId);
+            })
+            .then(function (business) {
+                if (!business || !business.facebookPage) return cb({statusCode: 404});
+
+                cb(null, business.getFacebookPageObject());
+            })
+            .fail(cb);
+    };
+    Business.saveFacebookPage = function (businessId, data, user, cb) {
+        if (!user) return cb({statusCode: 401});
+
+        user.isManagerOfBusiness(businessId)
+            .then(function (isManager) {
+                if (!isManager) return cb({statusCode: 403});
+
+                return Promise.ninvoke(Business, 'findById', businessId);
+            })
+            .then(function (business) {
+                if (!business) return cb({statusCode: 404});
+
+                var fb = Business.app.fbGraph;
+
+                fb.get(data.id+'?access_token='+data.access_token, function (error, response) {
+                    if (error) return cb({statusCode: 500});
+                    if (!response.can_post) return cb({statusCode: 400, message: 'Cannot post'});
+
+                    var facebookPage = business.facebookPage || {};
+                    facebookPage.graphData = response;
+                    facebookPage.userId = user.id;
+                    facebookPage.createdAt = facebookPage.createdAt || new Date();
+                    facebookPage.updatedAt = new Date();
+
+                    business.facebookPage = facebookPage;
+
+                    business.save({}, function (error) {
+                        if (error) return cb({statusCode: 500});
+                        cb(null, business.getFacebookPageObject());
+                    });
+                });
+            })
+            .fail(cb);
+    };
+    Business.deleteFacebookPage = function (businessId, user, cb) {
+        if (!user) return cb({statusCode: 401});
+
+        user.isManagerOfBusiness(businessId)
+            .then(function (isManager) {
+                if (!isManager) return cb({statusCode: 403});
+
+                return Promise.ninvoke(Business, 'findById', businessId);
+            })
+            .then(function (business) {
+                if (!business) return cb({statusCode: 404});
+
+                business.facebookPage = null;
+                return Promise.ninvoke(business, 'save');
+            })
+            .then(cb.bind(null, null), cb);
+    };
+
     Business.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, _, next) {
         ctx.req.user.isManagerOfBusiness(ctx.instance.id)
             .then(function (isManager) {
@@ -307,6 +394,34 @@ module.exports = function(Business) {
         ],
         returns: {arg: 'businesses', root: true},
         http: { verb: 'GET', path: '/:businessId/similar' }
+    });
+
+    Business.remoteMethod('getFacebookPage', {
+        description: 'Returns the facebook page of the business',
+        accepts: [
+            {arg: 'businessId', type: 'string', description: 'Identifier of the business'},
+            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
+        ],
+        returns: {arg: 'facebookPage', root: true},
+        http: {verb: 'GET', path: '/:businessId/facebook-page'}
+    });
+    Business.remoteMethod('saveFacebookPage', {
+        description: 'Saves the facebook page of the business',
+        accepts: [
+            {arg: 'businessId', type: 'string', description: 'Identifier of the business'},
+            {arg: 'data', type: 'object', http: {source: 'body'}},
+            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
+        ],
+        returns: {arg: 'facebookPage', root: true},
+        http: {verb: 'PUT', path: '/:businessId/facebook-page'}
+    });
+    Business.remoteMethod('deleteFacebookPage', {
+        description: 'Deletes the facebook page of the business',
+        accepts: [
+            {arg: 'businessId', type: 'string', description: 'Identifier of the business'},
+            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
+        ],
+        http: {verb: 'DELETE', path: '/:businessId/facebook-page'}
     });
 
     Business.beforeRemote('**', function(ctx, business, next) {

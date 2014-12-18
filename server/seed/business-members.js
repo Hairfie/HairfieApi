@@ -37,7 +37,7 @@ businessesHavingManagerIds()
 
 
 function businessesHavingManagerIds() {
-    return find('businesses', {managerIds: {$not: {$size: 0}}});
+    return find('businesses', {managerIds: {$exists: true}});
 }
 
 function allHairdressers() {

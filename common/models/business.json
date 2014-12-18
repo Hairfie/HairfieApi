@@ -39,6 +39,9 @@
         },
         "googleMapsGeo": {
             "type": "object"
+        },
+        "facebookPage": {
+            "type": "object"
         }
     },
     "validations": [],
@@ -54,7 +57,10 @@
             "similar",
             "submitErrorReport",
             "updateAttributes",
-            "getHairdressers"
+            "getHairdressers",
+            "getFacebookPage",
+            "saveFacebookPage",
+            "deleteFacebookPage"
         ],
         "mongodb": {
             "collection": "businesses"
