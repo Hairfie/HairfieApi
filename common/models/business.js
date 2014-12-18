@@ -76,6 +76,7 @@ module.exports = function(Business) {
         return {
             id          : this.id,
             name        : this.name,
+            slug        : this.slug(),
             phoneNumber : this.phoneNumber,
             address     : this.address,
             pictures    : pictures
