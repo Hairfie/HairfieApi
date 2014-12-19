@@ -416,6 +416,8 @@ module.exports = function(Business) {
     Business.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, _, next) {
         ctx.req.user.isManagerOfBusiness(ctx.instance.id)
             .then(function (isManager) {
+                if (!isManager) return next({statusCode: 403});
+
                 if (ctx.req.body.pictures) {
                     var pattern = /^((http|https):\/\/)/;
                     ctx.req.body.pictures = lodash.filter(ctx.req.body.pictures, function(url) { return !pattern.test(url)});
