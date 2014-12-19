@@ -301,6 +301,7 @@ module.exports = function(Business) {
             })
             .fail(cb);
     };
+
     Business.saveFacebookPage = function (businessId, data, user, cb) {
         if (!user) return cb({statusCode: 401});
 
@@ -351,6 +352,65 @@ module.exports = function(Business) {
                 return Promise.ninvoke(business, 'save');
             })
             .then(cb.bind(null, null), cb);
+    };
+
+    Business.prototype.getCustomersObject = function () {
+        var User = Business.app.models.user,
+            Hairfie = Business.app.models.Hairfie;
+
+        var filter = {where: {businessId: this.id, customerEmail: {neq: null}}, order: 'createdAt DESC'};
+
+        var deferred  = Promise.defer();
+
+
+        Hairfie.find(filter, function(error, hairfies) {
+            if (error) return deferred.reject(error);
+            if(hairfies.length === 0) return deferred.resolve([]);
+            var customers = hairfies.map(function(hairfie) {
+                return {
+                    email      : hairfie.customerEmail,
+                    hairfie    : hairfie.toRemoteObject()
+                };
+            });
+            var result = lodash.reduce(customers, function (prev, current) {
+                var customer = lodash.find(prev, function (old) {
+                    return old.email === current.email;
+                });
+                if (customer === undefined) {
+                    current.numHairfies = 1;
+                    current.hairfies = [current.hairfie];
+                    delete current.hairfie;
+                    prev.push(current);
+                } else {
+                    if (!lodash.isArray(customer.hairfies)) {
+                        customer.hairfies = [customer.hairfie];
+                    }
+                    customer.numHairfies++;
+                    customer.hairfies.push(current.hairfie);
+                }
+                return prev;
+            }, []);
+
+            deferred.resolve(result);
+        });
+
+        return deferred.promise;
+    };
+
+    Business.getCustomers = function (businessId, user, cb) {
+        if (!user) return cb({statusCode: 401});
+
+        user.isManagerOfBusiness(businessId)
+            .then(function (isManager) {
+                if (!isManager) return cb({statusCode: 403});
+
+                return Promise.ninvoke(Business, 'findById', businessId);
+            })
+            .then(function (business) {
+                if (!business) return cb({statusCode: 404});
+                cb(null, business.getCustomersObject());
+            })
+            .fail(cb);
     };
 
     Business.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, _, next) {
@@ -423,7 +483,15 @@ module.exports = function(Business) {
         ],
         http: {verb: 'DELETE', path: '/:businessId/facebook-page'}
     });
-
+    Business.remoteMethod('getCustomers', {
+        description: 'List of customers tagged in this business',
+        accepts: [
+            {arg: 'businessId', type: 'string', required: true, description: 'Identifier of the business'},
+            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
+        ],
+        returns: {arg: 'customers', root: true},
+        http: { path: '/:businessId/customers', verb: 'GET' }
+    });
     Business.beforeRemote('**', function(ctx, business, next) {
         if(ctx.methodString == 'Business.find') {
             if(!ctx["args"]["filter"]) {

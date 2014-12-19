@@ -60,7 +60,8 @@
             "getHairdressers",
             "getFacebookPage",
             "saveFacebookPage",
-            "deleteFacebookPage"
+            "deleteFacebookPage",
+            "getCustomers"
         ],
         "mongodb": {
             "collection": "businesses"
