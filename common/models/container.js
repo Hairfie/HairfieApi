@@ -190,6 +190,8 @@ function download (provider, req, res, container, file, width, height, watermark
     });
     res.type(file);
     console.timeEnd('download');
+    console.log("typeof(width)", typeof(width));
+    console.log("typeof(height)", typeof(height));
 
     switch (true) {
         case typeof(watermarkUrl) != 'undefined' && typeof(width) != 'undefined' && typeof(height) != 'undefined':
@@ -230,6 +232,7 @@ function download (provider, req, res, container, file, width, height, watermark
             break;
 
         case (typeof(width) != 'undefined' || typeof(height) != 'undefined'):
+            console.log("here");
             var tmpPicture = imageMagick(reader)
                 .resize(width, height, '^')
                 .gravity('Center').crop(width, height)
