@@ -233,6 +233,7 @@ function download (provider, req, res, container, file, width, height, watermark
 
         case (typeof(width) != 'undefined' || typeof(height) != 'undefined'):
             height = (typeof(height) != 'undefined') ? null : height;
+            console.log("or without");
             var tmpPicture = imageMagick(reader)
                 .resize(width, height, '^')
                 .gravity('Center').crop(width, height)
