@@ -1,22 +1,111 @@
 [
     {
-        "label": {
-            "fr": "Coupe Femme"
-        }
+        "label": "Shampooing + Coupe",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
     },
     {
-        "label": {
-            "fr": "Coupe Homme"
-        }
+        "label": "Shampooing + Coiffage",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
     },
     {
-        "label": {
-            "fr": "Coupe Enfant"
-        }
+        "label": "Shampooing + Coupe + Coiffage",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
     },
     {
-        "label": {
-            "fr": "Soin originel à la crème de palme"
-        }
+        "label": "Shampooing + Coupe + Brushing",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
+    },
+    {
+        "label": "Coloration",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
+    },
+    {
+        "label": "Mèches",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
+    },
+    {
+        "label": "Balayage",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
+    },
+    {
+        "label": "Défrisage",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
+    },
+    {
+        "label": "Extensions",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
+    },
+    {
+        "label": "Tissage",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
+    },
+    {
+        "label": "Lissage Brésilien",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
+    },
+    {
+        "label": "Lissage Japonais",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
+    },
+    {
+        "label": "Tie & Die",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
+    },
+    {
+        "label": "Soin",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
+    },
+    {
+        "label": "Chignon",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
+    },
+    {
+        "label": "Tresse",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
+    },
+    {
+        "label": "Permanente",
+        "gender": ["Homme", "Femme", "Enfant"],
+        "length": ["Court", "Moyen", "Long"]
+    },
+    {
+        "label": "Essai Mariage"
+    },
+    {
+        "label": "Coiffure de Mariage"
+    },
+    {
+        "label": "Taille de moustache"
+    },
+    {
+        "label": "Taille de barbe simple"
+    },
+    {
+        "label": "Taille de barbe sculptée"
+    },
+    {
+        "label": "Rasage"
+    },
+    {
+        "label": "Rasage traditionnel"
+    },
+    {
+        "label": "Rasage Crâne"
     }
 ]

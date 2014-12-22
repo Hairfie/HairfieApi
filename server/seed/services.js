@@ -3,9 +3,9 @@
 var app = require('../..');
 var q = require('q');
 var Service = app.models.Service;
-var servicesValues = require('./services.json');
+var serviceDefinitions = require('./services.json');
 
-saveServices(servicesValues)
+saveServices(serviceDefinitions)
     .then(function () {
         console.log('Successfully seeded tags.');
         process.exit(0);
@@ -19,8 +19,35 @@ function saveServices(servicesValues) {
     return q.all(servicesValues.map(saveService));
 }
 
-function saveService(serviceValues) {
+function saveService(serviceDefinitions) {
+    var promises = serviceVariations(serviceDefinitions).map(saveServiceVariation);
+}
+
+function saveServiceVariation(serviceValues) {
     return q.npost(Service, 'create', [{
         label: serviceValues.label
     }]);
+};
+
+function serviceVariations(serviceDefinition) {
+    var variations = [];
+    variations.push({label: {fr: serviceDefinition.label}});
+
+    // service x gender
+    (serviceDefinition.gender || []).map(function (gender) {
+        variations.push({label: {fr: serviceDefinition.label+' - '+gender}});
+
+        // service x gender x length
+        (serviceDefinition.length || []).map(function (length) {
+            variations.push({label: {fr: serviceDefinition.label+' - '+gender+' - '+length}});
+        });
+    });
+
+    // service x length
+    (serviceDefinition.length || []).map(function (length) {
+        variations.push({label: {fr: serviceDefinition.label+' - '+length}});
+    });
+
+    return variations;
 }
+
