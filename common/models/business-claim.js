@@ -35,7 +35,8 @@ module.exports = function (BusinessClaim) {
     });
 
     BusinessClaim.submit = function (businessClaimId, callback) {
-        var Business       = BusinessClaim.app.models.Business,
+        var User           = BusinessClaim.app.models.user,
+            Business       = BusinessClaim.app.models.Business,
             BusinessMember = BusinessClaim.app.models.BusinessMember,
             Hairdresser    = BusinessClaim.app.models.Hairdresser;
 
@@ -57,8 +58,11 @@ module.exports = function (BusinessClaim) {
             business.children = businessClaim.children;
 
             Promise
-                .npost(business, 'save')
-                .then(function (business) {
+                .all([
+                    Promise.ninvoke(User, 'findById', businessClaim.authorId),
+                    Promise.npost(business, 'save')
+                ])
+                .spread(function (user, business) {
                     businessClaim.businessId = business.id;
 
                     var hairdressers = businessClaim.hairdressers;
@@ -69,6 +73,8 @@ module.exports = function (BusinessClaim) {
                     var businessMember = new BusinessMember();
                     businessMember.businessId = business.id;
                     businessMember.userId = businessClaim.authorId;
+                    businessMember.firstName = user.firstName;
+                    businessMember.lastName = user.lastName;
                     businessMember.hidden = true;
                     businessMember.active = true;
 
