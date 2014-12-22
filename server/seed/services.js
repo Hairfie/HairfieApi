@@ -20,13 +20,15 @@ function saveServices(servicesValues) {
 }
 
 function saveService(serviceDefinitions) {
-    var promises = serviceVariations(serviceDefinitions).map(saveServiceVariation);
+    var saves = serviceVariations(serviceDefinitions).map(saveServiceVariation);
+
+    return q.all(saves);
 }
 
 function saveServiceVariation(serviceValues) {
-    return q.npost(Service, 'create', [{
+    return q.ninvoke(Service, 'create', {
         label: serviceValues.label
-    }]);
+    });
 };
 
 function serviceVariations(serviceDefinition) {
