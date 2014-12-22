@@ -28,8 +28,6 @@ module.exports = function mountRestApi(server) {
 };
 
 function processResult(Model, context, result) {
-    console.log("processResult", result);
-
     if (null === result || undefined === result) return Promise(result);
     if (Array.isArray(result)) {
         return Promise.map(result, function (record) {
