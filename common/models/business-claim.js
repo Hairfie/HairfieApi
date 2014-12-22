@@ -35,9 +35,9 @@ module.exports = function (BusinessClaim) {
     });
 
     BusinessClaim.submit = function (businessClaimId, callback) {
-        var Business        = BusinessClaim.app.models.Business,
-            BusinessManager = BusinessClaim.app.models.BusinessManager,
-            Hairdresser     = BusinessClaim.app.models.Hairdresser;
+        var Business       = BusinessClaim.app.models.Business,
+            BusinessMember = BusinessClaim.app.models.BusinessMember,
+            Hairdresser    = BusinessClaim.app.models.Hairdresser;
 
         BusinessClaim.findById(businessClaimId, function (error, businessClaim) {
             if (error) return callback(error);
@@ -66,16 +66,16 @@ module.exports = function (BusinessClaim) {
                         hairdressers = [];
                     }
 
-                    var businessManager = new BusinessManager();
-                    businessManager.businessId = business.id;
-                    businessManager.userId = businessClaim.authorId;
-                    businessManager.hidden = true;
-                    businessManager.active = true;
+                    var businessMember = new BusinessMember();
+                    businessMember.businessId = business.id;
+                    businessMember.userId = businessClaim.authorId;
+                    businessMember.hidden = true;
+                    businessMember.active = true;
 
                     return Promise
                         .all([
                                 Promise.npost(businessClaim, 'save'),
-                                Promise.npost(businessManager, 'save'),
+                                Promise.npost(businessMember, 'save'),
                                 Promise.map(hairdressers, function (values) {
                                     var hairdresser = new Hairdresser();
                                     hairdresser.businessId = business.id;
