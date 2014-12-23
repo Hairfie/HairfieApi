@@ -35,7 +35,7 @@ module.exports = function(Business) {
                     });
 
                 var owner = Promise.npost(this, 'owner').then(function (user) {
-                    return user && user.toRemoteShortObject(user);
+                    return user && user.toRemoteShortObject(context);
                 });
 
                 return {
