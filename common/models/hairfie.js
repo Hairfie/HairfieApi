@@ -104,7 +104,7 @@ module.exports = function (Hairfie) {
         var businessId = this.businessId;
         return Promise.npost(this, 'author')
             .then(function (user) {
-                return user ? user.isManagerOfBusiness(businessId) : Promise(null);
+                return user && user.isManagerOfBusiness(businessId);
             });
     };
 
