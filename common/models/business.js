@@ -147,6 +147,20 @@ module.exports = function(Business) {
         BusinessMember.find({where: where}, cb);
     };
 
+    Business.prototype.isClaimed = function () {
+        var deferred = Promise.defer();
+        var BusinessMember = Business.app.models.BusinessMember;
+        var where = {};
+        where.businessId = this.id;
+
+        BusinessMember.findOne({where: where}, function (error, bm) {
+            if (error) deferred.reject(error);
+            deferred.resolve(!!bm);
+        });
+
+        return deferred.promise;
+    };
+
     Business.prototype.toSearchIndexObject = function () {
           var doc = {};
           doc.name = this.name;
@@ -413,6 +427,37 @@ module.exports = function(Business) {
             .fail(cb);
     };
 
+    Business.claim = function (businessId, user, cb) {
+        var BusinessMember = Business.app.models.BusinessMember;
+        console.log("businessId", businessId);
+        console.log("user", user);
+        if (!user) return cb({statusCode: 401});
+
+        return Promise.ninvoke(Business, 'findById', businessId)
+            .then(function(business) {
+                if (!business) return cb({statusCode: 404});
+                return business.isClaimed()
+            })
+            .then(function(isClaimed) {
+                if (isClaimed) return cb({statusCode: 403});
+
+                return Promise.ninvoke(BusinessMember, 'create', {
+                    businessId: businessId,
+                    userId: user.id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                    phoneNumber: user.phoneNumber,
+                    hidden: true,
+                    active: true
+                });
+            })
+            .then(function(businessMember) {
+                cb(null, businessMember);
+            })
+            .fail(cb);
+    };
+
     Business.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, _, next) {
         ctx.req.user.isManagerOfBusiness(ctx.instance.id)
             .then(function (isManager) {
@@ -442,7 +487,7 @@ module.exports = function(Business) {
             {arg: 'here', type: 'string', required: true, description: 'geo location:lng,lat. For ex : 2.30,48.87'},
             {arg: 'query', type: 'string', description: 'plain text search'},
             {arg: 'page', type: 'number', description: 'number of pages (page size defined by limit)'},
-            {arg: 'limit', type: 'number', description: 'number of businesss to get, default=10'}
+            {arg: 'limit', type: 'number', description: 'number of businesses to get, default=10'}
         ],
         returns: {arg: 'businesses', root: true},
         http: { verb: 'GET' }
@@ -452,7 +497,7 @@ module.exports = function(Business) {
         description: 'Find similar businesses',
         accepts: [
             {arg: 'businessId', type: 'string', description: 'ID of the reference business'},
-            {arg: 'limit', type: 'number', description: 'number of businesss to get, default=10'}
+            {arg: 'limit', type: 'number', description: 'number of businesses to get, default=10'}
         ],
         returns: {arg: 'businesses', root: true},
         http: { verb: 'GET', path: '/:businessId/similar' }
@@ -467,6 +512,7 @@ module.exports = function(Business) {
         returns: {arg: 'facebookPage', root: true},
         http: {verb: 'GET', path: '/:businessId/facebook-page'}
     });
+
     Business.remoteMethod('saveFacebookPage', {
         description: 'Saves the facebook page of the business',
         accepts: [
@@ -477,6 +523,7 @@ module.exports = function(Business) {
         returns: {arg: 'facebookPage', root: true},
         http: {verb: 'PUT', path: '/:businessId/facebook-page'}
     });
+
     Business.remoteMethod('deleteFacebookPage', {
         description: 'Deletes the facebook page of the business',
         accepts: [
@@ -485,6 +532,7 @@ module.exports = function(Business) {
         ],
         http: {verb: 'DELETE', path: '/:businessId/facebook-page'}
     });
+
     Business.remoteMethod('getCustomers', {
         description: 'List of customers tagged in this business',
         accepts: [
@@ -494,6 +542,17 @@ module.exports = function(Business) {
         returns: {arg: 'customers', root: true},
         http: { path: '/:businessId/customers', verb: 'GET' }
     });
+
+    Business.remoteMethod('claim', {
+        description: 'Claim this business',
+        accepts: [
+            {arg: 'businessId', type: 'string', description: 'ID of the reference business'},
+            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
+        ],
+        returns: {arg: 'business', root: true},
+        http: { verb: 'POST', path: '/:businessId/claim' }
+    });
+
     Business.beforeRemote('**', function(ctx, business, next) {
         if(ctx.methodString == 'Business.find') {
             if(!ctx["args"]["filter"]) {
