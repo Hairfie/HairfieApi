@@ -87,13 +87,12 @@ module.exports = function(Business) {
     Business.prototype.getFacebookPageObject = function () {
         var User = Business.app.models.user;
 
-        var facebookPage = this.facebookPage || {},
-            graphData = facebookPage.graphData || {};
+        var facebookPage = this.facebookPage || {};
 
         return {
             toRemoteObject: function (context) {
                 return {
-                    name        : graphData.name,
+                    name        : facebookPage.name,
                     user        : Promise.ninvoke(User, 'findById', facebookPage.userId).then(function (user) {
                         return user && user.toRemoteShortObject(context);
                     }),
@@ -102,7 +101,7 @@ module.exports = function(Business) {
             },
             toRemoteShortObject: function (context) {
                 return {
-                    name        : graphData.name
+                    name        : facebookPage.name
                 };
             }
         };
@@ -341,8 +340,11 @@ module.exports = function(Business) {
                     if (!response.can_post) return cb({statusCode: 400, message: 'Cannot post'});
 
                     var facebookPage = business.facebookPage || {};
-                    facebookPage.graphData = response;
                     facebookPage.userId = user.id;
+                    facebookPage.facebookId = data.id;
+                    facebookPage.name = response.name;
+                    facebookPage.accessToken = data.access_token;
+                    facebookPage.graphData = response;
                     facebookPage.createdAt = facebookPage.createdAt || new Date();
                     facebookPage.updatedAt = new Date();
 
