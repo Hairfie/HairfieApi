@@ -4,5 +4,6 @@ module.exports = {
     facebookAppAccessToken: process.env.FACEBOOK_APP_ACCESS_TOKEN,
     url: process.env.URL,
     webUrl: process.env.WEB_URL,
-    cdnUrl: process.env.CDN_URL
+    cdnUrl: process.env.CDN_URL,
+    salesEventEmail: process.env.SALES_EVENT_EMAIL
 };

@@ -12,6 +12,16 @@ module.exports = function (Email) {
     var from      = 'Hairfie <hello@hairfie.com>',
         languages = ['en', 'fr'];
 
+    Email.notifySales = function (channel, data) {
+        return send({
+            to: Email.app.get("salesEventEmail"),
+            language: 'en',
+            template: 'notifySales',
+            templateVars: {channel: channel, data: data},
+            noTextBody: true
+        });
+    };
+
     Email.welcomeUser = function (user) {
         return send({
             to: user.getFullEmail(),
@@ -60,12 +70,22 @@ module.exports = function (Email) {
             language = languages[0];
         }
 
+        var htmlBody;
+        if (!options.noHtmlBody) {
+            htmlBody = getHtmlStyledBody(options.template, options.templateVars, language);
+        }
+
+        var textBody;
+        if (!options.noTextBody) {
+            textBody = getTextBody(options.template, options.templateVars, language);
+        }
+
         var email = new Email({
             subject : getSubject(options.template, options.templateVars, language),
             from    : options.from || from,
             to      : options.to,
-            html    : getHtmlStyledBody(options.template, options.templateVars, language),
-            text    : getTextBody(options.template, options.templateVars, language)
+            html    : htmlBody,
+            text    : textBody,
         });
 
         var deferred = Q.defer();

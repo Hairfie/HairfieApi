@@ -1,0 +1,20 @@
+<p>Hi there!</p>
+
+<p>We got a new "<%= channel %>" event with the following informations:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for (var key in data) if (data.hasOwnProperty(key)) { %>
+            <tr>
+                <td><%= key %></td>
+                <td><%= data[key] %></td>
+            </tr>
+        <% } %>
+    </tbody>
+</table>

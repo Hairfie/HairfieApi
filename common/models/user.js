@@ -71,7 +71,18 @@ module.exports = function(User) {
 
         Promise.denodeify(User.getApp.bind(User))()
             .then(function (app) {
-                return app.models.email.welcomeUser(user)
+                return Promise.all([
+                    app.models.email.welcomeUser(user),
+                    app.models.email.notifySales('user registered', {
+                        'ID'        : user.id,
+                        'Gender'    : user.gender,
+                        'First name': user.firstName,
+                        'Last name' : user.lastName,
+                        'Email'     : user.email,
+                        'Phone'     : user.phoneNumber,
+                        'Facebook?' : user.facebookId ? 'YES' : 'NO'
+                    })
+                ]);
             })
             .then(function () {
                 var deferred = Q.defer();
@@ -85,9 +96,7 @@ module.exports = function(User) {
                 return deferred.promise;
             })
             .catch(console.log)
-            .then(function() {
-                next();
-            }, next)
+            .then(next.bind(null, null), next)
         ;
 
     }
