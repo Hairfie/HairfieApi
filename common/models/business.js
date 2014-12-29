@@ -58,8 +58,9 @@ module.exports = function(Business) {
                     services           : this.services,
                     activeHairdressers : activeHairdressers,
                     landingPageUrl     : Business.app.urlGenerator.business(this),
+                    facebookPage       : this.facebookPage && this.getFacebookPageObject().toRemoteShortObject(context),
                     createdAt          : this.createdAt,
-                    updatedAt          : this.updatedAt,
+                    updatedAt          : this.updatedAt
                 }
             }).bind(this));
     };
@@ -92,11 +93,16 @@ module.exports = function(Business) {
         return {
             toRemoteObject: function (context) {
                 return {
-                    name      : graphData.name,
-                    user      : Promise.ninvoke(User, 'findById', facebookPage.userId).then(function (user) {
+                    name        : graphData.name,
+                    user        : Promise.ninvoke(User, 'findById', facebookPage.userId).then(function (user) {
                         return user && user.toRemoteShortObject(context);
                     }),
-                    createdAt : facebookPage.createdAt
+                    createdAt   : facebookPage.createdAt
+                };
+            },
+            toRemoteShortObject: function (context) {
+                return {
+                    name        : graphData.name
                 };
             }
         };
@@ -475,6 +481,7 @@ module.exports = function(Business) {
                 // remove some fields if present
                 delete ctx.req.body.slug;
                 delete ctx.req.body.owner;
+                delete ctx.req.body.facebookPage;
 
                 next();
             })
