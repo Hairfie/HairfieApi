@@ -17,9 +17,12 @@ module.exports = function (HairfieShare) {
     }, {message: 'exists'});
 
     HairfieShare.share = function (user, hairfie, networks) {
-        return Promise
-            .map(networks, function (network) {
-                return tryShareOnNetwork(user, hairfie, network);
+
+        return Promise.ninvoke(hairfie, 'business')
+            .then(function (business) {
+                return Promise.map(networks, function (network) {
+                    return tryShareOnNetwork(user, hairfie, business, network);
+                })
             })
             .then(function (results) {
                 var report = {};
@@ -44,12 +47,12 @@ module.exports = function (HairfieShare) {
         ;
     };
 
-    function tryShareOnNetwork(user, hairfie, network) {
-        return shareOnNetwork(user, hairfie, network)
+    function tryShareOnNetwork(user, hairfie, business, network) {
+        return shareOnNetwork(user, hairfie, business, network)
             .then(function (result) {
                 return {
-                    network: network,
-                    externalId: result.externalId
+                    network     : network,
+                    externalId  : result.externalId
                 };
             })
             .catch(function (error) {
@@ -59,10 +62,14 @@ module.exports = function (HairfieShare) {
         ;
     }
 
-    function shareOnNetwork(user, hairfie, network) {
+    function shareOnNetwork(user, hairfie, business, network) {
         switch (network) {
             case 'facebook':
                 return shareOnFacebook(user, hairfie);
+                break;
+
+            case 'facebookPage':
+                return shareOnFacebookPage(user, hairfie, business);
                 break;
 
             default:
@@ -80,6 +87,20 @@ module.exports = function (HairfieShare) {
             requestBody  = {link: urlGenerator.hairfie(hairfie)};
 
         return Promise.npost(fbGraph, 'post', [requestPath, requestBody])
+            .then(function (result) { return {externalId: result.id}; });
+    }
+
+    function shareOnFacebookPage(user, hairfie, business) {
+        if (!business.facebookPage) return Promise.reject('Business has no facebook page');
+
+        var app          = HairfieShare.app,
+            fbGraph      = app.fbGraph,
+            urlGenerator = app.urlGenerator,
+            facebookPage = business.facebookPage,
+            requestPath  = facebookPage.facebookId+'/feed?access_token='+facebookPage.accessToken,
+            requestBody  = {link: urlGenerator.hairfie(hairfie)};
+
+        return Promise.ninvoke(fbGraph, 'post', requestPath, requestBody)
             .then(function (result) { return {externalId: result.id}; });
     }
 };

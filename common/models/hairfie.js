@@ -145,17 +145,34 @@ module.exports = function (Hairfie) {
         if (!req.user) return next({statusCode: 401});
 
         var networks = [];
-        if (req.body.facebook) {
-            networks.push('facebook');
-        }
+        if (req.body.facebook) networks.push('facebook');
+        if (req.body.facebookPage) networks.push('facebookPage');
 
-        Hairfie.findById(req.params.hairfieId, function (error, hairfie) {
-            if (error) return next({statusCode: 500});
-            if (!hairfie) return next({statusCode: 404});
-            if (hairfie.authorId.toString() != req.user.id.toString()) return next({statusCode: 403});
+        Promise.ninvoke(Hairfie, 'findById', req.params.hairfieId)
+            .then(function (hairfie) {
+                if (!hairfie) return next({statusCode: 404});
+                if (hairfie.authorId.toString() != req.user.id.toString()) return next({statusCode: 403});
 
-            HairfieShare.share(req.user, hairfie, networks).then(next.bind(null, null), next);
-        });
+                return [
+                    hairfie,
+                    Promise.npost(hairfie, 'business')
+                ];
+            })
+            .spread(function (hairfie, business) {
+                return [
+                    hairfie,
+                    business,
+                    !!business && req.user.isManagerOfBusiness(business.id)
+                ];
+            })
+            .spread(function (hairfie, business, isManager) {
+                var fbPage = req.body.facebookPage;
+                if (fbPage && !business) return next({statusCode: 400, message: 'facebookPage: Hairfie has no business'});
+                if (fbPage && !isManager) return next({statusCode: 403, message: 'facebookPage: User is not manager'});
+
+                return HairfieShare.share(req.user, hairfie, networks);
+            })
+            .then(next.bind(null, null), next);
     };
 
     // set user id from access token
