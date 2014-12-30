@@ -147,7 +147,6 @@ module.exports = function(Business) {
         where.businessId = this.id;
         where.active = true;
         where.hidden = false;
-        console.log(where);
 
         BusinessMember.find({where: where}, cb);
     };
@@ -174,6 +173,24 @@ module.exports = function(Business) {
           }
 
           return doc;
+    };
+
+    Business.afterCreate = function (next) {
+        var business = this;
+
+        return Business.app.models.email.notifySales('Business created', {
+            'ID'       : business.id,
+            'Url'      : Business.app.urlGenerator.business(business),
+            'Name'     : business.name,
+            'Phone'    : business.phoneNumber,
+            'Street'   : business.address && business.address.street,
+            'City'     : business.address && business.address.city,
+            'Zip code' : business.address && business.address.zipCode,
+            'Country'  : business.address && business.address.country
+        });
+
+        // don't wait for the email
+        next();
     };
 
     Business.afterSave = function (next) {
