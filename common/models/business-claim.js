@@ -94,7 +94,9 @@ module.exports = function (BusinessClaim) {
                                     return Promise.npost(hairdresser, 'save');
                                 })
                         ])
-                        .then(function () { return business; })
+                        .then(function () {
+                            return business;
+                        })
                 })
                 .nodeify(callback);
         });
