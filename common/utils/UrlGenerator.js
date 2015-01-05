@@ -7,25 +7,16 @@ function UrlGenerator(options) {
 
 module.exports = UrlGenerator;
 
-UrlGenerator.prototype.generate = function (name, params, customUrlType) {
+UrlGenerator.prototype.generate = function (name, params) {
     var route  = this.options.routes[name],
         params = params || {};
 
     if (!route) throw "Route '"+name+"' is not defined.";
 
-    var path = route.path;
+    var host = this._getHost(route.app),
+        path = injectParams(route.path, params);
 
-    for (var k in params) {
-        path = path.replace(':'+k, params[k]);
-    }
-
-    if(customUrlType == 'cdn') {
-        return this.pathToCdnUrl(path);
-    } else if(customUrlType == 'web'){
-        return this.pathToWebUrl(path);
-    } else {
-        return this.pathToUrl(path);
-    }
+    return assemble(host, path);
 };
 
 UrlGenerator.prototype.home = function () {
@@ -33,7 +24,7 @@ UrlGenerator.prototype.home = function () {
 };
 
 UrlGenerator.prototype.hairfie = function (hairfie) {
-    return this.generate('hairfies', {id: hairfie.id}, 'web');
+    return this.generate('hairfie', {id: hairfie.id}, 'web');
 };
 
 UrlGenerator.prototype.user = function (user) {
@@ -41,21 +32,34 @@ UrlGenerator.prototype.user = function (user) {
 };
 
 UrlGenerator.prototype.business = function (business) {
-    return this.generate('businesses', {id: business.id, slug: business.slug()}, 'web');
+    return this.generate('business', {id: business.id, slug: business.slug()}, 'web');
 };
 
-UrlGenerator.prototype.watermark = function (picture_path) {
-    return this.options.baseUrl.replace(/\/$/, '')+picture_path;
+UrlGenerator.prototype.resetPassword = function (user, token) {
+    return this.generate('resetPassword', {userId: user.id, token: token.id});
 };
 
-UrlGenerator.prototype.pathToUrl = function (path) {
-    return this.options.baseUrl.replace(/\/$/, '')+path;
+UrlGenerator.prototype.watermark = function (picture) {
+    return this.generate('watermark', {picture: picture});
 };
 
-UrlGenerator.prototype.pathToWebUrl = function (path) {
-    return this.options.webUrl.replace(/\/$/, '')+path;
+UrlGenerator.prototype._getHost = function (app) {
+    var app  = app || this.options.defaultApp,
+        host = this.options.baseUrl[app];
+
+    if (!host) throw "Host for app '"+app+"' is not defined.";
+
+    return host;
 };
 
-UrlGenerator.prototype.pathToCdnUrl = function (path) {
-    return this.options.cdnUrl.replace(/\/$/, '')+path;
-};
+function injectParams(str, params) {
+    for (var k in params) {
+        str = str.replace(':'+k, params[k]);
+    }
+
+    return str;
+}
+
+function assemble(host, path) {
+    return host.replace(/\/$/, '')+path;
+}

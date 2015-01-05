@@ -137,14 +137,8 @@ module.exports = function(User) {
     }
 
     User.on('resetPasswordRequest', function (info) {
-        var user = info.user;
-        var resetPath =  "#/reset-password?token="+ info.accessToken.id + "&uid=" + info.user.id;
-
-        User.getApp(function (error, app) {
-            var resetUrl = app.get('url') + resetPath;
-            console.log(resetUrl);
-            app.models.email.resetUserPassword(user, resetUrl);
-        });
+        var url = User.app.urlGenerator.resetPassword(info.user, info.accessToken);
+        User.app.models.email.resetUserPassword(user, url);
     });
 
     User.prototype.getFullEmail = function () {

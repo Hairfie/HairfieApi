@@ -5,10 +5,13 @@ var UrlGenerator = require('../../common/utils/UrlGenerator');
 module.exports = function (app) {
     app.on('started', function () {
         var urlGenerator = new UrlGenerator({
-            baseUrl: app.get('url'),
-            webUrl:  app.get('webUrl'),
-            cdnUrl:  app.get('cdnUrl') || app.get('url'),
-            routes:  require('../routes.js')
+            defaultApp  : 'api',
+            baseUrl     : {
+                'api'       : app.get('url'),
+                'website'   : app.get('webUrl'),
+                'cdn'       : app.get('cdnUrl') || app.get('url')
+            },
+            routes      : require('../routes.js')
         });
 
         app.urlGenerator = urlGenerator;

@@ -1,32 +1,25 @@
 'use strict';
 
 module.exports = {
-    user: {
-        verb: 'GET',
-        path: '/user/:id'
-    },
     hairfie: {
-        verb: 'GET',
-        path: '/hairfie/:id'
-    },
-    hairfies: {
-        verb: 'GET',
+        app: 'website',
         path: '/hairfies/:id'
     },
     business: {
-        verb: 'GET',
-        path: '/business/:id/:slug'
-    },
-    businesses: {
-        verb: 'GET',
+        app: 'website',
         path: '/businesses/:id/:slug'
     },
     pictureDownload: {
-        verb: 'GET',
         path: '/api/containers/:container/download/:name'
     },
     streetView: {
-        verb: 'GET',
         path: '/service/google/streetview/:latitude/:longitude'
+    },
+    resetPassword: {
+        app: 'website',
+        path: '/reset-password/:userId/:token'
+    },
+    watermark: {
+        path: '/:picture'
     }
 };
