@@ -199,12 +199,9 @@ module.exports = function(Business) {
         next();
     };
 
-    Business.afterDestroy = function (next) {
-        Business.getApp(function (_, app) {
-            // remove business from search index
-            app.models.SearchEngine.delete('business', business.id);
-        });
-
+    Business.afterDestroy = function (next, business) {
+        var SearchEngine = Business.app.models.SearchEngine;
+        SearchEngine.delete('business', business.id);
         next();
     };
 
