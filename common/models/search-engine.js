@@ -112,71 +112,53 @@ module.exports = function (SearchEngine) {
         return deferred.promise;
     }
 
-    SearchEngine.rebuildIndex = function () {
-        console.log('Dropping search index');
+    SearchEngine.defineAllMappings = function () {
+        // @todo move mapping to model's settings
+        return SearchEngine.defineMapping('business', {
+            business: {
+                properties: {
+                    name: {
+                        type: 'string'
+                    },
+                    gps: {
+                        type: 'geo_point',
+                        lat_lon: true,
+                        geohash: true
+                    }
+                }
+            }
+        });
+    };
 
-        return SearchEngine
-            .dropIndex()
-            .then(function() {
-                console.log('Creating search index');
+    SearchEngine.indexAll = function (progressHandler) {
+        var Business = SearchEngine.app.models.Business;
+        var deferred = Promise.defer();
+        var limit = 100;
 
-                return SearchEngine.createIndex()
-            })
-            .then(function() {
-                console.log('Defining search mappings');
+        function loop(skip) {
+            if (progressHandler) progressHandler({done: skip});
 
-                // @todo move mapping to model's settings
-                return SearchEngine.defineMapping('business', {
-                    business: {
-                        properties: {
-                            name: {
-                                type: 'string'
-                            },
-                            gps: {
-                                type: 'geo_point',
-                                lat_lon: true,
-                                geohash: true
-                            }
-                        }
+            Business.find({limit: limit, skip: skip}, function (error, businesses) {
+                var body = [];
+                businesses.map(function (business) {
+                    body.push({index: {_index:getIndex(), _type:'business', _id:business.id.toString()}});
+                    body.push(business.toSearchIndexObject());
+                });
+
+                getClient().bulk({body:body}, function (error) {
+                    if (error) return deferred.reject(error);
+
+                    if (businesses.length < limit) {
+                        deferred.resolve(null);
+                    } else {
+                        loop(skip + limit);
                     }
                 });
-            })
-            .then(function () {
-                return Promise.denodeify(SearchEngine.getApp.bind(SearchEngine))();
-            })
-            .then(function (app) {
-                console.log('Reindexing existing records');
-                var Business = app.models.Business;
+            });
+        }
 
-                var deferred = Promise.defer();
+        loop(0);
 
-                var limit = 100;
-
-                function loop(skip) {
-                    console.log('Chunk:', skip);
-                    Business.find({limit: limit, skip: skip}, function (error, businesses) {
-                        var body = [];
-                        businesses.map(function (business) {
-                            body.push({index: {_index:getIndex(), _type:'business', _id:business.id.toString()}});
-                            body.push(business.toSearchIndexObject());
-                        });
-
-                        getClient().bulk({body:body}, function (error) {
-                            if (error) return deferred.reject(error);
-
-                            if (businesses.length < limit) {
-                                deferred.resolve(null);
-                            } else {
-                                loop(skip + limit);
-                            }
-                        });
-                    });
-                }
-
-                loop(0);
-
-                return deferred.promise;
-            })
-        ;
-    }
+        return deferred.promise;
+    };
 }

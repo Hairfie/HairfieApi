@@ -78,7 +78,7 @@ app.use(function (req, res, next) {
     });
 });
 app.use(loopback.compress());
-app.use(loopback.urlencoded());
+app.use(loopback.urlencoded({extended: true}));
 app.use(loopback.json());
 app.use(loopback.logger('dev'));
 
@@ -124,7 +124,7 @@ app.use(rewriteModule.getMiddleware([
     // hairdressers -> business members
     {from: '^/api/hairdressers$', to: '/api/businessMembers'},
     {from: '^/api/hairdressers/([a-z0-9]+)$', to: '/api/businessMembers/$1'},
-]));
+], {silent: true}));
 
 // boot scripts mount components like REST API
 boot(app, {
