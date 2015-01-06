@@ -140,7 +140,7 @@ module.exports = function(User) {
 
     User.on('resetPasswordRequest', function (info) {
         var url = User.app.urlGenerator.resetPassword(info.user, info.accessToken);
-        User.app.models.email.resetUserPassword(user, url);
+        User.app.models.email.resetUserPassword(info.user, url);
     });
 
     User.prototype.getFullEmail = function () {
