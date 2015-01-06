@@ -130,13 +130,14 @@ module.exports = function(User) {
         var gender = profile.gender;
 
         var userObj = {
-          username: username,
-          password: password,
-          email: email,
-          firstName: profile.name && profile.name.givenName,
-          lastName: profile.name && profile.name.familyName,
-          gender: gender ? gender.toUpperCase() : null,
-          picture: "http://graph.facebook.com/" + profile.id + '/picture'
+            username: username,
+            password: password,
+            email: email,
+            firstName: profile.name && profile.name.givenName,
+            lastName: profile.name && profile.name.familyName,
+            gender: gender ? gender.toUpperCase() : null,
+            picture: "http://graph.facebook.com/" + profile.id + '/picture',
+            language: profile.locale && profile.locale.substr(0, 2)
         };
         return userObj;
     }
