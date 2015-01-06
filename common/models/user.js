@@ -16,7 +16,15 @@ module.exports = function(User) {
     };
 
     User.prototype.toRemoteObject = function (context) {
-        var user = this.toRemoteShortObject();
+        var user = this.toRemoteShortObject(context);
+
+        if (this.accessToken) {
+            // TODO: add toRemoteObject method to access token
+            user.accessToken = {
+                id: this.accessToken.id,
+                ttl: this.accessToken.ttl
+            };
+        }
 
         if (!this.equals(context.getUser())) {
             return user;
@@ -26,7 +34,6 @@ module.exports = function(User) {
         user.email = this.email;
         user.language   = this.language;
         user.newsletter = this.newsletter;
-        user.accessToken = this.accessToken;
 
         return user;
     };
@@ -73,38 +80,26 @@ module.exports = function(User) {
     };
 
     User.afterCreate = function (next) {
-        var user = this;
+        var user  = this,
+            Email = User.app.models.email;
 
-        Promise.denodeify(User.getApp.bind(User))()
-            .then(function (app) {
-                return Promise.all([
-                    app.models.email.welcomeUser(user),
-                    app.models.email.notifySales('user registered', {
-                        'ID'        : user.id,
-                        'Gender'    : user.gender,
-                        'First name': user.firstName,
-                        'Last name' : user.lastName,
-                        'Email'     : user.email,
-                        'Phone'     : user.phoneNumber,
-                        'Facebook?' : user.facebookId ? 'YES' : 'NO'
-                    })
-                ]);
-            })
-            .then(function () {
-                var deferred = Q.defer();
-                user.createAccessToken(null, function (error, token) {
-                    user.accessToken = {
-                        id: token.id,
-                        ttl: token.ttl
-                    };
-                    deferred.resolve();
-                });
-                return deferred.promise;
-            })
-            .catch(console.log)
-            .then(next.bind(null, null), next)
-        ;
+        // emails should not be blocking
+        Email.welcomeUser(user);
+        Email.notifySales('user registered', {
+            'ID'        : user.id,
+            'Gender'    : user.gender,
+            'First name': user.firstName,
+            'Last name' : user.lastName,
+            'Email'     : user.email,
+            'Phone'     : user.phoneNumber,
+            'Facebook?' : user.facebookId ? 'YES' : 'NO'
+        });
 
+        return Promise.ninvoke(user, 'createAccessToken', null)
+            .then(function (token) {
+                user.accessToken = token;
+            })
+            .then(next.bind(null, null), next);
     }
 
     User.afterIdentityCreate = function (identity, next) {
