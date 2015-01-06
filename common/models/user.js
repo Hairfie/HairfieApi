@@ -4,6 +4,7 @@ var md5 = require('MD5');
 var Promise = require('../../common/utils/Promise');
 var Q = require('q');
 var _ = require('lodash');
+var Uuid = require('uuid');
 
 
 module.exports = function(User) {
@@ -126,7 +127,7 @@ module.exports = function(User) {
             + (profile.provider || provider) + '.com';
           }
         var username = provider + '.' + (profile.username || profile.id);
-        var password = "temporary";
+        var password = Uuid.v4();
         var gender = profile.gender;
 
         var userObj = {
