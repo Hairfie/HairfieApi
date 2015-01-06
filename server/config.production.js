@@ -5,5 +5,6 @@ module.exports = {
     url: process.env.URL,
     webUrl: process.env.WEB_URL,
     cdnUrl: process.env.CDN_URL,
-    salesEventEmail: process.env.SALES_EVENT_EMAIL
+    salesEventEmail: process.env.SALES_EVENT_EMAIL,
+    defaultLanguage: process.env.DEFAULT_LANGUAGE
 };

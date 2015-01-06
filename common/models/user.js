@@ -67,7 +67,7 @@ module.exports = function(User) {
     User.validatesInclusionOf('gender', {in: [User.GENDER_MALE, User.GENDER_FEMALE]});
 
     User.beforeSave = function (next) {
-        if (!this.language) this.language = 'fr';
+        if (!this.language) this.language = User.app.get('defaultLanguage');
         next();
     };
 

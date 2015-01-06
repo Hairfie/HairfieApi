@@ -4,5 +4,6 @@
     "facebookAppAccessToken": "1567052370184577|C2qSlkEfz8-XtgZZzdLJFslO9SE",
     "host": "localhost",
     "restApiRoot": "/api",
-    "locales": ["en", "fr"]
+    "locales": ["en", "fr"],
+    "defaultLanguage": "fr"
 }
