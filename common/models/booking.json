@@ -1,0 +1,57 @@
+{
+    "name": "Booking",
+    "plural": "Bookings",
+    "properties": {
+        "businessId": {
+            "type": "string",
+            "index": "true",
+            "required": true
+        },
+        "userId": {
+            "type": "string",
+            "index": "true"
+        },
+        "name": {
+            "type": "string"
+        },
+        "gender": {
+            "type": "string",
+            "required": true
+        },
+        "email": {
+            "type": "string",
+            "index": "true",
+            "required": true
+        },
+        "phoneNumber": {
+            "type": "string",
+            "required": true
+        },
+        "comment": {
+            "type": "string"
+        },
+        "timeslot": {
+            "type": "object"
+        }
+    },
+    "validations": [],
+    "relations": {
+        "business": {
+            "type": "belongsTo",
+            "model": "Business",
+            "foreignKey": "businessId"
+        }
+    },
+    "acls": [],
+    "methods": [],
+    "options": {
+        "timestampable": true,
+        "sharedMethodNames": [
+            "find",
+            "create"
+        ],
+        "mongodb": {
+            "collection": "bookings"
+        }
+    }
+}

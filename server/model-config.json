@@ -133,5 +133,9 @@
     "Service": {
         "dataSource": "hairfieMongo",
         "public": true
+    },
+    "Booking": {
+        "dataSource": "hairfieMongo",
+        "public": true
     }
 }
