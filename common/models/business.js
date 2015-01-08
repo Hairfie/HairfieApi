@@ -6,6 +6,7 @@ var Promise = require('../../common/utils/Promise');
 var getSlug = require('speakingurl');
 var lodash = require('lodash');
 var Control = require('../utils/AccessControl');
+var ejs = require('elastic.js');
 
 module.exports = function(Business) {
     Business.prototype.toRemoteObject = function (context) {
@@ -45,6 +46,9 @@ module.exports = function(Business) {
                     address            : this.address,
                     slug               : this.slug(),
                     kind               : this.kind ? this.kind : 'SALON',
+                    men                : false != this.men,
+                    women              : false != this.women,
+                    children           : false != this.children,
                     owner              : owner,
                     description        : this.description,
                     gps                : this.gps,
@@ -171,6 +175,9 @@ module.exports = function(Business) {
           if (this.gps) {
               doc.gps = {lat: this.gps.lat, lon: this.gps.lng};
           }
+          doc.men = false != this.men;
+          doc.women = false != this.women;
+          doc.children = false != this.children;
 
           return doc;
     };
@@ -205,52 +212,45 @@ module.exports = function(Business) {
         next();
     };
 
-    Business.nearby = function(here, query, page, limit, callback) {
+    Business.nearby = function(here, query, clientTypes, page, limit, callback) {
         var maxDistance = 5000,
             here        = GeoPoint(here),
-            page        = page || 0,
+            page        = Math.max(page || 1),
             limit       = Math.min(limit || 10, 100);
 
         Promise.denodeify(Business.getApp.bind(Business))()
             .then(function (app) {
                 var SearchEngine = app.models.SearchEngine;
 
-                // @todo build query using elasticjs (http://docs.fullscale.co/elasticjs/)
-                var body = {
-                    from: page * limit,
-                    size: limit,
-                    explain: true,
+                var filters = [];
+
+                if (clientTypes) {
+                    filters.push(ejs.AndFilter(clientTypes.map(function (clientType) {
+                        return ejs.TermFilter(clientType, true);
+                    })));
                 }
+
+                var request = ejs.Request();
+                request.from((page - 1) * limit);
+                request.size(limit);
+                if (filters.length) request.filter(ejs.AndFilter(filters));
 
                 if (query) {
-                    body.query = {
-                        function_score: {
-                            functions: [
-                                { gauss:  { gps:   { origin: here.asElasticPoint(), scale: "3km" }}},
-                            ],
-                            query: {
-                                match: {
-                                    name: {
-                                        query: query,
-                                        fuzziness: "AUTO"
-                                    }
-                                }
-                            },
-                            score_mode: 'multiply'
-                        }
-                    };
+                    request.query(ejs
+                        .FunctionScoreQuery()
+                        .query(ejs.MatchQuery('name', query).fuzziness('AUTO'))
+                        .function(ejs.DecayScoreFunction('gps').origin(here.asElasticJsGeoPoint()).scale('3km'))
+                        .scoreMode('multiply'));
                 } else {
-                    body.sort = {
-                        _geo_distance: {
-                            gps: here.asElasticPoint(),
-                            order: 'asc',
-                            unit: 'm'
-                        }
-                    };
+                    request.sort(ejs.Sort('gps')
+                            .geoDistance(here.asElasticJsGeoPoint())
+                            .unit('km')
+                            .order('asc'));
                 }
 
-                return SearchEngine.search('business', body);
+                return SearchEngine.search('business', request);
             })
+            .then(function (r) { console.log(r[0].hits.hits); return r; })
             .then(searchResultBusinesses)
             .nodeify(callback)
         ;
@@ -509,6 +509,7 @@ module.exports = function(Business) {
         accepts: [
             {arg: 'here', type: 'string', required: true, description: 'geo location:lng,lat. For ex : 2.30,48.87'},
             {arg: 'query', type: 'string', description: 'plain text search'},
+            {arg: 'clientTypes', type: 'array'},
             {arg: 'page', type: 'number', description: 'number of pages (page size defined by limit)'},
             {arg: 'limit', type: 'number', description: 'number of businesses to get, default=10'}
         ],
