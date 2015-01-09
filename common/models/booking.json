@@ -31,7 +31,8 @@
             "type": "string"
         },
         "timeslot": {
-            "type": "object"
+            "type": "Date",
+            "required": true
         }
     },
     "validations": [],
