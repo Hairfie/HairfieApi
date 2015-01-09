@@ -40,6 +40,7 @@
     "passport-facebook-token": "^0.3.1",
     "q": "^1.0.1",
     "speakingurl": "^0.15.0",
+    "uid2": "0.0.3",
     "uuid": "^2.0.1"
   },
   "devDependencies": {

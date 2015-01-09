@@ -43,7 +43,7 @@ module.exports = function (Email) {
     Email.sendHairfie = function (hairfie, pictureObject, author) {
         return send({
             to: hairfie.customerEmail,
-            language: hairfie.author.language,
+            language: author.language,
             template: 'sendHairfie',
             templateVars: {hairfie: hairfie, hairfieUrl: pictureObject.url, author: author}
         });

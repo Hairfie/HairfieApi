@@ -4,22 +4,44 @@
     "properties": {
         "businessId": {
             "type": "string",
-            "index": "true",
+            "index": true,
             "required": true
         },
         "authorId": {
             "type": "string",
-            "index": "true",
+            "index": true
+        },
+        "hairfieId": {
+            "type": "string",
+            "index": true
+        },
+        "tokenId": {
+            "type": "string"
+        },
+        "firstName": {
+            "type": "string",
             "required": true
+        },
+        "lastName": {
+            "type": "string",
+            "required": true
+        },
+        "email": {
+            "type": "string",
+            "required": true
+        },
+        "phoneNumber": {
+            "type": "string"
         },
         "rating": {
             "type": "number",
-            "index": "true",
             "required": true
+        },
+        "criteria": {
+            "type": "object"
         },
         "comment": {
             "type": "string",
-            "index": "true",
             "required": true
         }
     },
@@ -34,6 +56,11 @@
             "type": "belongsTo",
             "model": "user",
             "foreignKey": "authorId"
+        },
+        "token": {
+            "type": "belongsTo",
+            "model": "BusinessReviewToken",
+            "foreignKey": "tokenId"
         }
     },
     "acls": [],

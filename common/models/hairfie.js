@@ -108,9 +108,9 @@ module.exports = function (Hairfie) {
             });
     };
 
-    // Hairfie.prototype.pictureObject = function () {
-    //     return Picture.fromDatabaseValue(this.picture, 'hairfies', Hairfie.app);
-    // };
+    Hairfie.prototype.pictureObject = function () {
+        return this.pictureObjects()[0];
+    };
 
     Hairfie.prototype.pictureObjects = function () {
         var pictures = !Array.isArray(this.pictures) ? [this.picture] : this.pictures;
@@ -191,18 +191,26 @@ module.exports = function (Hairfie) {
         next();
     });
 
+    function createReviewToken(hairfie) {
+        if (!hairfie.customerEmail || !hairfie.businessId) return Promise(null);
+
+        return Promise.ninvoke(Hairfie.app.models.BusinessReviewToken, 'create', {
+            businessId  : hairfie.businessId,
+            hairfieId   : hairfie.id,
+            email       : hairfie.customerEmail
+        });
+    }
+
     Hairfie.afterCreate = function (next) {
         var hairfie = this;
         if(hairfie.customerEmail) {
             Q.all([
-                    Promise.denodeify(Hairfie.getApp.bind(Hairfie))(),
-                    Promise.ninvoke(hairfie.author).then(function (author) {
-                        return author ? author.toRemoteShortObject() : null;
-                    })
+                    Promise.ninvoke(hairfie.author),
+                    createReviewToken(hairfie)
                 ])
-                .spread(function (app, author) {
+                .spread(function (author, reviewToken) {
                     var pictureObject = hairfie.pictureObject().toRemoteObject();
-                    return app.models.email.sendHairfie(hairfie, pictureObject, author);
+                    return Hairfie.app.models.email.sendHairfie(hairfie, pictureObject, author);
                 })
                 .catch(console.log)
                 .then(function() {

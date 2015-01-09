@@ -1,0 +1,54 @@
+{
+    "name": "BusinessReviewToken",
+    "plural": "BusinessReviewTokens",
+    "properties": {
+        "id": {
+          "type": "string",
+          "id": true
+        },
+        "businessId": {
+            "type": "string",
+            "index": true,
+            "required": true
+        },
+        "hairfieId": {
+            "type": "string",
+            "index": true,
+            "required": true
+        },
+        "email": {
+            "type": "string",
+            "required": true
+        },
+        "reviewId": {
+            "type": "string"
+        }
+    },
+    "validations": [],
+    "relations": {
+        "business": {
+            "type": "belongsTo",
+            "model": "Business",
+            "foreignKey": "businessId"
+        },
+        "hairfie": {
+            "type": "belongsTo",
+            "model": "Hairfie",
+            "foreignKey": "hairfieId"
+        },
+        "review": {
+            "type": "belongsTo",
+            "model": "BusinessReview",
+            "foreignKey": "reviewId"
+        }
+    },
+    "acls": [],
+    "methods": [],
+    "options": {
+        "timestampable": true,
+        "sharedMethodNames": ["findById"],
+        "mongodb": {
+            "collection": "businessReviewTokens"
+        }
+    }
+}
