@@ -43,6 +43,10 @@ UrlGenerator.prototype.watermark = function (picture) {
     return this.generate('watermark', {picture: picture});
 };
 
+UrlGenerator.prototype.writeVerifiedBusinessReview = function (businessReviewToken) {
+    return this.generate('writeVerifiedBusinessReview', {businessReviewTokenId: businessReviewToken.id});
+};
+
 UrlGenerator.prototype._getHost = function (app) {
     var app  = app || this.options.defaultApp,
         host = this.options.baseUrl[app];

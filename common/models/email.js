@@ -47,7 +47,19 @@ module.exports = function (Email) {
             template: 'sendHairfie',
             templateVars: {hairfie: hairfie, hairfieUrl: pictureObject.url, author: author}
         });
-    }
+    };
+
+    Email.requestReview = function (businessReviewToken, business, author) {
+        return send({
+            to: businessReviewToken.email,
+            language: author.language,
+            template: 'requestReview',
+            templateVars: {
+                business      : business,
+                writeReviewUrl: Email.app.urlGenerator.writeVerifiedBusinessReview(businessReviewToken)
+            }
+        });
+    };
 
     Email.welcomeBusinessMember = function (business, user) {
         return send({

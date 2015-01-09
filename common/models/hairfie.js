@@ -203,23 +203,27 @@ module.exports = function (Hairfie) {
 
     Hairfie.afterCreate = function (next) {
         var hairfie = this;
-        if(hairfie.customerEmail) {
+
+        if (hairfie.customerEmail) {
             Q.all([
                     Promise.ninvoke(hairfie.author),
+                    Promise.ninvoke(hairfie.business),
                     createReviewToken(hairfie)
                 ])
-                .spread(function (author, reviewToken) {
+                .spread(function (author, business, reviewToken) {
+                    var Email = Hairfie.app.models.email;
                     var pictureObject = hairfie.pictureObject().toRemoteObject();
-                    return Hairfie.app.models.email.sendHairfie(hairfie, pictureObject, author);
+
+                    var promises = [];
+                    promises.push(Email.sendHairfie(hairfie, pictureObject, author));
+                    promises.push(Email.requestReview(reviewToken, business, author));
+
+                    return Q.all(promises);
                 })
-                .catch(console.log)
-                .then(function() {
-                    next();
-                }, next)
-            ;
-        } else {
-            next();
+                .fail(console.log);
         }
+
+        next();
     }
 
     Hairfie.remoteMethod('share', {

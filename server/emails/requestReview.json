@@ -1,0 +1,6 @@
+{
+    "subject": {
+        "fr": "Votre avis sur <%= business.name %>",
+        "en": "Votre avis sur <%= business.name %>"
+    }
+}

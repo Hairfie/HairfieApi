@@ -9,6 +9,10 @@ module.exports = {
         app: 'website',
         path: '/businesses/:id/:slug'
     },
+    writeVerifiedBusinessReview: {
+        app: 'website',
+        path: '/write-business-review/:businessReviewTokenId'
+    },
     pictureDownload: {
         path: '/api/containers/:container/download/:name'
     },
