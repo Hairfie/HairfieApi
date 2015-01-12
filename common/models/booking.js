@@ -14,6 +14,8 @@ module.exports = function (Booking) {
 
         Promise.npost(this, 'business')
             .then(function (business) {
+                Email.confirmBooking(booking, business);
+
                 return Booking.app.models.email.notifySales('Demande de réservation', {
                     'ID'              : booking.id,
                     'Salon'           : business.name,
@@ -26,6 +28,8 @@ module.exports = function (Booking) {
                     'Prestation'      : booking.comment
                 });
             })
-            .then(next.bind(null, null), next);
+            .fail(console.log);
+
+        next();
     };
 };

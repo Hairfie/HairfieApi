@@ -8,13 +8,13 @@ var juice = require('juice');
 var fs = require('fs');
 var debug = require('debug')('Model:Email');
 var htmlToText = require('html-to-text');
+var moment = require('moment');
 
 module.exports = function (Email) {
     var from      = 'Hairfie <hello@hairfie.com>',
         languages = ['en', 'fr'];
 
     Email.notifySales = function (channel, data) {
-        console.log("notifySales", Email.app.get("salesEventEmail"));
         return send({
             to: Email.app.get("salesEventEmail"),
             language: 'en',
@@ -65,6 +65,21 @@ module.exports = function (Email) {
             templateVars: {
                 user    : user,
                 business: business
+            }
+        });
+    };
+
+    Email.confirmBooking = function (booking, business) {
+        var language = booking.language || 'fr';
+        var timeslot = moment(booking.timeslot).format("D/MM/YYYY [à] HH:mm");
+        return send({
+            to: booking.email,
+            language: language,
+            template: 'confirmBooking',
+            templateVars: {
+                booking    : booking,
+                business   : business,
+                timeslot   : timeslot
             }
         });
     };
