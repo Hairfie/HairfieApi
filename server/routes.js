@@ -11,7 +11,7 @@ module.exports = {
     },
     writeVerifiedBusinessReview: {
         app: 'website',
-        path: '/write-business-review/:businessReviewTokenId'
+        path: '/write-business-review/:businessReviewRequestId'
     },
     pictureDownload: {
         path: '/api/containers/:container/download/:name'

@@ -1,6 +1,6 @@
 {
-    "name": "BusinessReviewToken",
-    "plural": "BusinessReviewTokens",
+    "name": "BusinessReviewRequest",
+    "plural": "BusinessReviewRequests",
     "properties": {
         "id": {
           "type": "string",
@@ -48,7 +48,7 @@
         "timestampable": true,
         "sharedMethodNames": ["findById"],
         "mongodb": {
-            "collection": "businessReviewTokens"
+            "collection": "businessReviewRequests"
         }
     }
 }

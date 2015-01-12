@@ -34,7 +34,7 @@
         "dataSource": "hairfieMongo",
         "public": true
     },
-    "BusinessReviewToken": {
+    "BusinessReviewRequest": {
         "dataSource": "hairfieMongo",
         "public": true
     },

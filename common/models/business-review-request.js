@@ -2,10 +2,10 @@
 
 var uid = require('uid2');
 
-module.exports = function (BusinessReviewToken) {
+module.exports = function (BusinessReviewRequest) {
     var ID_LENGTH = 64;
 
-    BusinessReviewToken.prototype.toRemoteObject = function (context) {
+    BusinessReviewRequest.prototype.toRemoteObject = function (context) {
         return {
             id      : this.id,
             canWrite: this.canWrite(),
@@ -13,18 +13,17 @@ module.exports = function (BusinessReviewToken) {
         };
     };
 
-    BusinessReviewToken.prototype.canWrite = function () {
+    BusinessReviewRequest.prototype.canWrite = function () {
         return !this.reviewId;
     };
 
-    BusinessReviewToken.beforeCreate = function (next) {
-        var token = this;
+    BusinessReviewRequest.beforeCreate = function (next) {
         uid(ID_LENGTH, function (error, id) {
             if (error) next(error);
             else {
-                token.id = id;
+                this.id = id;
                 next();
             }
-        });
+        }.bind(this));
     };
 };

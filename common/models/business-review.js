@@ -65,10 +65,10 @@ module.exports = function (BusinessReview) {
 
     BusinessReview.afterCreate = function (next) {
         // update token with reviewId so we know it's used
-        this.token(function (error, token) {
+        this.request(function (error, request) {
             if (token) {
-                token.reviewId = this.id;
-                token.save();
+                request.reviewId = this.id;
+                request.save();
             }
 
             next();
@@ -76,7 +76,7 @@ module.exports = function (BusinessReview) {
     };
 
     BusinessReview.beforeRemote('create', function (ctx, _, next) {
-        if (!ctx.req.body.tokenId) {
+        if (!ctx.req.body.requestId) {
             if (!ctx.req.user) return next({statusCode: 401});
 
             // fill values with user's ones
@@ -92,15 +92,15 @@ module.exports = function (BusinessReview) {
             next();
         }
 
-        var BusinessReviewToken = BusinessReview.app.models.BusinessReviewToken;
-        BusinessReviewToken.findById(ctx.req.body.tokenId, function (error, token) {
+        var BusinessReviewRequest = BusinessReview.app.models.BusinessReviewRequest;
+        BusinessReviewRequest.findById(ctx.req.body.requestId, function (error, request) {
             if (error) return next(error);
             if (!token) return next({statusCode: 400, message: 'Token not found'});
-            if (!token.isValid()) return next({statusCode: 400, message: 'Token is not valid'});
+            if (!token.canWrite()) return next({statusCode: 400, message: 'Cannnot write with this review request'});
 
-            ctx.req.body.businessId = token.businessId;
-            ctx.req.body.hairfieId = token.hairfieId;
-            ctx.req.body.email = token.email;
+            ctx.req.body.businessId = request.businessId;
+            ctx.req.body.hairfieId = request.hairfieId;
+            ctx.req.body.email = request.email;
 
             next();
         });

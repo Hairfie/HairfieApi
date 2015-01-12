@@ -191,10 +191,10 @@ module.exports = function (Hairfie) {
         next();
     });
 
-    function createReviewToken(hairfie) {
+    function createReviewRequest(hairfie) {
         if (!hairfie.customerEmail || !hairfie.businessId) return Promise(null);
 
-        return Promise.ninvoke(Hairfie.app.models.BusinessReviewToken, 'create', {
+        return Promise.ninvoke(Hairfie.app.models.BusinessReviewRequest, 'create', {
             businessId  : hairfie.businessId,
             hairfieId   : hairfie.id,
             email       : hairfie.customerEmail
@@ -208,15 +208,15 @@ module.exports = function (Hairfie) {
             Q.all([
                     Promise.ninvoke(hairfie.author),
                     Promise.ninvoke(hairfie.business),
-                    createReviewToken(hairfie)
+                    createReviewRequest(hairfie)
                 ])
-                .spread(function (author, business, reviewToken) {
+                .spread(function (author, business, reviewRequest) {
                     var Email = Hairfie.app.models.email;
                     var pictureObject = hairfie.pictureObject().toRemoteObject();
 
                     var promises = [];
                     promises.push(Email.sendHairfie(hairfie, pictureObject, author));
-                    promises.push(Email.requestReview(reviewToken, business, author));
+                    promises.push(Email.requestReview(reviewRequest, business, author));
 
                     return Q.all(promises);
                 })

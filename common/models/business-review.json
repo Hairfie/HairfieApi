@@ -15,7 +15,7 @@
             "type": "string",
             "index": true
         },
-        "tokenId": {
+        "requestId": {
             "type": "string"
         },
         "firstName": {
@@ -57,10 +57,10 @@
             "model": "user",
             "foreignKey": "authorId"
         },
-        "token": {
+        "request": {
             "type": "belongsTo",
-            "model": "BusinessReviewToken",
-            "foreignKey": "tokenId"
+            "model": "BusinessReviewRequest",
+            "foreignKey": "requestId"
         }
     },
     "acls": [],

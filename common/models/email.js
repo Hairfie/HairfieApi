@@ -49,14 +49,14 @@ module.exports = function (Email) {
         });
     };
 
-    Email.requestReview = function (businessReviewToken, business, author) {
+    Email.requestReview = function (businessReviewRequest, business, author) {
         return send({
-            to: businessReviewToken.email,
+            to: businessReviewRequest.email,
             language: author.language,
             template: 'requestReview',
             templateVars: {
                 business      : business,
-                writeReviewUrl: Email.app.urlGenerator.writeVerifiedBusinessReview(businessReviewToken)
+                writeReviewUrl: Email.app.urlGenerator.writeVerifiedBusinessReview(businessReviewRequest)
             }
         });
     };
