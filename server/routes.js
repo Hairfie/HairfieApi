@@ -9,7 +9,7 @@ module.exports = {
         app: 'website',
         path: '/businesses/:id/:slug'
     },
-    writeVerifiedBusinessReview: {
+    businessReviewRequest: {
         app: 'website',
         path: '/write-business-review/:businessReviewRequestId'
     },

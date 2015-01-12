@@ -40,23 +40,18 @@ module.exports = function (Email) {
         });
     }
 
-    Email.sendHairfie = function (hairfie, pictureObject, author) {
+    Email.sendHairfie = function (hairfie, author, reviewRequest) {
+        var url = Email.app.urlGenerator;
+
         return send({
             to: hairfie.customerEmail,
             language: author.language,
             template: 'sendHairfie',
-            templateVars: {hairfie: hairfie, hairfieUrl: pictureObject.url, author: author}
-        });
-    };
-
-    Email.requestReview = function (businessReviewRequest, business, author) {
-        return send({
-            to: businessReviewRequest.email,
-            language: author.language,
-            template: 'requestReview',
             templateVars: {
-                business      : business,
-                writeReviewUrl: Email.app.urlGenerator.writeVerifiedBusinessReview(businessReviewRequest)
+                hairfie         : hairfie,
+                author          : author,
+                hairfieUrl      : url.hairfie(hairfie),
+                writeReviewUrl  : reviewRequest && url.businessReviewRequest(reviewRequest)
             }
         });
     };
@@ -85,12 +80,15 @@ module.exports = function (Email) {
             language = languages[0];
         }
 
+        var htmlBody = getHtmlBody(options.template, options.templateVars, language, layout),
+            textBody = htmlToText.fromString(htmlBody);
+
         var email = new Email({
             subject : getSubject(options.template, options.templateVars, language),
             from    : options.from || from,
             to      : options.to,
-            html    : getHtmlBody(options.template, options.templateVars, language, layout),
-            text    : htmlToText.fromString(htmlBody)
+            html    : htmlBody,
+            text    : textBody
         });
 
         var deferred = Q.defer();

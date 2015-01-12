@@ -206,20 +206,11 @@ module.exports = function (Hairfie) {
 
         if (hairfie.customerEmail) {
             Q.all([
+                    this,
                     Promise.ninvoke(hairfie.author),
-                    Promise.ninvoke(hairfie.business),
                     createReviewRequest(hairfie)
                 ])
-                .spread(function (author, business, reviewRequest) {
-                    var Email = Hairfie.app.models.email;
-                    var pictureObject = hairfie.pictureObject().toRemoteObject();
-
-                    var promises = [];
-                    promises.push(Email.sendHairfie(hairfie, pictureObject, author));
-                    promises.push(Email.requestReview(reviewRequest, business, author));
-
-                    return Q.all(promises);
-                })
+                .spread(Hairfie.app.models.email.sendHairfie)
                 .fail(console.log);
         }
 
