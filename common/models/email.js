@@ -14,6 +14,7 @@ module.exports = function (Email) {
         languages = ['en', 'fr'];
 
     Email.notifySales = function (channel, data) {
+        console.log("notifySales", Email.app.get("salesEventEmail"));
         return send({
             to: Email.app.get("salesEventEmail"),
             language: 'en',

@@ -1,6 +1,7 @@
 'use strict';
 
 var Promise = require('../../common/utils/Promise');
+var moment = require('moment');
 
 module.exports = function (Booking) {
     Booking.GENDER_MALE = 'MALE';
@@ -13,12 +14,16 @@ module.exports = function (Booking) {
 
         Promise.npost(this, 'business')
             .then(function (business) {
-                console.log("here business", business);
-                return Business.app.models.email.notifySales('Demande de réservation', {
-                    'ID'       : booking.id,
-                    'Salon'    : business.name,
+                return Booking.app.models.email.notifySales('Demande de réservation', {
+                    'ID'              : booking.id,
+                    'Salon'           : business.name,
                     'Tel du salon'    : business.phoneNumber,
-                    'Client'   : booking.firstName && booking.lastName
+                    'Date & Heure de la demande' : moment(booking.timeslot).format("D/MM/YYYY [à] HH:mm"),
+                    'Client'          : booking.firstName + ' ' + booking.lastName,
+                    'Genre'           : booking.gender,
+                    'Email du client' : booking.email,
+                    'Tel du client'   : booking.phoneNumber,
+                    'Prestation'      : booking.comment
                 });
             })
             .then(next.bind(null, null), next);
