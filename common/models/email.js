@@ -7,6 +7,7 @@ var ejs = require('ejs');
 var juice = require('juice');
 var fs = require('fs');
 var debug = require('debug')('Model:Email');
+var htmlToText = require('html-to-text');
 
 module.exports = function (Email) {
     var from      = 'Hairfie <hello@hairfie.com>',
@@ -17,8 +18,7 @@ module.exports = function (Email) {
             to: Email.app.get("salesEventEmail"),
             language: 'en',
             template: 'notifySales',
-            templateVars: {channel: channel, data: data},
-            noTextBody: true
+            templateVars: {channel: channel, data: data}
         });
     };
 
@@ -76,28 +76,21 @@ module.exports = function (Email) {
     function send(options) {
         debug('Sending email', options)
 
+        var layout   = options.layout;
         var language = options.language || languages[0];
+
+        if (!layout && false !== layout) layout = 'layout';
 
         if (-1 === languages.indexOf(language)) {
             language = languages[0];
-        }
-
-        var htmlBody;
-        if (!options.noHtmlBody) {
-            htmlBody = getHtmlStyledBody(options.template, options.templateVars, language);
-        }
-
-        var textBody;
-        if (!options.noTextBody) {
-            textBody = getTextBody(options.template, options.templateVars, language);
         }
 
         var email = new Email({
             subject : getSubject(options.template, options.templateVars, language),
             from    : options.from || from,
             to      : options.to,
-            html    : htmlBody,
-            text    : textBody,
+            html    : getHtmlBody(options.template, options.templateVars, language, layout),
+            text    : htmlToText.fromString(htmlBody)
         });
 
         var deferred = Q.defer();
@@ -121,23 +114,37 @@ module.exports = function (Email) {
         return ejs.compile(config.subject[language])(templateVars);
     }
 
-    function getHtmlBody(template, templateVars, language) {
-        return loopback.template(relativePath(template, language, 'html'))(templateVars);
-    }
+    function getHtmlBody(template, templateVars, language, layout) {
+        var css  = readCssFile('email'),
+            html = renderHtmlBody(template, templateVars, language, layout);
 
-    function getHtmlStyledBody(template, templateVars, language) {
-        var deferred = Q.defer();
-        var cssFile = path.resolve(__dirname, '../../server/emails/stylesheets/email.css');
-        var css = fs.readFileSync(cssFile, 'utf8');
-        var html = getHtmlBody(template, templateVars, language);
         return juice.inlineContent(html, css);
     }
 
-    function getTextBody(template, templateVars, language) {
-        return loopback.template(relativePath(template, language, 'txt'))(templateVars);
+    function renderHtmlBody(template, templateVars, language, layout) {
+        var html = loopback.template(templatePath(template, language, 'html'))(templateVars);
+
+        // decorate with layout
+        if (layout) html = loopback.template(templatePath(layout, language, 'html'))({content: html});
+
+        return html;
     }
 
-    function relativePath(template, language, format) {
-        return path.resolve(__dirname, '../../server/emails/' + template + '.' + language + '.' + format + '.ejs');
+    function getTextBody(template, templateVars, language) {
+        return loopback.template(templatePath(template, language, 'txt'))(templateVars);
+    }
+
+    function readCssFile(name) {
+        var path = relativePath('stylesheets/'+name+'.css');
+
+        return fs.readFileSync(path, 'utf8')
+    }
+
+    function templatePath(template, language, format) {
+        return relativePath(template + '.' + language + '.' + format + '.ejs');
+    }
+
+    function relativePath(filename) {
+        return path.resolve(__dirname, '../../server/emails/'+filename);
     }
 }
