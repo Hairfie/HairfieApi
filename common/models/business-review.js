@@ -92,6 +92,7 @@ module.exports = function (BusinessReview) {
         }
 
         var BusinessReviewRequest = BusinessReview.app.models.BusinessReviewRequest;
+
         BusinessReviewRequest.findById(ctx.req.body.requestId, function (error, request) {
             if (error) return next(error);
             if (!token) return next({statusCode: 400, message: 'Token not found'});

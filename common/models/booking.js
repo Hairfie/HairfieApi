@@ -13,6 +13,7 @@ module.exports = function (Booking) {
 
         Promise.npost(this, 'business')
             .then(function (business) {
+                console.log("here business", business);
                 return Business.app.models.email.notifySales('Demande de réservation', {
                     'ID'       : booking.id,
                     'Salon'    : business.name,
