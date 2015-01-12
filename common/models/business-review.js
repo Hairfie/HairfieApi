@@ -8,7 +8,6 @@ module.exports = function (BusinessReview) {
         'welcome',
         'treatment',
         'discussion',
-        'priceQualityRatio',
         'decoration',
         'resultQuality',
         'hygiene',
