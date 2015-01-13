@@ -59,6 +59,7 @@ module.exports = function(Business) {
                     numReviews         : rating.numReviews,
                     rating             : rating.rating,
                     crossSell          : true,
+                    isBookable         : this.isBookable(),
                     services           : this.services,
                     activeHairdressers : activeHairdressers,
                     landingPageUrl     : Business.app.urlGenerator.business(this),
@@ -123,6 +124,18 @@ module.exports = function(Business) {
         return this.pictures.map(function (picture) {
             return Picture.fromDatabaseValue(picture, 'business-pictures', Business.app);
         });
+    };
+
+    Business.prototype.isBookable = function() {
+        var isBookable = false;
+        lodash.each(this.timetable, function(day) {
+            if(day.length > 0) {
+                lodash.each(day, function(timewindow) {
+                    if(timewindow.discount) { isBookable = true };
+                });
+            }
+        });
+        return isBookable;
     };
 
     Business.prototype.owner = function (cb) {
