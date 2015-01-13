@@ -74,7 +74,7 @@ module.exports = function (BusinessMemberClaim) {
                 if (!user) throw "User not found";
 
                 BusinessMember.create({
-                    businessId  : claim.id,
+                    businessId  : claim.businessId,
                     userId      : user.id,
                     firstName   : user.firstName,
                     lastName    : user.lastName,

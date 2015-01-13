@@ -6,5 +6,5 @@
     "restApiRoot": "/api",
     "locales": ["en", "fr"],
     "defaultLanguage": "fr",
-    "salesEventEmail": "antoine@hairfie.com"
+    "salesEventEmail": "antoine.herault@gmail.com"
 }

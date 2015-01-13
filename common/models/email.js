@@ -21,7 +21,11 @@ module.exports = function (Email) {
             to: Email.app.get("salesEventEmail"),
             language: 'en',
             template: 'notifySales',
-            templateVars: {channel: channel, data: data, links: links}
+            templateVars: {
+                channel : channel,
+                data    : data,
+                links   : links
+            }
         });
     };
 
