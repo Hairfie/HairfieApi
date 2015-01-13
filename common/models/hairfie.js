@@ -204,31 +204,21 @@ module.exports = function (Hairfie) {
     Hairfie.afterCreate = function (next) {
         var Email = Hairfie.app.models.email;
 
-        if (hairfie.customerEmail) {
-            Q.all([
-                    this,
-                    Promise.ninvoke(hairfie.author),
-                    createReviewRequest(hairfie)
-                ])
-                .spread(Email.sendHairfie)
-                .fail(console.log);
-        }
-
         Q.all([
-            Promise.ninvoke(hairfie.author),
-            Promise.ninvoke(hairfie.business),
-            createReviewRequest(hairfie)
+            Promise.ninvoke(this, 'author'),
+            Promise.ninvoke(this, 'business'),
+            createReviewRequest(this)
         ]).spread(function (author, business, reviewRequest) {
             if (this.customerEmail) {
                 Email.sendHairfie(this, author, reviewRequest).fail(console.log);
             }
 
-            Email.notifySales('Nouveau Hairfie', {
-                'ID'            : hairfie.id,
-                'URL'           : Hairfie.app.urlGenerator.hairfie(hairfie),
+            Email.notifySales('New Hairfie', {
+                'ID'            : this.id,
+                'URL'           : Hairfie.app.urlGenerator.hairfie(this),
                 'Business'      : business.name,
                 'Author'        : author.name,
-                'Customer email': hairfie.customerEmail
+                'Customer email': this.customerEmail
             }).fail(console.log);
         }.bind(this));
 

@@ -25,5 +25,11 @@ module.exports = {
     },
     watermark: {
         path: '/:picture'
+    },
+    acceptBusinessMemberClaim: {
+        path: '/api/businessMemberClaims/:id/accept'
+    },
+    refuseBusinessMemberClaim: {
+        path: '/api/businessMemberClaims/:id/refuse'
     }
 };

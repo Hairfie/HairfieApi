@@ -16,5 +16,11 @@
                 <td><%= data[key] %></td>
             </tr>
         <% } %>
+        <% for (var key in links) if (links.hasOwnProperty(key)) { %>
+            <tr>
+                <td><%= key %></td>
+                <td><a href="<%= links[key] %>"><%= links[key] %></a></td>
+            </tr>
+        <% } %>
     </tbody>
 </table>

@@ -47,6 +47,14 @@ UrlGenerator.prototype.businessReviewRequest = function (businessReviewRequest) 
     return this.generate('businessReviewRequest', {businessReviewRequestId: businessReviewRequest.id});
 };
 
+UrlGenerator.prototype.acceptBusinessMemberClaim = function (businessMemberClaim) {
+    return this.generate('acceptBusinessMemberClaim', {id: businessMemberClaim.id});
+};
+
+UrlGenerator.prototype.refuseBusinessMemberClaim = function (businessMemberClaim) {
+    return this.generate('refuseBusinessMemberClaim', {id: businessMemberClaim.id});
+};
+
 UrlGenerator.prototype._getHost = function (app) {
     var app  = app || this.options.defaultApp,
         host = this.options.baseUrl[app];

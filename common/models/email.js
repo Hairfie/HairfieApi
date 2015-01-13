@@ -14,12 +14,14 @@ module.exports = function (Email) {
     var from      = 'Hairfie <hello@hairfie.com>',
         languages = ['en', 'fr'];
 
-    Email.notifySales = function (channel, data) {
+    Email.notifySales = function (channel, data, links) {
+        var links = links || {};
+
         return send({
             to: Email.app.get("salesEventEmail"),
             language: 'en',
             template: 'notifySales',
-            templateVars: {channel: channel, data: data}
+            templateVars: {channel: channel, data: data, links: links}
         });
     };
 
