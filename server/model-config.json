@@ -54,6 +54,10 @@
         "dataSource": "hairfieMongo",
         "public": true
     },
+    "BusinessMemberClaim": {
+        "dataSource": "hairfieMongo",
+        "public": true
+    },
     "BusinessMemberFavorite": {
         "dataSource": "hairfieMongo",
         "public": false

@@ -3,17 +3,17 @@
 <p>We got a new "<%= channel %>" event with the following informations:</p>
 
 <table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Value</th>
-        </tr>
-    </thead>
     <tbody>
         <% for (var key in data) if (data.hasOwnProperty(key)) { %>
             <tr>
-                <td><%= key %></td>
-                <td><%= data[key] %></td>
+                <th style="padding:10px;"><%= key %></th>
+                <td style="padding:10px;"><%= data[key] %></td>
+            </tr>
+        <% } %>
+        <% for (var key in links) if (links.hasOwnProperty(key)) { %>
+            <tr>
+                <th style="padding:10px;"><%= key %></th>
+                <td style="padding:10px;"><a href="<%= links[key] %>"><%= links[key] %></a></td>
             </tr>
         <% } %>
     </tbody>
