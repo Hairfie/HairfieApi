@@ -278,41 +278,15 @@ module.exports = function(Business) {
 
             var here = GeoPoint(business.gps);
 
-            var body = {
-                size: limit,
-                query: {
-                    filtered: {
-                        filter: {
-                            and: [
-                                {
-                                    geo_distance: {
-                                        distance: maxDistance,
-                                        distance_unit: 'm',
-                                        gps: here.asElasticPoint()
-                                    }
-                                },
-                                {
-                                    not: {
-                                        ids: {
-                                            values: [businessId]
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                sort: {
-                    _geo_distance: {
-                        gps: here.asElasticPoint(),
-                        order: 'asc',
-                        unit: 'm'
-                    }
-                }
-            };
+            var request = ejs.Request();
+            request.size(limit);
+            request.filter(ejs.NotFilter(ejs.IdsFilter(business.id.toString())));
+            request.sort(ejs.Sort('gps')
+                    .geoDistance(here.asElasticJsGeoPoint())
+                    .unit('km')
+                    .order('asc'));
 
-
-            Business.app.models.SearchEngine.search('business', body)
+            Business.app.models.SearchEngine.search('business', request)
                 .then(searchResultBusinesses)
                 .nodeify(callback)
         });
