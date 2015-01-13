@@ -5,6 +5,5 @@
     "host": "localhost",
     "restApiRoot": "/api",
     "locales": ["en", "fr"],
-    "defaultLanguage": "fr",
-    "salesEventEmail": "antoine.herault@gmail.com"
+    "defaultLanguage": "fr"
 }
