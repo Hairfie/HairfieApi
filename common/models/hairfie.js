@@ -72,7 +72,7 @@ module.exports = function (Hairfie) {
 
         return {
             id              : this.id,
-            picture         : pictures[0],
+            picture         : pictures[pictures.length - 1],
             pictures        : pictures,
             price           : this.price,
             tags            : Promise.npost(this, 'tagObjects').then(function (tags) {
