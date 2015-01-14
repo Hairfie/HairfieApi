@@ -95,8 +95,8 @@ module.exports = function (BusinessReview) {
 
         BusinessReviewRequest.findById(ctx.req.body.requestId, function (error, request) {
             if (error) return next(error);
-            if (!token) return next({statusCode: 400, message: 'Token not found'});
-            if (!token.canWrite()) return next({statusCode: 400, message: 'Cannnot write with this review request'});
+            if (!request) return next({statusCode: 400, message: 'Review request not found'});
+            if (!request.canWrite()) return next({statusCode: 400, message: 'Cannnot write with this review request'});
 
             ctx.req.body.businessId = request.businessId;
             ctx.req.body.hairfieId = request.hairfieId;
