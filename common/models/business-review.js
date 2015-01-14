@@ -63,9 +63,9 @@ module.exports = function (BusinessReview) {
     };
 
     BusinessReview.afterCreate = function (next) {
-        // update token with reviewId so we know it's used
+        // update review request with reviewId so we know it's used
         this.request(function (error, request) {
-            if (token) {
+            if (request) {
                 request.reviewId = this.id;
                 request.save();
             }
