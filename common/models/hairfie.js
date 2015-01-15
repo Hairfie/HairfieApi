@@ -108,9 +108,9 @@ module.exports = function (Hairfie) {
             });
     };
 
-    Hairfie.prototype.pictureObject = function () {
-        return this.pictureObjects()[0];
-    };
+    // Hairfie.prototype.pictureObject = function () {
+    //     return this.pictureObjects()[0];
+    // };
 
     Hairfie.prototype.pictureObjects = function () {
         var pictures = !Array.isArray(this.pictures) ? [this.picture] : this.pictures;

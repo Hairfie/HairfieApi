@@ -205,6 +205,10 @@ app.use(loopback.urlNotFound());
 // The ultimate error handler.
 app.use(loopback.errorHandler());
 
+app.models.user.settings.acls = require('./user-acls.json');
+
+//{ "principalType": "ROLE", "principalId": "$everyone", "permission": "ALLOW" },
+
 app.start = function() {
   // start the web server
   return app.listen(process.env.PORT || 3000, function() {
