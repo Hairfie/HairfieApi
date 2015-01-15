@@ -14,23 +14,26 @@ module.exports = function (BusinessReview) {
         'availability'
     ];
 
-    BusinessReview.prototype.toRemoteObject = function () {
+    BusinessReview.prototype.toRemoteObject = function (context) {
         var criteria = this.criteria || {};
 
-        return {
-            id          : this.id,
-            rating      : this.rating,
-            criteria    : this.criteria || {},
-            comment     : this.comment,
-            author      : Promise.ninvoke(this.author).then(function (author) {
-                return author ? author.toRemoteShortObject() : null;
-            }),
-            business    : Promise.ninvoke(this.business).then(function (business) {
-                return business ? business.toRemoteShortObject() : null;
-            }),
-            createdAt   : this.createdAt,
-            updatedAt   : this.updatedAt
-        };
+        return Promise.ninvoke(this, 'author')
+            .then(function (author) {
+                return {
+                    id          : this.id,
+                    firstName   : author ? author.firstName || this.firstName,
+                    lastName    : author ? author.lastName || this.lastName,
+                    rating      : this.rating,
+                    criteria    : this.criteria || {},
+                    comment     : this.comment,
+                    author      : author ? author.toRemoteShortObject() : null,
+                    business    : Promise.ninvoke(this.business).then(function (business) {
+                        return business ? business.toRemoteShortObject() : null;
+                    }),
+                    createdAt   : this.createdAt,
+                    updatedAt   : this.updatedAt
+                };
+            }.bind(this));
     };
 
     BusinessReview.validateAsync('businessId', function (onError, onDone) {
