@@ -271,10 +271,9 @@ module.exports = function(User) {
     };
 
     function loggedInAsSubjectUser(ctx, _, next) {
-        var accessToken = ctx.req.accessToken;
-        console.log("accessToken", accessToken);
-        if (!accessToken) return next({statusCode: 401});
-        if (accessToken.userId.toString() != ctx.req.params.id.toString()) return next({statusCode: 403});
+        var user = ctx.req.user;
+        if (!user) return next({statusCode: 401});
+        if (user.id.toString() != ctx.req.params.id.toString()) return next({statusCode: 403});
         next();
     }
 
@@ -291,9 +290,9 @@ module.exports = function(User) {
             'favoriteBusinessMember',
             'unfavoriteBusinessMember',
     ], function (ctx, _, next) {
-        var accessToken = ctx.req.accessToken;
-        if (!accessToken) return next({statusCode: 401});
-        if (!accessToken.userId != ctx.req.params.userId) return next({statusCode: 403});
+        var user = ctx.req.user;
+        if (!user) return next({statusCode: 401});
+        if (!user.id.toString() != ctx.req.params.userId.toString()) return next({statusCode: 403});
         next();
     });
 
