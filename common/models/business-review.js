@@ -21,8 +21,8 @@ module.exports = function (BusinessReview) {
             .then(function (author) {
                 return {
                     id          : this.id,
-                    firstName   : author ? author.firstName || this.firstName,
-                    lastName    : author ? author.lastName || this.lastName,
+                    firstName   : author ? author.firstName : this.firstName,
+                    lastName    : author ? author.lastName : this.lastName,
                     rating      : this.rating,
                     criteria    : this.criteria || {},
                     comment     : this.comment,
