@@ -1,5 +1,6 @@
 {
   "url": "http://api-staging.hairfie.com",
   "webUrl": "http://www-staging.hairfie.com",
-  "cdnUrl": "http://api-staging.hairfie.com"
+  "cdnUrl": "http://api-staging.hairfie.com",
+  "salesEventEmail": "event.stream+staging@hairfie.com"
 }
