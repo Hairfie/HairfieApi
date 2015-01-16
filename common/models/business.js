@@ -263,7 +263,6 @@ module.exports = function(Business) {
 
                 return SearchEngine.search('business', request);
             })
-            .then(function (r) { console.log(r[0].hits.hits); return r; })
             .then(searchResultBusinesses)
             .nodeify(callback)
         ;
