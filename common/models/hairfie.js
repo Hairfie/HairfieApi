@@ -210,7 +210,7 @@ module.exports = function (Hairfie) {
             createReviewRequest(this)
         ]).spread(function (author, business, reviewRequest) {
             if (this.customerEmail) {
-                Email.sendHairfie(this, author, reviewRequest).fail(console.log);
+                Email.sendHairfie(this, author, business, reviewRequest).fail(console.log);
             }
 
             Email.notifySales('New Hairfie', {

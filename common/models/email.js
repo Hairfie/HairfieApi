@@ -51,7 +51,7 @@ module.exports = function (Email) {
         });
     }
 
-    Email.sendHairfie = function (hairfie, author, reviewRequest) {
+    Email.sendHairfie = function (hairfie, author, business, reviewRequest) {
         var url = Email.app.urlGenerator;
 
         return send({
@@ -61,6 +61,7 @@ module.exports = function (Email) {
             templateVars: {
                 hairfie         : hairfie,
                 author          : author,
+                business        : business,
                 hairfieUrl      : url.hairfie(hairfie),
                 writeReviewUrl  : reviewRequest && url.businessReviewRequest(reviewRequest),
                 iosAppUrl       : Email.app.get('iosAppUrl')
