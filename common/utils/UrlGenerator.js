@@ -55,7 +55,6 @@ UrlGenerator.prototype.refuseBusinessMemberClaim = function (businessMemberClaim
 };
 
 UrlGenerator.prototype._getHost = function (app) {
-    console.log("_getHost", app);
     var app  = app || this.options.defaultApp,
         host = this.options.baseUrl[app];
 
