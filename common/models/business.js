@@ -226,6 +226,12 @@ module.exports = function(Business) {
     };
 
     Business.nearby = function(here, query, clientTypes, page, limit, callback) {
+        // TODO: remove me as soon as the 1.6.3 version of the app is released
+        if (lodash.isString(here)) {
+            var tmpGeoPoint = GeoPoint(here);
+            here = tmpGeoPoint.lng+','+tmpGeoPoint.lat;
+        }
+
         var maxDistance = 5000,
             here        = GeoPoint(here),
             page        = Math.max(page || 1),
