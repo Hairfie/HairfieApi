@@ -62,7 +62,8 @@ module.exports = function (Email) {
                 hairfie         : hairfie,
                 author          : author,
                 hairfieUrl      : url.hairfie(hairfie),
-                writeReviewUrl  : reviewRequest && url.businessReviewRequest(reviewRequest)
+                writeReviewUrl  : reviewRequest && url.businessReviewRequest(reviewRequest),
+                iosAppUrl       : Email.app.get('iosAppUrl')
             }
         });
     };
