@@ -24,7 +24,7 @@ module.exports = function (BusinessMember) {
         return {
             id          : this.id,
             firstName   : this.firstName,
-            lastName    : this.lastName,
+            lastName    : this.lastName.substring(0,1) + '.',
             hidden      : this.hidden,
             active      : this.active
         };
