@@ -1,5 +1,6 @@
 {
   "url": "http://localhost:3000",
   "webUrl": "http://localhost:3001",
-  "cdnUrl": "http://localhost:3001"
+  "cdnUrl": "http://localhost:3001",
+  "salesEventEmail": "ghislain@hairfie.com"
 }

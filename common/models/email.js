@@ -17,11 +17,15 @@ module.exports = function (Email) {
     Email.notifySales = function (channel, data, links) {
         var links = links || {};
 
+        var env = Email.app.get('env');
+        var envLabel = (env.toLowerCase() !== 'production') ? '[' + env + ']' : '';
+
         return send({
             to: Email.app.get("salesEventEmail"),
             language: 'en',
             template: 'notifySales',
             templateVars: {
+                env     : envLabel,
                 channel : channel,
                 data    : data,
                 links   : links
