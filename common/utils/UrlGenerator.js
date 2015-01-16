@@ -59,7 +59,6 @@ UrlGenerator.prototype._getHost = function (app) {
         host = this.options.baseUrl[app];
 
     if (!host) throw "Host for app '"+app+"' is not defined.";
-    console.log("_getHost host", host);
 
     return host;
 };
