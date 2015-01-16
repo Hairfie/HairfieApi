@@ -10,7 +10,6 @@ module.exports = UrlGenerator;
 UrlGenerator.prototype.generate = function (name, params) {
     var route  = this.options.routes[name],
         params = params || {};
-
     if (!route) throw "Route '"+name+"' is not defined.";
 
     var host = this._getHost(route.app),
@@ -24,7 +23,7 @@ UrlGenerator.prototype.home = function () {
 };
 
 UrlGenerator.prototype.hairfie = function (hairfie) {
-    return this.generate('hairfie', {id: hairfie.id}, 'web');
+    return this.generate('hairfie', {id: hairfie.id});
 };
 
 UrlGenerator.prototype.user = function (user) {
@@ -32,7 +31,7 @@ UrlGenerator.prototype.user = function (user) {
 };
 
 UrlGenerator.prototype.business = function (business) {
-    return this.generate('business', {id: business.id, slug: business.slug()}, 'web');
+    return this.generate('business', {id: business.id, slug: business.slug()});
 };
 
 UrlGenerator.prototype.resetPassword = function (user, token) {
@@ -56,10 +55,12 @@ UrlGenerator.prototype.refuseBusinessMemberClaim = function (businessMemberClaim
 };
 
 UrlGenerator.prototype._getHost = function (app) {
+    console.log("_getHost", app);
     var app  = app || this.options.defaultApp,
         host = this.options.baseUrl[app];
 
     if (!host) throw "Host for app '"+app+"' is not defined.";
+    console.log("_getHost host", host);
 
     return host;
 };

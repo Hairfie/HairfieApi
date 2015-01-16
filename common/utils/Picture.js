@@ -57,7 +57,7 @@ Picture.prototype.url = function () {
         return this.app.generateUrl('pictureDownload', {
             container: this.values.container,
             name: this.values.name
-        }, 'cdn');
+        });
     }
 
     return this.values.url;

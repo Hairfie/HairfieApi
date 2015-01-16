@@ -15,8 +15,8 @@ module.exports = function (app) {
         });
 
         app.urlGenerator = urlGenerator;
-        app.generateUrl = function (name, params, customUrlType) {
-            return urlGenerator.generate(name, params, customUrlType);
+        app.generateUrl = function (name, params) {
+            return urlGenerator.generate(name, params);
         };
     });
 };

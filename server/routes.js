@@ -14,6 +14,7 @@ module.exports = {
         path: '/write-business-review/:businessReviewRequestId'
     },
     pictureDownload: {
+        app: 'cdn',
         path: '/api/containers/:container/download/:name'
     },
     streetView: {
