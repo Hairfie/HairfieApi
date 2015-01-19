@@ -91,8 +91,11 @@ module.exports = function (Email) {
     Email.confirmBooking = function (booking, business) {
         var language = booking.language || 'fr';
         var timeslot = moment(booking.timeslot).format("D/MM/YYYY [à] HH:mm");
+        var from      = 'Hairfie <hello@hairfie.com>';
+
         return send({
             to: booking.email,
+            from: from,
             language: language,
             template: 'confirmBooking',
             templateVars: {
