@@ -20,8 +20,15 @@ module.exports = function (Email) {
         var env = Email.app.get('env');
         var envLabel = (env.toLowerCase() !== 'production') ? '[' + env + ']' : '';
 
+        var recipient = Email.app.get("salesEventEmail");
+
+        if (!recipient) {
+            debug('Notify sales: no email configured, skipping');
+            return Q(null);
+        }
+
         return send({
-            to: Email.app.get("salesEventEmail"),
+            to: recipient,
             language: 'en',
             template: 'notifySales',
             templateVars: {
@@ -153,7 +160,7 @@ module.exports = function (Email) {
         // decorate with layout
         if (layout) {
             html = loopback.template(templatePath(layout, language, 'html'))({
-                logoHref    : Email.app.urlGenerator.mailImage('logo@2x.png'),
+                logoSrc     : Email.app.urlGenerator.mailImage('logo@2x.png'),
                 appStoreSrc : Email.app.urlGenerator.mailImage('app-store.png'),
                 appStoreUrl : Email.app.get('iosAppUrl'),
                 content     : html
