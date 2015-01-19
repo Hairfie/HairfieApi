@@ -39,7 +39,7 @@ UrlGenerator.prototype.resetPassword = function (user, token) {
 };
 
 UrlGenerator.prototype.watermark = function (picture) {
-    return this.generate('watermark', {picture: picture});
+    return this.generate('asset', {path: picture});
 };
 
 UrlGenerator.prototype.businessReviewRequest = function (businessReviewRequest) {
@@ -52,6 +52,10 @@ UrlGenerator.prototype.acceptBusinessMemberClaim = function (businessMemberClaim
 
 UrlGenerator.prototype.refuseBusinessMemberClaim = function (businessMemberClaim) {
     return this.generate('refuseBusinessMemberClaim', {id: businessMemberClaim.id});
+};
+
+UrlGenerator.prototype.mailLogo = function () {
+    return this.generate('asset', {path: 'mail/logo/1.0.0@2x.png'});
 };
 
 UrlGenerator.prototype._getHost = function (app) {

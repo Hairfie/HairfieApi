@@ -24,8 +24,8 @@ module.exports = {
         app: 'website',
         path: '/reset-password/:userId/:token'
     },
-    watermark: {
-        path: '/:picture'
+    asset: {
+        path: '/:path'
     },
     acceptBusinessMemberClaim: {
         path: '/api/businessMemberClaims/:id/accept'

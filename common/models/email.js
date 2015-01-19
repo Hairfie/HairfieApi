@@ -151,7 +151,12 @@ module.exports = function (Email) {
         var html = loopback.template(templatePath(template, language, 'html'))(templateVars);
 
         // decorate with layout
-        if (layout) html = loopback.template(templatePath(layout, language, 'html'))({content: html});
+        if (layout) {
+            html = loopback.template(templatePath(layout, language, 'html'))({
+                logoUrl: Email.app.urlGenerator.mailLogo(),
+                content: html
+            });
+        }
 
         return html;
     }
