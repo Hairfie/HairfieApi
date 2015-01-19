@@ -153,8 +153,10 @@ module.exports = function (Email) {
         // decorate with layout
         if (layout) {
             html = loopback.template(templatePath(layout, language, 'html'))({
-                logoUrl: Email.app.urlGenerator.mailLogo(),
-                content: html
+                logoHref    : Email.app.urlGenerator.mailImage('logo@2x.png'),
+                appStoreSrc : Email.app.urlGenerator.mailImage('app-store.png'),
+                appStoreUrl : Email.app.get('iosAppUrl'),
+                content     : html
             });
         }
 
