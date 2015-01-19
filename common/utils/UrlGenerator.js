@@ -55,7 +55,7 @@ UrlGenerator.prototype.refuseBusinessMemberClaim = function (businessMemberClaim
 };
 
 UrlGenerator.prototype.mailLogo = function () {
-    return this.generate('asset', {path: 'mail/logo/1.0.0@2x.png'});
+    return this.generate('asset', {path: 'img/mail/logo/1.0.0@2x.png'});
 };
 
 UrlGenerator.prototype._getHost = function (app) {
