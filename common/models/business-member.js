@@ -25,6 +25,10 @@ module.exports = function (BusinessMember) {
             id          : this.id,
             firstName   : this.firstName,
             lastName    : this.lastName.substring(0,1) + '.',
+            picture     : Promise.ninvoke(this, 'user').then(function (user) {
+                var picture = user && user.getPictureObject();
+                return picture && picture.toRemoteObject();
+            }),
             hidden      : this.hidden,
             active      : this.active
         };
