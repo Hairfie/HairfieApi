@@ -33,6 +33,9 @@
         "timeslot": {
             "type": "Date",
             "required": true
+        },
+        "discount": {
+            "type": "string"
         }
     },
     "validations": [],
