@@ -41,9 +41,9 @@ module.exports = function(User) {
     User.prototype.toRemoteShortObject = function (context) {
         var Hairfie             = User.app.models.Hairfie,
             BusinessReview      = User.app.models.BusinessReview,
+            picture             = this.getPictureObject(),
             numHairfies         = Promise.ninvoke(Hairfie, 'count', {authorId: this.id}),
-            numBusinessReviews  = Promise.ninvoke(BusinessReview, 'count', {authorId: this.id}),
-            picture             = Picture.fromDatabaseValue(this.picture, 'user-profile-pictures', User.app);
+            numBusinessReviews  = Promise.ninvoke(BusinessReview, 'count', {authorId: this.id});
 
         return {
             id                  : this.id,
@@ -54,6 +54,10 @@ module.exports = function(User) {
             numHairfies         : numHairfies,
             numBusinessReviews  : numBusinessReviews
         };
+    };
+
+    User.prototype.getPictureObject = function () {
+        return Picture.fromDatabaseValue(this.picture, 'user-profile-pictures', User.app);
     };
 
     User.prototype.isManagerOfBusiness = function (businessId) {
