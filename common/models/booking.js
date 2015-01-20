@@ -10,11 +10,11 @@ module.exports = function (Booking) {
     Booking.prototype.toRemoteObject = function (context) {
         return {
             id              : this.id,
-
             business        : Promise.ninvoke(this.business).then(function (business) {
                 return business ? business.toRemoteShortObject(context) : null;
             }),
-            name            : this.name,
+            firstName       : this.firstName,
+            lastName        : this.lastName,
             gender          : this.gender,
             email           : this.email,
             phoneNumber     : this.phoneNumber,
