@@ -7,6 +7,24 @@ module.exports = function (Booking) {
     Booking.GENDER_MALE = 'MALE';
     Booking.GENDER_FEMALE = 'FEMALE';
 
+    Booking.prototype.toRemoteObject = function (context) {
+        return {
+            id              : this.id,
+
+            business        : Promise.ninvoke(this.business).then(function (business) {
+                return business ? business.toRemoteShortObject(context) : null;
+            }),
+            name            : this.name,
+            gender          : this.gender,
+            email           : this.email,
+            phoneNumber     : this.phoneNumber,
+            comment         : this.comment,
+            timeslot        : this.timeslot,
+            discount        : this.discount,
+            createdAt       : this.createdAt,
+            updatedAt       : this.updatedAt
+        };
+    };
 
     Booking.afterCreate = function (next) {
         var Email = Booking.app.models.email;

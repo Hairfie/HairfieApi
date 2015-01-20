@@ -52,6 +52,7 @@
         "timestampable": true,
         "sharedMethodNames": [
             "find",
+            "findById",
             "create"
         ],
         "mongodb": {
