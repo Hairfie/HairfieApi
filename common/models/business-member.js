@@ -21,17 +21,20 @@ module.exports = function (BusinessMember) {
     };
 
     BusinessMember.prototype.toRemoteShortObject = function (context) {
+        var pictureObject = this.getPictureObject();
+
         return {
             id          : this.id,
             firstName   : this.firstName,
             lastName    : this.lastName.substring(0,1) + '.',
-            picture     : Promise.ninvoke(this, 'user').then(function (user) {
-                var picture = user && user.getPictureObject();
-                return picture && picture.toRemoteObject();
-            }),
+            picture     : pictureObject && pictureObject.toRemoteObject(),
             hidden      : this.hidden,
             active      : this.active
         };
+    };
+
+    BusinessMember.prototype.getPictureObject = function () {
+        return Picture.fromDatabaseValue(this.picture, 'business-pictures', BusinessMember.app);
     };
 
     BusinessMember.prototype.getNumHairfies = function (cb) {

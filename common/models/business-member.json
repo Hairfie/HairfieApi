@@ -25,6 +25,9 @@
         "phoneNumber": {
             "type": "string"
         },
+        "picture": {
+            "type": "string"
+        },
         "hidden": {
             "type": "boolean",
             "required": true
