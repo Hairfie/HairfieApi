@@ -60,7 +60,7 @@ module.exports = function(Business) {
                     rating             : rating.rating,
                     crossSell          : true,
                     isBookable         : this.isBookable(),
-                    services           : this.services,
+                    services           : this.getServices(),
                     activeHairdressers : activeHairdressers,
                     landingPageUrl     : Business.app.urlGenerator.business(this),
                     facebookPage       : this.facebookPage && this.getFacebookPageObject().toRemoteShortObject(context),
@@ -166,6 +166,22 @@ module.exports = function(Business) {
         where.hidden = false;
 
         BusinessMember.find({where: where}, cb);
+    };
+
+    Business.prototype.getServices = function(cb) {
+        if (!this.id) cb(null, []);
+        var BusinessService = Business.app.models.BusinessService;
+        var where = {};
+        where.businessId = this.id;
+
+        var deferred = Promise.defer();
+
+        BusinessService.find({where: where}, function(error, services) {
+            if(error) deferred.reject(error);
+            deferred.resolve(services);
+        });
+
+        return deferred.promise;
     };
 
     Business.prototype.isClaimed = function () {
