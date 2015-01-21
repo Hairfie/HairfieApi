@@ -66,6 +66,21 @@ module.exports = function (BusinessReview) {
     };
 
     BusinessReview.afterCreate = function (next) {
+        console.log("BusinessReview has been created");
+        var businessReview = this;
+        Promise.npost(this, 'business')
+            .then(function (business) {
+                return BusinessReview.app.models.email.notifySales('Un avis a été déposé', {
+                    'ID'              : businessReview.id,
+                    'Salon'           : business.name,
+                    'Nom'             : businessReview.firstName + ' ' + businessReview.lastName,
+                    'Email'           : businessReview.email,
+                    'Note globale'    : businessReview.rating,
+                    'Commentaire'     : businessReview.comment
+                });
+            })
+            .fail(console.log);
+
         // update review request with reviewId so we know it's used
         this.request(function (error, request) {
             if (request) {
