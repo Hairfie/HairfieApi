@@ -209,11 +209,14 @@ module.exports = function (Hairfie) {
             Promise.ninvoke(this, 'business'),
             createReviewRequest(this)
         ]).spread(function (author, business, reviewRequest) {
+            var label = 'New Hairfie';
+
             if (this.customerEmail) {
                 Email.sendHairfie(this, author, business, reviewRequest).fail(console.log);
+                label += ' with customerEmail !'
             }
 
-            Email.notifySales('New Hairfie', {
+            Email.notifySales(label, {
                 'ID'            : this.id,
                 'URL'           : Hairfie.app.urlGenerator.hairfie(this),
                 'Business'      : business.name,
