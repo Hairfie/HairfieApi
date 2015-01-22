@@ -207,8 +207,9 @@ module.exports = function (Hairfie) {
         Q.all([
             Promise.ninvoke(this, 'author'),
             Promise.ninvoke(this, 'business'),
-            createReviewRequest(this)
-        ]).spread(function (author, business, reviewRequest) {
+            createReviewRequest(this),
+            Promise.ninvoke(this, 'tagObjects')
+        ]).spread(function (author, business, reviewRequest, tags) {
             var label = 'New Hairfie';
 
             if (this.customerEmail) {
@@ -222,9 +223,7 @@ module.exports = function (Hairfie) {
                 'Business'      : business.name,
                 'Author'        : author.name,
                 'Customer email': this.customerEmail,
-                'Tags'          : Promise.npost(this, 'tagObjects').then(function (tags) {
-                                    return Promise.map(tags, function (tag) { return tag.toRemoteShortObject(context); });
-                                }),
+                'Tags'          : lodash.map(tags, function(tag) {return tag.name}),
                 'Business phone': business.phoneNumber
             }).fail(console.log);
         }.bind(this));
