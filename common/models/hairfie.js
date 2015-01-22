@@ -221,7 +221,11 @@ module.exports = function (Hairfie) {
                 'URL'           : Hairfie.app.urlGenerator.hairfie(this),
                 'Business'      : business.name,
                 'Author'        : author.name,
-                'Customer email': this.customerEmail
+                'Customer email': this.customerEmail,
+                'Tags'          : Promise.npost(this, 'tagObjects').then(function (tags) {
+                                    return Promise.map(tags, function (tag) { return tag.toRemoteShortObject(context); });
+                                }),
+                'Business phone': business.phoneNumber
             }).fail(console.log);
         }.bind(this));
 
