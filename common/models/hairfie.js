@@ -223,7 +223,7 @@ module.exports = function (Hairfie) {
                 'Business'      : business.name,
                 'Author'        : author.name,
                 'Customer email': this.customerEmail,
-                'Tags'          : lodash.map(tags, function(tag) {return tag.name}),
+                'Tags'          : lodash.map(tags, function(tag) {return tag.name.fr }),
                 'Business phone': business.phoneNumber
             }).fail(console.log);
         }.bind(this));
