@@ -208,8 +208,9 @@ module.exports = function (Hairfie) {
             Promise.ninvoke(this, 'author'),
             Promise.ninvoke(this, 'business'),
             createReviewRequest(this),
+            Promise.ninvoke(this, 'businessMember'),
             Promise.ninvoke(this, 'tagObjects')
-        ]).spread(function (author, business, reviewRequest, tags) {
+        ]).spread(function (author, business, reviewRequest, businessMember, tags) {
             var label = 'New Hairfie';
 
             if (this.customerEmail) {
@@ -217,15 +218,18 @@ module.exports = function (Hairfie) {
                 label += ' with customerEmail !'
             }
 
-            Email.notifySales(label, {
-                'ID'            : this.id,
-                'URL'           : Hairfie.app.urlGenerator.hairfie(this),
-                'Business'      : business.name,
-                'Author'        : author.name,
-                'Customer email': this.customerEmail,
-                'Tags'          : lodash.map(tags, function(tag) {return tag.name.fr }),
-                'Business phone': business.phoneNumber
-            }).fail(console.log);
+            var emailObject = {
+                'ID'              : this.id,
+                'URL'             : Hairfie.app.urlGenerator.hairfie(this),
+                'Business'        : business.name,
+                'Hairdresser tagged' : businessMember ? businessMember.firstName + ' ' + businessMember.lastName : 'Non rempli',
+                'User who posted'          : author.firstName + ' ' + author.lastName,
+                'Customer email'  : this.customerEmail,
+                'Tags'            : lodash.map(tags, function(tag) {return tag.name.fr }),
+                'Business phone'  : business.phoneNumber
+            };
+
+            Email.notifySales(label, emailObject).fail(console.log);
         }.bind(this));
 
         next();
