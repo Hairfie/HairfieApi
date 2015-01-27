@@ -127,6 +127,11 @@ module.exports = function(Business) {
     };
 
     Business.prototype.isBookable = function() {
+        // bypass to allow discount less booking
+        if (this.bookable) {
+            return true;
+        }
+
         var isBookable = false;
         lodash.each(this.timetable, function(day) {
             if(day.length > 0) {
