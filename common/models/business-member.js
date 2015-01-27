@@ -29,7 +29,7 @@ module.exports = function (BusinessMember) {
             lastName    : this.lastName,
             picture     : pictureObject && pictureObject.toRemoteObject(),
             hidden      : this.hidden,
-            active      : true
+            active      : this.active
         };
     };
 
