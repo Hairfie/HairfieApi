@@ -32,6 +32,8 @@ module.exports = function (BusinessMember) {
             gender      : this.gender,
             firstName   : this.firstName,
             lastName    : this.lastName,
+            email       : this.email,
+            phoneNumber : this.phoneNumber,
             picture     : pictureObject && pictureObject.toRemoteObject(),
             hidden      : this.hidden,
             active      : this.active
