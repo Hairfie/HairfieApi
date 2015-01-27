@@ -26,10 +26,10 @@ module.exports = function (BusinessMember) {
         return {
             id          : this.id,
             firstName   : this.firstName,
-            lastName    : this.lastName.substring(0,1) + '.',
+            lastName    : this.lastName,
             picture     : pictureObject && pictureObject.toRemoteObject(),
             hidden      : this.hidden,
-            active      : this.active
+            active      : true
         };
     };
 
