@@ -11,6 +11,9 @@
             "type": "string",
             "index": true
         },
+        "gender": {
+            "type": "string"
+        },
         "firstName": {
             "type": "string",
             "required": true

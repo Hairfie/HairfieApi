@@ -6,10 +6,14 @@ var validateExists = require('../utils/validator/exists');
 var Control = require('../utils/AccessControl');
 
 module.exports = function (BusinessMember) {
+    BusinessMember.GENDER_MALE = 'MALE';
+    BusinessMember.GENDER_FEMALE = 'FEMALE';
+
     // TODO: validation generates timeouts now...
     //BusinessMember.validateAsync('businessId', validateExists('business'), {message: 'exists'});
     //BusinessMember.validateAsync('userId', validateExists('user'), {message: 'exists'});
     BusinessMember.validatesUniquenessOf('userId', {scopedTo: ['businessId']});
+    BusinessMember.validatesInclusionOf('gender', {in: [BusinessMember.GENDER_MALE, BusinessMember.GENDER_FEMALE]});
 
     BusinessMember.prototype.toRemoteObject = function (context) {
         var obj = this.toRemoteShortObject();
@@ -25,6 +29,7 @@ module.exports = function (BusinessMember) {
 
         return {
             id          : this.id,
+            gender      : this.gender,
             firstName   : this.firstName,
             lastName    : this.lastName,
             picture     : pictureObject && pictureObject.toRemoteObject(),
