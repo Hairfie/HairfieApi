@@ -13,7 +13,7 @@ module.exports = function (BusinessMember) {
     //BusinessMember.validateAsync('businessId', validateExists('business'), {message: 'exists'});
     //BusinessMember.validateAsync('userId', validateExists('user'), {message: 'exists'});
     BusinessMember.validatesUniquenessOf('userId', {scopedTo: ['businessId']});
-    //BusinessMember.validatesInclusionOf('gender', {in: [BusinessMember.GENDER_MALE, BusinessMember.GENDER_FEMALE]});
+    BusinessMember.validatesInclusionOf('gender', {in: [BusinessMember.GENDER_MALE, BusinessMember.GENDER_FEMALE]});
 
     BusinessMember.prototype.toRemoteObject = function (context) {
         var obj = this.toRemoteShortObject();

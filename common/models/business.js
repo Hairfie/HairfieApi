@@ -479,6 +479,7 @@ module.exports = function(Business) {
                 return Promise.ninvoke(BusinessMember, 'create', {
                     businessId: businessId,
                     userId: user.id,
+                    gender: user.gender,
                     firstName: user.firstName,
                     lastName: user.lastName,
                     email: user.email,
