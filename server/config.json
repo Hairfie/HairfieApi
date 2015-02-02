@@ -6,5 +6,6 @@
     "restApiRoot": "/api",
     "locales": ["en", "fr"],
     "defaultLanguage": "fr",
-    "iosAppUrl": "https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=853590611"
+    "iosAppUrl": "https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=853590611",
+    "emailFrom": "Hairfie <hello@hairfie.com>"
 }
