@@ -214,7 +214,7 @@ module.exports = function (Hairfie) {
             var label = 'New Hairfie';
 
             if (this.customerEmail) {
-                Email.sendHairfie(this, author, business, reviewRequest).fail(console.log);
+                Email.sendHairfie(this, author, business).fail(console.log);
                 label += ' with customerEmail !'
             }
 

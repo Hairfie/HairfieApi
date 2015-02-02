@@ -3,9 +3,12 @@
 var app = require('..');
 var program = require('commander');
 
+app.emit('started'); // TODO: models setup should not depend on server
+
 var commands = [
     'remove-business',
-    'build-search-index'
+    'build-search-index',
+    'send-business-review-requests',
 ];
 
 commands.forEach(function (command) {

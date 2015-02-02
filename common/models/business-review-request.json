@@ -13,8 +13,7 @@
         },
         "hairfieId": {
             "type": "string",
-            "index": true,
-            "required": true
+            "index": true
         },
         "email": {
             "type": "string",
@@ -22,6 +21,9 @@
         },
         "reviewId": {
             "type": "string"
+        },
+        "sentAt": {
+            "type": "Date"
         }
     },
     "validations": [],

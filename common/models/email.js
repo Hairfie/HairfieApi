@@ -11,8 +11,7 @@ var htmlToText = require('html-to-text');
 var moment = require('moment');
 
 module.exports = function (Email) {
-    var from      = 'Hairfie <hello@hairfie.com>',
-        languages = ['en', 'fr'];
+    var languages = ['en', 'fr'];
 
     Email.notifySales = function (channel, data, links) {
         var links = links || {};
@@ -58,7 +57,7 @@ module.exports = function (Email) {
         });
     }
 
-    Email.sendHairfie = function (hairfie, author, business, reviewRequest) {
+    Email.sendHairfie = function (hairfie, author, business) {
         var url = Email.app.urlGenerator;
 
         return send({
@@ -70,8 +69,20 @@ module.exports = function (Email) {
                 author          : author,
                 business        : business,
                 hairfieUrl      : url.hairfie(hairfie),
-                writeReviewUrl  : reviewRequest && url.businessReviewRequest(reviewRequest),
                 iosAppUrl       : Email.app.get('iosAppUrl')
+            }
+        });
+    };
+
+    Email.requestBusinessReview = function (business, reviewRequest) {
+        var url = Email.app.urlGenerator;
+
+        return send({
+            to: reviewRequest.email,
+            template: 'requestBusinessReview',
+            templateVars: {
+                business        : business,
+                writeReviewUrl  : url.businessReviewRequest(reviewRequest),
             }
         });
     };
@@ -91,11 +102,9 @@ module.exports = function (Email) {
     Email.confirmBooking = function (booking, business) {
         var language = booking.language || 'fr';
         var timeslot = moment(booking.timeslot).format("D/MM/YYYY [à] HH:mm");
-        var from      = 'Hairfie <hello@hairfie.com>';
 
         return send({
             to: booking.email,
-            from: from,
             language: language,
             template: 'confirmBooking',
             templateVars: {
@@ -123,8 +132,9 @@ module.exports = function (Email) {
 
         var email = new Email({
             subject : getSubject(options.template, options.templateVars, language),
-            from    : options.from || from,
+            from    : options.from || app.get('emailFrom'),
             to      : options.to,
+            bcc     : options.bcc || app.get('emailBcc'),
             html    : htmlBody,
             text    : textBody
         });
