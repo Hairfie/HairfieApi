@@ -18,7 +18,6 @@ module.exports = function (BusinessMember) {
     BusinessMember.prototype.toRemoteObject = function (context) {
         var obj = this.toRemoteShortObject();
         obj.business = RemoteObject.related(this, 'business', context);
-        obj.user = RemoteObject.related(this, 'user', context);
         obj.numHairfies = Promise.npost(this, 'getNumHairfies');
 
         return obj;
@@ -36,6 +35,7 @@ module.exports = function (BusinessMember) {
             phoneNumber : this.phoneNumber,
             picture     : pictureObject && pictureObject.toRemoteObject(),
             hidden      : this.hidden,
+            user        : RemoteObject.related(this, 'user', context),
             active      : this.active
         };
     };
