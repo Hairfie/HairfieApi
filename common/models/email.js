@@ -117,6 +117,7 @@ module.exports = function (Email) {
 
     function send(options) {
         debug('Sending email', options)
+        var app = Email.app;
 
         var layout   = options.layout;
         var language = options.language || languages[0];
