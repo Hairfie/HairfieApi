@@ -7,11 +7,6 @@
             "required": true,
             "index": true
         },
-        "serviceId": {
-            "type": "string",
-            "required": true,
-            "index": true
-        },
         "price": {
             "type": {
                 "amount": "number",
@@ -22,6 +17,10 @@
         "durationMinutes": {
             "type": "number",
             "required": true
+        },
+        "label": {
+            "type": "string",
+            "required": true
         }
     },
     "validations": [],
@@ -30,11 +29,6 @@
             "type": "belongsTo",
             "model": "Business",
             "foreignKey": "businessId"
-        },
-        "service": {
-            "type": "belongsTo",
-            "model": "Service",
-            "foreignKey": "serviceId"
         }
     },
     "acls": [],
