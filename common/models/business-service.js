@@ -23,4 +23,13 @@ module.exports = function (BusinessService) {
         });
     }, {message: 'exists'});
 
+    BusinessService.validate('price', function (onError) {
+        if (!this.price) return onError();
+        console.log("amount:", !this.price.amount);
+        console.log("currency", !this.price.currency);
+        if(!this.price.amount || !this.price.currency) {
+            onError();
+        }
+    }, {message: 'valid'});
+
 };
