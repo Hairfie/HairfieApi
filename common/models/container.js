@@ -234,7 +234,7 @@ function download (provider, req, res, container, file, width, height, watermark
 
         case (typeof(width) != 'undefined' || typeof(height) != 'undefined'):
             var tmpPicture = imageMagick(reader)
-                .resize(width, height, '^')
+                .resize(width, height)
                 .stream();
             break;
 
