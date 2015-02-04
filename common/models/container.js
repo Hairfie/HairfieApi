@@ -43,7 +43,7 @@ module.exports = function (Container) {
                          .toRemoteObject();
                 }
 
-                cb(null, result);
+                setTimeout(cb.bind(null, null, result), 500);
             });
         };
 
