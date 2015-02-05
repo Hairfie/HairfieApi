@@ -230,6 +230,14 @@ module.exports = function (Hairfie) {
             };
 
             Email.notifySales(label, emailObject).fail(console.log);
+
+            // update business with tags
+            business.hairfieTags = business.hairfieTags || {};
+            lodash.map(tags, function (tag) {
+                business.hairfieTags[tag.id] = (business.hairfieTags[tag.id] || 0) + 1;
+            });
+            business.save();
+
         }.bind(this));
 
         next();
