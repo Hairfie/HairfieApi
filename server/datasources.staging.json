@@ -12,6 +12,13 @@
         "port": 9200,
         "index": "hairfie-staging"
     },
+    "algoliaSearchEngine": {
+        "name": "algoliaSearchEngine",
+        "type": "memory",
+        "index": "hairfie-staging_businesses",
+        "applicationId": "X9MA7FE0CL",
+        "adminApiKey": "b6551e8b6dccdd833b0e7b488ba9fb1a"
+    },
     "storage": {
         "name": "storage",
         "connector": "loopback-component-storage",
