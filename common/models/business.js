@@ -62,6 +62,7 @@ module.exports = function(Business) {
                     isBookable         : this.isBookable(),
                     services           : this.getServices(),
                     activeHairdressers : activeHairdressers,
+                    hairfieTagCounts   : this.getHairfieTagCounts(),
                     landingPageUrl     : Business.app.urlGenerator.business(this),
                     facebookPage       : this.facebookPage && this.getFacebookPageObject().toRemoteShortObject(context),
                     createdAt          : this.createdAt,
@@ -214,6 +215,27 @@ module.exports = function(Business) {
           doc.children = false != this.children;
 
           return doc;
+    };
+
+    Business.prototype.getHairfieTagCounts = function () {
+        var Hairfie  = Business.app.models.Hairfie,
+            ObjectID = Hairfie.dataSource.ObjectID,
+            hairfies = Hairfie.dataSource.connector.collection(Hairfie.definition.name);
+
+        var pipe = [
+            {$match: {businessId: ObjectID(this.id)}},
+            {$unwind: "$tags"},
+            {$group: {_id: "$tags", count: {$sum: 1}}},
+        ];
+
+        return Promise.ninvoke(hairfies, 'aggregate', pipe)
+            .then(function (results) {
+                var tagCounts = {};
+                results.forEach(function (result) {
+                    tagCounts[result._id] = result.count;
+                });
+                return tagCounts;
+            });
     };
 
     Business.afterCreate = function (next) {
