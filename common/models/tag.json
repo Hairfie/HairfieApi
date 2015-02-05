@@ -1,37 +1,37 @@
 {
-    "name": "Tag",
-    "plural": "Tags",
-    "properties": {
-        "categoryId": {
-            "type": "string",
-            "index": "true",
-            "required": true
-        },
-        "name": {
-            "type": "object",
-            "required": true
-        },
-        "position": {
-            "type": "number"
-        }
-    },
-    "validations": [],
-    "relations": {
-        "category": {
-            "type": "belongsTo",
-            "model": "TagCategory",
-            "foreignKey": "categoryId"
-        }
-    },
-    "acls": [],
-    "methods": [],
-    "options": {
-        "timestampable": true,
-        "sharedMethodNames": [
-            "find"
-        ],
-        "mongodb": {
-            "collection": "tags"
-        }
+  "name": "Tag",
+  "plural": "Tags",
+  "options": {
+    "timestampable": true,
+    "sharedMethodNames": [
+      "find"
+    ],
+    "mongodb": {
+      "collection": "tags"
     }
+  },
+  "properties": {
+    "categoryId": {
+      "type": "string",
+      "required": true,
+      "index": "true"
+    },
+    "name": {
+      "type": "object",
+      "required": true
+    },
+    "position": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "category": {
+      "type": "belongsTo",
+      "model": "TagCategory",
+      "foreignKey": "categoryId"
+    }
+  },
+  "acls": [],
+  "methods": []
 }

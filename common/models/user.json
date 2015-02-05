@@ -1,71 +1,71 @@
 {
-    "name": "user",
-    "plural": "users",
-    "base": "User",
-    "properties": {
-        "firstName": {
-            "type": "string",
-            "required": true
-        },
-        "lastName": {
-            "type": "string",
-            "required": true
-        },
-        "gender": {
-            "type": "string",
-            "required": true
-        },
-        "language": {
-            "type": "string"
-        },
-        "newsletter": {
-            "type": "boolean",
-            "default": false
-        },
-        "picture": {
-            "type": "string"
-        },
-        "phoneNumber": {
-            "type": "string"
-        },
-        "facebookId": {
-            "type": "string"
-        }
-    },
-    "validations": [],
-    "relations": {
-        "accessTokens": {
-            "type": "hasMany",
-            "model": "accessToken",
-            "foreignKey": "userId"
-        }
-    },
-    "acls": [
-        {
-            "accessType": "READ",
-            "permission": "ALLOW",
-            "principalType": "ROLE",
-            "principalId": "$everyone",
-            "property": "findById"
-        },
-        {
-            "accessType": "EXECUTE",
-            "permission": "ALLOW",
-            "principalType": "ROLE",
-            "principalId": "$everyone"
-        },
-        {
-            "permission": "ALLOW",
-            "principalType": "ROLE",
-            "principalId": "$owner",
-            "property": "upsert"
-        }
-    ],
-    "methods": [],
-    "options": {
-        "timestampable": true,
-        "mongodb": {
-            "collection": "users"
-        }
+  "name": "user",
+  "plural": "users",
+  "base": "User",
+  "options": {
+    "timestampable": true,
+    "mongodb": {
+      "collection": "users"
     }
+  },
+  "properties": {
+    "firstName": {
+      "type": "string",
+      "required": true
+    },
+    "lastName": {
+      "type": "string",
+      "required": true
+    },
+    "gender": {
+      "type": "string",
+      "required": true
+    },
+    "language": {
+      "type": "string"
+    },
+    "newsletter": {
+      "type": "boolean",
+      "default": false
+    },
+    "picture": {
+      "type": "string"
+    },
+    "phoneNumber": {
+      "type": "string"
+    },
+    "facebookId": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "accessTokens": {
+      "type": "hasMany",
+      "model": "accessToken",
+      "foreignKey": "userId"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "findById"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW",
+      "property": "upsert"
+    }
+  ],
+  "methods": []
 }

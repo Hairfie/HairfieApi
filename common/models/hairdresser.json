@@ -1,49 +1,49 @@
 {
-    "name": "Hairdresser",
-    "plural": "Hairdressers",
-    "properties": {
-        "businessId": {
-            "type": "string",
-            "index": "true",
-            "required": true
-        },
-        "firstName": {
-            "type": "string"
-        },
-        "lastName": {
-            "type": "string"
-        },
-        "email": {
-            "type": "string"
-        },
-        "phoneNumber": {
-            "type": "string"
-        },
-        "active": {
-            "type": "boolean",
-            "required": true
-        }
-    },
-    "validations": [],
-    "relations": {
-        "business": {
-            "type": "belongsTo",
-            "model": "Business",
-            "foreignKey": "businessId"
-        }
-    },
-    "acls": [],
-    "methods": [],
-    "options": {
-        "timestampable": true,
-        "sharedMethodNames": [
-            "find",
-            "findById",
-            "create",
-            "updateAttributes"
-        ],
-        "mongodb": {
-            "collection": "hairdressers"
-        }
+  "name": "Hairdresser",
+  "plural": "Hairdressers",
+  "options": {
+    "timestampable": true,
+    "sharedMethodNames": [
+      "find",
+      "findById",
+      "create",
+      "updateAttributes"
+    ],
+    "mongodb": {
+      "collection": "hairdressers"
     }
+  },
+  "properties": {
+    "businessId": {
+      "type": "string",
+      "required": true,
+      "index": "true"
+    },
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phoneNumber": {
+      "type": "string"
+    },
+    "active": {
+      "type": "boolean",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "business": {
+      "type": "belongsTo",
+      "model": "Business",
+      "foreignKey": "businessId"
+    }
+  },
+  "acls": [],
+  "methods": []
 }

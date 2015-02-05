@@ -1,75 +1,79 @@
 {
-    "name": "BusinessReview",
-    "plural": "BusinessReviews",
-    "properties": {
-        "businessId": {
-            "type": "string",
-            "index": true,
-            "required": true
-        },
-        "authorId": {
-            "type": "string",
-            "index": true
-        },
-        "hairfieId": {
-            "type": "string",
-            "index": true
-        },
-        "requestId": {
-            "type": "string"
-        },
-        "firstName": {
-            "type": "string",
-            "required": true
-        },
-        "lastName": {
-            "type": "string",
-            "required": true
-        },
-        "email": {
-            "type": "string",
-            "required": true
-        },
-        "phoneNumber": {
-            "type": "string"
-        },
-        "rating": {
-            "type": "number",
-            "required": true
-        },
-        "criteria": {
-            "type": "object"
-        },
-        "comment": {
-            "type": "string",
-            "required": true
-        }
-    },
-    "validations": [],
-    "relations": {
-        "business": {
-            "type": "belongsTo",
-            "model": "Business",
-            "foreignKey": "businessId"
-        },
-        "author": {
-            "type": "belongsTo",
-            "model": "user",
-            "foreignKey": "authorId"
-        },
-        "request": {
-            "type": "belongsTo",
-            "model": "BusinessReviewRequest",
-            "foreignKey": "requestId"
-        }
-    },
-    "acls": [],
-    "methods": [],
-    "options": {
-        "timestampable": true,
-        "sharedMethodNames": ["create", "find", "findById"],
-        "mongodb": {
-            "collection": "businessReviews"
-        }
+  "name": "BusinessReview",
+  "plural": "BusinessReviews",
+  "options": {
+    "timestampable": true,
+    "sharedMethodNames": [
+      "create",
+      "find",
+      "findById"
+    ],
+    "mongodb": {
+      "collection": "businessReviews"
     }
+  },
+  "properties": {
+    "businessId": {
+      "type": "string",
+      "required": true,
+      "index": true
+    },
+    "authorId": {
+      "type": "string",
+      "index": true
+    },
+    "hairfieId": {
+      "type": "string",
+      "index": true
+    },
+    "requestId": {
+      "type": "string"
+    },
+    "firstName": {
+      "type": "string",
+      "required": true
+    },
+    "lastName": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "string",
+      "required": true
+    },
+    "phoneNumber": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number",
+      "required": true
+    },
+    "criteria": {
+      "type": "object"
+    },
+    "comment": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "business": {
+      "type": "belongsTo",
+      "model": "Business",
+      "foreignKey": "businessId"
+    },
+    "author": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "authorId"
+    },
+    "request": {
+      "type": "belongsTo",
+      "model": "BusinessReviewRequest",
+      "foreignKey": "requestId"
+    }
+  },
+  "acls": [],
+  "methods": []
 }

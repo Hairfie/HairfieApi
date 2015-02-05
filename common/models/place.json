@@ -1,0 +1,33 @@
+{
+  "name": "Place",
+  "plural": "Places",
+  "options": {
+    "timestampable": true,
+    "sharedMethodNames": [
+      "find",
+      "findById"
+    ],
+    "mongodb": {
+      "collection": "places"
+    }
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string"
+    },
+    "zipcodes": {
+      "type": [
+        "string"
+      ],
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
+}

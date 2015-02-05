@@ -1,23 +1,23 @@
 {
-    "name": "Service",
-    "plural": "Services",
-    "properties": {
-        "label": {
-            "type": "object",
-            "required": true
-        }
-    },
-    "validations": [],
-    "relations": {},
-    "acls": [],
-    "methods": [],
-    "options": {
-        "timestampable": true,
-        "sharedMethodNames": [
-            "find"
-        ],
-        "mongodb": {
-            "collection": "services"
-        }
+  "name": "Service",
+  "plural": "Services",
+  "options": {
+    "timestampable": true,
+    "sharedMethodNames": [
+      "find"
+    ],
+    "mongodb": {
+      "collection": "services"
     }
+  },
+  "properties": {
+    "label": {
+      "type": "object",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
 }

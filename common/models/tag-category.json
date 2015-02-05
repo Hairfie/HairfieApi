@@ -1,23 +1,23 @@
 {
-    "name": "TagCategory",
-    "plural": "TagCategories",
-    "properties": {
-        "name": {
-            "type": "object",
-            "required": true
-        },
-        "position": {
-            "type": "number"
-        }
-    },
-    "validations": [],
-    "relations": {},
-    "acls": [],
-    "methods": [],
-    "options": {
-        "timestampable": true,
-        "mongodb": {
-            "collection": "tagCategories"
-        }
+  "name": "TagCategory",
+  "plural": "TagCategories",
+  "options": {
+    "timestampable": true,
+    "mongodb": {
+      "collection": "tagCategories"
     }
+  },
+  "properties": {
+    "name": {
+      "type": "object",
+      "required": true
+    },
+    "position": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
 }

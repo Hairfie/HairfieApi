@@ -1,62 +1,62 @@
 {
-    "name": "Booking",
-    "plural": "Bookings",
-    "properties": {
-        "businessId": {
-            "type": "string",
-            "index": "true",
-            "required": true
-        },
-        "userId": {
-            "type": "string",
-            "index": "true"
-        },
-        "name": {
-            "type": "string"
-        },
-        "gender": {
-            "type": "string",
-            "required": true
-        },
-        "email": {
-            "type": "string",
-            "index": "true",
-            "required": true
-        },
-        "phoneNumber": {
-            "type": "string",
-            "required": true
-        },
-        "comment": {
-            "type": "string"
-        },
-        "timeslot": {
-            "type": "Date",
-            "required": true
-        },
-        "discount": {
-            "type": "string"
-        }
-    },
-    "validations": [],
-    "relations": {
-        "business": {
-            "type": "belongsTo",
-            "model": "Business",
-            "foreignKey": "businessId"
-        }
-    },
-    "acls": [],
-    "methods": [],
-    "options": {
-        "timestampable": true,
-        "sharedMethodNames": [
-            "find",
-            "findById",
-            "create"
-        ],
-        "mongodb": {
-            "collection": "bookings"
-        }
+  "name": "Booking",
+  "plural": "Bookings",
+  "options": {
+    "timestampable": true,
+    "sharedMethodNames": [
+      "find",
+      "findById",
+      "create"
+    ],
+    "mongodb": {
+      "collection": "bookings"
     }
+  },
+  "properties": {
+    "businessId": {
+      "type": "string",
+      "required": true,
+      "index": "true"
+    },
+    "userId": {
+      "type": "string",
+      "index": "true"
+    },
+    "name": {
+      "type": "string"
+    },
+    "gender": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "string",
+      "required": true,
+      "index": "true"
+    },
+    "phoneNumber": {
+      "type": "string",
+      "required": true
+    },
+    "comment": {
+      "type": "string"
+    },
+    "timeslot": {
+      "type": "Date",
+      "required": true
+    },
+    "discount": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "business": {
+      "type": "belongsTo",
+      "model": "Business",
+      "foreignKey": "businessId"
+    }
+  },
+  "acls": [],
+  "methods": []
 }

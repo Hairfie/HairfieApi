@@ -1,48 +1,48 @@
 {
-    "name": "BusinessService",
-    "plural": "BusinessServices",
-    "properties": {
-        "businessId": {
-            "type": "string",
-            "required": true,
-            "index": true
-        },
-        "price": {
-            "type": {
-                "amount": "number",
-                "currency": "string"
-            },
-            "required": true
-        },
-        "durationMinutes": {
-            "type": "number",
-            "required": true
-        },
-        "label": {
-            "type": "string",
-            "required": true
-        }
-    },
-    "validations": [],
-    "relations": {
-        "business": {
-            "type": "belongsTo",
-            "model": "Business",
-            "foreignKey": "businessId"
-        }
-    },
-    "acls": [],
-    "methods": [],
-    "options": {
-        "timestampable": true,
-        "sharedMethodNames": [
-            "create",
-            "updateAttributes",
-            "find",
-            "deleteById"
-        ],
-        "mongodb": {
-            "collection": "businessServices"
-        }
+  "name": "BusinessService",
+  "plural": "BusinessServices",
+  "options": {
+    "timestampable": true,
+    "sharedMethodNames": [
+      "create",
+      "updateAttributes",
+      "find",
+      "deleteById"
+    ],
+    "mongodb": {
+      "collection": "businessServices"
     }
+  },
+  "properties": {
+    "businessId": {
+      "type": "string",
+      "required": true,
+      "index": true
+    },
+    "price": {
+      "type": {
+        "amount": "number",
+        "currency": "string"
+      },
+      "required": true
+    },
+    "durationMinutes": {
+      "type": "number",
+      "required": true
+    },
+    "label": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "business": {
+      "type": "belongsTo",
+      "model": "Business",
+      "foreignKey": "businessId"
+    }
+  },
+  "acls": [],
+  "methods": []
 }

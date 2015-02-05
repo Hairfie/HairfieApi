@@ -1,37 +1,37 @@
 {
-    "name": "BusinessMemberFavorite",
-    "plural": "BusinessMemberFavorites",
-    "properties": {
-        "businessMemberId": {
-            "type": "string",
-            "required": true,
-            "index": true
-        },
-        "userId": {
-            "type": "string",
-            "required": true,
-            "index": true
-        }
-    },
-    "validations": [],
-    "relations": {
-        "businessMember": {
-            "type": "belongsTo",
-            "model": "BusinessMember",
-            "foreignKey": "businessMemberId"
-        },
-        "user": {
-            "type": "belongsTo",
-            "model": "user",
-            "foreignKey": "userId"
-        }
-    },
-    "acls": [],
-    "methods": [],
-    "options": {
-        "timestampable": true,
-        "mongodb": {
-            "collection": "businessMemberFavorites"
-        }
+  "name": "BusinessMemberFavorite",
+  "plural": "BusinessMemberFavorites",
+  "options": {
+    "timestampable": true,
+    "mongodb": {
+      "collection": "businessMemberFavorites"
     }
+  },
+  "properties": {
+    "businessMemberId": {
+      "type": "string",
+      "required": true,
+      "index": true
+    },
+    "userId": {
+      "type": "string",
+      "required": true,
+      "index": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "businessMember": {
+      "type": "belongsTo",
+      "model": "BusinessMember",
+      "foreignKey": "businessMemberId"
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
+    }
+  },
+  "acls": [],
+  "methods": []
 }

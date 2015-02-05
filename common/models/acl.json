@@ -1,15 +1,15 @@
 {
-    "name": "acl",
-    "plural": "acls",
-    "base": "ACL",
-    "properties": {},
-    "validations": [],
-    "relations": {},
-    "acls": [],
-    "methods": [],
-    "options": {
-        "mongodb": {
-            "collections": "acls"
-        }
+  "name": "acl",
+  "plural": "acls",
+  "base": "ACL",
+  "options": {
+    "mongodb": {
+      "collections": "acls"
     }
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
 }

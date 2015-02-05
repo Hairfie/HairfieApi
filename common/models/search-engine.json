@@ -1,3 +1,8 @@
 {
-    "name": "SearchEngine"
+  "name": "SearchEngine",
+  "properties": {},
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
 }

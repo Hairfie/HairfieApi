@@ -1,15 +1,15 @@
 {
-    "name": "role",
-    "plural": "roles",
-    "base": "Role",
-    "properties": {},
-    "validations": [],
-    "relations": {},
-    "acls": [],
-    "methods": [],
-    "options": {
-        "mongodb": {
-            "collection": "roles"
-        }
+  "name": "role",
+  "plural": "roles",
+  "base": "Role",
+  "options": {
+    "mongodb": {
+      "collection": "roles"
     }
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
 }

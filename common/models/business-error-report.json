@@ -1,41 +1,43 @@
 {
-    "name": "BusinessErrorReport",
-    "plural": "BusinessErrorReports",
-    "properties": {
-        "businessId": {
-            "type": "string",
-            "index": "true",
-            "required": true
-        },
-        "authorId": {
-            "type": "string",
-            "index": "true"
-        },
-        "body": {
-            "type": "string",
-            "index": "true"
-        }
-    },
-    "validations": [],
-    "relations": {
-        "business": {
-            "type": "belongsTo",
-            "model": "Business",
-            "foreignKey": "businessId"
-        },
-        "author": {
-            "type": "belongsTo",
-            "model": "user",
-            "foreignKey": "authorId"
-        }
-    },
-    "acls": [],
-    "methods": [],
-    "options": {
-        "timestampable": true,
-        "sharedMethodNames": ["create"],
-        "mongodb": {
-            "collection": "businessErrorReports"
-        }
+  "name": "BusinessErrorReport",
+  "plural": "BusinessErrorReports",
+  "options": {
+    "timestampable": true,
+    "sharedMethodNames": [
+      "create"
+    ],
+    "mongodb": {
+      "collection": "businessErrorReports"
     }
+  },
+  "properties": {
+    "businessId": {
+      "type": "string",
+      "required": true,
+      "index": "true"
+    },
+    "authorId": {
+      "type": "string",
+      "index": "true"
+    },
+    "body": {
+      "type": "string",
+      "index": "true"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "business": {
+      "type": "belongsTo",
+      "model": "Business",
+      "foreignKey": "businessId"
+    },
+    "author": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "authorId"
+    }
+  },
+  "acls": [],
+  "methods": []
 }

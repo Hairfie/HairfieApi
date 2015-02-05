@@ -1,56 +1,58 @@
 {
-    "name": "BusinessReviewRequest",
-    "plural": "BusinessReviewRequests",
-    "properties": {
-        "id": {
-          "type": "string",
-          "id": true
-        },
-        "businessId": {
-            "type": "string",
-            "index": true,
-            "required": true
-        },
-        "hairfieId": {
-            "type": "string",
-            "index": true
-        },
-        "email": {
-            "type": "string",
-            "required": true
-        },
-        "reviewId": {
-            "type": "string"
-        },
-        "sentAt": {
-            "type": "Date"
-        }
-    },
-    "validations": [],
-    "relations": {
-        "business": {
-            "type": "belongsTo",
-            "model": "Business",
-            "foreignKey": "businessId"
-        },
-        "hairfie": {
-            "type": "belongsTo",
-            "model": "Hairfie",
-            "foreignKey": "hairfieId"
-        },
-        "review": {
-            "type": "belongsTo",
-            "model": "BusinessReview",
-            "foreignKey": "reviewId"
-        }
-    },
-    "acls": [],
-    "methods": [],
-    "options": {
-        "timestampable": true,
-        "sharedMethodNames": ["findById"],
-        "mongodb": {
-            "collection": "businessReviewRequests"
-        }
+  "name": "BusinessReviewRequest",
+  "plural": "BusinessReviewRequests",
+  "options": {
+    "timestampable": true,
+    "sharedMethodNames": [
+      "findById"
+    ],
+    "mongodb": {
+      "collection": "businessReviewRequests"
     }
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "id": true
+    },
+    "businessId": {
+      "type": "string",
+      "required": true,
+      "index": true
+    },
+    "hairfieId": {
+      "type": "string",
+      "index": true
+    },
+    "email": {
+      "type": "string",
+      "required": true
+    },
+    "reviewId": {
+      "type": "string"
+    },
+    "sentAt": {
+      "type": "Date"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "business": {
+      "type": "belongsTo",
+      "model": "Business",
+      "foreignKey": "businessId"
+    },
+    "hairfie": {
+      "type": "belongsTo",
+      "model": "Hairfie",
+      "foreignKey": "hairfieId"
+    },
+    "review": {
+      "type": "belongsTo",
+      "model": "BusinessReview",
+      "foreignKey": "reviewId"
+    }
+  },
+  "acls": [],
+  "methods": []
 }

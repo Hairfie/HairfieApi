@@ -1,15 +1,15 @@
 {
-    "name": "application",
-    "plural": "applications",
-    "base": "Application",
-    "properties": {},
-    "validations": [],
-    "relations": {},
-    "acls": [],
-    "methods": [],
-    "options": {
-        "mongodb": {
-            "collection": "applications"
-        }
+  "name": "application",
+  "plural": "applications",
+  "base": "Application",
+  "options": {
+    "mongodb": {
+      "collection": "applications"
     }
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
 }

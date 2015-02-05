@@ -1,45 +1,45 @@
 {
-    "name": "HairdresserSuggestion",
-    "plural": "HairdresserSuggestions",
-    "properties": {
-        "businessId": {
-            "type": "string",
-            "index": "true",
-            "required": true
-        },
-        "authorId": {
-            "type": "string",
-            "index": "true"
-        },
-        "firstName": {
-            "type": "string"
-        },
-        "lastName": {
-            "type": "string"
-        }
-    },
-    "validations": [],
-    "relations": {
-        "business": {
-            "type": "belongsTo",
-            "model": "Business",
-            "foreignKey": "businessId"
-        },
-        "author": {
-            "type": "belongsTo",
-            "model": "user",
-            "foreignKey": "authorId"
-        }
-    },
-    "acls": [],
-    "methods": [],
-    "options": {
-        "timestampable": true,
-        "sharedMethodNames": [
-            "create"
-        ],
-        "mongodb": {
-            "collection": "hairdresserSuggestions"
-        }
+  "name": "HairdresserSuggestion",
+  "plural": "HairdresserSuggestions",
+  "options": {
+    "timestampable": true,
+    "sharedMethodNames": [
+      "create"
+    ],
+    "mongodb": {
+      "collection": "hairdresserSuggestions"
     }
+  },
+  "properties": {
+    "businessId": {
+      "type": "string",
+      "required": true,
+      "index": "true"
+    },
+    "authorId": {
+      "type": "string",
+      "index": "true"
+    },
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "business": {
+      "type": "belongsTo",
+      "model": "Business",
+      "foreignKey": "businessId"
+    },
+    "author": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "authorId"
+    }
+  },
+  "acls": [],
+  "methods": []
 }

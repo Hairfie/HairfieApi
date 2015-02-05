@@ -1,38 +1,38 @@
 {
-    "hairfieMongo": {
-        "name": "hairfieMongo",
-        "connector": "mongodb",
-        "database": "hairfie-dev",
-        "debug": true
-    },
-    "searchEngine": {
-        "name": "searchEngine",
-        "type": "memory",
-        "host": "dev.hairfie.com",
-        "port": 9200,
-        "index": "hairfie-dev"
-    },
-    "mailer": {
-        "name": "mailer",
-        "connector": "mail",
-        "transports": [
-            {
-                "service": "Gmail",
-                "type": "SMTP",
-                "host": "smtp.gmail.com",
-                "secureConnection": true,
-                "port": 465,
-                "auth": {
-                    "user": "no-reply@hairfie.com",
-                    "pass": "y7Z6q*dK"
-                }
-            }
-        ]
-    },
-    "storage": {
-        "name": "storage",
-        "connector": "loopback-component-storage",
-        "provider": "filesystem",
-        "root": "var/storage"
-    }
+  "hairfieMongo": {
+    "database": "hairfie-dev",
+    "name": "hairfieMongo",
+    "connector": "mongodb",
+    "debug": true
+  },
+  "searchEngine": {
+    "host": "dev.hairfie.com",
+    "port": 9200,
+    "name": "searchEngine",
+    "type": "memory",
+    "index": "hairfie-dev"
+  },
+  "mailer": {
+    "name": "mailer",
+    "connector": "mail",
+    "transports": [
+      {
+        "service": "Gmail",
+        "type": "SMTP",
+        "host": "smtp.gmail.com",
+        "secureConnection": true,
+        "port": 465,
+        "auth": {
+          "user": "no-reply@hairfie.com",
+          "pass": "y7Z6q*dK"
+        }
+      }
+    ]
+  },
+  "storage": {
+    "name": "storage",
+    "connector": "loopback-component-storage",
+    "provider": "filesystem",
+    "root": "var/storage"
+  }
 }

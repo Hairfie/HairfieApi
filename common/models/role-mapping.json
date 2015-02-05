@@ -1,15 +1,15 @@
 {
-    "name": "roleMapping",
-    "plural": "roleMappings",
-    "base": "RoleMapping",
-    "properties": {},
-    "validations": [],
-    "relations": {},
-    "acls": [],
-    "methods": [],
-    "options": {
-        "mongodb": {
-            "collection": "roleMappings"
-        }
+  "name": "roleMapping",
+  "plural": "roleMappings",
+  "base": "RoleMapping",
+  "options": {
+    "mongodb": {
+      "collection": "roleMappings"
     }
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
 }

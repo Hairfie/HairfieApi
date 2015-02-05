@@ -1,71 +1,73 @@
 {
-    "name": "Business",
-    "properties": {
-        "name": {
-            "type": "string",
-            "index": "true",
-            "required": true
-        },
-        "gps": {
-            "type": "geopoint"
-        },
-        "address": {
-            "type": {
-                "street" : "string",
-                "city": "string",
-                "zipCode": "string",
-                "country": "string"
-            }
-        },
-        "phoneNumber": {
-            "type": "string"
-        },
-        "timetable": {
-            "type": "object"
-        },
-        "siret": {
-            "type": "string",
-            "index": true,
-            "unique": true
-        },
-        "hairdressers": {
-            "type": ["object"]
-        },
-        "pagesJaunes": {
-            "type": {
-                "id": "string",
-                "url": "string"
-            }
-        },
-        "googleMapsGeo": {
-            "type": "object"
-        },
-        "facebookPage": {
-            "type": "object"
-        }
-    },
-    "validations": [],
-    "relations": {},
-    "acls": [],
-    "methods": [],
-    "plural": "Businesses",
-    "options": {
-        "timestampable": true,
-        "sharedMethodNames": [
-            "findById",
-            "nearby",
-            "similar",
-            "submitErrorReport",
-            "updateAttributes",
-            "getHairdressers",
-            "getFacebookPage",
-            "saveFacebookPage",
-            "deleteFacebookPage",
-            "getCustomers",
-            "claim"
-        ],
-        "mongodb": {
-            "collection": "businesses"
-        }
+  "name": "Business",
+  "plural": "Businesses",
+  "options": {
+    "timestampable": true,
+    "sharedMethodNames": [
+      "findById",
+      "nearby",
+      "similar",
+      "submitErrorReport",
+      "updateAttributes",
+      "getHairdressers",
+      "getFacebookPage",
+      "saveFacebookPage",
+      "deleteFacebookPage",
+      "getCustomers",
+      "claim"
+    ],
+    "mongodb": {
+      "collection": "businesses"
     }
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "index": "true"
+    },
+    "gps": {
+      "type": "geopoint"
+    },
+    "address": {
+      "type": {
+        "street": "string",
+        "city": "string",
+        "zipCode": "string",
+        "country": "string"
+      }
+    },
+    "phoneNumber": {
+      "type": "string"
+    },
+    "timetable": {
+      "type": "object"
+    },
+    "siret": {
+      "type": "string",
+      "index": true,
+      "unique": true
+    },
+    "hairdressers": {
+      "type": [
+        "object"
+      ]
+    },
+    "pagesJaunes": {
+      "type": {
+        "id": "string",
+        "url": "string"
+      }
+    },
+    "googleMapsGeo": {
+      "type": "object"
+    },
+    "facebookPage": {
+      "type": "object"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
 }

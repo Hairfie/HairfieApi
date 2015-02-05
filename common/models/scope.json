@@ -1,15 +1,15 @@
 {
-    "name": "scope",
-    "plural": "scopes",
-    "base": "Scope",
-    "properties": {},
-    "validations": [],
-    "relations": {},
-    "acls": [],
-    "methods": [],
-    "options": {
-        "mongodb": {
-            "collection": "scopes"
-        }
+  "name": "scope",
+  "plural": "scopes",
+  "base": "Scope",
+  "options": {
+    "mongodb": {
+      "collection": "scopes"
     }
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
 }

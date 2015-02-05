@@ -1,83 +1,89 @@
 {
-    "name": "Hairfie",
-    "plural": "Hairfies",
-    "properties": {
-        "picture": {
-            "type": "string"
-        },
-        "pictures": {
-            "type": ["string"]
-        },
-        "authorId": {
-            "type": "string",
-            "required": true
-        },
-        "description": {
-            "type": "string"
-        },
-        "businessId": {
-            "type": "string"
-        },
-        "businessMemberId": {
-            "type": "string"
-        },
-        "price": {
-            "amount": "number",
-            "currency": "string"
-        },
-        "tags": {
-            "type": ["string"],
-            "index": true
-        },
-        "selfMade": {
-            "type": "boolean"
-        },
-        "customerEmail": {
-            "type": "string"
-        },
-        "hidden": {
-            "type": "boolean",
-            "default": false
-        }
-    },
-    "validations": [],
-    "relations": {
-        "author": {
-            "type": "belongsTo",
-            "model": "user",
-            "foreignKey": "authorId"
-        },
-        "business": {
-            "type": "belongsTo",
-            "model": "Business",
-            "foreignKey": "businessId"
-        },
-        "businessMember": {
-            "type": "belongsTo",
-            "model": "BusinessMember",
-            "foreignKey": "businessMemberId"
-        }
-    },
-    "acls": [],
-    "methods": [],
-    "scope": {
-        "where": {
-            "hidden": {
-                "neq": true
-            }
-        }
-    },
-    "options": {
-        "timestampable": true,
-        "sharedMethodNames": [
-            "find",
-            "findById",
-            "create",
-            "share",
-            "hide"
-        ],
-        "mongodb": {
-            "collection": "hairfies"
-        }
+  "name": "Hairfie",
+  "plural": "Hairfies",
+  "options": {
+    "timestampable": true,
+    "sharedMethodNames": [
+      "find",
+      "findById",
+      "create",
+      "share",
+      "hide"
+    ],
+    "mongodb": {
+      "collection": "hairfies"
     }
+  },
+  "scope": {
+    "where": {
+      "hidden": {
+        "neq": true
+      }
+    }
+  },
+  "properties": {
+    "picture": {
+      "type": "string"
+    },
+    "pictures": {
+      "type": [
+        "string"
+      ]
+    },
+    "authorId": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string"
+    },
+    "businessId": {
+      "type": "string"
+    },
+    "businessMemberId": {
+      "type": "string"
+    },
+    "price": {
+      "type": {
+        "amount": "number",
+        "currency": "string"
+      }
+    },
+    "tags": {
+      "type": [
+        "string"
+      ],
+      "index": true
+    },
+    "selfMade": {
+      "type": "boolean"
+    },
+    "customerEmail": {
+      "type": "string"
+    },
+    "hidden": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "validations": [],
+  "relations": {
+    "author": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "authorId"
+    },
+    "business": {
+      "type": "belongsTo",
+      "model": "Business",
+      "foreignKey": "businessId"
+    },
+    "businessMember": {
+      "type": "belongsTo",
+      "model": "BusinessMember",
+      "foreignKey": "businessMemberId"
+    }
+  },
+  "acls": [],
+  "methods": []
 }
