@@ -53,7 +53,7 @@ module.exports = function(Business) {
                     description        : this.description,
                     gps                : this.gps,
                     timetable          : this.timetable,
-                    thumbnail          : streetViewPicture,
+                    thumbnail          : pictures[0],
                     pictures           : pictures,
                     numHairfies        : Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
                     numReviews         : rating.numReviews,
