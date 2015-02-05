@@ -205,30 +205,32 @@ module.exports = function(Business) {
     };
 
     Business.prototype.toSearchIndexObject = function () {
-          var doc = {};
-          doc.name = this.name;
-          if (this.gps) {
-              doc.gps = {lat: this.gps.lat, lon: this.gps.lng};
-          }
-          doc.men = false != this.men;
-          doc.women = false != this.women;
-          doc.children = false != this.children;
+        var doc = {};
+        doc.name = this.name;
+        if (this.gps) {
+          doc.gps = {lat: this.gps.lat, lon: this.gps.lng};
+        }
+        doc.men = false != this.men;
+        doc.women = false != this.women;
+        doc.children = false != this.children;
 
-          return doc;
+        return doc;
     };
 
     Business.prototype.toAlgoliaSearchIndexObject = function () {
-          var doc = {};
-          doc.objectID = this.id.toString();
-          doc.name = this.name;
-          if (this.gps) {
-              doc.gps = {lat: this.gps.lat, lon: this.gps.lng};
-          }
-          doc.men = false != this.men;
-          doc.women = false != this.women;
-          doc.children = false != this.children;
+        return Promise(this.toRemoteObject())
+            .then((function (doc) {
+                doc.objectID = doc.id.toString();
 
-          return doc;
+                doc._geoloc = {lat: doc.gps.lat, lng: doc.gps.lng};
+                delete doc.gps;
+
+                doc.men = false != doc.men;
+                doc.women = false != doc.women;
+                doc.children = false != doc.children;
+
+                return doc;
+            }).bind(this));
     };
 
     Business.prototype.getHairfieTagCounts = function () {

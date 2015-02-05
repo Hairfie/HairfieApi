@@ -29,29 +29,30 @@ module.exports = function (AlgoliaSearchEngine) {
         var Business = AlgoliaSearchEngine.app.models.Business;
         var deferred = Promise.defer();
         var index = getClient().initIndex(getIndex());
-        var limit = 100;
+        var limit = 1000;
 
         function loop(skip) {
             if (progressHandler) progressHandler({done: skip});
 
             Business.find({limit: limit, skip: skip}, function (error, businesses) {
-                var body = [];
-                businesses.map(function (business) {
-                    body.push(business.toAlgoliaSearchIndexObject());
-                });
 
-                index.saveObjects(body, function(error, content) {
-                    if (error) {
-                        console.error("ERROR: %s", content.message);
-                        return deferred.reject(error);
-                    }
+                return Promise.map(businesses, function (business) {
+                        return business.toAlgoliaSearchIndexObject();
+                    })
+                    .then(function(body) {
+                        index.saveObjects(body, function(error, content) {
+                            if (error) {
+                                console.error("ERROR: %s", content.message);
+                                return deferred.reject(error);
+                            }
 
-                    if (businesses.length < limit) {
-                        deferred.resolve(null);
-                    } else {
-                        loop(skip + limit);
-                    }
-                });
+                            if (businesses.length < limit) {
+                                deferred.resolve(null);
+                            } else {
+                                loop(skip + limit);
+                            }
+                        });
+                    });
             });
         }
 
