@@ -11,8 +11,12 @@ module.exports = function (AlgoliaSearchEngine) {
         return AlgoliaSearchEngine.dataSource.settings;
     }
 
-    function getIndex() {
-        return getSettings().index;
+    function getBusinessIndex() {
+        return getSettings().index.business;
+    }
+
+    function getHairfieIndex() {
+        return getSettings().index.hairfie;
     }
 
     function getClient() {
@@ -25,11 +29,17 @@ module.exports = function (AlgoliaSearchEngine) {
         return client;
     }
 
+    AlgoliaSearchEngine.configure = function () {
+        var index = getClient().initIndex(getBusinessIndex());
+
+        index.setSettings({'attributesForFaceting': ['address.city']});
+    };
+
     AlgoliaSearchEngine.indexAll = function (progressHandler) {
         var Business = AlgoliaSearchEngine.app.models.Business;
         var deferred = Promise.defer();
-        var index = getClient().initIndex(getIndex());
-        var limit = 1000;
+        var index = getClient().initIndex(getBusinessIndex());
+        var limit = 10;
 
         function loop(skip) {
             if (progressHandler) progressHandler({done: skip});
@@ -39,6 +49,7 @@ module.exports = function (AlgoliaSearchEngine) {
                 return Promise.map(businesses, function (business) {
                         return business.toAlgoliaSearchIndexObject();
                     })
+                    .then(Promise.resolveDeep)
                     .then(function(body) {
                         index.saveObjects(body, function(error, content) {
                             if (error) {

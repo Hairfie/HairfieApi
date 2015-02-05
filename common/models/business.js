@@ -225,9 +225,10 @@ module.exports = function(Business) {
                 doc._geoloc = {lat: doc.gps.lat, lng: doc.gps.lng};
                 delete doc.gps;
 
-                doc.men = false != doc.men;
-                doc.women = false != doc.women;
-                doc.children = false != doc.children;
+                doc.gender = [];
+                if (false != doc.men)      doc.gender.push("men");
+                if (false != doc.women)    doc.gender.push("women");
+                if (false != doc.children) doc.gender.push("children");
 
                 return doc;
             }).bind(this));
