@@ -7,8 +7,10 @@ module.exports = function (program, app) {
         .command('build-search-index')
         .description('Builds the search index')
         .option('--clear', 'Clears index before building it')
+        .option('--algolia', 'Index on algolia instead of elastic search')
+
         .action(function (options) {
-            var SearchEngine = app.models.SearchEngine;
+            var SearchEngine = options.algolia ? app.models.AlgoliaSearchEngine : app.models.SearchEngine;
 
             var promise = Promise();
 

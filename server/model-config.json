@@ -86,6 +86,10 @@
     "dataSource": "searchEngine",
     "public": false
   },
+  "AlgoliaSearchEngine": {
+    "dataSource": "algoliaSearchEngine",
+    "public": false
+  },
   "user": {
     "dataSource": "hairfieMongo",
     "public": true

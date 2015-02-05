@@ -12,6 +12,13 @@
     "type": "memory",
     "index": "hairfie-dev"
   },
+  "algoliaSearchEngine": {
+    "name": "algoliaSearchEngine",
+    "type": "memory",
+    "index": "hairfie-dev_businesses",
+    "applicationId": "X9MA7FE0CL",
+    "adminApiKey": "b6551e8b6dccdd833b0e7b488ba9fb1a"
+  },
   "mailer": {
     "name": "mailer",
     "connector": "mail",

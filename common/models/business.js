@@ -217,6 +217,20 @@ module.exports = function(Business) {
           return doc;
     };
 
+    Business.prototype.toAlgoliaSearchIndexObject = function () {
+          var doc = {};
+          doc.objectID = this.id.toString();
+          doc.name = this.name;
+          if (this.gps) {
+              doc.gps = {lat: this.gps.lat, lon: this.gps.lng};
+          }
+          doc.men = false != this.men;
+          doc.women = false != this.women;
+          doc.children = false != this.children;
+
+          return doc;
+    };
+
     Business.prototype.getHairfieTagCounts = function () {
         var Hairfie  = Business.app.models.Hairfie,
             ObjectID = Hairfie.dataSource.ObjectID,
