@@ -23,6 +23,6 @@ function savePlace(placeDefinition) {
     return q.ninvoke(Place, 'create', {
         name: placeDefinition.name,
         description: placeDefinition.description,
-        zipcodes: placeDefinition.zipcodes
+        zipCodes: placeDefinition.zipCodes
     });
 }

@@ -2,21 +2,21 @@
     {
         "name": "Paris 1",
         "description": "Le 1er Arrondissement",
-        "zipcodes": ["75001"]
+        "zipCodes": ["75001"]
     },
     {
         "name": "Paris 2",
         "description": "Le 2ème Arrondissement",
-        "zipcodes": ["75002"]
+        "zipCodes": ["75002"]
     },
     {
         "name": "Paris 3",
         "description": "Le Marais",
-        "zipcodes": ["75003"]
+        "zipCodes": ["75003"]
     },
     {
         "name": "Paris Centre",
         "description": "Le Centre de Paris",
-        "zipcodes": ["75001", "75002", "75003", "75004"]
+        "zipCodes": ["75001", "75002", "75003", "75004"]
     }
 ]

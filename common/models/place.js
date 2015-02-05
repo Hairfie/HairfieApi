@@ -12,7 +12,7 @@ module.exports = function(Place) {
             id          : this.id,
             name        : this.name,
             description : this.description,
-            zipcodes    : this.zipcodes
+            zipCodes    : this.zipCodes
         };
     };
 };

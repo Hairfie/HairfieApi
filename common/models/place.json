@@ -19,7 +19,7 @@
     "description": {
       "type": "string"
     },
-    "zipcodes": {
+    "zipCodes": {
       "type": [
         "string"
       ],
