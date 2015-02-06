@@ -39,7 +39,7 @@ module.exports = function (AlgoliaSearchEngine) {
         var Business = AlgoliaSearchEngine.app.models.Business;
         var deferred = Promise.defer();
         var index = getClient().initIndex(getBusinessIndex());
-        var limit = 10;
+        var limit = 100;
 
         function loop(skip) {
             if (progressHandler) progressHandler({done: skip});
