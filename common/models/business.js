@@ -230,8 +230,31 @@ module.exports = function(Business) {
                 if (false != doc.women)    doc.gender.push("women");
                 if (false != doc.children) doc.gender.push("children");
 
+                doc._tags = this.getAllTags();
+
                 return doc;
             }).bind(this));
+    };
+
+    Business.prototype.getAllTags = function () {
+        var Hairfie  = Business.app.models.Hairfie,
+            Tag      = Business.app.models.Tag,
+            ObjectID = Hairfie.dataSource.ObjectID,
+            hairfies = Hairfie.dataSource.connector.collection(Hairfie.definition.name);
+
+        var pipe = [
+            {$match: {businessId: ObjectID(this.id)}},
+            {$unwind: "$tags"},
+            {$group: {_id: "$tags"}}
+        ];
+
+        return Promise.ninvoke(hairfies, 'aggregate', pipe)
+            .then(function (results) {
+                return Promise.ninvoke(Tag, 'findByIds', lodash.map(results, '_id'));
+            })
+            .then(function(tags) {
+                return lodash.map(tags, function(tag) { return tag.name.fr });
+            });
     };
 
     Business.prototype.getHairfieTagCounts = function () {
@@ -503,8 +526,6 @@ module.exports = function(Business) {
 
     Business.claim = function (businessId, user, cb) {
         var BusinessMember = Business.app.models.BusinessMember;
-        console.log("businessId", businessId);
-        console.log("user", user);
         if (!user) return cb({statusCode: 401});
 
         return Promise.ninvoke(Business, 'findById', businessId)
