@@ -2,7 +2,14 @@
 
 var Promise = require('../../common/utils/Promise');
 
+var UUID = require('uuid');
+
 module.exports = function (HairfieLike) {
+    HairfieLike.beforeCreate = function (next) {
+        this.id = this.id || UUID.v4();
+        next();
+    };
+
     HairfieLike.prototype.toRemoteObject = function (context) {
         return {
             hairfie : Promise.ninvoke(this.hairfie).then(function (hairfie) {

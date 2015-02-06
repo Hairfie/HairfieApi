@@ -4,8 +4,14 @@ var Promise = require('../utils/Promise');
 var RemoteObject = require('../utils/RemoteObject');
 var validateExists = require('../utils/validator/exists');
 var Control = require('../utils/AccessControl');
+var UUID = require('uuid');
 
 module.exports = function (BusinessMember) {
+    BusinessMember.beforeCreate = function (next) {
+        this.id = this.id || UUID.v4();
+        next();
+    };
+
     BusinessMember.GENDER_MALE = 'MALE';
     BusinessMember.GENDER_FEMALE = 'FEMALE';
 

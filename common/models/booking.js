@@ -2,6 +2,7 @@
 
 var Promise = require('../../common/utils/Promise');
 var moment = require('moment');
+var UUID = require('uuid');
 
 module.exports = function (Booking) {
     Booking.GENDER_MALE = 'MALE';
@@ -24,6 +25,11 @@ module.exports = function (Booking) {
             createdAt       : this.createdAt,
             updatedAt       : this.updatedAt
         };
+    };
+
+    Booking.beforeCreate = function (next) {
+        this.id = this.id || UUID.v4();
+        next();
     };
 
     Booking.afterCreate = function (next) {

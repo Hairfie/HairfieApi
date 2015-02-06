@@ -2,7 +2,14 @@
 
 var Promise = require('../../common/utils/Promise');
 
+var UUID = require('uuid');
+
 module.exports = function (HairfieShare) {
+    HairfieShare.beforeCreate = function (next) {
+        this.id = this.id || UUID.v4();
+        next();
+    };
+
     HairfieShare.validateAsync('authorId', function (onError, onDone) {
         this.author(function (error, user) {
             if (error || !user) onError();

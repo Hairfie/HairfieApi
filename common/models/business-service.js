@@ -1,8 +1,14 @@
 'use strict';
 
 var Promise = require('../../common/utils/Promise');
+var UUID = require('uuid');
 
 module.exports = function (BusinessService) {
+    BusinessService.beforeCreate = function (next) {
+        this.id = this.id || UUID.v4();
+        next();
+    };
+
     BusinessService.prototype.toRemoteObject = function (context) {
         return {
             id              : this.id,

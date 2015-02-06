@@ -2,6 +2,7 @@
 
 var Promise = require('../../common/utils/Promise');
 var _ = require('lodash');
+var UUID = require('uuid');
 
 module.exports = function (BusinessReview) {
     var criterionKeys = [
@@ -50,6 +51,11 @@ module.exports = function (BusinessReview) {
             if (value < 0 || value > 100) onError();
         });
     }, {message: 'valid'});
+
+    BusinessReview.beforeCreate = function (next) {
+        this.id = this.id || UUID.v4();
+        next();
+    };
 
     BusinessReview.beforeValidate = function (next) {
         var sum = 0, count = 0;
@@ -125,11 +131,10 @@ module.exports = function (BusinessReview) {
     });
 
     BusinessReview.getBusinessRating = function (businessId, callback) {
-        var ObjectID   = BusinessReview.dataSource.ObjectID,
-            collection = BusinessReview.dataSource.connector.collection(BusinessReview.definition.name);
+        var collection = BusinessReview.dataSource.connector.collection(BusinessReview.definition.name);
 
         var pipe = [
-            {$match: {businessId: ObjectID(businessId)}},
+            {$match: {businessId: businessId}},
             {$group: {_id: null, numReviews: {$sum: 1}, rating: {$avg: "$rating"}}}
         ];
 

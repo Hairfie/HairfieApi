@@ -4,7 +4,7 @@ var md5 = require('MD5');
 var Promise = require('../../common/utils/Promise');
 var Q = require('q');
 var _ = require('lodash');
-var Uuid = require('uuid');
+var UUID = require('uuid');
 
 
 module.exports = function(User) {
@@ -78,6 +78,11 @@ module.exports = function(User) {
 
     User.validatesInclusionOf('gender', {in: [User.GENDER_MALE, User.GENDER_FEMALE]});
 
+    User.beforeCreate = function (next) {
+        this.id = this.id || UUID.v4();
+        next();
+    };
+
     User.beforeSave = function (next) {
         if (!this.language) this.language = User.app.get('defaultLanguage');
         next();
@@ -126,7 +131,7 @@ module.exports = function(User) {
             + (profile.provider || provider) + '.com';
           }
         var username = provider + '.' + (profile.username || profile.id);
-        var password = Uuid.v4();
+        var password = UUID.v4();
         var gender = profile.gender;
 
         var userObj = {
@@ -249,7 +254,7 @@ module.exports = function(User) {
         var Business       = User.app.models.Business,
             BusinessMember = User.app.models.BusinessMember;
 
-        BusinessMember.find({where: {userId: userId}}, function (error, bms) {
+        BusinessMember.find({where: {userId: userId, active: true}}, function (error, bms) {
             if (error) return callback(error);
 
             var ids = bms.map(function (bm) { return bm.businessId; });
@@ -268,6 +273,8 @@ module.exports = function(User) {
 
         collection.aggregate(pipe, function (error, results) {
             if (error) return cb(error);
+
+            console.log('results', results);
 
             var ids = results.map(function (r) { return r._id});
             User.findByIds(ids, cb);
@@ -305,6 +312,7 @@ module.exports = function(User) {
         next();
     });
 
+    User.sharedClass.find('find', true).shared = false;
     User.remoteMethod('query', {
         description: 'Returns users list',
         accepts: [

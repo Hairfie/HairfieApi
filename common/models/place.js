@@ -2,7 +2,14 @@ var Promise = require('../../common/utils/Promise'),
     Q = require('q'),
     lodash = require('lodash');
 
+var UUID = require('uuid');
+
 module.exports = function(Place) {
+    Place.beforeCreate = function (next) {
+        this.id = this.id || UUID.v4();
+        next();
+    };
+
     Place.prototype.toRemoteObject = function (context) {
         return this.toRemoteShortObject();
     };

@@ -4,7 +4,16 @@ var Promise = require('../../common/utils/Promise'),
     Q = require('q'),
     lodash = require('lodash');
 
+var UUID = require('uuid');
+
 module.exports = function (Hairfie) {
+
+    Hairfie.beforeCreate = function (next) {
+        this.id = this.id || UUID.v4();
+        next();
+    };
+
+
     Hairfie.validate('price', function (onError) {
         // validate structure
         if (undefined == this.price) return;

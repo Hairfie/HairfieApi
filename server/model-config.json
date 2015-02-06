@@ -70,10 +70,6 @@
     "dataSource": "hairfieMongo",
     "public": true
   },
-  "HairfieComment": {
-    "dataSource": "hairfieMongo",
-    "public": true
-  },
   "HairfieLike": {
     "dataSource": "hairfieMongo",
     "public": false
@@ -139,10 +135,6 @@
     "public": false
   },
   "Tag": {
-    "dataSource": "hairfieMongo",
-    "public": true
-  },
-  "Service": {
     "dataSource": "hairfieMongo",
     "public": true
   },

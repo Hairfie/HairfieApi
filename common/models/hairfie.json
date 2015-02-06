@@ -22,6 +22,10 @@
     }
   },
   "properties": {
+    "id": {
+      "type": "string",
+      "id": true
+    },
     "picture": {
       "type": "string"
     },

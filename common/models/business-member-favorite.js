@@ -1,8 +1,14 @@
 'use strict';
 
 var Promise = require('../utils/Promise');
+var UUID = require('uuid');
 
 module.exports = function (BusinessMemberFavorite) {
+    BusinessMemberFavorite.beforeCreate = function (next) {
+        this.id = this.id || UUID.v4();
+        next();
+    };
+
     BusinessMemberFavorite.validateAsync('businessMemberId', function (onError, onDone) {
         this.businessMember(function (error, businessMember) {
             if (error || !businessMember) onError();

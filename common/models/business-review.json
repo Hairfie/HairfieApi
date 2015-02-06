@@ -13,6 +13,10 @@
     }
   },
   "properties": {
+    "id": {
+      "type": "string",
+      "id": true
+    },
     "businessId": {
       "type": "string",
       "required": true,

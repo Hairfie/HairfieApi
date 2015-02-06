@@ -7,6 +7,7 @@ var getSlug = require('speakingurl');
 var lodash = require('lodash');
 var Control = require('../utils/AccessControl');
 var ejs = require('elastic.js');
+var UUID = require('uuid');
 
 module.exports = function(Business) {
     Business.prototype.toRemoteObject = function (context) {
@@ -259,11 +260,10 @@ module.exports = function(Business) {
 
     Business.prototype.getHairfieTagCounts = function () {
         var Hairfie  = Business.app.models.Hairfie,
-            ObjectID = Hairfie.dataSource.ObjectID,
             hairfies = Hairfie.dataSource.connector.collection(Hairfie.definition.name);
 
         var pipe = [
-            {$match: {businessId: ObjectID(this.id)}},
+            {$match: {businessId: this.id}},
             {$unwind: "$tags"},
             {$group: {_id: "$tags", count: {$sum: 1}}},
         ];
@@ -293,6 +293,11 @@ module.exports = function(Business) {
         });
 
         // don't wait for the email
+        next();
+    };
+
+    Business.beforeCreate = function (next) {
+        this.id = this.id || UUID.v4();
         next();
     };
 

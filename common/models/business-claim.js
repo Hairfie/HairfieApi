@@ -2,8 +2,13 @@
 
 var Promise = require('../../common/utils/Promise');
 var lodash = require('lodash');
+var UUID = require('uuid');
 
 module.exports = function (BusinessClaim) {
+    BusinessClaim.beforeCreate = function (next) {
+        this.id = this.id || UUID.v4();
+        next();
+    };
 
     BusinessClaim.prototype.toRemoteObject = function () {
         var pictures = [];
