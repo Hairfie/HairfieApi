@@ -108,7 +108,7 @@ function migrateBusinesses() {
         .then(function (businesses) {
             return all(migrateBusiness)(businesses)
                 .then(function () {
-                    if ((businesses.count || 0) < chunkSize) return Q();
+                    if ((businesses.length || 0) < chunkSize) return Q();
                     console.log('Next businesses');
                     return migrateBusinesses();
                 });
@@ -129,6 +129,7 @@ function migrateUsers() {
                     updateRelated(user, app.models.BusinessMemberFavorite, 'userId'),
                     updateRelated(user, app.models.BusinessReview, 'authorId'),
                     updateRelated(user, app.models.BusinessMember, 'userId'),
+                    updateRelated(user, app.models.BusinessMemberClaim, 'userId'),
                     updateRelated(user, app.models.BusinessClaim, 'authorId'),
                     updateRelated(user, app.models.userIdentity, 'userId'),
                     updateRelated(user, app.models.accessToken, 'userId')
@@ -143,6 +144,7 @@ function migrateHairfies() {
             return changeId(app.models.Hairfie, hairfie)
                 .then(function (hairfie) {
                     return Q.all([
+                        updateRelated(hairfie, app.models.BusinessReviewRequest, 'hairfieId'),
                         updateRelated(hairfie, app.models.HairfieShare, 'hairfieId'),
                         updateRelated(hairfie, app.models.HairfieLike, 'hairfieId'),
                     ]);
@@ -183,10 +185,18 @@ function migrateTags() {
                 return find(app.models.Hairfie, {where: {tags: tag.oldId.toString()}});
             })
             .then(all(function (hairfie) {
-                var tags = _.without(hairfie.tags, tag.oldId.toString());
-                tags.push(tag.id);
-                hairfie.tags = tags;
-                return save(hairfie);
+                return update(
+                    app.models.Hairfie,
+                    {$and: [{tags: tag.oldId.toString()}, {tags: {$ne: tag.id}}]},
+                    {$push: {tags: tag.id}}
+                )
+                    .then(function () {
+                        return update(
+                            app.models.Hairfie,
+                            {tags: tag.oldId.toString()},
+                            {$pull: {tags: tag.oldId.toString()}}
+                        );
+                    });
             }));
     }))
 }
@@ -225,15 +235,26 @@ function log(message) {
 
 function updateRelated(model, Related, key) {
     var where = {};
-    where[key] = model.oldId;
+    where[key] = objectId(Related, model.oldId);
 
-    return find(Related, {where: where})
-        .then(all(function (rel) {
-            rel[key] = model.id;
-            return save(rel);
-        }));
+    var $set = {};
+    $set[key] = model.id;
+
+    return update(Related, where, {$set: $set});
 }
 
 function save(model) {
     return Q.ninvoke(model, 'save', {validate: false});
+}
+
+function collection(Model) {
+    return Model.dataSource.connector.collection(Model.definition.name);
+}
+
+function objectId(Model, val) {
+    return new Model.dataSource.ObjectID(val);
+}
+
+function update(Model, where, update) {
+    return Q.ninvoke(collection(Model), 'update', where, update, {multi: true});
 }
