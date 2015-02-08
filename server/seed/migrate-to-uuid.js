@@ -98,6 +98,7 @@ function migrateBusinesses() {
                     updateRelated(business, app.models.BusinessReview, 'businessId'),
                     updateRelated(business, app.models.BusinessReviewRequest, 'businessId'),
                     updateRelated(business, app.models.Booking, 'businessId'),
+                    updateRelated(business, app.models.Hairfie, 'businessId'),
                 ]);
             });
     }
