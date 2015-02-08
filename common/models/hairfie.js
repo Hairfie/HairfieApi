@@ -72,7 +72,6 @@ module.exports = function (Hairfie) {
 
     Hairfie.prototype.toRemoteObject = function (context) {
         var HairfieLike    = Hairfie.app.models.HairfieLike,
-            HairfieComment = Hairfie.app.models.HairfieComment,
             pictures       = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
 
         var businessMember = Promise.npost(this, 'businessMember').then(function (businessMember) {
@@ -96,7 +95,6 @@ module.exports = function (Hairfie) {
             }),
             hairdresser     : businessMember, // NOTE: BC
             businessMember  : businessMember,
-            numComments     : Promise.ninvoke(HairfieComment, 'count', {hairfieId: this.id}),
             numLikes        : Promise.ninvoke(HairfieLike, 'count', {hairfieId: this.id}),
             landingPageUrl  : Hairfie.app.urlGenerator.hairfie(this),
             selfMade        : !!this.selfMade,
