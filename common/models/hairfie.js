@@ -13,7 +13,6 @@ module.exports = function (Hairfie) {
         next();
     };
 
-
     Hairfie.validate('price', function (onError) {
         // validate structure
         if (undefined == this.price) return;
@@ -88,6 +87,9 @@ module.exports = function (Hairfie) {
             businessMember  : businessMember,
             numLikes        : Promise.ninvoke(HairfieLike, 'count', {hairfieId: this.id}),
             selfMade        : !!this.selfMade,
+            tags            : Promise.npost(this, 'tagObjects').then(function (tags) {
+                return Promise.map(tags, function (tag) { return tag.toRemoteShortObject(context); });
+            }),
             displayBusiness : this.displayBusiness(),
             hidden          : this.hidden,
             createdAt       : this.createdAt,
