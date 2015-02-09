@@ -65,7 +65,7 @@ module.exports = function (HairfieShare) {
             .catch(function (error) {
                 var Email = HairfieShare.app.models.email;
                 Email.notifyTech('Failed to share hairfie on '+network, {
-                    'Error'         : error,
+                    'Error'         : JSON.stringify(error),
                     'User ID'       : user.id,
                     'User name'     : user.firstName+' '+user.lastName,
                     'Business ID'   : business.id,
