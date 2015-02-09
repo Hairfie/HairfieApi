@@ -63,7 +63,15 @@ module.exports = function (HairfieShare) {
                 };
             })
             .catch(function (error) {
-                console.log('Failed to share on', network, ':', error);
+                HairfieShare.notifyTech('Failed to share hairfie on '+network, {
+                    'Error'         : error,
+                    'User ID'       : user.id,
+                    'User name'     : user.firstName+' '+user.lastName,
+                    'Business ID'   : business.id,
+                    'Business name' : business.name,
+                    'Hairfie ID'    : hairfie.id,
+                });
+
                 return {network: network};
             })
         ;
