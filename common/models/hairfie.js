@@ -71,22 +71,13 @@ module.exports = function (Hairfie) {
     }, {message: 'all exist'});
 
     Hairfie.prototype.toRemoteObject = function (context) {
-        var HairfieLike    = Hairfie.app.models.HairfieLike,
-            pictures       = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
+        var HairfieLike = Hairfie.app.models.HairfieLike;
 
         var businessMember = Promise.npost(this, 'businessMember').then(function (businessMember) {
             return businessMember && businessMember.toRemoteShortObject(context);
         });
 
-        return {
-            id              : this.id,
-            picture         : pictures[pictures.length - 1],
-            pictures        : pictures,
-            price           : this.price,
-            tags            : Promise.npost(this, 'tagObjects').then(function (tags) {
-                return Promise.map(tags, function (tag) { return tag.toRemoteShortObject(context); });
-            }),
-            description     : this.description,
+        return lodash.assign(this.toRemoteShortObject(), {
             author          : Promise.ninvoke(this.author).then(function (author) {
                 return author ? author.toRemoteShortObject(context) : null;
             }),
@@ -96,12 +87,24 @@ module.exports = function (Hairfie) {
             hairdresser     : businessMember, // NOTE: BC
             businessMember  : businessMember,
             numLikes        : Promise.ninvoke(HairfieLike, 'count', {hairfieId: this.id}),
-            landingPageUrl  : Hairfie.app.urlGenerator.hairfie(this),
             selfMade        : !!this.selfMade,
             displayBusiness : this.displayBusiness(),
             hidden          : this.hidden,
             createdAt       : this.createdAt,
             updatedAt       : this.updatedAt
+        });
+    };
+
+    Hairfie.prototype.toRemoteShortObject = function (context) {
+        var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
+
+        return {
+            id              : this.id,
+            picture         : pictures[pictures.length - 1],
+            pictures        : pictures,
+            price           : this.price,
+            description     : this.description,
+            landingPageUrl  : Hairfie.app.urlGenerator.hairfie(this),
         };
     };
 

@@ -1,6 +1,7 @@
 'use strict';
 
 var uid = require('uid2');
+var Promise = require('../../common/utils/Promise');
 
 module.exports = function (BusinessReviewRequest) {
     var ID_LENGTH = 64;
@@ -8,6 +9,13 @@ module.exports = function (BusinessReviewRequest) {
     BusinessReviewRequest.prototype.toRemoteObject = function (context) {
         return {
             id      : this.id,
+            business: Promise.npost(this, 'business').then(function (business) {
+                return business && business.toRemoteShortObject(context);
+            }),
+            hairfie : Promise.npost(this, 'hairfie').then(function (hairfie) {
+                return hairfie && hairfie.toRemoteShortObject(hairfie);
+            }),
+            email   : this.email,
             canWrite: this.canWrite(),
             used    : !!this.reviewId
         };
