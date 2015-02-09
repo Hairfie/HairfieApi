@@ -14,7 +14,13 @@ var loopbackPassport = require('loopback-component-passport');
 var PassportConfigurator = loopbackPassport.PassportConfigurator;
 var passportConfigurator = new PassportConfigurator(app);
 
+// redirect to the website
+app.get('/', function (req, res) {
+    res.redirect(app.get('webUrl'));
+});
+
 var path = require('path');
+app.use(loopback.static(path.resolve(__dirname, '../client')));
 
 function loadConfig(name, env) {
     var candidates = [
@@ -187,11 +193,6 @@ app.use(
         res.send({});
     }
 );
-
-// redirect to the website
-app.get('/', function (req, res) {
-    res.redirect(app.get('webUrl'));
-});
 
 app.emit('routes defined');
 
