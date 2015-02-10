@@ -232,13 +232,12 @@ module.exports = function(Business) {
 
                 var places = this.getAllPlaces()
                     .then(function (results) {
-                        console.log("places ?", results);
                         return lodash.map(results, 'name');
                     });
 
                 return {
                     id                 : this.id,
-                    ObjectID           : this.id.toString(),
+                    objectID           : this.id.toString(),
                     name               : this.name,
                     phoneNumber        : this.phoneNumber,
                     address            : this.address,
