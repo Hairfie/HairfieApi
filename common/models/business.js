@@ -230,6 +230,12 @@ module.exports = function(Business) {
                     pictures.push(Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject());
                 }
 
+                var places = this.getAllPlaces()
+                    .then(function (results) {
+                        console.log("places ?", results);
+                        return lodash.map(results, 'name');
+                    });
+
                 return {
                     id                 : this.id,
                     ObjectID           : this.id.toString(),
@@ -254,6 +260,7 @@ module.exports = function(Business) {
                     createdAt          : this.createdAt,
                     hairfieTagCounts   : this.getHairfieTagCounts(),
                     _tags              : this.getAllTags(),
+                    places             : places,
                     updatedAt          : this.updatedAt
                 }
             }).bind(this));
@@ -282,6 +289,9 @@ module.exports = function(Business) {
 
     Business.prototype.getAllPlaces = function () {
         // Get PLaces associated with this business
+        var Place  = Business.app.models.Place;
+
+        return Promise.ninvoke(Place, 'find', {where: {zipCodes: this.address.zipCode}});
     };
 
     Business.prototype.getGenderArray = function () {
