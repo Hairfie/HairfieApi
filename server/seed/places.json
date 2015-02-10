@@ -11,8 +11,93 @@
     },
     {
         "name": "Paris 3",
-        "description": "Le Marais",
+        "description": "Le 3ème Arrondissement",
         "zipCodes": ["75003"]
+    },
+    {
+        "name": "Paris 4",
+        "description": "Le 4ème Arrondissement",
+        "zipCodes": ["75004"]
+    },
+    {
+        "name": "Paris 5",
+        "description": "Le 5ème Arrondissement",
+        "zipCodes": ["75005"]
+    },
+    {
+        "name": "Paris 6",
+        "description": "Le 6ème Arrondissement",
+        "zipCodes": ["75006"]
+    },
+    {
+        "name": "Paris 7",
+        "description": "Le 7ème Arrondissement",
+        "zipCodes": ["75007"]
+    },
+    {
+        "name": "Paris 8",
+        "description": "Le 8ème Arrondissement",
+        "zipCodes": ["75008"]
+    },
+    {
+        "name": "Paris 9",
+        "description": "Le 9ème Arrondissement",
+        "zipCodes": ["75009"]
+    },
+    {
+        "name": "Paris 10",
+        "description": "Le 10ème Arrondissement",
+        "zipCodes": ["75010"]
+    },
+    {
+        "name": "Paris 11",
+        "description": "Le 22ème Arrondissement",
+        "zipCodes": ["75011"]
+    },
+    {
+        "name": "Paris 12",
+        "description": "Le 12ème Arrondissement",
+        "zipCodes": ["75012"]
+    },
+    {
+        "name": "Paris 13",
+        "description": "Le 13ème Arrondissement",
+        "zipCodes": ["75013"]
+    },
+    {
+        "name": "Paris 14",
+        "description": "Le 14ème Arrondissement",
+        "zipCodes": ["75014"]
+    },
+    {
+        "name": "Paris 15",
+        "description": "Le 15ème Arrondissement",
+        "zipCodes": ["75015"]
+    },
+    {
+        "name": "Paris 16",
+        "description": "Le 16ème Arrondissement",
+        "zipCodes": ["75016","75116"]
+    },
+    {
+        "name": "Paris 17",
+        "description": "Le 17ème Arrondissement",
+        "zipCodes": ["75017"]
+    },
+    {
+        "name": "Paris 18",
+        "description": "Le 18ème Arrondissement",
+        "zipCodes": ["75018"]
+    },
+    {
+        "name": "Paris 19",
+        "description": "Le 19ème Arrondissement",
+        "zipCodes": ["75019"]
+    },
+    {
+        "name": "Paris 20",
+        "description": "Le 20ème Arrondissement",
+        "zipCodes": ["75020"]
     },
     {
         "name": "Paris Centre",
