@@ -219,21 +219,43 @@ module.exports = function(Business) {
     };
 
     Business.prototype.toAlgoliaSearchIndexObject = function () {
-        return Promise(this.toRemoteObject())
-            .then((function (doc) {
-                doc.objectID = doc.id.toString();
+        var BusinessReview = Business.app.models.BusinessReview,
+            Hairfie        = Business.app.models.Hairfie;
 
-                doc._geoloc = {lat: doc.gps.lat, lng: doc.gps.lng};
-                delete doc.gps;
 
-                doc.gender = [];
-                if (false != doc.men)      doc.gender.push("men");
-                if (false != doc.women)    doc.gender.push("women");
-                if (false != doc.children) doc.gender.push("children");
+        return Promise.ninvoke(BusinessReview, 'getBusinessRating', this.id)
+            .then((function (rating) {
+                var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
+                if (0 == pictures.length) {
+                    pictures.push(Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject());
+                }
 
-                doc._tags = this.getAllTags();
-
-                return doc;
+                return {
+                    id                 : this.id,
+                    ObjectID           : this.id.toString(),
+                    name               : this.name,
+                    phoneNumber        : this.phoneNumber,
+                    address            : this.address,
+                    slug               : this.slug(),
+                    kind               : this.kind ? this.kind : 'SALON',
+                    gender             : this.getGenderArray(),
+                    description        : this.description,
+                    gps                : this.gps,
+                    _geoloc            : {lat: this.gps.lat, lng: this.gps.lng},
+                    timetable          : this.timetable,
+                    thumbnail          : pictures[0],
+                    pictures           : pictures,
+                    numHairfies        : Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
+                    numReviews         : rating.numReviews,
+                    rating             : rating.rating,
+                    crossSell          : true,
+                    isBookable         : this.isBookable(),
+                    landingPageUrl     : Business.app.urlGenerator.business(this),
+                    createdAt          : this.createdAt,
+                    hairfieTagCounts   : this.getHairfieTagCounts(),
+                    _tags              : this.getAllTags(),
+                    updatedAt          : this.updatedAt
+                }
             }).bind(this));
     };
 
@@ -244,7 +266,7 @@ module.exports = function(Business) {
             hairfies = Hairfie.dataSource.connector.collection(Hairfie.definition.name);
 
         var pipe = [
-            {$match: {businessId: ObjectID(this.id)}},
+            {$match: {businessId: this.id}},
             {$unwind: "$tags"},
             {$group: {_id: "$tags"}}
         ];
@@ -256,6 +278,19 @@ module.exports = function(Business) {
             .then(function(tags) {
                 return lodash.map(tags, function(tag) { return tag.name.fr });
             });
+    };
+
+    Business.prototype.getAllPlaces = function () {
+        // Get PLaces associated with this business
+    };
+
+    Business.prototype.getGenderArray = function () {
+        var gender = [];
+        if (false != this.men)      gender.push("men");
+        if (false != this.women)    gender.push("women");
+        if (false != this.children) gender.push("children");
+
+        return gender;
     };
 
     Business.prototype.getHairfieTagCounts = function () {
