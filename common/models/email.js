@@ -13,7 +13,6 @@ var moment = require('moment');
 module.exports = function (Email) {
     var languages = ['en', 'fr'];
 
-    Email.notifyTech =
     Email.notifySales = function (channel, data, links) {
         var links = links || {};
 

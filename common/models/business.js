@@ -222,7 +222,6 @@ module.exports = function(Business) {
         var BusinessReview = Business.app.models.BusinessReview,
             Hairfie        = Business.app.models.Hairfie;
 
-
         return Promise.ninvoke(BusinessReview, 'getBusinessRating', this.id)
             .then((function (rating) {
                 var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
@@ -348,12 +347,23 @@ module.exports = function(Business) {
     Business.afterSave = function (next) {
         var SearchEngine = Business.app.models.SearchEngine;
         SearchEngine.index('business', this.id, this.toSearchIndexObject());
+
+        var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
+        this.toAlgoliaSearchIndexObject()
+            .then(function(data) {
+                AlgoliaSearchEngine.saveObject('business', data);
+            });
+
         next();
     };
 
     Business.afterDestroy = function (next, business) {
         var SearchEngine = Business.app.models.SearchEngine;
         SearchEngine.delete('business', business.id);
+
+        var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
+        AlgoliaSearchEngine.delete('business', business.id);
+
         next();
     };
 

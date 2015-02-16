@@ -21,8 +21,6 @@ module.exports = function (AlgoliaSearchEngine) {
 
     function getClient() {
         if (!client) {
-            console.log("applicationId", getSettings().applicationId);
-            console.log("adminApiKey", getSettings().adminApiKey);
             client = new Algolia(getSettings().applicationId, getSettings().adminApiKey);
         }
 
@@ -34,6 +32,26 @@ module.exports = function (AlgoliaSearchEngine) {
 
         index.setSettings({'attributesForFaceting': ['address.city']});
     };
+
+    AlgoliaSearchEngine.saveObject = function (type, data) {
+        var deferred = Promise.defer();
+        if(type == 'business') {
+            var index = getClient().initIndex(getBusinessIndex());
+        }
+        index.saveObject(data, deferred.makeNodeResolver());
+
+        return deferred.promise;
+    }
+
+    AlgoliaSearchEngine.delete = function (type, id) {
+        var deferred = Promise.defer();
+        if(type == 'business') {
+            var index = getClient().initIndex(getBusinessIndex());
+        }
+        index.deleteObject(id, deferred.makeNodeResolver());
+
+        return deferred.promise;
+    }
 
     AlgoliaSearchEngine.indexAll = function (progressHandler) {
         var Business = AlgoliaSearchEngine.app.models.Business;
