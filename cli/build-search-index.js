@@ -14,7 +14,7 @@ module.exports = function (program, app) {
 
             var promise = Promise();
 
-            if (options.clear) {
+            if (options.clear && !options.algolia) {
                 promise = promise.then(function () {
                     console.log('Dropping index');
                     SearchEngine
@@ -26,6 +26,17 @@ module.exports = function (program, app) {
                         .then(function () {
                             console.log('Defining mappings');
                             return SearchEngine.defineAllMappings();
+                        })
+                });
+            }
+            if (options.clear && options.algolia) {
+                promise = promise.then(function () {
+                    console.log('Dropping index');
+                    SearchEngine
+                        .dropIndex('business')
+                        .then(function () {
+                            console.log('Defining mappings');
+                            return SearchEngine.defineAllSettings();
                         })
                 });
             }

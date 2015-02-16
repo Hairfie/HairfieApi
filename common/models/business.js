@@ -393,8 +393,7 @@ module.exports = function(Business) {
                 };
 
                 if (clientTypes) {
-                    console.log("clientTypes", clientTypes);
-                    params.facetFilters = '(' + lodash.map(clientTypes, function(clientType) {
+                    params.facetFilters += ',(' + lodash.map(clientTypes, function(clientType) {
                         return "gender:"+clientType;
                     }).join(',') + ')';
                 }

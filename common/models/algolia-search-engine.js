@@ -30,12 +30,14 @@ module.exports = function (AlgoliaSearchEngine) {
         return client;
     }
 
-    // Useless for the moment, to fix and clean
-    AlgoliaSearchEngine.configure = function () {
-        var index = getClient().initIndex(getBusinessIndex());
+    AlgoliaSearchEngine.dropIndex = function (type) {
+        var deferred = Promise.defer();
 
-        index.setSettings({'attributesForFaceting': ['address.city']});
-    };
+        var index = getClient().initIndex(getIndex(type));
+        index.clearIndex(deferred.makeNodeResolver());
+
+        return deferred.promise;
+    }
 
 
     AlgoliaSearchEngine.saveObject = function (type, data) {
@@ -63,6 +65,22 @@ module.exports = function (AlgoliaSearchEngine) {
 
         return deferred.promise;
     }
+
+    AlgoliaSearchEngine.defineSettings = function (type, settings) {
+        var deferred = Promise.defer();
+
+        var index = getClient().initIndex(getIndex(type));
+        index.setSettings(settings, deferred.makeNodeResolver());
+
+        return deferred.promise;
+    }
+
+    AlgoliaSearchEngine.defineAllSettings = function () {
+        return AlgoliaSearchEngine.defineSettings('business', {
+            attributesForFaceting: ['gender', 'address.city', 'places', '_tags'],
+            customRanking: ['desc(rating)', 'desc(numHairfies)', 'desc(numReviews)']
+        });
+    };
 
     AlgoliaSearchEngine.indexAll = function (progressHandler) {
         var Business = AlgoliaSearchEngine.app.models.Business;
