@@ -11,6 +11,17 @@ module.exports = function (AlgoliaSearchEngine) {
         return AlgoliaSearchEngine.dataSource.settings;
     }
 
+    function getIndex(type) {
+        switch (type) {
+            case 'business':
+                return getSettings().index.business;
+            case 'hairfie':
+                return getSettings().index.hairfie;
+            default:
+                return getSettings().index.business;
+        }
+    }
+
     function getBusinessIndex() {
         return getSettings().index.business;
     }
@@ -27,6 +38,7 @@ module.exports = function (AlgoliaSearchEngine) {
         return client;
     }
 
+    // Useless for the moment, to fix and clean
     AlgoliaSearchEngine.configure = function () {
         var index = getClient().initIndex(getBusinessIndex());
 
@@ -49,6 +61,19 @@ module.exports = function (AlgoliaSearchEngine) {
             var index = getClient().initIndex(getBusinessIndex());
         }
         index.deleteObject(id, deferred.makeNodeResolver());
+
+        return deferred.promise;
+    }
+
+    AlgoliaSearchEngine.search = function (type, body) {
+        var deferred = Promise.defer();
+
+        var params = {};
+        params.index = getIndex();
+        params.type = type;
+        params.body = body;
+
+        getClient().search(params, deferred.makeNodeResolver());
 
         return deferred.promise;
     }
