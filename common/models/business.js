@@ -377,39 +377,29 @@ module.exports = function(Business) {
         var maxDistance = 5000,
             here        = GeoPoint(here),
             page        = Math.max(page || 1),
-            limit       = Math.min(limit || 10, 100);
+            limit       = Math.min(limit || 10, 100)
+            query       = query || null;
 
         Promise.denodeify(Business.getApp.bind(Business))()
             .then(function (app) {
-                var SearchEngine = app.models.SearchEngine;
+                var AlgoliaSearchEngine = app.models.AlgoliaSearchEngine;
 
-                var filters = [];
+                var params = {
+                    hitsPerPage: limit,
+                    page: page - 1,
+                    aroundLatLng: here.asLatLngString(),
+                    aroundRadius: 10000, // 10km around
+                    facets: '*'
+                };
 
                 if (clientTypes) {
-                    filters.push(ejs.AndFilter(clientTypes.map(function (clientType) {
-                        return ejs.TermFilter(clientType, true);
-                    })));
+                    console.log("clientTypes", clientTypes);
+                    params.facetFilters = '(' + lodash.map(clientTypes, function(clientType) {
+                        return "gender:"+clientType;
+                    }).join(',') + ')';
                 }
 
-                var request = ejs.Request();
-                request.from((page - 1) * limit);
-                request.size(limit);
-                if (filters.length) request.filter(ejs.AndFilter(filters));
-
-                if (query) {
-                    request.query(ejs
-                        .FunctionScoreQuery()
-                        .query(ejs.MatchQuery('name', query).fuzziness('AUTO'))
-                        .function(ejs.DecayScoreFunction('gps').origin(here.asElasticJsGeoPoint()).scale('3km'))
-                        .scoreMode('multiply'));
-                } else {
-                    request.sort(ejs.Sort('gps')
-                            .geoDistance(here.asElasticJsGeoPoint())
-                            .unit('km')
-                            .order('asc'));
-                }
-
-                return SearchEngine.search('business', request);
+                return AlgoliaSearchEngine.search('business', query, params);
             })
             .then(searchResultBusinesses)
             .nodeify(callback)
@@ -419,8 +409,7 @@ module.exports = function(Business) {
     function searchResultBusinesses(result) {
         // var explanations = result[0].hits.hits.map(function (hit) { return JSON.stringify(hit._explanation); });
         // console.log("EXPLANATION :",explanations);
-
-        var ids = result[0].hits.hits.map(function (hit) { return hit._id; });
+        var ids = result.hits.map(function (hit) { return hit.id; });
 
         return Promise.denodeify(Business.findByIds.bind(Business))(ids);
     }

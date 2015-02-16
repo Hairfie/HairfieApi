@@ -22,14 +22,6 @@ module.exports = function (AlgoliaSearchEngine) {
         }
     }
 
-    function getBusinessIndex() {
-        return getSettings().index.business;
-    }
-
-    function getHairfieIndex() {
-        return getSettings().index.hairfie;
-    }
-
     function getClient() {
         if (!client) {
             client = new Algolia(getSettings().applicationId, getSettings().adminApiKey);
@@ -45,11 +37,10 @@ module.exports = function (AlgoliaSearchEngine) {
         index.setSettings({'attributesForFaceting': ['address.city']});
     };
 
+
     AlgoliaSearchEngine.saveObject = function (type, data) {
         var deferred = Promise.defer();
-        if(type == 'business') {
-            var index = getClient().initIndex(getBusinessIndex());
-        }
+        var index = getClient().initIndex(getIndex(type));
         index.saveObject(data, deferred.makeNodeResolver());
 
         return deferred.promise;
@@ -57,23 +48,18 @@ module.exports = function (AlgoliaSearchEngine) {
 
     AlgoliaSearchEngine.delete = function (type, id) {
         var deferred = Promise.defer();
-        if(type == 'business') {
-            var index = getClient().initIndex(getBusinessIndex());
-        }
+        var index = getClient().initIndex(getIndex(type));
+
         index.deleteObject(id, deferred.makeNodeResolver());
 
         return deferred.promise;
     }
 
-    AlgoliaSearchEngine.search = function (type, body) {
+    AlgoliaSearchEngine.search = function (type, query, params) {
         var deferred = Promise.defer();
+        var index = getClient().initIndex(getIndex(type));
 
-        var params = {};
-        params.index = getIndex();
-        params.type = type;
-        params.body = body;
-
-        getClient().search(params, deferred.makeNodeResolver());
+        index.search(query, deferred.makeNodeResolver(), params);
 
         return deferred.promise;
     }
@@ -81,7 +67,7 @@ module.exports = function (AlgoliaSearchEngine) {
     AlgoliaSearchEngine.indexAll = function (progressHandler) {
         var Business = AlgoliaSearchEngine.app.models.Business;
         var deferred = Promise.defer();
-        var index = getClient().initIndex(getBusinessIndex());
+        var index = getClient().initIndex(getIndex('business'));
         var limit = 100;
 
         function loop(skip) {
