@@ -8,6 +8,7 @@ app.emit('started'); // TODO: models setup should not depend on server
 var commands = [
     'remove-business',
     'build-search-index',
+    'configure-algolia',
     'send-business-review-requests',
 ];
 
