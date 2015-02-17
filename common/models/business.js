@@ -378,7 +378,7 @@ module.exports = function(Business) {
             here        = GeoPoint(here),
             page        = Math.max(page || 1),
             limit       = Math.min(limit || 10, 100)
-            query       = query || null;
+            query       = query || '';
 
         Promise.denodeify(Business.getApp.bind(Business))()
             .then(function (app) {
