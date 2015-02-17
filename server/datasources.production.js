@@ -16,7 +16,17 @@ module.exports = {
         port: process.env.ELASTIC_PORT,
         user: process.env.ELASTIC_USER,
         pass: process.env.ELASTIC_PASS,
-        index: process.env.ELASTIC_INDEX
+        index: process.env.ELASTIC_INDEX,
+    },
+    algoliaSearchEngine: {
+        name: "algoliaSearchEngine",
+        type: "memory",
+        index: {
+            "business": "hairfie-production_businesses",
+            "hairfie": "hairfie-production_hairfies"
+        },
+        applicationId: "X9MA7FE0CL",
+        adminApiKey: "b6551e8b6dccdd833b0e7b488ba9fb1a"
     },
     mailer: {
         name: 'mailer',
