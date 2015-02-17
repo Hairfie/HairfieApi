@@ -83,7 +83,7 @@ module.exports = function (BusinessMember) {
         ctx.req.user.isManagerOfBusiness(ctx.instance.businessId)
             .then(function (isManager) {
                 if (!isManager) return next({statusCode: 403});
-                delete ctx.req.body.userId;
+                //delete ctx.req.body.userId;
                 delete ctx.req.body.businessId;
                 next();
             })
