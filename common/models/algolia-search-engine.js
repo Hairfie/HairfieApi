@@ -30,6 +30,12 @@ module.exports = function (AlgoliaSearchEngine) {
         return client;
     }
 
+
+    AlgoliaSearchEngine.displayInfos = function () {
+        console.log("getSettings :", getSettings());
+        return;
+    };
+
     AlgoliaSearchEngine.dropIndex = function (type) {
         var deferred = Promise.defer();
 

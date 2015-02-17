@@ -14,6 +14,10 @@ module.exports = function (program, app) {
 
             promise
                 .then(function () {
+                    console.log('Print algolia variables');
+                    return AlgoliaSearchEngine.displayInfos();
+                })
+                .then(function () {
                     console.log('Defining settings');
                     return AlgoliaSearchEngine.defineAllSettings();
                 })
