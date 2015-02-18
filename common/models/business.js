@@ -396,7 +396,8 @@ module.exports = function(Business) {
 
                 if(here) {
                     params.aroundLatLng = here.asLatLngString(),
-                    params.aroundRadius = maxDistance
+                    params.aroundRadius = maxDistance,
+                    params.aroundPrecision = 10
                 } else if(geoIp) {
                     params.aroundLatLngViaIP = true,
                     params.aroundRadius = maxDistance
@@ -421,35 +422,35 @@ module.exports = function(Business) {
         // var explanations = result[0].hits.hits.map(function (hit) { return JSON.stringify(hit._explanation); });
         // console.log("EXPLANATION :",explanations);
         var ids = result.hits.map(function (hit) { return hit.id; });
-        console.log("searchResultBusinesses");
         return Promise.denodeify(Business.findByIds.bind(Business))(ids);
     }
 
     Business.similar = function (businessId, limit, callback) {
+        var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
         var maxDistance = 5000,
             limit       = Math.min(limit || 10, 100);
 
-        Business.findById(businessId, function (error, business) {
-            if (error) return callback(error);
-            if (!business) return callback('business not found');
-
+        return Promise.denodeify(Business.findById.bind(Business))(businessId)
+            .then(function(business) {
             // @todo handle the case the business has no location
-            if (!business.gps) return callback('business has no location');
+                if (!business.gps) return callback('business has no location');
 
-            var here = GeoPoint(business.gps);
+                var here = GeoPoint(business.gps);
 
-            var request = ejs.Request();
-            request.size(limit);
-            request.filter(ejs.NotFilter(ejs.IdsFilter(business.id.toString())));
-            request.sort(ejs.Sort('gps')
-                    .geoDistance(here.asElasticJsGeoPoint())
-                    .unit('km')
-                    .order('asc'));
+                var params = {
+                    hitsPerPage: limit,
+                    aroundLatLng: here.asLatLngString(),
+                    aroundRadius: maxDistance
+                };
 
-            Business.app.models.SearchEngine.search('business', request)
-                .then(searchResultBusinesses)
-                .nodeify(callback)
-        });
+                return AlgoliaSearchEngine.search('business', '', params);
+            })
+            .then(searchResultBusinesses)
+            .then(function(businesses) {
+                return lodash.filter(businesses, function(business) { return business.id != businessId });
+            })
+            .nodeify(callback)
+        ;
     };
 
     Business.getFacebookPage = function (businessId, user, cb) {
