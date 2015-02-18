@@ -257,9 +257,7 @@ module.exports = function(User) {
         BusinessMember.find({where: {userId: userId, active: true}}, function (error, bms) {
             if (error) return callback(error);
 
-            var ids = bms.map(function (bm) { return bm.businessId; });
-
-            Business.findByIds(ids, callback);
+            Business.findByIds(_.pluck(bms, 'businessId'), callback);
         });
     };
 
