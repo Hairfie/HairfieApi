@@ -1,6 +1,6 @@
-if (process.env.NEW_RELIC_LICENSE_KEY) {
-    require('newrelic');
-}
+// if (process.env.NEW_RELIC_LICENSE_KEY) {
+//     require('newrelic');
+// }
 
 // require utils
 require('../common/utils');
