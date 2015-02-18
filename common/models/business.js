@@ -374,8 +374,12 @@ module.exports = function(Business) {
             here = tmpGeoPoint.lng+','+tmpGeoPoint.lat;
         }
 
+        return Business.search(here, query, clientTypes, false, page, limit, callback);
+    }
+
+    Business.search = function(here, query, clientTypes, geoIp, page, limit, callback) {
         var maxDistance = 5000,
-            here        = GeoPoint(here),
+            here        = here ? GeoPoint(here) : null,
             page        = Math.max(page || 1),
             limit       = Math.min(limit || 10, 100)
             query       = query || '';
@@ -387,16 +391,24 @@ module.exports = function(Business) {
                 var params = {
                     hitsPerPage: limit,
                     page: page - 1,
-                    aroundLatLng: here.asLatLngString(),
-                    aroundRadius: 10000, // 10km around
                     facets: '*'
                 };
+
+                if(here) {
+                    params.aroundLatLng = here.asLatLngString(),
+                    params.aroundRadius = maxDistance
+                } else if(geoIp) {
+                    params.aroundLatLngViaIP = true,
+                    params.aroundRadius = maxDistance
+                }
 
                 if (clientTypes) {
                     params.facetFilters += ',(' + lodash.map(clientTypes, function(clientType) {
                         return "gender:"+clientType;
                     }).join(',') + ')';
                 }
+
+                console.log("Algolia Params :", params);
 
                 return AlgoliaSearchEngine.search('business', query, params);
             })
@@ -409,7 +421,7 @@ module.exports = function(Business) {
         // var explanations = result[0].hits.hits.map(function (hit) { return JSON.stringify(hit._explanation); });
         // console.log("EXPLANATION :",explanations);
         var ids = result.hits.map(function (hit) { return hit.id; });
-
+        console.log("searchResultBusinesses");
         return Promise.denodeify(Business.findByIds.bind(Business))(ids);
     }
 
@@ -628,9 +640,23 @@ module.exports = function(Business) {
     Business.remoteMethod('nearby', {
         description: 'Find nearby locations around you',
         accepts: [
-            {arg: 'here', type: 'string', required: true, description: 'geo location:lng,lat. For ex : 2.30,48.87'},
+            {arg: 'here', type: 'string', required: true, description: 'geo location:{lng: ,lat:}. For ex : 2.30,48.87'},
             {arg: 'query', type: 'string', description: 'plain text search'},
             {arg: 'clientTypes', type: 'array'},
+            {arg: 'page', type: 'number', description: 'number of pages (page size defined by limit)'},
+            {arg: 'limit', type: 'number', description: 'number of businesses to get, default=10'}
+        ],
+        returns: {arg: 'businesses', root: true},
+        http: { verb: 'GET' }
+    });
+
+    Business.remoteMethod('search', {
+        description: 'Search businesses',
+        accepts: [
+            {arg: 'here', type: 'object', description: 'geo location:{lng: ,lat:}. For ex : 2.30,48.87'},
+            {arg: 'query', type: 'string', description: 'plain text search'},
+            {arg: 'clientTypes', type: 'array'},
+            {arg: 'geoIp', type: 'Boolean' },
             {arg: 'page', type: 'number', description: 'number of pages (page size defined by limit)'},
             {arg: 'limit', type: 'number', description: 'number of businesses to get, default=10'}
         ],

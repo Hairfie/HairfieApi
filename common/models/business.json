@@ -6,6 +6,7 @@
     "sharedMethodNames": [
       "findById",
       "nearby",
+      "search",
       "similar",
       "submitErrorReport",
       "updateAttributes",
