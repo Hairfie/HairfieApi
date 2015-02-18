@@ -378,7 +378,7 @@ module.exports = function(Business) {
     }
 
     Business.search = function(here, query, clientTypes, geoIp, page, limit, callback) {
-        var maxDistance = 5000,
+        var maxDistance = geoIp ? 10000 : 5000,
             here        = here ? GeoPoint(here) : null,
             page        = Math.max(page || 1),
             limit       = Math.min(limit || 10, 100)
