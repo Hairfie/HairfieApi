@@ -17,6 +17,7 @@ module.exports = function(Place) {
     Place.prototype.toRemoteShortObject = function (context) {
         return {
             id          : this.id,
+            href        : Place.app.urlGenerator.api('places/'+this.id),
             name        : this.name,
             description : this.description,
             zipCodes    : this.zipCodes

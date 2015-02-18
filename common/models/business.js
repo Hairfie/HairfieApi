@@ -42,6 +42,7 @@ module.exports = function(Business) {
 
                 return {
                     id                 : this.id,
+                    href               : Business.app.urlGenerator.api('businesses/'+this.id),
                     name               : this.name,
                     phoneNumber        : this.phoneNumber,
                     address            : this.address,
@@ -83,6 +84,7 @@ module.exports = function(Business) {
 
         return {
             id          : this.id,
+            href        : Business.app.urlGenerator.api('businesses/'+this.id),
             name        : this.name,
             slug        : this.slug(),
             phoneNumber : this.phoneNumber,

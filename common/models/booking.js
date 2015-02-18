@@ -11,6 +11,7 @@ module.exports = function (Booking) {
     Booking.prototype.toRemoteObject = function (context) {
         return {
             id              : this.id,
+            href            : Booking.app.urlGenerator.api('bookings/'+this.id),
             business        : Promise.ninvoke(this.business).then(function (business) {
                 return business ? business.toRemoteShortObject(context) : null;
             }),

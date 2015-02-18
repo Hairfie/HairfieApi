@@ -9,6 +9,7 @@ module.exports = function (BusinessReviewRequest) {
     BusinessReviewRequest.prototype.toRemoteObject = function (context) {
         return {
             id      : this.id,
+            href    : BusinessReviewRequest.app.urlGenerator.api('businessReviewRequests/'+this.id),
             business: Promise.npost(this, 'business').then(function (business) {
                 return business && business.toRemoteShortObject(context);
             }),

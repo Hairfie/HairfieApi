@@ -3,7 +3,7 @@
         "name": "hairfieMongo",
         "connector": "mongodb",
         "host": "staging.hairfie.com",
-        "database": "hairfie-staging"
+        "database": "hairfie-production"
     },
     "searchEngine": {
         "name": "searchEngine",

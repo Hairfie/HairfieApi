@@ -47,6 +47,7 @@ module.exports = function(User) {
 
         return {
             id                  : this.id,
+            href                : User.app.urlGenerator.api('users/'+this.id),
             gender              : this.gender,
             firstName           : this.firstName,
             lastName            : this.lastName,

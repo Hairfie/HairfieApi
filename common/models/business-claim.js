@@ -19,6 +19,7 @@ module.exports = function (BusinessClaim) {
         }
 
         var obj = this.toObject();
+        obj.href = BusinessClaim.app.urlGenerator.api('businessClaims/'+this.id);
         obj.pictures = pictures;
 
         return obj;

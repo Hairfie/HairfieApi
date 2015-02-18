@@ -12,6 +12,7 @@ module.exports = function (BusinessService) {
     BusinessService.prototype.toRemoteObject = function (context) {
         return {
             id              : this.id,
+            href            : BusinessService.app.urlGenerator.api('businessServices/'+this.id),
             business        : Promise.npost(this, 'business').then(function (business) {
                 return business ? business.toRemoteShortObject(context) : null;
             }),

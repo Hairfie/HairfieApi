@@ -33,6 +33,7 @@ module.exports = function (BusinessMember) {
 
         return {
             id          : this.id,
+            href        : BusinessMember.app.urlGenerator.api('businessMembers/'+this.id),
             gender      : this.gender,
             firstName   : this.firstName,
             lastName    : this.lastName,

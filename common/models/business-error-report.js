@@ -12,6 +12,7 @@ module.exports = function (BusinessErrorReport) {
     BusinessErrorReport.prototype.toRemoteObject = function () {
         return {
             id          : this.id,
+            href        : BusinessErrorReport.app.urlGenerator.api('businessErrorReports/'+this.id),
             author      : Promise.ninvoke(this.author).then(function (author) {
                 return author ? author.toRemoteShortObject() : null;
             }),

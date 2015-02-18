@@ -18,6 +18,7 @@ module.exports = function (Tag) {
     Tag.prototype.toRemoteShortObject = function (context) {
         return {
             id          : this.id,
+            href        : Tag.app.urlGenerator.api('tags/'+this.id),
             name        : context.localized(this.name),
             position    : this.position,
         };

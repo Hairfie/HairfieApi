@@ -102,6 +102,7 @@ module.exports = function (Hairfie) {
 
         return {
             id              : this.id,
+            href            : Hairfie.app.urlGenerator.api('hairfies/'+this.id),
             picture         : pictures[pictures.length - 1],
             pictures        : pictures,
             price           : this.price,

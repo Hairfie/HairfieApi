@@ -1,6 +1,9 @@
 'use strict';
 
 module.exports = {
+    api: {
+        path: '/api/:path'
+    },
     hairfie: {
         app: 'website',
         path: '/hairfies/:id'

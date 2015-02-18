@@ -22,6 +22,7 @@ module.exports = function (BusinessReview) {
             .then(function (author) {
                 return {
                     id          : this.id,
+                    href        : BusinessReview.app.urlGenerator.api('businessReview/'+this.id),
                     firstName   : author ? author.firstName : this.firstName,
                     lastName    : author ? author.lastName : this.lastName,
                     rating      : this.rating,

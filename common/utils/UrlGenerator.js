@@ -18,8 +18,8 @@ UrlGenerator.prototype.generate = function (name, params) {
     return assemble(host, path);
 };
 
-UrlGenerator.prototype.home = function () {
-    return this.pathToUrl('/');
+UrlGenerator.prototype.api = function (path) {
+    return this.generate('api', {path: path});
 };
 
 UrlGenerator.prototype.hairfie = function (hairfie) {
