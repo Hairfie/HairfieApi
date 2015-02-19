@@ -64,7 +64,6 @@ module.exports = function(Business) {
                     isBookable         : this.isBookable(),
                     services           : this.getServices(),
                     activeHairdressers : activeHairdressers,
-                    hairfieTagCounts   : this.getHairfieTagCounts(),
                     landingPageUrl     : Business.app.urlGenerator.business(this),
                     facebookPage       : this.facebookPage && this.getFacebookPageObject().toRemoteShortObject(context),
                     createdAt          : this.createdAt,
