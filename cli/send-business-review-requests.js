@@ -14,8 +14,7 @@ module.exports = function (program, app) {
 
             var where = {
                 reviewId: null,
-                emailSentAt: null,
-                createdAt: {lt: todayMorning}
+                emailSentAt: null
             };
 
             Promise.ninvoke(BusinessReviewRequest, 'find', {where: where})
