@@ -85,7 +85,7 @@ module.exports = function (AlgoliaSearchEngine) {
         return AlgoliaSearchEngine.defineSettings('business', {
             attributesForFaceting: ['gender', 'address.city', 'places', '_tags'],
             attributesToIndex: ['name','places','address.city','_tags', 'address.streetName','address.zipCode'],
-            customRanking: ['desc(rating)', 'desc(numHairfies)', 'desc(numReviews)']
+            customRanking: ['desc(numHairfies)', 'desc(rating)', 'desc(numReviews)']
         });
     };
 
