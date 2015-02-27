@@ -29,10 +29,12 @@
       "required": true
     },
     "reviewId": {
-      "type": "string"
+      "type": "string",
+      "default": null
     },
     "emailSentAt": {
-      "type": "Date"
+      "type": "Date",
+      "default": null
     }
   },
   "validations": [],
