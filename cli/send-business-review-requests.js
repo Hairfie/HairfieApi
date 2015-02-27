@@ -14,14 +14,14 @@ module.exports = function (program, app) {
 
             var where = {
                 reviewId: null,
-                emailSentAt: null
+                emailSentAt: null,
+                createdAt: {lt: todayMorning}
             };
 
             Promise.ninvoke(BusinessReviewRequest, 'find', {where: where})
                 .then(function (requests) {
                     console.log("requests to send", requests.length);
-                    console.log("requests", requests);
-                    //return Promise.all(requests.map(sendBusinessReviewRequest.bind(null, app)));
+                    return Promise.all(requests.map(sendBusinessReviewRequest.bind(null, app)));
                 })
                 .then(onSuccess, onFailure);
         });
