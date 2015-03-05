@@ -347,13 +347,23 @@ module.exports = function(Business) {
         next();
     };
 
-    Business.beforeSave = function (next) {
-        // calculate best discount
-        var discounts = lodash.pluck(lodash.flatten(lodash.values(this.timetable)), 'discount');
-        this.bestDiscount = lodash.reduce(discounts, Math.max, 0);
+    function bestDiscountOfTimetable(timetable) {
+        var discounts = lodash.pluck(lodash.flatten(lodash.values(timetable)), 'discount');
+        return lodash.reduce(discounts, Math.max, 0);
+    }
+
+    Business.observe('before save', function updateBestDiscount(ctx, next) {
+        if (ctx.instance) {
+            ctx.instance.bestDiscount = bestDiscountOfTimetable(ctx.instance.timetable);
+        } else {
+            // update only when timetable is updated
+            if (!lodash.isUndefined(ctx.data.timetable)) {
+                ctx.data.bestDiscount = bestDiscountOfTimetable(ctx.data.timetable);
+            }
+        }
 
         next();
-    };
+    });
 
     Business.afterSave = function (next) {
         var SearchEngine = Business.app.models.SearchEngine;
