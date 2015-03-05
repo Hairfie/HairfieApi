@@ -348,7 +348,8 @@ module.exports = function(Business) {
     };
 
     function bestDiscountOfTimetable(timetable) {
-        var discounts = lodash.pluck(lodash.flatten(lodash.values(timetable)), 'discount');
+        var timeWindows = lodash.flatten(lodash.values(timetable)),
+            discounts   = lodash.filter(lodash.pluck(timeWindows, 'discount'), lodash.isNumber);
         return lodash.reduce(discounts, Math.max, 0);
     }
 
