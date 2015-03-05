@@ -351,6 +351,8 @@ module.exports = function(Business) {
         // calculate best discount
         var discounts = lodash.pluck(lodash.flatten(lodash.values(this.timetable)), 'discount');
         this.bestDiscount = lodash.reduce(discounts, Math.max, 0);
+
+        next();
     };
 
     Business.afterSave = function (next) {
