@@ -256,6 +256,30 @@ module.exports = function (Hairfie) {
         next();
     }
 
+    Hairfie.listMostLikedSince = function (date, limit) {
+        var deferred = Promise.defer();
+        var HairfieLike = Hairfie.app.models.HairfieLike;
+        var collection = HairfieLike.dataSource.connector.collection(HairfieLike.definition.name);
+
+        var pipe = [
+            {$match: {createdAt: {$gte: date}}},
+            {$group: {_id: '$hairfieId', count: {$sum: 1}}},
+            {$sort: {count: -1}},
+            {$limit: limit}
+        ];
+
+        collection.aggregate(pipe, function (error, result) {
+            if (error) return deferred.reject(error);
+
+            Hairfie.findByIds(lodash.pluck(result, '_id'), function (error, hairfies) {
+                if (error) deferred.reject(error);
+                else deferred.resolve(hairfies);
+            });
+        });
+
+        return deferred.promise;
+    };
+
     Hairfie.remoteMethod('share', {
         description: 'Shares a hairfie on social networks',
         accepts: [
