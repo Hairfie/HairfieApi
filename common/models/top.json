@@ -1,0 +1,9 @@
+{
+  "name": "Top",
+  "plural": "Tops",
+  "options": {
+    "sharedMethodNames": [
+        "hairfies"
+    ]
+  }
+}
