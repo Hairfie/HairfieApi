@@ -95,6 +95,12 @@
             "type" : "string",
             "default": null
         }
+    },
+    "averagePrice": {
+      "type": {
+        "men": "number",
+        "women": "number"
+      }
     }
   },
   "validations": [],

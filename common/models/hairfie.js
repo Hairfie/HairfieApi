@@ -188,6 +188,31 @@ module.exports = function (Hairfie) {
             .then(next.bind(null, null), next);
     };
 
+    Hairfie.getBusinessAveragePriceForTag = function (businessId, tagId, callback) {
+        var collection = Hairfie.dataSource.connector.collection(Hairfie.definition.name);
+        var pipe = [
+            {$match: {businessId: businessId, tags: tagId}},
+            {$group: {_id: null, numHairfies: {$sum: 1}, amount: {$avg: "$price.amount"}}}
+        ];
+
+        collection.aggregate(pipe, function (error, result) {
+            if (error) return callback(error);
+
+            var averagePrice = {
+                amount: null,
+                numHairfies: 0
+            }
+
+
+            if (1 === result.length) {
+                averagePrice.amount = result[0].amount;
+                averagePrice.numHairfies  = result[0].numHairfies;
+            }
+
+            callback(null, averagePrice);
+        });
+    };
+
     // set user id from access token
     Hairfie.beforeRemote('create', function (ctx, _, next) {
         ctx.req.body.authorId = ctx.req.accessToken.userId;
@@ -214,6 +239,17 @@ module.exports = function (Hairfie) {
         });
     }
 
+    function getAveragePriceForTag(hairfie, tagName) {
+        if (!hairfie.businessId) return Promise(null);
+        var Tag = Hairfie.app.models.Tag;
+
+
+        return Promise.ninvoke(Tag, 'findOne', {where: {or: [{"name.fr": tagName}, {"name.en": tagName}] }})
+            .then(function(tag) {
+                return Promise.ninvoke(Hairfie, 'getBusinessAveragePriceForTag', hairfie.businessId, tag.id);
+            });
+    }
+
     Hairfie.afterCreate = function (next) {
         var Email = Hairfie.app.models.email;
 
@@ -222,9 +258,15 @@ module.exports = function (Hairfie) {
             Promise.ninvoke(this, 'business'),
             createReviewRequest(this),
             Promise.ninvoke(this, 'businessMember'),
-            Promise.ninvoke(this, 'tagObjects')
-        ]).spread(function (author, business, reviewRequest, businessMember, tags) {
+            Promise.ninvoke(this, 'tagObjects'),
+            getAveragePriceForTag(this, 'Man'),
+            getAveragePriceForTag(this, 'Woman')
+
+        ]).spread(function (author, business, reviewRequest, businessMember, tags, menAveragePrice, womenAveragePrice) {
             var label = 'New Hairfie';
+
+            console.log("menAveragePrice", menAveragePrice);
+            console.log("womenAveragePrice", womenAveragePrice);
 
             if (this.customerEmail) {
                 Email.sendHairfie(this, author, business).fail(console.log);
@@ -249,6 +291,12 @@ module.exports = function (Hairfie) {
             lodash.map(tags, function (tag) {
                 business.hairfieTags[tag.id] = (business.hairfieTags[tag.id] || 0) + 1;
             });
+
+            business.averagePrice = {
+                men: menAveragePrice.amount,
+                women: womenAveragePrice.amount
+            }
+
             business.save();
 
         }.bind(this));

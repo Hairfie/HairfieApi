@@ -66,6 +66,7 @@ module.exports = function(Business) {
                     activeHairdressers : activeHairdressers,
                     landingPageUrl     : Business.app.urlGenerator.business(this),
                     facebookPage       : this.facebookPage && this.getFacebookPageObject().toRemoteShortObject(context),
+                    averagePrice       : this.averagePrice,
                     createdAt          : this.createdAt,
                     updatedAt          : this.updatedAt
                 }
@@ -88,6 +89,7 @@ module.exports = function(Business) {
             slug        : this.slug(),
             phoneNumber : this.phoneNumber,
             address     : this.address,
+            averagePrice: this.averagePrice,
             pictures    : pictures
         };
     };
