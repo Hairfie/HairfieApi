@@ -69,6 +69,32 @@
     },
     "facebookPage": {
       "type": "object"
+    },
+    "description": {
+        "geoTitle": {
+            "type" : "string",
+            "default": null
+        },
+        "geoText": {
+            "type" : "string",
+            "default": null
+        },
+        "proTitle": {
+            "type" : "string",
+            "default": null
+        },
+        "proText": {
+            "type" : "string",
+            "default": null
+        },
+        "businessTitle": {
+            "type" : "string",
+            "default": null
+        },
+        "businessText": {
+            "type" : "string",
+            "default": null
+        }
     }
   },
   "validations": [],
