@@ -48,6 +48,9 @@
     "timetable": {
       "type": "object"
     },
+    "bestDiscount": {
+        "type": "number"
+    },
     "siret": {
       "type": "string",
       "index": true,

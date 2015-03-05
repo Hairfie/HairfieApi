@@ -347,6 +347,12 @@ module.exports = function(Business) {
         next();
     };
 
+    Business.beforeSave = function (next) {
+        // calculate best discount
+        var discounts = lodash.pluck(lodash.flatten(lodash.values(this.timetable)), 'discount');
+        this.bestDiscount = lodash.reduce(discounts, Math.max, 0);
+    };
+
     Business.afterSave = function (next) {
         var SearchEngine = Business.app.models.SearchEngine;
         SearchEngine.index('business', this.id, this.toSearchIndexObject());
