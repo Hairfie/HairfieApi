@@ -348,9 +348,12 @@ module.exports = function(Business) {
     };
 
     function bestDiscountOfTimetable(timetable) {
-        var timeWindows = lodash.flatten(lodash.values(timetable)),
-            discounts   = lodash.filter(lodash.pluck(timeWindows, 'discount'), lodash.isNumber);
-        return lodash.reduce(discounts, Math.max, 0);
+        var _ = lodash; // shorten a bit the lines above
+
+        var timeWindows = _.flatten(_.values(timetable)),
+            discounts   = _.reject(_.map(_.pluck(timeWindows, 'discount'), Number), _.isNaN);
+
+        return _.reduce(discounts, Math.max, 0);
     }
 
     Business.observe('before save', function updateBestDiscount(ctx, next) {
