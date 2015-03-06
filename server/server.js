@@ -159,7 +159,7 @@ app.use(
     function (req, res) {
         if (!req.user) return res.status(401);
 
-        req.user.createAccessToken(null, function (error, token) {
+        req.user.createAccessToken({ttl: null}, function (error, token) {
             if (error) return res.status(500);
 
             res.send(token);
