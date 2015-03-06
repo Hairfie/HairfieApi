@@ -3,7 +3,8 @@
   "plural": "Tops",
   "options": {
     "sharedMethodNames": [
-        "hairfies"
+        "hairfies",
+        "deals"
     ]
   }
 }
