@@ -63,7 +63,11 @@ UrlGenerator.prototype._getHost = function (app, context) {
         host = this.options.baseUrl[app];
 
     if(app === 'website') {
-        host = context ? context.localiseWebUrl(host) : host + '/fr';
+        try {
+            host = context.localiseWebUrl(host);
+        } catch(err) {
+            host = host + '/fr';
+        }
     }
 
     if (!host) throw "Host for app '"+app+"' is not defined.";
