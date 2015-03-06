@@ -7,12 +7,12 @@ function UrlGenerator(options) {
 
 module.exports = UrlGenerator;
 
-UrlGenerator.prototype.generate = function (name, params) {
+UrlGenerator.prototype.generate = function (name, params, context) {
     var route  = this.options.routes[name],
         params = params || {};
     if (!route) throw "Route '"+name+"' is not defined.";
 
-    var host = this._getHost(route.app),
+    var host = this._getHost(route.app, context),
         path = injectParams(route.path, params);
 
     return assemble(host, path);
@@ -22,16 +22,16 @@ UrlGenerator.prototype.api = function (path) {
     return this.generate('api', {path: path});
 };
 
-UrlGenerator.prototype.hairfie = function (hairfie) {
-    return this.generate('hairfie', {id: hairfie.id});
+UrlGenerator.prototype.hairfie = function (hairfie, context) {
+    return this.generate('hairfie', {id: hairfie.id}, context);
 };
 
 UrlGenerator.prototype.user = function (user) {
     return this.generate('user', {id: user.id});
 };
 
-UrlGenerator.prototype.business = function (business) {
-    return this.generate('business', {id: business.id, slug: business.slug()});
+UrlGenerator.prototype.business = function (business, context) {
+    return this.generate('business', {id: business.id, slug: business.slug()}, context);
 };
 
 UrlGenerator.prototype.resetPassword = function (user, token) {
@@ -58,9 +58,13 @@ UrlGenerator.prototype.mailImage = function (path) {
     return this.generate('asset', {path: 'img/mail/'+path});
 };
 
-UrlGenerator.prototype._getHost = function (app) {
+UrlGenerator.prototype._getHost = function (app, context) {
     var app  = app || this.options.defaultApp,
         host = this.options.baseUrl[app];
+
+    if(app === 'website') {
+        host = context ? context.localiseWebUrl(host) : host + '/fr';
+    }
 
     if (!host) throw "Host for app '"+app+"' is not defined.";
 

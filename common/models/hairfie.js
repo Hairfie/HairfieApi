@@ -107,7 +107,7 @@ module.exports = function (Hairfie) {
             pictures        : pictures,
             price           : this.price,
             description     : this.description ? this.description : '',
-            landingPageUrl  : Hairfie.app.urlGenerator.hairfie(this),
+            landingPageUrl  : Hairfie.app.urlGenerator.hairfie(this, context),
         };
     };
 

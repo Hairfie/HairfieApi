@@ -61,6 +61,16 @@ Context.prototype.localized = function (value) {
     return value[best];
 };
 
+Context.prototype.localiseWebUrl = function (host) {
+    if (!host) return;
+
+    var supported = new locale.Locales(['fr', 'en']),
+        current   = new locale.Locales(this.options.request.locale),
+        best      = current.best(supported).toString();
+
+    return host + '/' + best;
+};
+
 Context.prototype.getUser = function () {
     return this.options.request.user;
 };
