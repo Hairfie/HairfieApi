@@ -3,8 +3,13 @@
   "plural": "Tops",
   "options": {
     "sharedMethodNames": [
-        "hairfies",
-        "deals"
+      "hairfies",
+      "deals"
     ]
-  }
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
 }

@@ -149,5 +149,9 @@
   "Top": {
     "dataSource": null,
     "public": true
+  },
+  "Category": {
+    "dataSource": "hairfieMongo",
+    "public": true
   }
 }

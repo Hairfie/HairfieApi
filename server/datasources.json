@@ -16,8 +16,8 @@
     "name": "algoliaSearchEngine",
     "type": "memory",
     "index": {
-        "business": "hairfie-staging_businesses",
-        "hairfie": "hairfie-staging_hairfies"
+      "business": "hairfie-staging_businesses",
+      "hairfie": "hairfie-staging_hairfies"
     },
     "applicationId": "X9MA7FE0CL",
     "adminApiKey": "b6551e8b6dccdd833b0e7b488ba9fb1a"

@@ -1,0 +1,41 @@
+{
+  "name": "Category",
+  "plural": "Categories",
+  "base": "PersistedModel",
+  "options": {
+    "timestampable": true,
+    "sharedMethodNames": [
+      "find",
+      "findById"
+    ],
+    "mongodb": {
+      "collection": "categories"
+    }
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "id": true
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string"
+    },
+    "tags": {
+      "type": [
+        "string"
+      ],
+      "required": true
+    },
+    "picture": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
+}

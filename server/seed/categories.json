@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Homme",
+        "description": "Coiffeurs Homme",
+        "tagNames": ["Homme"],
+        "pictureName": "man-category.png"
+    },
+    {
+        "name": "Femme",
+        "description": "Coiffeurs Femme",
+        "tagNames": ["Femme"],
+        "pictureName": "woman-category.png"
+    }
+]
