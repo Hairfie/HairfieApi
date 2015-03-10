@@ -56,8 +56,7 @@
       "type": "object"
     },
     "comment": {
-      "type": "string",
-      "required": true
+      "type": "string"
     }
   },
   "validations": [],
