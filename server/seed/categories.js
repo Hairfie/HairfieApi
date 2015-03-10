@@ -2,7 +2,9 @@
 
 var app = require('../..');
 var q = require('q');
+var lodash = require('lodash');
 var Category = app.models.Category;
+var Tag = app.models.Tag;
 var categoriesDefinitions = require('./categories.json');
 
 saveCategories(categoriesDefinitions)
@@ -19,11 +21,16 @@ function saveCategories(categoriesDefinitions) {
     return q.all(categoriesDefinitions.map(saveCategory));
 }
 
-function saveCategory(categoryDefinition) {
-    return q.ninvoke(Category, 'create', {
-        name        : categoryDefinition.name,
-        description : categoryDefinition.description,
-        tags        : categoryDefinition.tags,
-        picture     : categoryDefinition.pictureName
-    });
+function saveCategory(categoryDefinition, position) {
+    return q.ninvoke(Tag, 'find', {where: {"name.fr": {inq: categoryDefinition.tagNames}}})
+        .then(function(tags) {
+            console.log(tags.length + " tags trouvés avec la requête " + categoryDefinition.tagNames);
+            return q.ninvoke(Category, 'create', {
+                name        : categoryDefinition.name,
+                description : categoryDefinition.description,
+                tags        : lodash.map(tags, 'id'),
+                picture     : categoryDefinition.pictureName,
+                position    : position
+            });
+        });
 }

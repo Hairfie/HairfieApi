@@ -24,7 +24,8 @@ module.exports = function(Category) {
             name        : this.name,
             description : this.description,
             tags        : this.tags,
-            picture     : pictureObject && pictureObject.toRemoteObject()
+            picture     : pictureObject && pictureObject.toRemoteObject(),
+            position    : this.position
         };
     };
 

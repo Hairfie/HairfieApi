@@ -10,5 +10,71 @@
         "description": "Coiffeurs Femme",
         "tagNames": ["Femme"],
         "pictureName": "woman-category.png"
+    },
+    {
+        "name": "Enfant",
+        "description": "Coiffeurs Enfant",
+        "tagNames": ["Enfant"],
+        "pictureName": "woman-category.png"
+    },
+    {
+        "name": "Mariage",
+        "description": "Mariage",
+        "tagNames": ["Mariage"],
+        "pictureName": "marriage-category.png"
+    },
+    {
+        "name": "Barbier",
+        "description": "Barbier",
+        "tagNames": ["Barbe", "Moustache"],
+        "pictureName": "barber-category.png"
+    },
+    {
+        "name": "Balayage",
+        "description": "Coiffeurs Enfant",
+        "tagNames": ["Mèches", "Tie & Dye", "Bronde"],
+        "pictureName": "color-category.png"
+    },
+    {
+        "name": "Brushing",
+        "description": "Brushing",
+        "tagNames": ["Brushing"],
+        "pictureName": "woman-category.png"
+    },
+    {
+        "name": "Styling",
+        "description": "Coiffures",
+        "tagNames": ["Mèches", "Carré", "Chignon", "Tresse", "Frange"],
+        "pictureName": "woman-category.png"
+    },
+    {
+        "name": "Afro",
+        "description": "Coiffeurs Afro",
+        "tagNames": ["Crépus", "Lissage brésilien"],
+        "pictureName": "woman-category.png"
+    },
+    {
+        "name": "Brushing",
+        "description": "Brushing",
+        "tagNames": ["Brushing"],
+        "pictureName": "woman-category.png"
+    },
+    {
+        "name": "Lissage",
+        "description": "Défrisage",
+        "tagNames": ["Lissage", "Lissage brésilien"],
+        "pictureName": "woman-category.png"
+    },
+    {
+        "name": "Tissage",
+        "description": "Tissage",
+        "tagNames": ["Tissage"],
+        "pictureName": "woman-category.png"
+    },
+    {
+        "name": "Coloration",
+        "description": "Coloration",
+        "tagNames": ["Couleur"],
+        "pictureName": "woman-category.png"
     }
 ]

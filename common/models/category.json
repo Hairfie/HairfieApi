@@ -32,6 +32,9 @@
     },
     "picture": {
       "type": "string"
+    },
+    "position": {
+      "type": "number"
     }
   },
   "validations": [],
