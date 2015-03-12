@@ -9,5 +9,6 @@ module.exports = {
     defaultLanguage: process.env.DEFAULT_LANGUAGE,
     emailFrom: process.env.EMAIL_FROM,
     emailBcc: process.env.EMAIL_BCC,
-    adminIds: process.env.ADMIN_IDS
+    adminIds: process.env.ADMIN_IDS,
+    googleApiKey: process.env.GOOGLE_API_KEY
 };

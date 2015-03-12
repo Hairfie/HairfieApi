@@ -1,37 +1,54 @@
 {
-  "name": "Place",
-  "plural": "Places",
-  "options": {
-    "timestampable": true,
-    "sharedMethodNames": [
-      "find",
-      "findById"
-    ],
-    "mongodb": {
-      "collection": "places"
-    }
-  },
-  "properties": {
-    "id": {
-      "type": "string",
-      "id": true
+    "name": "Place",
+    "plural": "Places",
+    "properties": {
+        "id": {
+            "id": true,
+            "type": "string"
+        },
+        "name": {
+            "type": "object",
+            "required": true
+        },
+        "location": {
+            "type": "geopoint",
+            "required": true
+        },
+        "bounds": {
+            "type": {
+                "northEast": {
+                    "type": "geopoint",
+                    "required": true
+                },
+                "southWest": {
+                    "type": "geopoint",
+                    "required": true
+                }
+            }
+        },
+        "googlePlaceId": {
+            "index": true,
+            "type": "string"
+        },
+        "googleTypes": {
+            "type": "array"
+        },
+        "googleComponents": {
+            "type": "object"
+        }
     },
-    "name": {
-      "type": "string",
-      "required": true
+    "options": {
+        "timestampable": true,
+        "sharedMethodNames": [
+            "query",
+            "findById"
+        ],
+        "mongodb": {
+            "collection": "places"
+        }
     },
-    "description": {
-      "type": "string"
-    },
-    "zipCodes": {
-      "type": [
-        "string"
-      ],
-      "required": true
-    }
-  },
-  "validations": [],
-  "relations": {},
-  "acls": [],
-  "methods": []
+    "validations": [],
+    "relations": {},
+    "acls": [],
+    "methods": []
 }
