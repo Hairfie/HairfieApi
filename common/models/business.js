@@ -610,7 +610,10 @@ module.exports = function(Business) {
     };
 
     Business.claim = function (businessId, user, cb) {
-        var BusinessMember = Business.app.models.BusinessMember;
+        var app = Business.app;
+        var BusinessMember = app.models.BusinessMember;
+        var User = app.models.User;
+        var adminIds = app.get('adminIds');
         if (!user) return cb({statusCode: 401});
 
         return Promise.ninvoke(Business, 'findById', businessId)
@@ -635,6 +638,26 @@ module.exports = function(Business) {
             })
             .then(function(businessMember) {
                 cb(null, businessMember);
+            })
+            .then(function() {
+                return Promise.ninvoke(User, 'findByIds', adminIds)
+            })
+            .then(function(admins) {
+                return Promise.all(admins.map(function(admin) {
+                    var adminData = {userId: admin.id, businessId: businessId};
+
+                    Promise.ninvoke(BusinessMember, 'findOrCreate', {where: adminData}, {
+                        businessId: businessId,
+                        userId: admin.id,
+                        gender: admin.gender,
+                        firstName: admin.firstName,
+                        lastName: admin.lastName,
+                        email: admin.email,
+                        phoneNumber: admin.phoneNumber,
+                        hidden: true,
+                        active: true
+                    });
+                }))
             })
             .fail(cb);
     };

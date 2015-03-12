@@ -8,5 +8,6 @@ module.exports = {
     salesEventEmail: process.env.SALES_EVENT_EMAIL,
     defaultLanguage: process.env.DEFAULT_LANGUAGE,
     emailFrom: process.env.EMAIL_FROM,
-    emailBcc: process.env.EMAIL_BCC
+    emailBcc: process.env.EMAIL_BCC,
+    adminIds: process.env.ADMIN_IDS
 };
