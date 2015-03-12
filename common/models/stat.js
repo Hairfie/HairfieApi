@@ -51,12 +51,20 @@ module.exports = function (Stat) {
         collection.aggregate(pipe, function (error, results) {
             if (error) return callback(error);
 
-            var statObj = _.map(results, function(result) {
-                return {
-                    week: moment().year(result._id.year).week(result._id.week),
-                    count: result.count
-                }
-            });
+            var start = moment().subtract(2, 'month').startOf('week'),
+                stop = moment().endOf('week'),
+                statObj = [];
+
+            for(var i = 0; i < 12; i++) {
+                var w = moment().subtract(i, 'week').startOf('week');
+                var data = _.find(results, function(result) {
+                    return result._id.year == moment(w).year() && result._id.week == moment(w).week()
+                });
+                statObj.push({
+                    week: moment(w),
+                    count: data ? data.count : 0
+                })
+            }
 
             callback(null, statObj);
         });
