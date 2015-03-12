@@ -1,0 +1,14 @@
+{
+  "name": "Stat",
+  "plural": "Stats",
+  "options": {
+    "sharedMethodNames": [
+      "business"
+    ]
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
+}

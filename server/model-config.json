@@ -146,6 +146,10 @@
     "dataSource": "hairfieMongo",
     "public": true
   },
+  "Stat": {
+    "dataSource": null,
+    "public": true
+  },
   "Top": {
     "dataSource": null,
     "public": true
