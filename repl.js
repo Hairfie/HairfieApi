@@ -14,7 +14,7 @@ var Business = app.models.Business;
 
 
 // open the repl session
-var replServer = repl.start({
+var replServer = require('otaat-repl').start({
   prompt: "HairfieAPI (" + env + ") > ",
 });
 

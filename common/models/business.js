@@ -225,8 +225,14 @@ module.exports = function(Business) {
         var BusinessReview = Business.app.models.BusinessReview,
             Hairfie        = Business.app.models.Hairfie;
 
-        return Promise.ninvoke(BusinessReview, 'getBusinessRating', this.id)
-            .then((function (rating) {
+        return Promise.all([
+                Promise.ninvoke(BusinessReview, 'getBusinessRating', this.id),
+                Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
+                this.getHairfieTagCounts(),
+                this.getAllTags(),
+                this.getAllCategories()
+            ])
+            .spread((function (rating, numHairfies, hairfieTagCounts, _tags, categories) {
                 var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
                 if (0 == pictures.length) {
                     pictures.push(Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject());
@@ -252,15 +258,16 @@ module.exports = function(Business) {
                     timetable          : this.timetable,
                     thumbnail          : pictures[0],
                     pictures           : pictures,
-                    numHairfies        : Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
+                    numHairfies        : numHairfies,
                     numReviews         : rating.numReviews,
                     rating             : rating.rating,
                     crossSell          : true,
                     isBookable         : this.isBookable(),
-                    landingPageUrl     : Business.app.urlGenerator.business(this, context),
+                    landingPageUrl     : Business.app.urlGenerator.business(this),
                     createdAt          : this.createdAt,
-                    hairfieTagCounts   : this.getHairfieTagCounts(),
-                    _tags              : this.getAllTags(),
+                    hairfieTagCounts   : hairfieTagCounts,
+                    _tags              : _tags,
+                    categories         : lodash.map(categories, 'name'),
                     places             : places,
                     updatedAt          : this.updatedAt
                 }
@@ -285,6 +292,31 @@ module.exports = function(Business) {
             })
             .then(function(tags) {
                 return lodash.map(tags, function(tag) { return tag.name.fr });
+            });
+    };
+
+    Business.prototype.getAllCategories = function () {
+        var Hairfie  = Business.app.models.Hairfie,
+            Tag      = Business.app.models.Tag,
+            Category = Business.app.models.Category,
+            hairfies = Hairfie.dataSource.connector.collection(Hairfie.definition.name);
+
+        var pipe = [
+            {$match: {businessId: this.id}},
+            {$unwind: "$tags"},
+            {$group: {_id: "$tags"}}
+        ];
+
+        return Promise.ninvoke(hairfies, 'aggregate', pipe)
+            .then(function (results) {
+                return Promise.all(
+                    lodash.map(results, function(tag) {
+                        return Promise.ninvoke(Category, 'find', {where: {tags: tag._id}});
+                    })
+                )
+            })
+            .then(function(categories) {
+                return lodash.uniq(lodash.flatten(categories), 'id');
             });
     };
 
@@ -369,18 +401,33 @@ module.exports = function(Business) {
         next();
     });
 
-    Business.afterSave = function (next) {
-        var SearchEngine = Business.app.models.SearchEngine;
-        SearchEngine.index('business', this.id, this.toSearchIndexObject());
-
+    Business.observe('after save', function(ctx, next) {
         var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
-        this.toAlgoliaSearchIndexObject()
+        var business = ctx.instance;
+
+        business.toAlgoliaSearchIndexObject(ctx)
             .then(function(data) {
+                console.log("Data to index", data);
                 AlgoliaSearchEngine.saveObject('business', data);
-            });
+            })
+            .fail(console.log);
 
         next();
-    };
+    });
+
+    // Business.afterSave = function (next) {
+    //     var SearchEngine = Business.app.models.SearchEngine;
+    //     SearchEngine.index('business', this.id, this.toSearchIndexObject());
+
+    //     var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
+    //     this.toAlgoliaSearchIndexObject()
+    //         .then(function(data) {
+    //             console.log("Data to index", data);
+    //             AlgoliaSearchEngine.saveObject('business', data);
+    //         });
+
+    //     next();
+    // };
 
     Business.afterDestroy = function (next, business) {
         var SearchEngine = Business.app.models.SearchEngine;

@@ -26,6 +26,7 @@ module.exports = function (Hairfie) {
         // validate currency
         if (this.price.currency != 'EUR') return onError();
     });
+
     Hairfie.validateAsync('pictures', function (onError, onDone) {
         // Check only first picture, bad
         var picture = this.pictures[0];

@@ -24,11 +24,6 @@ module.exports = function(Place) {
         }
     });
 
-    Place.observe('after save', function(ctx, next) {
-        var place = ctx.instance;
-        next();
-    });
-
     Place.prototype.toRemoteObject = function (context) {
         return this.toRemoteShortObject();
     };
