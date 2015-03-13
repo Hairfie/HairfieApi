@@ -1,13 +1,31 @@
 var Promise = require('../../common/utils/Promise'),
     Q = require('q'),
     lodash = require('lodash'),
-    request = require('superagent');
+    request = require('superagent'),
+    utf8 = require('utf8');
 
 var UUID = require('uuid');
 
 module.exports = function(Place) {
     Place.observe('before save', function generateId(ctx, next) {
-        if (ctx.instance) ctx.instance.id = ctx.instance.id || UUID.v4();
+        var place = ctx.instance;
+        if (place) place.id = place.id || UUID.v4();
+
+        if(place && place.needParent()) {
+            place.saveParentPlace(function(error, parent) {
+                if(error) next();
+                place.parentPlaceId = parent[0].id;
+                ctx.instance = place;
+                next();
+            });
+        } else {
+            ctx.instance = place;
+            next();
+        }
+    });
+
+    Place.observe('after save', function(ctx, next) {
+        var place = ctx.instance;
         next();
     });
 
@@ -21,9 +39,60 @@ module.exports = function(Place) {
             href    : Place.app.urlGenerator.api('places/'+this.id),
             name    : this.name.fr,
             location: this.location,
-            bounds  : this.bounds
+            bounds  : this.bounds,
+            parent  : this.parent(context)
         };
     };
+
+    Place.prototype.parent = function(context) {
+        if(!this.parentPlaceId) return;
+
+        return Promise.ninvoke(Place, 'findById', this.parentPlaceId).then(function (place) {
+            return place ? place.toRemoteShortObject(context) : null;
+        });
+    };
+
+    Place.prototype.isOfGoogleType = function (type) {
+        if(!this.googleTypes) return false;
+        return lodash.include(this.googleTypes, type)
+    }
+
+    Place.prototype.isCountry = function () {
+        return this.isOfGoogleType('country');
+    }
+
+    Place.prototype.isLocality = function () {
+        return this.isOfGoogleType('locality');
+    }
+
+    Place.prototype.getLocality = function () {
+        if(!this.googleComponents) return;
+        return lodash.result(lodash.find(this.googleComponents.fr, function(component) {
+            return lodash.include(component.types, 'locality')
+        }), 'long_name');
+    }
+
+    Place.prototype.getCountry = function () {
+        if(!this.googleComponents) return;
+        return lodash.result(lodash.find(this.googleComponents.fr, function(component) {
+            return lodash.include(component.types, 'country')
+        }), 'long_name');
+    }
+
+    Place.prototype.needParent = function () {
+        if(this.parentPlaceId || this.isCountry()) return false;
+
+        return true;
+    }
+
+    Place.prototype.saveParentPlace = function (cb) {
+        if(this.parentPlaceId || this.isCountry()) cb(null);
+        var locality = this.getLocality();
+        var country  = this.getCountry();
+        var address = (locality && !this.isLocality()) ? locality : country;
+
+        Place.query(address, cb);
+    }
 
     Place.query = function findByName(address, cb) {
         var address = (address || '')
@@ -34,6 +103,8 @@ module.exports = function(Place) {
             .replace(']', '')
             .replace('[', '')
             .replace(/\s+/g, ' ');
+
+        var address = decodeURI(address);
 
         // 1. Try to find exact match by name
         Place.findOne({where:{'name.fr': address}}, function (error, place) {

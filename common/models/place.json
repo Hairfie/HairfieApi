@@ -35,6 +35,10 @@
         },
         "googleComponents": {
             "type": "object"
+        },
+        "placeId": {
+            "index": true,
+            "type": "string"
         }
     },
     "options": {

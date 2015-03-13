@@ -44,6 +44,7 @@
     "speakingurl": "^0.15.0",
     "superagent": "^1.0.0",
     "uid2": "0.0.3",
+    "utf8": "^2.1.0",
     "uuid": "^2.0.1"
   },
   "devDependencies": {
