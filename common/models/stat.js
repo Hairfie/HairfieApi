@@ -51,17 +51,17 @@ module.exports = function (Stat) {
         collection.aggregate(pipe, function (error, results) {
             if (error) return callback(error);
 
-            var start = moment().subtract(2, 'month').startOf('week'),
-                stop = moment().endOf('week'),
-                statObj = [];
+            var statObj = [];
 
             for(var i = 0; i < 12; i++) {
-                var w = moment().subtract(i, 'week').startOf('week');
+                var w = moment().startOf('isoWeek').subtract(i, 'week');
                 var data = _.find(results, function(result) {
-                    return result._id.year == moment(w).year() && result._id.week == moment(w).week()
+                    var wToCompare = moment(w).subtract(1, 'week');
+                    return result._id.year == moment(wToCompare).year() && result._id.week == moment(wToCompare).week()
                 });
                 statObj.push({
                     week: moment(w),
+                    weekNumber: moment(w).week(),
                     count: data ? data.count : 0
                 })
             }
