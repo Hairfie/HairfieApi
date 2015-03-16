@@ -65,7 +65,6 @@ function collection(Model) {
     return Model.dataSource.connector.collection(Model.definition.name);
 }
 
-
 function update(Model, where, update) {
     return Q.ninvoke(collection(Model), 'update', where, update, {multi: true});
 }

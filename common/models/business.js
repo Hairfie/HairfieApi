@@ -268,7 +268,7 @@ module.exports = function(Business) {
                     hairfieTagCounts   : hairfieTagCounts,
                     _tags              : _tags,
                     categories         : lodash.map(categories, 'name'),
-                    places             : places,
+                    averagePrice       : this.averagePrice,
                     updatedAt          : this.updatedAt
                 }
             }).bind(this));
