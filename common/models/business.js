@@ -148,6 +148,10 @@ module.exports = function(Business) {
         return isBookable;
     };
 
+    Business.prototype.hasDiscount = function() {
+        return this.bestDiscount > 0;
+    };
+
     Business.prototype.owner = function (cb) {
         if (!this.id) return cb(null, null);
 
@@ -263,6 +267,7 @@ module.exports = function(Business) {
                     rating             : rating.rating,
                     crossSell          : true,
                     isBookable         : this.isBookable(),
+                    bestDiscount       : this.bestDiscount,
                     landingPageUrl     : Business.app.urlGenerator.business(this),
                     createdAt          : this.createdAt,
                     hairfieTagCounts   : hairfieTagCounts,

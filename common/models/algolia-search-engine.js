@@ -83,8 +83,8 @@ module.exports = function (AlgoliaSearchEngine) {
 
     AlgoliaSearchEngine.defineAllSettings = function () {
         return AlgoliaSearchEngine.defineSettings('business', {
-            attributesForFaceting: ['gender', 'address.city', 'places', '_tags'],
-            attributesToIndex: ['name','places','address.city','_tags', 'address.streetName','address.zipCode'],
+            attributesForFaceting: ['gender', 'categories', '_tags'],
+            attributesToIndex: ['name','categories','address.city','_tags', 'address.streetName','address.zipCode'],
             customRanking: ['desc(numHairfies)', 'desc(rating)', 'desc(numReviews)']
         });
     };
@@ -98,7 +98,7 @@ module.exports = function (AlgoliaSearchEngine) {
         function loop(skip) {
             if (progressHandler) progressHandler({done: skip});
 
-            Business.find({limit: limit, skip: skip}, function (error, businesses) {
+            Business.find({limit: limit, skip: skip, order: 'updatedAt DESC'}, function (error, businesses) {
 
                 return Promise.map(businesses, function (business) {
                         return business.toAlgoliaSearchIndexObject();
