@@ -98,7 +98,7 @@ module.exports = function (AlgoliaSearchEngine) {
         function loop(skip) {
             if (progressHandler) progressHandler({done: skip});
 
-            Business.find({limit: limit, skip: skip, order: 'updatedAt DESC'}, function (error, businesses) {
+            Business.find({order: 'createdAt DESC', limit: limit, skip: skip}, function (error, businesses) {
 
                 return Promise.map(businesses, function (business) {
                         return business.toAlgoliaSearchIndexObject();
