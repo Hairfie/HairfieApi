@@ -157,5 +157,9 @@
   "Category": {
     "dataSource": "hairfieMongo",
     "public": true
+  },
+  "ContentIssue": {
+    "dataSource": "hairfieMongo",
+    "public": true
   }
 }
