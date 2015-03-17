@@ -437,7 +437,7 @@ module.exports = function(Business) {
             here = tmpGeoPoint.lng+','+tmpGeoPoint.lat;
         }
 
-        var maxDistance = 5000,
+        var maxDistance = 8000,
             here        = GeoPoint(here),
             page        = Math.max(page || 1),
             limit       = Math.min(limit || 10, 100),
