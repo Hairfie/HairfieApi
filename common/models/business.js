@@ -494,7 +494,8 @@ module.exports = function(Business) {
                     facets: '*'
                 };
 
-                var numericFilters = [];
+                var numericFiltersArr = [];
+                var facetFiltersArr = [];
 
                 if(here) {
                     params.aroundLatLng = here.asLatLngString(),
@@ -510,24 +511,31 @@ module.exports = function(Business) {
 
                 if(facetFilters) {
                     console.log("facetFilters", facetFilters);
-                    // params.facetFilters += ',(' + lodash.map(facetFilters, function(key, value) {
-                    //     return key + ':' + value;
-                    // }).join(',') + ')';
+                    lodash.forEach(facetFilters, function(filters, facetFilter) {
+                        console.log("filters", filters);
+                        facetFiltersArr.push('(' + lodash.map(filters, function(filter) {
+                            return facetFilter + ':' + filter;
+                        }).join(',') + ')' );
+                    });
                 }
 
                 if(price.min) {
-                    numericFilters.push('(averagePrice.men>' + price.min + ',averagePrice.women>' + price.min + ')');
+                    numericFiltersArr.push('(averagePrice.men>' + price.min + ',averagePrice.women>' + price.min + ')');
                 }
 
                 if(price && price.max) {
-                    numericFilters.push('(averagePrice.men<' + price.max + ',averagePrice.women<' + price.max + ')');
+                    numericFiltersArr.push('(averagePrice.men<' + price.max + ',averagePrice.women<' + price.max + ')');
                 }
 
-                if(numericFilters.length > 0) {
-                    params.numericFilters = numericFilters.join(',');
+                if(numericFiltersArr.length > 0) {
+                    params.numericFilters = numericFiltersArr.join(',');
                 }
 
-                console.log("Algolia Params :", params);
+                if(facetFiltersArr.length > 0) {
+                    params.facetFilters = facetFiltersArr.join(',');
+                }
+
+                console.log("Algolia sent Params :", params);
 
                 return AlgoliaSearchEngine.search('business', query, params);
             })
@@ -538,13 +546,20 @@ module.exports = function(Business) {
 
     function processAlgoliaResults(result) {
         // var explanations = result[0].hits.hits.map(function (hit) { return JSON.stringify(hit._explanation); });
-        console.log("facets :", result.facets);
+        console.log("Algolia received Params :", result.params);
+
         var ids = result.hits.map(function (hit) { return hit.id; });
         console.log("ids :", ids);
 
         return Promise.all([
             Promise.denodeify(Business.findByIds.bind(Business))(ids),
-            {facets: result.facets}
+            {
+                facets: result.facets,
+                nbHits : result.nbHits,
+                page : result.page,
+                nbPages : result.nbPages,
+                hitsPerPage : result.hitsPerPage
+            }
         ]);
     }
 
