@@ -420,20 +420,6 @@ module.exports = function(Business) {
         next();
     });
 
-    // Business.afterSave = function (next) {
-    //     var SearchEngine = Business.app.models.SearchEngine;
-    //     SearchEngine.index('business', this.id, this.toSearchIndexObject());
-
-    //     var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
-    //     this.toAlgoliaSearchIndexObject()
-    //         .then(function(data) {
-    //             console.log("Data to index", data);
-    //             AlgoliaSearchEngine.saveObject('business', data);
-    //         });
-
-    //     next();
-    // };
-
     Business.afterDestroy = function (next, business) {
         var SearchEngine = Business.app.models.SearchEngine;
         SearchEngine.delete('business', business.id);
@@ -451,14 +437,10 @@ module.exports = function(Business) {
             here = tmpGeoPoint.lng+','+tmpGeoPoint.lat;
         }
 
-        return Business.search(here, query, clientTypes, false, page, limit, callback);
-    }
-
-    Business.search = function(here, query, clientTypes, geoIp, page, limit, callback) {
-        var maxDistance = geoIp ? 10000 : 5000,
-            here        = here ? GeoPoint(here) : null,
+        var maxDistance = 5000,
+            here        = GeoPoint(here),
             page        = Math.max(page || 1),
-            limit       = Math.min(limit || 10, 100)
+            limit       = Math.min(limit || 10, 100),
             query       = query || '';
 
         Promise.denodeify(Business.getApp.bind(Business))()
@@ -467,20 +449,14 @@ module.exports = function(Business) {
 
                 var params = {
                     hitsPerPage: limit,
-                    page: page - 1,
-                    facets: '*'
+                    page: page - 1
                 };
 
-                if(here) {
-                    params.aroundLatLng = here.asLatLngString(),
-                    params.aroundRadius = maxDistance,
-                    params.aroundPrecision = 10
-                } else if(geoIp) {
-                    params.aroundLatLngViaIP = true,
-                    params.aroundRadius = maxDistance
-                }
+                params.aroundLatLng = here.asLatLngString(),
+                params.aroundRadius = maxDistance,
+                params.aroundPrecision = 10;
 
-                if (clientTypes) {
+                if(clientTypes) {
                     params.facetFilters += ',(' + lodash.map(clientTypes, function(clientType) {
                         return "gender:"+clientType;
                     }).join(',') + ')';
@@ -496,10 +472,80 @@ module.exports = function(Business) {
     }
 
     function searchResultBusinesses(result) {
-        // var explanations = result[0].hits.hits.map(function (hit) { return JSON.stringify(hit._explanation); });
-        // console.log("EXPLANATION :",explanations);
         var ids = result.hits.map(function (hit) { return hit.id; });
+
         return Promise.denodeify(Business.findByIds.bind(Business))(ids);
+    }
+
+    Business.search = function(here, radius, query, clientTypes, facetFilters, price, page, limit, callback) {
+        var maxDistance = radius || 10000,
+            here        = here ? GeoPoint(here) : null,
+            page        = Math.max(page || 1),
+            limit       = Math.min(limit || 10, 100),
+            query       = query || '';
+
+        Promise.denodeify(Business.getApp.bind(Business))()
+            .then(function (app) {
+                var AlgoliaSearchEngine = app.models.AlgoliaSearchEngine;
+
+                var params = {
+                    hitsPerPage: limit,
+                    page: page - 1,
+                    facets: '*'
+                };
+
+                var numericFilters = [];
+
+                if(here) {
+                    params.aroundLatLng = here.asLatLngString(),
+                    params.aroundRadius = maxDistance,
+                    params.aroundPrecision = 10
+                }
+
+                if(clientTypes) {
+                    params.facetFilters += ',(' + lodash.map(clientTypes, function(clientType) {
+                        return "gender:"+clientType;
+                    }).join(',') + ')';
+                }
+
+                if(facetFilters) {
+                    console.log("facetFilters", facetFilters);
+                    // params.facetFilters += ',(' + lodash.map(facetFilters, function(key, value) {
+                    //     return key + ':' + value;
+                    // }).join(',') + ')';
+                }
+
+                if(price.min) {
+                    numericFilters.push('(averagePrice.men>' + price.min + ',averagePrice.women>' + price.min + ')');
+                }
+
+                if(price && price.max) {
+                    numericFilters.push('(averagePrice.men<' + price.max + ',averagePrice.women<' + price.max + ')');
+                }
+
+                if(numericFilters.length > 0) {
+                    params.numericFilters = numericFilters.join(',');
+                }
+
+                console.log("Algolia Params :", params);
+
+                return AlgoliaSearchEngine.search('business', query, params);
+            })
+            .then(processAlgoliaResults)
+            .nodeify(callback)
+        ;
+    }
+
+    function processAlgoliaResults(result) {
+        // var explanations = result[0].hits.hits.map(function (hit) { return JSON.stringify(hit._explanation); });
+        console.log("facets :", result.facets);
+        var ids = result.hits.map(function (hit) { return hit.id; });
+        console.log("ids :", ids);
+
+        return Promise.all([
+            Promise.denodeify(Business.findByIds.bind(Business))(ids),
+            {facets: result.facets}
+        ]);
     }
 
     Business.similar = function (businessId, limit, callback) {
@@ -755,13 +801,15 @@ module.exports = function(Business) {
         description: 'Search businesses',
         accepts: [
             {arg: 'here', type: 'object', description: 'geo location:{lng: ,lat:}. For ex : 2.30,48.87'},
+            {arg: 'radius', type: 'number', description: 'Radius in meter around the geo location' },
             {arg: 'query', type: 'string', description: 'plain text search'},
             {arg: 'clientTypes', type: 'array'},
-            {arg: 'geoIp', type: 'Boolean' },
+            {arg: 'facetFilters', type: 'array', description: 'Filters based on facets'},
+            {arg: 'price', type: 'object', description: 'price:{min: ,max:}'},
             {arg: 'page', type: 'number', description: 'number of pages (page size defined by limit)'},
             {arg: 'limit', type: 'number', description: 'number of businesses to get, default=10'}
         ],
-        returns: {arg: 'businesses', root: true},
+        returns: {arg: 'results', root: true},
         http: { verb: 'GET' }
     });
 
