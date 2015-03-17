@@ -21,4 +21,9 @@ module.exports = function (ContentIssue) {
             body    : this.body
         };
     };
+
+    ContentIssue.beforeRemote('create', function (ctx, item, next) {
+        ctx.req.body.authorId = ctx.req.user && ctx.req.user.id;
+        next();
+    });
 };
