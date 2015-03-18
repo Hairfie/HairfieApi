@@ -68,6 +68,7 @@ module.exports = function (Email) {
                 hairfie         : hairfie,
                 author          : author,
                 business        : business,
+                businessMember  : businessMember,
                 hairfieUrl      : url.hairfie(hairfie),
                 iosAppUrl       : Email.app.get('iosAppUrl')
             }
@@ -164,6 +165,7 @@ module.exports = function (Email) {
     function getHtmlBody(template, templateVars, language, layout) {
         var css  = readCssFile('email'),
             html = renderHtmlBody(template, templateVars, language, layout);
+
 
         return juice.inlineContent(html, css);
     }

@@ -266,9 +266,6 @@ module.exports = function (Hairfie) {
         ]).spread(function (author, business, reviewRequest, businessMember, tags, menAveragePrice, womenAveragePrice) {
             var label = 'New Hairfie';
 
-            console.log("menAveragePrice", menAveragePrice);
-            console.log("womenAveragePrice", womenAveragePrice);
-
             if (this.customerEmail) {
                 Email.sendHairfie(this, author, business, businessMember).fail(console.log);
                 label += ' with customerEmail !'
