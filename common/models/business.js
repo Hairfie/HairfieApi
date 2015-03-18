@@ -451,6 +451,7 @@ module.exports = function(Business) {
                 .then(processAlgoliaForNearby)
                 .nodeify(callback);
         } else {
+            console.log("mongoNearby");
             return Promise.ninvoke(Business, 'mongoNearby', here, clientTypes, skip, limit)
                 .then(function(result) {
                     // Fix me by instantiating business from JSON

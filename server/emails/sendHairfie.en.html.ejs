@@ -1,6 +1,10 @@
 <p>Bonjour,</p>
 
-<p>Waouh, <%= author.firstName %> a pris un hairfie après votre passage chez <%= business.name %>.<br /><a href="<%= hairfieUrl %>">Téléchargez votre photo.</a></p>
+<% if(businessMember) %>
+    <p><%= businessMember.firstName %> a pris un hairfie après votre passage chez <%= business.name %>.<br /><a href="<%= hairfieUrl %>">Téléchargez votre photo.</a></p>
+<% else %>
+    <p>Votre nouvelle coupe est superbe !prise après votre passage chez <%= business.name %>.<br /><a href="<%= hairfieUrl %>">Téléchargez votre photo prise après votre passage chez <%= business.name %>.</a></p>
+<% end %>
 
 <p>Et pensez à <a href="<%= iosAppUrl %>">télécharger l'application Hairfie sur l'Appstore</a> pour découvrir toutes les tendances, réserver en temps réel chez votre coiffeur et profitez d'offres promotionnelles.
 

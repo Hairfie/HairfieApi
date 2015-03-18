@@ -57,7 +57,7 @@ module.exports = function (Email) {
         });
     }
 
-    Email.sendHairfie = function (hairfie, author, business) {
+    Email.sendHairfie = function (hairfie, author, business, businessMember) {
         var url = Email.app.urlGenerator;
 
         return send({

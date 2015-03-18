@@ -270,7 +270,7 @@ module.exports = function (Hairfie) {
             console.log("womenAveragePrice", womenAveragePrice);
 
             if (this.customerEmail) {
-                Email.sendHairfie(this, author, business).fail(console.log);
+                Email.sendHairfie(this, author, business, businessMember).fail(console.log);
                 label += ' with customerEmail !'
             }
 
