@@ -510,10 +510,9 @@ module.exports = function(Business) {
                 }
 
                 if(facetFilters) {
-                    console.log("facetFilters", facetFilters);
                     lodash.forEach(facetFilters, function(filters, facetFilter) {
-                        console.log("filters", filters);
-                        facetFiltersArr.push('(' + lodash.map(filters, function(filter) {
+                        filters = lodash.isArray(filters) ? filters : [filters];
+                        facetFiltersArr.push('(' + lodash.map(lodash.toArray(filters), function(filter) {
                             return facetFilter + ':' + filter;
                         }).join(',') + ')' );
                     });
@@ -554,12 +553,18 @@ module.exports = function(Business) {
         return Promise.denodeify(Business.findByIds.bind(Business))(ids)
             .then(function(businesses) {
                 return {
-                    hits: businesses,
-                    facets: result.facets,
-                    nbHits : result.nbHits,
-                    page : result.page,
-                    nbPages : result.nbPages,
-                    hitsPerPage : result.hitsPerPage
+                    toRemoteObject: function (context) {
+                        return {
+                            hits: lodash.map(businesses, function(business) {
+                                return business.toRemoteShortObject()
+                            }),
+                            facets: result.facets,
+                            nbHits : result.nbHits,
+                            page : result.page,
+                            nbPages : result.nbPages,
+                            hitsPerPage : result.hitsPerPage
+                        }
+                    }
                 }
             });
     }
