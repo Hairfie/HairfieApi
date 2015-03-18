@@ -479,7 +479,7 @@ module.exports = function(Business) {
 
     Business.search = function(location, radius, query, clientTypes, facetFilters, price, page, limit, callback) {
         var maxDistance = radius || 10000,
-            here        = here ? GeoPoint(here) : null,
+            location    = location ? GeoPoint(location) : null,
             page        = Math.max(page || 1),
             limit       = Math.min(limit || 10, 100),
             query       = query || '';
@@ -497,8 +497,8 @@ module.exports = function(Business) {
                 var numericFiltersArr = [];
                 var facetFiltersArr = [];
 
-                if(here) {
-                    params.aroundLatLng = here.asLatLngString(),
+                if(location) {
+                    params.aroundLatLng = location.asLatLngString(),
                     params.aroundRadius = maxDistance,
                     params.aroundPrecision = 10
                 }
