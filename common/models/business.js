@@ -551,16 +551,17 @@ module.exports = function(Business) {
         var ids = result.hits.map(function (hit) { return hit.id; });
         console.log("ids :", ids);
 
-        return Promise.all([
-            Promise.denodeify(Business.findByIds.bind(Business))(ids),
-            {
-                facets: result.facets,
-                nbHits : result.nbHits,
-                page : result.page,
-                nbPages : result.nbPages,
-                hitsPerPage : result.hitsPerPage
-            }
-        ]);
+        return Promise.denodeify(Business.findByIds.bind(Business))(ids)
+            .then(function(businesses) {
+                return {
+                    hits: businesses,
+                    facets: result.facets,
+                    nbHits : result.nbHits,
+                    page : result.page,
+                    nbPages : result.nbPages,
+                    hitsPerPage : result.hitsPerPage
+                }
+            });
     }
 
     Business.similar = function (businessId, limit, callback) {
