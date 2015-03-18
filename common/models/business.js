@@ -431,6 +431,8 @@ module.exports = function(Business) {
     };
 
     Business.nearby = function(here, query, clientTypes, page, limit, callback) {
+        var collection = Business.dataSource.connector.collection(Business.definition.name);
+
         // TODO: remove me as soon as the 1.6.3 version of the app is released
         if (lodash.isString(here)) {
             var tmpGeoPoint = GeoPoint(here);
@@ -441,43 +443,30 @@ module.exports = function(Business) {
             here        = GeoPoint(here),
             page        = Math.max(page || 1),
             limit       = Math.min(limit || 10, 100),
+            skip        = limit * (page - 1),
             query       = query || '';
 
-        Promise.denodeify(Business.getApp.bind(Business))()
-            .then(function (app) {
-                var AlgoliaSearchEngine = app.models.AlgoliaSearchEngine;
-
-                var params = {
-                    hitsPerPage: limit,
-                    page: page - 1
-                };
-
-                params.aroundLatLng = here.asLatLngString(),
-                params.aroundRadius = maxDistance,
-                params.aroundPrecision = 10;
-
-                if(clientTypes) {
-                    params.facetFilters += ',(' + lodash.map(clientTypes, function(clientType) {
-                        return "genders:"+clientType;
-                    }).join(',') + ')';
-                }
-
-                console.log("Algolia Params :", params);
-
-                return AlgoliaSearchEngine.search('business', query, params);
-            })
-            .then(searchResultBusinesses)
-            .nodeify(callback)
-        ;
+        return Promise.ninvoke(Business, 'mongoNearby', here, clientTypes, skip, limit)
+            .then(function(result) {
+                // Fix me by instantiating business from JSON
+                return Promise.ninvoke(Business, 'findByIds', lodash.pluck(result, '_id'));
+            });
     }
 
-    function searchResultBusinesses(result) {
-        var ids = result.hits.map(function (hit) { return hit.id; });
+    Business.mongoNearby = function(here, clientTypes, skip, limit, callback) {
+        var collection = Business.dataSource.connector.collection(Business.definition.name);
 
-        return Promise.denodeify(Business.findByIds.bind(Business))(ids);
+        var where = {gps: {$near: here}};
+        var options = {limit: limit, skip: skip};
+
+        collection.find(where, options).toArray(function (error, businesses) {
+            if (error) return callback(error);
+
+            callback(null, businesses);
+        });
     }
 
-    Business.search = function(location, radius, query, clientTypes, facetFilters, price, page, limit, callback) {
+    Business.search = function(location, radius, query, genders, facetFilters, price, page, limit, callback) {
         var maxDistance = radius || 10000,
             location    = location ? GeoPoint(location) : null,
             page        = Math.max(page || 1),
@@ -503,9 +492,9 @@ module.exports = function(Business) {
                     params.aroundPrecision = 10
                 }
 
-                if(clientTypes) {
-                    params.facetFilters += ',(' + lodash.map(clientTypes, function(clientType) {
-                        return "genders:"+clientType;
+                if(genders) {
+                    params.facetFilters += ',(' + lodash.map(genders, function(gender) {
+                        return "genders:"+gender;
                     }).join(',') + ')';
                 }
 
