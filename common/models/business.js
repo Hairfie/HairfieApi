@@ -584,7 +584,7 @@ module.exports = function(Business) {
 
         return Promise.denodeify(Business.findById.bind(Business))(businessId)
             .then(function(business) {
-            // @todo handle the case the business has no location
+                // @todo handle the case the business has no location
                 if (!business.gps) return callback('business has no location');
 
                 var here = GeoPoint(business.gps);
@@ -597,12 +597,12 @@ module.exports = function(Business) {
 
                 return AlgoliaSearchEngine.search('business', '', params);
             })
-            .then(searchResultBusinesses)
-            .then(function(businesses) {
-                return lodash.filter(businesses, function(business) { return business.id != businessId });
+            .then(function(result) {
+                result.hits = lodash.filter(result.hits, function(business) { return business.id != businessId });
+                return result;
             })
-            .nodeify(callback)
-        ;
+            .then(processAlgoliaForNearby)
+            .nodeify(callback);
     };
 
     Business.getFacebookPage = function (businessId, user, cb) {
