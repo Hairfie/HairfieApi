@@ -519,7 +519,7 @@ module.exports = function(Business) {
                     });
                 }
 
-                if(price.min) {
+                if(price && price.min) {
                     numericFiltersArr.push('(averagePrice.men>' + price.min + ',averagePrice.women>' + price.min + ')');
                 }
 
