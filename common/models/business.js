@@ -477,7 +477,7 @@ module.exports = function(Business) {
         return Promise.denodeify(Business.findByIds.bind(Business))(ids);
     }
 
-    Business.search = function(here, radius, query, clientTypes, facetFilters, price, page, limit, callback) {
+    Business.search = function(location, radius, query, clientTypes, facetFilters, price, page, limit, callback) {
         var maxDistance = radius || 10000,
             here        = here ? GeoPoint(here) : null,
             page        = Math.max(page || 1),
@@ -815,7 +815,7 @@ module.exports = function(Business) {
     Business.remoteMethod('search', {
         description: 'Search businesses',
         accepts: [
-            {arg: 'here', type: 'object', description: 'geo location:{lng: ,lat:}. For ex : 2.30,48.87'},
+            {arg: 'location', type: 'object', description: 'location:{lng: ,lat:}. For ex : 2.30,48.87'},
             {arg: 'radius', type: 'number', description: 'Radius in meter around the geo location' },
             {arg: 'query', type: 'string', description: 'plain text search'},
             {arg: 'clientTypes', type: 'array'},
