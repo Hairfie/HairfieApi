@@ -83,7 +83,7 @@ module.exports = function (AlgoliaSearchEngine) {
 
     AlgoliaSearchEngine.defineAllSettings = function () {
         return AlgoliaSearchEngine.defineSettings('business', {
-            attributesForFaceting: ['gender', 'categories', '_tags'],
+            attributesForFaceting: ['genders', 'categories', '_tags'],
             attributesToIndex: ['name','categories','address.city','_tags', 'address.streetName','address.zipCode'],
             customRanking: ['desc(numHairfies)', 'desc(rating)', 'desc(numReviews)']
         });

@@ -255,7 +255,7 @@ module.exports = function(Business) {
                     address            : this.address,
                     slug               : this.slug(),
                     kind               : this.kind ? this.kind : 'SALON',
-                    gender             : this.getGenderArray(),
+                    genders            : this.getGenderArray(),
                     description        : this.description,
                     gps                : this.gps,
                     _geoloc            : {lat: this.gps.lat, lng: this.gps.lng},
@@ -458,7 +458,7 @@ module.exports = function(Business) {
 
                 if(clientTypes) {
                     params.facetFilters += ',(' + lodash.map(clientTypes, function(clientType) {
-                        return "gender:"+clientType;
+                        return "genders:"+clientType;
                     }).join(',') + ')';
                 }
 
@@ -505,7 +505,7 @@ module.exports = function(Business) {
 
                 if(clientTypes) {
                     params.facetFilters += ',(' + lodash.map(clientTypes, function(clientType) {
-                        return "gender:"+clientType;
+                        return "genders:"+clientType;
                     }).join(',') + ')';
                 }
 
