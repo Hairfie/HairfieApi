@@ -66,7 +66,6 @@ module.exports = function (AlgoliaSearchEngine) {
     AlgoliaSearchEngine.search = function (type, query, params) {
         var deferred = Promise.defer();
         var index = getClient().initIndex(getIndex(type));
-
         index.search(query, deferred.makeNodeResolver(), params);
 
         return deferred.promise;

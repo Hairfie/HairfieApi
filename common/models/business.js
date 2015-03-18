@@ -446,11 +446,30 @@ module.exports = function(Business) {
             skip        = limit * (page - 1),
             query       = query || '';
 
-        return Promise.ninvoke(Business, 'mongoNearby', here, clientTypes, skip, limit)
-            .then(function(result) {
-                // Fix me by instantiating business from JSON
-                return Promise.ninvoke(Business, 'findByIds', lodash.pluck(result, '_id'));
-            });
+        if(query) {
+            return Promise.ninvoke(Business, 'algoliaSearch', here, maxDistance, query, clientTypes, null, null, page, limit)
+                .then(processAlgoliaForNearby)
+                .nodeify(callback);
+        } else {
+            return Promise.ninvoke(Business, 'mongoNearby', here, clientTypes, skip, limit)
+                .then(function(result) {
+                    // Fix me by instantiating business from JSON
+                    return Promise.ninvoke(Business, 'findByIds', lodash.pluck(result, '_id'));
+                });
+        }
+    }
+
+    Business.search = function(location, radius, query, genders, facetFilters, price, page, limit, callback) {
+        var maxDistance = radius || 10000,
+            location    = location ? GeoPoint(location) : null,
+            page        = Math.max(page || 1),
+            limit       = Math.min(limit || 10, 100),
+            query       = query || '';
+
+        return Promise.ninvoke(Business, 'algoliaSearch', location, maxDistance, query, genders, facetFilters, price, page, limit)
+            .then(processAlgoliaForSearch)
+            .nodeify(callback)
+        ;
     }
 
     Business.mongoNearby = function(here, clientTypes, skip, limit, callback) {
@@ -466,78 +485,63 @@ module.exports = function(Business) {
         });
     }
 
-    Business.search = function(location, radius, query, genders, facetFilters, price, page, limit, callback) {
-        var maxDistance = radius || 10000,
-            location    = location ? GeoPoint(location) : null,
-            page        = Math.max(page || 1),
-            limit       = Math.min(limit || 10, 100),
-            query       = query || '';
+    Business.algoliaSearch = function(location, maxDistance, query, genders, facetFilters, price, page, limit, callback)  {
+        var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
 
-        Promise.denodeify(Business.getApp.bind(Business))()
-            .then(function (app) {
-                var AlgoliaSearchEngine = app.models.AlgoliaSearchEngine;
+        var params = {
+            hitsPerPage: limit,
+            page: page - 1,
+            facets: '*'
+        };
 
-                var params = {
-                    hitsPerPage: limit,
-                    page: page - 1,
-                    facets: '*'
-                };
+        var numericFiltersArr = [];
+        var facetFiltersArr = [];
 
-                var numericFiltersArr = [];
-                var facetFiltersArr = [];
+        if(location) {
+            params.aroundLatLng = location.asLatLngString(),
+            params.aroundRadius = maxDistance,
+            params.aroundPrecision = 10
+        }
 
-                if(location) {
-                    params.aroundLatLng = location.asLatLngString(),
-                    params.aroundRadius = maxDistance,
-                    params.aroundPrecision = 10
-                }
+        if(genders) {
+            params.facetFilters += ',(' + lodash.map(genders, function(gender) {
+                return "genders:"+gender;
+            }).join(',') + ')';
+        }
 
-                if(genders) {
-                    params.facetFilters += ',(' + lodash.map(genders, function(gender) {
-                        return "genders:"+gender;
-                    }).join(',') + ')';
-                }
+        if(facetFilters) {
+            lodash.forEach(facetFilters, function(filters, facetFilter) {
+                filters = lodash.isArray(filters) ? filters : [filters];
+                facetFiltersArr.push('(' + lodash.map(lodash.toArray(filters), function(filter) {
+                    return facetFilter + ':' + filter;
+                }).join(',') + ')' );
+            });
+        }
 
-                if(facetFilters) {
-                    lodash.forEach(facetFilters, function(filters, facetFilter) {
-                        filters = lodash.isArray(filters) ? filters : [filters];
-                        facetFiltersArr.push('(' + lodash.map(lodash.toArray(filters), function(filter) {
-                            return facetFilter + ':' + filter;
-                        }).join(',') + ')' );
-                    });
-                }
+        if(price && price.min) {
+            numericFiltersArr.push('(averagePrice.men>' + price.min + ',averagePrice.women>' + price.min + ')');
+        }
 
-                if(price && price.min) {
-                    numericFiltersArr.push('(averagePrice.men>' + price.min + ',averagePrice.women>' + price.min + ')');
-                }
+        if(price && price.max) {
+            numericFiltersArr.push('(averagePrice.men<' + price.max + ',averagePrice.women<' + price.max + ')');
+        }
 
-                if(price && price.max) {
-                    numericFiltersArr.push('(averagePrice.men<' + price.max + ',averagePrice.women<' + price.max + ')');
-                }
+        if(numericFiltersArr.length > 0) {
+            params.numericFilters = numericFiltersArr.join(',');
+        }
 
-                if(numericFiltersArr.length > 0) {
-                    params.numericFilters = numericFiltersArr.join(',');
-                }
+        if(facetFiltersArr.length > 0) {
+            params.facetFilters = facetFiltersArr.join(',');
+        }
 
-                if(facetFiltersArr.length > 0) {
-                    params.facetFilters = facetFiltersArr.join(',');
-                }
+        console.log("Algolia sent Params :", params);
 
-                console.log("Algolia sent Params :", params);
-
-                return AlgoliaSearchEngine.search('business', query, params);
-            })
-            .then(processAlgoliaResults)
-            .nodeify(callback)
-        ;
+        return AlgoliaSearchEngine.search('business', query, params)
+            .nodeify(callback);
     }
 
-    function processAlgoliaResults(result) {
-        // var explanations = result[0].hits.hits.map(function (hit) { return JSON.stringify(hit._explanation); });
-        console.log("Algolia received Params :", result.params);
-
+    function processAlgoliaForSearch(result) {
         var ids = result.hits.map(function (hit) { return hit.id; });
-        console.log("ids :", ids);
 
         return Promise.denodeify(Business.findByIds.bind(Business))(ids)
             .then(function(businesses) {
@@ -553,6 +557,21 @@ module.exports = function(Business) {
                             nbPages : result.nbPages,
                             hitsPerPage : result.hitsPerPage
                         }
+                    }
+                }
+            });
+    }
+
+    function processAlgoliaForNearby(result) {
+        var ids = result.hits.map(function (hit) { return hit.id; });
+
+        return Promise.denodeify(Business.findByIds.bind(Business))(ids)
+            .then(function(businesses) {
+                return {
+                    toRemoteObject: function (context) {
+                        return lodash.map(businesses, function(business) {
+                            return business.toRemoteShortObject()
+                        })
                     }
                 }
             });
