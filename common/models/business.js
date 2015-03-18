@@ -446,7 +446,7 @@ module.exports = function(Business) {
             skip        = limit * (page - 1),
             query       = query || '';
 
-        if(query) {
+        if(query && query.length != 0) {
             return Promise.ninvoke(Business, 'algoliaSearch', here, maxDistance, query, clientTypes, null, null, page, limit)
                 .then(processAlgoliaForNearby)
                 .nodeify(callback);
