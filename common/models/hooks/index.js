@@ -3,5 +3,6 @@
 module.exports = {
     generateId: require('./generate-id'),
     generateSecretId: require('./generate-secret-id'),
-    updateTimestamps: require('./update-timestamps')
+    updateTimestamps: require('./update-timestamps'),
+    updateSearchIndex: require('./update-search-index')
 };

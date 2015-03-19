@@ -12,6 +12,7 @@ var Hooks = require('./hooks');
 module.exports = function(Business) {
     Hooks.generateId(Business);
     Hooks.updateTimestamps(Business);
+    Hooks.updateSearchIndex(Business, {index: 'business'});
 
     Business.prototype.toRemoteObject = function (context) {
         var Hairfie        = Business.app.models.Hairfie,
@@ -215,20 +216,7 @@ module.exports = function(Business) {
         return deferred.promise;
     };
 
-    Business.prototype.toSearchIndexObject = function () {
-        var doc = {};
-        doc.name = this.name;
-        if (this.gps) {
-          doc.gps = {lat: this.gps.lat, lon: this.gps.lng};
-        }
-        doc.men = false != this.men;
-        doc.women = false != this.women;
-        doc.children = false != this.children;
-
-        return doc;
-    };
-
-    Business.prototype.toAlgoliaSearchIndexObject = function () {
+    Business.prototype.toSearchDocument = function () {
         var BusinessReview = Business.app.models.BusinessReview,
             Hairfie        = Business.app.models.Hairfie;
 
@@ -391,30 +379,6 @@ module.exports = function(Business) {
 
         next();
     });
-
-    Business.observe('after save', function(ctx, next) {
-        var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
-        var business = ctx.instance;
-
-        business.toAlgoliaSearchIndexObject(ctx)
-            .then(function(data) {
-                console.log("Data to index", data);
-                AlgoliaSearchEngine.saveObject('business', data);
-            })
-            .fail(console.log);
-
-        next();
-    });
-
-    Business.afterDestroy = function (next, business) {
-        var SearchEngine = Business.app.models.SearchEngine;
-        SearchEngine.delete('business', business.id);
-
-        var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
-        AlgoliaSearchEngine.delete('business', business.id);
-
-        next();
-    };
 
     Business.nearby = function(here, query, clientTypes, page, limit, callback) {
         var collection = Business.dataSource.connector.collection(Business.definition.name);
