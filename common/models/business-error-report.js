@@ -1,13 +1,11 @@
 'use strict';
 
 var Promise = require('../../common/utils/Promise');
-var UUID = require('uuid');
+var Hooks = require('./hooks');
 
 module.exports = function (BusinessErrorReport) {
-    BusinessErrorReport.beforeCreate = function (next) {
-        this.id = this.id || UUID.v4();
-        next();
-    };
+    Hooks.generateId(BusinessErrorReport);
+    Hooks.updateTimestamps(BusinessErrorReport);
 
     BusinessErrorReport.prototype.toRemoteObject = function () {
         return {

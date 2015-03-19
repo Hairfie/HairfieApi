@@ -3,13 +3,11 @@ var Promise = require('../../common/utils/Promise'),
     RemoteObject = require('../utils/RemoteObject'),
     lodash = require('lodash');
 
-var UUID = require('uuid');
+var Hooks = require('./hooks');
 
 module.exports = function(Category) {
-    Category.beforeCreate = function (next) {
-        this.id = this.id || UUID.v4();
-        next();
-    };
+    Hooks.generateId(Category);
+    Hooks.updateTimestamps(Category);
 
     Category.prototype.toRemoteObject = function (context) {
         return this.toRemoteShortObject();

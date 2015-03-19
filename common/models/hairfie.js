@@ -4,14 +4,11 @@ var Promise = require('../../common/utils/Promise'),
     Q = require('q'),
     lodash = require('lodash');
 
-var UUID = require('uuid');
+var Hooks = require('./hooks');
 
 module.exports = function (Hairfie) {
-
-    Hairfie.beforeCreate = function (next) {
-        this.id = this.id || UUID.v4();
-        next();
-    };
+    Hooks.generateId(Hairfie);
+    Hooks.updateTimestamps(Hairfie);
 
     Hairfie.validate('price', function (onError) {
         // validate structure

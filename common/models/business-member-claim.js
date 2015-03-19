@@ -1,10 +1,11 @@
 'use strict';
 
-var uid = require('uid2');
 var Promise = require('../../common/utils/Promise');
+var Hooks = require('./hooks');
 
 module.exports = function (BusinessMemberClaim) {
-    var ID_LENGTH = 64;
+    Hooks.generateSecretId(BusinessMemberClaim, {length: 64});
+    Hooks.updateTimestamps(BusinessMemberClaim);
 
     BusinessMemberClaim.validateAsync('userId', function (onError, onDone) {
         this.user(function (error, user) {
@@ -18,16 +19,6 @@ module.exports = function (BusinessMemberClaim) {
             onDone();
         });
     }, {message: 'exists'});
-
-    BusinessMemberClaim.beforeCreate = function (next) {
-        uid(ID_LENGTH, function (error, id) {
-            if (error) next(error);
-            else {
-                this.id = id;
-                next();
-            }
-        }.bind(this));
-    };
 
     BusinessMemberClaim.afterCreate = function (next) {
         var Email = BusinessMemberClaim.app.models.email,

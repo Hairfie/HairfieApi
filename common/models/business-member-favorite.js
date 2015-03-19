@@ -1,13 +1,11 @@
 'use strict';
 
 var Promise = require('../utils/Promise');
-var UUID = require('uuid');
+var Hooks = require('./hooks');
 
 module.exports = function (BusinessMemberFavorite) {
-    BusinessMemberFavorite.beforeCreate = function (next) {
-        this.id = this.id || UUID.v4();
-        next();
-    };
+    Hooks.generateId(BusinessMemberFavorite);
+    Hooks.updateTimestamps(BusinessMemberFavorite);
 
     BusinessMemberFavorite.validateAsync('businessMemberId', function (onError, onDone) {
         this.businessMember(function (error, businessMember) {

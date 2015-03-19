@@ -7,7 +7,6 @@
       "accept",
       "refuse"
     ],
-    "timestampable": true,
     "mongodb": {
       "collection": "businessMemberClaims"
     }

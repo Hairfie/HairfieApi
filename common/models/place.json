@@ -1,58 +1,57 @@
 {
-  "name": "Place",
-  "plural": "Places",
-  "options": {
-    "timestampable": true,
-    "sharedMethodNames": [
-      "query",
-      "findById"
-    ],
-    "mongodb": {
-      "collection": "places"
-    }
-  },
-  "properties": {
-    "id": {
-      "type": "string",
-      "id": true
-    },
-    "name": {
-      "type": "object",
-      "required": true
-    },
-    "location": {
-      "type": "geopoint",
-      "required": true
-    },
-    "bounds": {
-      "type": {
-        "northEast": {
-          "type": "geopoint",
-          "required": true
+    "name": "Place",
+    "plural": "Places",
+    "properties": {
+        "id": {
+            "id": true,
+            "type": "string"
         },
-        "southWest": {
-          "type": "geopoint",
-          "required": true
+        "name": {
+            "type": "object",
+            "required": true
+        },
+        "location": {
+            "type": "geopoint",
+            "required": true
+        },
+        "bounds": {
+            "type": {
+                "northEast": {
+                    "type": "geopoint",
+                    "required": true
+                },
+                "southWest": {
+                    "type": "geopoint",
+                    "required": true
+                }
+            }
+        },
+        "googlePlaceId": {
+            "index": true,
+            "type": "string"
+        },
+        "googleTypes": {
+            "type": "array"
+        },
+        "googleComponents": {
+            "type": "object"
+        },
+        "placeId": {
+            "index": true,
+            "type": "string"
         }
-      }
     },
-    "googlePlaceId": {
-      "type": "string",
-      "index": true
+    "options": {
+        "sharedMethodNames": [
+            "query",
+            "findById"
+        ],
+        "mongodb": {
+            "collection": "places"
+        }
     },
-    "googleTypes": {
-      "type": "array"
-    },
-    "googleComponents": {
-      "type": "object"
-    },
-    "placeId": {
-      "type": "string",
-      "index": true
-    }
-  },
-  "validations": [],
-  "relations": {},
-  "acls": [],
-  "methods": []
+    "validations": [],
+    "relations": {},
+    "acls": [],
+    "methods": []
 }

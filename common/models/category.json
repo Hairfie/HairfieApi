@@ -3,7 +3,6 @@
   "plural": "Categories",
   "base": "PersistedModel",
   "options": {
-    "timestampable": true,
     "sharedMethodNames": [
       "find",
       "findById"

@@ -1,14 +1,11 @@
 'use strict';
 
 var Promise = require('../../common/utils/Promise');
-
-var UUID = require('uuid');
+var Hooks = require('./hooks');
 
 module.exports = function (ContentIssue) {
-    ContentIssue.observe('before save', function generateId(ctx, next) {
-        if (ctx.instance) ctx.instance.id = ctx.instance.id || UUID.v4();
-        next();
-    });
+    Hooks.generateId(ContentIssue);
+    Hooks.updateTimestamps(ContentIssue);
 
     ContentIssue.toRemoteObject = function (context) {
         return {
