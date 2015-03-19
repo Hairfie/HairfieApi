@@ -12,19 +12,12 @@ module.exports = function (AlgoliaSearchEngine) {
     }
 
     function getIndex(type) {
-        switch (type) {
-            case 'business':
-                return getSettings().index.business;
-            case 'hairfie':
-                return getSettings().index.hairfie;
-            default:
-                return getSettings().index.business;
-        }
+        return getSettings().index[type];
     }
 
     function getClient() {
         if (!client) {
-            client = new Algolia(getSettings().applicationId, getSettings().adminApiKey);
+            client = new Algolia(getSettings().applicationId, getSettings().apiKey);
         }
 
         return client;
