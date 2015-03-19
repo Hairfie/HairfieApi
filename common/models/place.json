@@ -1,58 +1,58 @@
 {
-    "name": "Place",
-    "plural": "Places",
-    "properties": {
-        "id": {
-            "id": true,
-            "type": "string"
-        },
-        "name": {
-            "type": "object",
-            "required": true
-        },
-        "location": {
-            "type": "geopoint",
-            "required": true
-        },
-        "bounds": {
-            "type": {
-                "northEast": {
-                    "type": "geopoint",
-                    "required": true
-                },
-                "southWest": {
-                    "type": "geopoint",
-                    "required": true
-                }
-            }
-        },
-        "googlePlaceId": {
-            "index": true,
-            "type": "string"
-        },
-        "googleTypes": {
-            "type": "array"
-        },
-        "googleComponents": {
-            "type": "object"
-        },
-        "placeId": {
-            "index": true,
-            "type": "string"
-        }
+  "name": "Place",
+  "plural": "Places",
+  "options": {
+    "timestampable": true,
+    "sharedMethodNames": [
+      "query",
+      "findById"
+    ],
+    "mongodb": {
+      "collection": "places"
+    }
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "id": true
     },
-    "options": {
-        "timestampable": true,
-        "sharedMethodNames": [
-            "query",
-            "findById"
-        ],
-        "mongodb": {
-            "collection": "places"
-        }
+    "name": {
+      "type": "object",
+      "required": true
     },
-    "validations": [],
-    "relations": {},
-    "acls": [],
-    "methods": []
+    "location": {
+      "type": "geopoint",
+      "required": true
+    },
+    "bounds": {
+      "type": {
+        "northEast": {
+          "type": "geopoint",
+          "required": true
+        },
+        "southWest": {
+          "type": "geopoint",
+          "required": true
+        }
+      }
+    },
+    "googlePlaceId": {
+      "type": "string",
+      "index": true
+    },
+    "googleTypes": {
+      "type": "array"
+    },
+    "googleComponents": {
+      "type": "object"
+    },
+    "placeId": {
+      "type": "string",
+      "index": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
 }

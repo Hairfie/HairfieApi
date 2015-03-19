@@ -24,7 +24,7 @@
       "required": true
     },
     "body": {
-        "type": "string"
+      "type": "string"
     }
   },
   "validations": [],

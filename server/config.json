@@ -11,5 +11,7 @@
   "defaultLanguage": "fr",
   "iosAppUrl": "https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=853590611",
   "emailFrom": "Hairfie <hello@hairfie.com>",
-  "adminIds": ["fbeb5aed-a2a9-4842-b177-3c656aea66f5"]
+  "adminIds": [
+    "fbeb5aed-a2a9-4842-b177-3c656aea66f5"
+  ]
 }

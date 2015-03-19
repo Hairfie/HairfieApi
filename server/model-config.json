@@ -161,5 +161,9 @@
   "ContentIssue": {
     "dataSource": "hairfieMongo",
     "public": true
+  },
+  "Station": {
+    "dataSource": "hairfieMongo",
+    "public": true
   }
 }
