@@ -15,7 +15,7 @@ module.exports = function (Container) {
         var buckets = Container.dataSource.settings.buckets;
 
         Container.bucketForContainer = function (name) {
-            if (!buckets[name]) throw new Error('Undefined container');
+            if (!buckets[name]) throw new Error('Container "'+name+'" does not exist.');
 
             return buckets[name];
         };
@@ -59,7 +59,7 @@ module.exports = function (Container) {
 
         Container.download = function (container, file, width, height, res, cb) {
             var client = Container.dataSource.connector.client;
-            var watermarkUrl = container == bucketForContainer('hairfies') ? Container.app.urlGenerator.watermark('/img/watermark.png') : undefined;
+            var watermarkUrl = container == Container.bucketForContainer('hairfies') ? Container.app.urlGenerator.watermark('/img/watermark.png') : undefined;
 
             download(client, null, res, container, file, width, height, watermarkUrl, cb);
         };
@@ -86,9 +86,9 @@ module.exports = function (Container) {
     //       specific config, take containers from config
     Container.beforeRemote('*', function (ctx, _, next) {
         if ('createContainer' == ctx.method.name) {
-            ctx.req.body.name = Container.prefixName(ctx.req.body.name);
+            ctx.req.body.name = Container.bucketForContainer(ctx.req.body.name);
         } else if (ctx.args.container) {
-            ctx.args.container = Container.prefixName(ctx.args.container);
+            ctx.args.container = Container.bucketForContainer(ctx.args.container);
         }
         next();
     });
