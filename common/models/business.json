@@ -15,7 +15,8 @@
       "saveFacebookPage",
       "deleteFacebookPage",
       "getCustomers",
-      "claim"
+      "claim",
+      "tags"
     ],
     "mongodb": {
       "collection": "businesses"

@@ -242,11 +242,6 @@ module.exports = function(Business) {
                     pictures.push(Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject());
                 }
 
-                var places = this.getAllPlaces()
-                    .then(function (results) {
-                        return lodash.map(results, 'name');
-                    });
-
                 return {
                     id                 : this.id,
                     objectID           : this.id.toString(),
@@ -323,13 +318,6 @@ module.exports = function(Business) {
             .then(function(categories) {
                 return lodash.uniq(lodash.flatten(categories), 'id');
             });
-    };
-
-    Business.prototype.getAllPlaces = function () {
-        // Get PLaces associated with this business
-        var Place  = Business.app.models.Place;
-
-        return Promise.ninvoke(Place, 'find', {where: {zipCodes: this.address.zipCode}});
     };
 
     Business.prototype.getGenderArray = function () {
@@ -790,6 +778,35 @@ module.exports = function(Business) {
             .fail(cb);
     };
 
+
+    Business.tags = function (businessId, callback) {
+        var Tag = Business.app.models.Tag;
+
+        return Promise.ninvoke(Business, 'findById', businessId)
+            .then(function(business) {
+                return business.getHairfieTagCounts();
+            })
+            .then(function(hairfieTagCounts) {
+                return Promise.all([
+                    Promise.ninvoke(Tag, 'findByIds', lodash.keys(hairfieTagCounts)),
+                    hairfieTagCounts
+                ]);
+            })
+            .then(function(arr) {
+                var tags = arr[0],
+                    hairfieTagCounts = arr[1];
+
+                return {toRemoteObject: function (context) {
+                    return lodash.sortBy(lodash.map(tags, function(tag) {
+                        return {
+                            tag: tag.toRemoteObject(context),
+                            tagCount: hairfieTagCounts[tag.id]
+                        };
+                    }), 'tagCount').reverse();
+                }};
+            });
+    };
+
     Business.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, _, next) {
         ctx.req.user.isManagerOfBusiness(ctx.instance.id)
             .then(function (isManager) {
@@ -851,6 +868,15 @@ module.exports = function(Business) {
         ],
         returns: {arg: 'businesses', root: true},
         http: { verb: 'GET', path: '/:businessId/similar' }
+    });
+
+    Business.remoteMethod('tags', {
+        description: 'Get tags for Hairfie',
+        accepts: [
+            {arg: 'businessId', type: 'string', description: 'ID of the reference business'}
+        ],
+        returns: {arg: 'businesses', root: true},
+        http: { verb: 'GET', path: '/:businessId/tags' }
     });
 
     Business.remoteMethod('getFacebookPage', {
