@@ -9,7 +9,7 @@ var fs = require('fs'),
     imageMagick = gm.subClass({ imageMagick: true });
 
 module.exports = function (Container) {
-    Container.prefixName = function (name) { throw Error('Not initialized'); };
+    Container.bucketForContainer = function (name) { throw Error('Not initialized'); };
 
     Container.on('attached', function (app) {
         var buckets = Container.dataSource.settings.buckets;
@@ -35,7 +35,7 @@ module.exports = function (Container) {
         Container.upload = function (req, res, cb) {
             var client = Container.dataSource.connector.client;
 
-            upload(client, req, res, Container.prefixName(req.params.container), function (error, result) {
+            upload(client, req, res, Container.bucketForContainer(req.params.container), function (error, result) {
                 if (error) return cb(error);
 
                 for (var name in result.files) if (result.files.hasOwnProperty(name)) {
