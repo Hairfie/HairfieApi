@@ -42,6 +42,12 @@ module.exports = {
         connector: 'loopback-component-storage',
         provider: 'amazon',
         keyId: process.env.AMAZON_S3_KEY_ID,
-        key: process.env.AMAZON_S3_SECRET
+        key: process.env.AMAZON_S3_SECRET,
+        buckets: {
+            'hairfies': process.env.AMAZON_S3_BUCKET_HAIRFIES,
+            'business-pictures': process.env.AMAZON_S3_BUCKET_BUSINESS_PICTURES,
+            'user-profile-pictures': process.env.AMAZON_S3_BUCKET_USER_PROFILE_PICTURES,
+            'categories': process.env.AMAZON_S3_BUCKET_CATEGORIES
+        }
     }
 };

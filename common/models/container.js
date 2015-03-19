@@ -12,16 +12,17 @@ module.exports = function (Container) {
     Container.prefixName = function (name) { throw Error('Not initialized'); };
 
     Container.on('attached', function (app) {
-        Container.prefixName = function (name) {
-            var env = app.get('env');
-            if ('local_staging' == env) env = 'staging';
+        var buckets = Container.dataSource.settings.buckets;
 
-            return ['hairfie', env, name].join('-');
+        Container.bucketForContainer = function (name) {
+            if (!buckets[name]) throw new Error('Undefined container');
+
+            return buckets[name];
         };
 
         var originalUploadStream = Container.uploadStream;
         Container.uploadStream = function (container, file, options, cb) {
-            return originalUploadStream(Container.prefixName(container), file, options, cb);
+            return originalUploadStream(Container.bucketForContainer(container), file, options, cb);
         };
 
         // Generate random filenames
@@ -58,7 +59,7 @@ module.exports = function (Container) {
 
         Container.download = function (container, file, width, height, res, cb) {
             var client = Container.dataSource.connector.client;
-            var watermarkUrl = (container.indexOf("hairfies") > -1) ? Container.app.urlGenerator.watermark('/img/watermark.png') : undefined;
+            var watermarkUrl = container == bucketForContainer('hairfies') ? Container.app.urlGenerator.watermark('/img/watermark.png') : undefined;
 
             download(client, null, res, container, file, width, height, watermarkUrl, cb);
         };
@@ -77,7 +78,7 @@ module.exports = function (Container) {
 
         var oldGetFile = Container.getFile;
         Container.getFile = function (container, file, cb) {
-            oldGetFile(Container.prefixName(container), file, cb);
+            oldGetFile(Container.bucketForContainer(container), file, cb);
         };
     });
 
