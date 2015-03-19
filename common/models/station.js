@@ -1,14 +1,33 @@
 'use strict';
 
 var moment = require('moment');
+var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 var Promise = require('../../common/utils/Promise');
-var _ = require('lodash');
+var lodash = require('lodash');
 
 module.exports = function (Station) {
 
     Station.nearby = function (location, cb) {
+        var maxDistance = 500, //meters here
+            location    = GeoPoint(location);
 
+        return Promise.ninvoke(Station, 'mongoNearby', location, maxDistance)
+            .then(function(result) {
+                return Promise.ninvoke(Station, 'findByIds', lodash.pluck(result, '_id'));
+            });
     };
+
+    Station.mongoNearby = function(location, maxDistance, callback) {
+        var collection = Station.dataSource.connector.collection(Station.definition.name);
+
+        var where = {gps: {$near: location, $maxDistance: maxDistance/111120}};
+
+        collection.find(where).toArray(function (error, stations) {
+            if (error) return callback(error);
+
+            callback(null, stations);
+        });
+    }
 
     Station.remoteMethod('nearby', {
         description: 'Returns the stats for a specific business',
@@ -16,6 +35,6 @@ module.exports = function (Station) {
             {arg: 'location', type: 'string', required: true, description: 'geo location:{lng: ,lat:}.'},
         ],
         returns: {arg: 'stations', root: true},
-        http: { verb: 'GET', path: '/stations/' }
+        http: { verb: 'GET', path: '/' }
     });
 };

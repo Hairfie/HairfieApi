@@ -20,10 +20,19 @@
     },
     "source": {
       "type": "string",
-      "required": true
+      "required": true,
+      "default": "ratp"
     },
     "city": {
       "type": "string"
+    }
+  },
+  "options": {
+    "sharedMethodNames": [
+      "nearby"
+    ],
+    "mongodb": {
+      "collection": "stations"
     }
   },
   "validations": [],
