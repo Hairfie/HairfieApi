@@ -1,10 +1,11 @@
 'use strict';
 
-var uid = require('uid2');
 var Promise = require('../../common/utils/Promise');
+var Hooks = require('./hooks');
 
 module.exports = function (BusinessReviewRequest) {
-    var ID_LENGTH = 64;
+    Hooks.generateSecretId(BusinessReviewRequest, {length: 64});
+    Hooks.updateTimestamps(BusinessReviewRequest);
 
     BusinessReviewRequest.prototype.toRemoteObject = function (context) {
         return {
@@ -24,15 +25,5 @@ module.exports = function (BusinessReviewRequest) {
 
     BusinessReviewRequest.prototype.canWrite = function () {
         return !this.reviewId;
-    };
-
-    BusinessReviewRequest.beforeCreate = function (next) {
-        uid(ID_LENGTH, function (error, id) {
-            if (error) next(error);
-            else {
-                this.id = id;
-                next();
-            }
-        }.bind(this));
     };
 };

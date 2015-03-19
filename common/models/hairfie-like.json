@@ -2,7 +2,6 @@
   "name": "HairfieLike",
   "plural": "HairfieLikes",
   "options": {
-    "timestampable": true,
     "mongodb": {
       "collection": "hairfieLikes"
     }

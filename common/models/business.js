@@ -7,9 +7,12 @@ var getSlug = require('speakingurl');
 var lodash = require('lodash');
 var Control = require('../utils/AccessControl');
 var ejs = require('elastic.js');
-var UUID = require('uuid');
+var Hooks = require('./hooks');
 
 module.exports = function(Business) {
+    Hooks.generateId(Business);
+    Hooks.updateTimestamps(Business);
+
     Business.prototype.toRemoteObject = function (context) {
         var Hairfie        = Business.app.models.Hairfie,
             Hairdresser    = Business.app.models.Hairdresser,
@@ -364,11 +367,6 @@ module.exports = function(Business) {
         });
 
         // don't wait for the email
-        next();
-    };
-
-    Business.beforeCreate = function (next) {
-        this.id = this.id || UUID.v4();
         next();
     };
 

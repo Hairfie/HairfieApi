@@ -2,7 +2,6 @@
   "name": "TagCategory",
   "plural": "TagCategories",
   "options": {
-    "timestampable": true,
     "mongodb": {
       "collection": "tagCategories"
     }

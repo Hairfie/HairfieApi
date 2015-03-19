@@ -4,14 +4,11 @@ var Promise = require('../../common/utils/Promise'),
     request = require('superagent'),
     utf8 = require('utf8');
 
-var UUID = require('uuid');
+var Hooks = require('./hooks');
 
 module.exports = function(Place) {
-    Place.observe('before save', function generateId(ctx, next) {
-        if (ctx.instance) ctx.instance.id = ctx.instance.id || UUID.v4();
-
-        next();
-    });
+    Hooks.generateId(Place);
+    Hooks.updateTimestamps(Place);
 
     Place.observe('before save', function getParent(ctx, next) {
         var place = ctx.instance;

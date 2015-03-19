@@ -2,9 +2,12 @@
 
 var Promise = require('../../common/utils/Promise');
 var moment = require('moment');
-var UUID = require('uuid');
+var Hooks = require('./hooks');
 
 module.exports = function (Booking) {
+    Hooks.generateId(Booking);
+    Hooks.updateTimestamps(Booking);
+
     Booking.GENDER_MALE = 'MALE';
     Booking.GENDER_FEMALE = 'FEMALE';
 
@@ -26,11 +29,6 @@ module.exports = function (Booking) {
             createdAt       : this.createdAt,
             updatedAt       : this.updatedAt
         };
-    };
-
-    Booking.beforeCreate = function (next) {
-        this.id = this.id || UUID.v4();
-        next();
     };
 
     Booking.afterCreate = function (next) {

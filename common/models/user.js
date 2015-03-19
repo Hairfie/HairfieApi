@@ -5,9 +5,13 @@ var Promise = require('../../common/utils/Promise');
 var Q = require('q');
 var _ = require('lodash');
 var UUID = require('uuid');
+var Hooks = require('./hooks');
 
 
 module.exports = function(User) {
+    Hooks.generateId(User);
+    Hooks.updateTimestamps(User);
+
     User.GENDER_MALE = 'MALE';
     User.GENDER_FEMALE = 'FEMALE';
 
@@ -78,11 +82,6 @@ module.exports = function(User) {
     };
 
     User.validatesInclusionOf('gender', {in: [User.GENDER_MALE, User.GENDER_FEMALE]});
-
-    User.beforeCreate = function (next) {
-        this.id = this.id || UUID.v4();
-        next();
-    };
 
     User.beforeSave = function (next) {
         if (!this.language) this.language = User.app.get('defaultLanguage');

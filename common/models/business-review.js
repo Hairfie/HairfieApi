@@ -2,9 +2,12 @@
 
 var Promise = require('../../common/utils/Promise');
 var _ = require('lodash');
-var UUID = require('uuid');
+var Hooks = require('./hooks');
 
 module.exports = function (BusinessReview) {
+    Hooks.generateId(BusinessReview);
+    Hooks.updateTimestamps(BusinessReview);
+
     var criterionKeys = [
         'welcome',
         'treatment',
@@ -52,11 +55,6 @@ module.exports = function (BusinessReview) {
             if (value < 0 || value > 100) onError();
         });
     }, {message: 'valid'});
-
-    BusinessReview.beforeCreate = function (next) {
-        this.id = this.id || UUID.v4();
-        next();
-    };
 
     BusinessReview.beforeValidate = function (next) {
         var sum = 0, count = 0;

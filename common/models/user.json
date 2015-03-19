@@ -3,7 +3,6 @@
   "plural": "users",
   "base": "User",
   "options": {
-    "timestampable": true,
     "mongodb": {
       "collection": "users"
     }

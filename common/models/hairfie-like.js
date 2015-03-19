@@ -1,14 +1,11 @@
 'use strict';
 
 var Promise = require('../../common/utils/Promise');
-
-var UUID = require('uuid');
+var Hooks = require('./hooks');
 
 module.exports = function (HairfieLike) {
-    HairfieLike.beforeCreate = function (next) {
-        this.id = this.id || UUID.v4();
-        next();
-    };
+    Hooks.generateId(HairfieLike);
+    Hooks.updateTimestamps(HairfieLike);
 
     HairfieLike.prototype.toRemoteObject = function (context) {
         return {

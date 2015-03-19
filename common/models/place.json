@@ -42,7 +42,6 @@
         }
     },
     "options": {
-        "timestampable": true,
         "sharedMethodNames": [
             "query",
             "findById"

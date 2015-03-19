@@ -2,7 +2,6 @@
   "name": "HairdresserSuggestion",
   "plural": "HairdresserSuggestions",
   "options": {
-    "timestampable": true,
     "sharedMethodNames": [
       "create"
     ],

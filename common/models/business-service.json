@@ -2,7 +2,6 @@
   "name": "BusinessService",
   "plural": "BusinessServices",
   "options": {
-    "timestampable": true,
     "sharedMethodNames": [
       "create",
       "updateAttributes",
