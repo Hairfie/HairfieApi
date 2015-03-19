@@ -22,38 +22,7 @@ app.get('/', function (req, res) {
 var path = require('path');
 app.use(loopback.static(path.resolve(__dirname, '../client')));
 
-function loadConfig(name, env) {
-    var candidates = [
-        './'+name,
-        './'+name+'.local',
-        './'+name+'.'+process.env.NODE_ENV
-    ];
-
-    var configs = candidates
-        .map(function (candidate) {
-            try { return require(candidate+'.js'); } catch(e) {}
-            try { return require(candidate+'.json'); } catch(e) {}
-        })
-        .filter(function (config) {
-            return !!config;
-        })
-    ;
-
-    if (configs.length === 0) {
-        return;
-    }
-
-    var result = {};
-    configs.forEach(function (config) {
-        for (var key in config) if (config.hasOwnProperty(key)) {
-            result[key] = config[key];
-        }
-    });
-
-    return result;
-}
-
-var passportConfig = loadConfig('auth-providers', process.env.NODE_ENV);
+var passportConfig = require('./auth-providers');
 if (!passportConfig) {
     console.log('Unable to load passport config.');
     process.exit(1);
@@ -134,7 +103,8 @@ app.use(rewriteModule.getMiddleware([
 // boot scripts mount components like REST API
 boot(app, {
     appRootDir: __dirname,
-    dataSources: loadConfig('datasources', process.env.NODE_ENV)
+    config: require('./config'),
+    dataSources: require('./datasources')
 });
 
 // setup passport

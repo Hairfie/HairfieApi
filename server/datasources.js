@@ -1,32 +1,25 @@
+'use strict';
+
 module.exports = {
     hairfieMongo: {
         name: 'hairfieMongo',
         connector: 'mongodb',
-        debug: !!process.env.MONDO_DEBUG,
+        debug: false,
         hostname: process.env.MONGO_HOST,
         port: process.env.MONGO_PORT,
         user: process.env.MONGO_USER,
         password: process.env.MONGO_PASS,
         database: process.env.MONGO_DB
     },
-    searchEngine: {
-        name: 'searchEngine',
-        type: 'memory',
-        host: process.env.ELASTIC_HOST,
-        port: process.env.ELASTIC_PORT,
-        user: process.env.ELASTIC_USER,
-        pass: process.env.ELASTIC_PASS,
-        index: process.env.ELASTIC_INDEX,
-    },
     algoliaSearchEngine: {
         name: "algoliaSearchEngine",
         type: "memory",
         index: {
-            "business": "hairfie-production_businesses",
-            "hairfie": "hairfie-production_hairfies"
+            business: process.env.ALGOLIA_INDEX_BUSINESS,
+            hairfie: process.env.ALGOLIA_INDEX_HAIRFIE
         },
-        applicationId: "X9MA7FE0CL",
-        adminApiKey: "b6551e8b6dccdd833b0e7b488ba9fb1a"
+        applicationId:  process.env.ALGOLIA_APPLICATION_ID,
+        apiKey: process.env.ALGOLIA_API_KEY
     },
     mailer: {
         name: 'mailer',

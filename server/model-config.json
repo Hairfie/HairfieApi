@@ -78,10 +78,6 @@
     "dataSource": "hairfieMongo",
     "public": false
   },
-  "SearchEngine": {
-    "dataSource": "searchEngine",
-    "public": false
-  },
   "AlgoliaSearchEngine": {
     "dataSource": "algoliaSearchEngine",
     "public": false
