@@ -8,8 +8,13 @@ var UUID = require('uuid');
 
 module.exports = function(Place) {
     Place.observe('before save', function generateId(ctx, next) {
+        if (ctx.instance) ctx.instance.id = ctx.instance.id || UUID.v4();
+
+        next();
+    });
+
+    Place.observe('before save', function getParent(ctx, next) {
         var place = ctx.instance;
-        if (place) place.id = place.id || UUID.v4();
 
         if(place && place.needParent()) {
             place.saveParentPlace(function(error, parent) {
