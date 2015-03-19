@@ -4,8 +4,13 @@ var moment = require('moment');
 var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 var Promise = require('../../common/utils/Promise');
 var lodash = require('lodash');
+var Hooks = require('./hooks');
+
 
 module.exports = function (Station) {
+    Hooks.generateId(Station);
+    Hooks.updateTimestamps(Station);
+
 
     Station.nearby = function (location, cb) {
         var maxDistance = 500, //meters here
