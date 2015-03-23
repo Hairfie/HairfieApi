@@ -28,6 +28,6 @@ module.exports = function(Category) {
     };
 
     Category.prototype.getPictureObject = function () {
-        return Picture.fromDatabaseValue(this.picture, 'category', Category.app);
+        return Picture.fromDatabaseValue(this.picture, 'categories', Category.app);
     };
 };
