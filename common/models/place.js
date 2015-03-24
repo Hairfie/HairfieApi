@@ -32,12 +32,14 @@ module.exports = function(Place) {
 
     Place.prototype.toRemoteShortObject = function (context) {
         return {
-            id      : this.id,
-            href    : Place.app.urlGenerator.api('places/'+this.id),
-            name    : this.name.fr,
-            location: this.location,
-            bounds  : this.bounds,
-            parent  : this.parent(context)
+            id          : this.id,
+            href        : Place.app.urlGenerator.api('places/'+this.id),
+            name        : this.name.fr,
+            description : this.description.fr,
+            picture     : this.picture &&  Picture.fromDatabaseValue(this.picture, 'places', Place.app),
+            location    : this.location,
+            bounds      : this.bounds,
+            parent      : this.parent(context)
         };
     };
 
