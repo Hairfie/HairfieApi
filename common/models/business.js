@@ -410,14 +410,18 @@ module.exports = function(Business) {
         }
     }
 
-    Business.search = function(location, radius, query, genders, facetFilters, price, page, limit, callback) {
+    Business.search = function(location, radius, bounds, query, genders, facetFilters, price, page, limit, callback) {
         var maxDistance = radius || 10000,
             location    = location ? GeoPoint(location) : null,
+            bounds      = !bounds ? undefined : {
+                northEast: GeoPoint(bounds.northEast),
+                southWest: GeoPoint(bounds.southWest)
+            },
             page        = Math.max(page || 1),
             limit       = Math.min(limit || 10, 100),
             query       = query || '';
 
-        return Promise.ninvoke(Business, 'algoliaSearch', location, maxDistance, query, genders, facetFilters, price, page, limit)
+        return Promise.ninvoke(Business, 'algoliaSearch', location, maxDistance, bounds, query, genders, facetFilters, price, page, limit)
             .then(processAlgoliaForSearch)
             .nodeify(callback)
         ;
@@ -436,7 +440,7 @@ module.exports = function(Business) {
         });
     }
 
-    Business.algoliaSearch = function(location, maxDistance, query, genders, facetFilters, price, page, limit, callback)  {
+    Business.algoliaSearch = function(location, maxDistance, bounds, query, genders, facetFilters, price, page, limit, callback)  {
         var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
 
         var params = {
@@ -448,10 +452,14 @@ module.exports = function(Business) {
         var numericFiltersArr = [];
         var facetFiltersArr = [];
 
-        if(location) {
+        if (location) {
             params.aroundLatLng = location.asLatLngString(),
             params.aroundRadius = maxDistance,
             params.aroundPrecision = 10
+        }
+
+        if (bounds) {
+            params.insideBoundingBox = bounds.northEast.asLatLngString()+','+bounds.southWest.asLatLngString();
         }
 
         if(genders) {
@@ -811,6 +819,7 @@ module.exports = function(Business) {
         accepts: [
             {arg: 'location', type: 'object', description: 'location:{lng: ,lat:}. For ex : 2.30,48.87'},
             {arg: 'radius', type: 'number', description: 'Radius in meter around the geo location' },
+            {arg: 'bounds', type: 'object', description: '{northEast: {lng: x1, lat: y1}, southWest: {lng: x2, lat: y2}}' },
             {arg: 'query', type: 'string', description: 'plain text search'},
             {arg: 'clientTypes', type: 'array'},
             {arg: 'facetFilters', type: 'array', description: 'Filters based on facets'},
