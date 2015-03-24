@@ -34,8 +34,8 @@ module.exports = function(Place) {
         return {
             id          : this.id,
             href        : Place.app.urlGenerator.api('places/'+this.id),
-            name        : this.name.fr,
-            description : this.description.fr,
+            name        : context.localized(this.name),
+            description : context.localized(this.description),
             picture     : this.picture &&  Picture.fromDatabaseValue(this.picture, 'places', Place.app),
             location    : this.location,
             bounds      : this.bounds,
