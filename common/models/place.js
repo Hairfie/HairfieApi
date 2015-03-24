@@ -27,7 +27,7 @@ module.exports = function(Place) {
     });
 
     Place.prototype.toRemoteObject = function (context) {
-        return this.toRemoteShortObject();
+        return this.toRemoteShortObject(context);
     };
 
     Place.prototype.toRemoteShortObject = function (context) {
