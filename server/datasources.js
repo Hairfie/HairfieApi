@@ -47,7 +47,8 @@ module.exports = {
             'hairfies': process.env.AMAZON_S3_BUCKET_HAIRFIES,
             'business-pictures': process.env.AMAZON_S3_BUCKET_BUSINESS_PICTURES,
             'user-profile-pictures': process.env.AMAZON_S3_BUCKET_USER_PROFILE_PICTURES,
-            'categories': process.env.AMAZON_S3_BUCKET_CATEGORIES
+            'categories': process.env.AMAZON_S3_BUCKET_CATEGORIES,
+            'places': process.env.AMAZON_S3_BUCKET_PLACES
         }
     }
 };
