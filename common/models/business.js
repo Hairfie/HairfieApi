@@ -100,7 +100,6 @@ module.exports = function(Business) {
         };
     };
 
-<<<<<<< HEAD
     Business.prototype.getFacebookPageObject = function () {
         var User = Business.app.models.user;
 
@@ -126,7 +125,8 @@ module.exports = function(Business) {
 
     Business.prototype.slug = function () {
         return getSlug(this.name);
-=======
+    };
+
     Business.prototype.toSearchIndexObject = function () {
           var doc = {};
           doc.name = this.name;
@@ -135,13 +135,6 @@ module.exports = function(Business) {
           }
 
           return doc;
-    };
-
-    Business.afterSave = function (next) {
-        var SearchEngine = app.models.SearchEngine;
-        SearchEngine.index('business', this.id, this.toSearchIndexObject());
-        next();
->>>>>>> production
     };
 
     Business.prototype.pictureObjects = function () {
