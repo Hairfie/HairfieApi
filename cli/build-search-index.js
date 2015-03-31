@@ -7,29 +7,12 @@ module.exports = function (program, app) {
         .command('build-search-index')
         .description('Builds the search index')
         .option('--clear', 'Clears index before building it')
-        .option('--algolia', 'Index on algolia instead of elastic search')
 
         .action(function (options) {
-            var SearchEngine = options.algolia ? app.models.AlgoliaSearchEngine : app.models.SearchEngine;
+            var SearchEngine = app.models.AlgoliaSearchEngine;
 
             var promise = Promise();
-
-            if (options.clear && !options.algolia) {
-                promise = promise.then(function () {
-                    console.log('Dropping index');
-                    SearchEngine
-                        .dropIndex()
-                        .then(function () {
-                            console.log('Creating index');
-                            return SearchEngine.createIndex();
-                        })
-                        .then(function () {
-                            console.log('Defining mappings');
-                            return SearchEngine.defineAllMappings();
-                        })
-                });
-            }
-            if (options.clear && options.algolia) {
+            if (options.clear) {
                 promise = promise.then(function () {
                     console.log('Dropping index');
                     SearchEngine
