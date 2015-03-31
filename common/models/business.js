@@ -28,7 +28,7 @@ module.exports = function(Business) {
                 var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
 
                 // add street view when business has no picture
-                if (0 == pictures.length) {
+                if (!context.isExp() && 0 == pictures.length) {
                     pictures.push(streetViewPicture);
                 }
 
@@ -78,12 +78,12 @@ module.exports = function(Business) {
             }).bind(this));
     };
 
-    Business.prototype.toRemoteShortObject = function () {
+    Business.prototype.toRemoteShortObject = function (context) {
         var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject();
 
         var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
 
-        if (0 == pictures.length) {
+        if (!context.isExp() && 0 == pictures.length) {
             pictures.push(streetViewPicture);
         }
 
