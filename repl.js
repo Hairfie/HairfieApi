@@ -11,6 +11,7 @@ var Place = app.models.Place;
 var User = app.models.User;
 var Hairfie = app.models.Hairfie;
 var Business = app.models.Business;
+var BusinessMember = app.models.BusinessMember;
 
 
 // open the repl session
@@ -26,9 +27,11 @@ replServer.context.Place = Place;
 replServer.context.User = User;
 replServer.context.Hairfie = Hairfie;
 replServer.context.Business = Business;
+replServer.context.BusinessMember = BusinessMember;
 
 replServer.context.find = find;
 replServer.context.findOne = findOne;
+replServer.context.findByIds = findByIds;
 replServer.context.all = all;
 replServer.context.log = log;
 replServer.context.save = save;
@@ -47,6 +50,10 @@ function find(Model, filter) {
 
 function findOne(Model, filter) {
     return Q.ninvoke(Model, 'findOne', filter);
+}
+
+function findByIds(Model, ids) {
+    return Q.ninvoke(Model, 'findByIds', ids);
 }
 
 function log(message) {
