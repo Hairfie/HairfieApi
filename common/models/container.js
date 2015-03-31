@@ -194,6 +194,8 @@ function download (provider, req, res, container, file, width, height, watermark
     console.log("typeof(width)", typeof(width));
     console.log("typeof(height)", typeof(height));
 
+    var quality = 90;
+
     switch (true) {
         case typeof(watermarkUrl) != 'undefined' && typeof(width) != 'undefined' && typeof(height) != 'undefined':
             var tmpPicture = imageMagick(reader)
@@ -204,6 +206,7 @@ function download (provider, req, res, container, file, width, height, watermark
             tmpPicture = imageMagick(tmpPicture)
                 .resize(width, height, '^')
                 .gravity('Center').crop(width, height)
+                .quality(quality)
                 .stream();
             break;
 
@@ -215,14 +218,17 @@ function download (provider, req, res, container, file, width, height, watermark
                 .stream();
             tmpPicture = imageMagick(tmpPicture)
                 .resize(width, height, '^')
+                .quality(quality)
                 .stream();
             break;
 
         case typeof(watermarkUrl) != 'undefined':
             var tmpPicture = imageMagick(reader)
+                .strip()
                 .subCommand('composite')
                 .gravity('NorthEast')
                 .in('-compose', 'Over', watermarkUrl)
+                .quality(quality)
                 .stream();
             break;
 
@@ -230,17 +236,21 @@ function download (provider, req, res, container, file, width, height, watermark
             var tmpPicture = imageMagick(reader)
                 .resize(width, height, '^')
                 .gravity('Center').crop(width, height)
+                .quality(quality)
                 .stream();
             break;
 
         case (typeof(width) != 'undefined' || typeof(height) != 'undefined'):
             var tmpPicture = imageMagick(reader)
                 .resize(width, height)
+                .quality(quality)
                 .stream();
             break;
 
         default:
-            var tmpPicture = reader;
+            var tmpPicture = imageMagick(reader)
+                .quality(quality)
+                .stream();
             break;
     }
 
