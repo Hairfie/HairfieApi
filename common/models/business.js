@@ -541,7 +541,7 @@ module.exports = function(Business) {
                 return {
                     toRemoteObject: function (context) {
                         return lodash.map(businesses, function(business) {
-                            return business.toRemoteObject()
+                            return business.toRemoteObject(context)
                         })
                     }
                 }
