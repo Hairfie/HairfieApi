@@ -49,7 +49,7 @@ function businessDeal(business) {
     return {
         toRemoteObject: function (context) {
             return {
-                business: business.toRemoteShortObject(),
+                business: business.toRemoteShortObject(context),
                 discount: business.bestDiscount
             }
         }
