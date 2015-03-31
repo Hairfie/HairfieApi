@@ -520,7 +520,7 @@ module.exports = function(Business) {
                     toRemoteObject: function (context) {
                         return {
                             hits: lodash.map(businesses, function(business) {
-                                return business.toRemoteShortObject()
+                                return business.toRemoteShortObject(context)
                             }),
                             facets: result.facets,
                             nbHits : result.nbHits,
