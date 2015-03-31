@@ -28,7 +28,7 @@ module.exports = function(Business) {
                 var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
 
                 // add street view when business has no picture
-                if (0 == pictures.length) {
+                if (!context.isExp() && 0 == pictures.length) {
                     pictures.push(streetViewPicture);
                 }
 
@@ -78,12 +78,12 @@ module.exports = function(Business) {
             }).bind(this));
     };
 
-    Business.prototype.toRemoteShortObject = function () {
+    Business.prototype.toRemoteShortObject = function (context) {
         var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject();
 
         var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
 
-        if (0 == pictures.length) {
+        if (!context.isExp() && 0 == pictures.length) {
             pictures.push(streetViewPicture);
         }
 
@@ -125,6 +125,16 @@ module.exports = function(Business) {
 
     Business.prototype.slug = function () {
         return getSlug(this.name);
+    };
+
+    Business.prototype.toSearchIndexObject = function () {
+          var doc = {};
+          doc.name = this.name;
+          if (this.gps) {
+              doc.gps = {lat: this.gps.lat, lon: this.gps.lng};
+          }
+
+          return doc;
     };
 
     Business.prototype.pictureObjects = function () {
@@ -510,7 +520,7 @@ module.exports = function(Business) {
                     toRemoteObject: function (context) {
                         return {
                             hits: lodash.map(businesses, function(business) {
-                                return business.toRemoteShortObject()
+                                return business.toRemoteShortObject(context)
                             }),
                             facets: result.facets,
                             nbHits : result.nbHits,

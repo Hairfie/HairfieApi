@@ -7,7 +7,14 @@ module.exports = function mountRestApi(server) {
     // we need to wait for the custom routes to be defined
     server.on('routes defined', function () {
         var restApiRoot = server.get('restApiRoot');
-        server.use(restApiRoot, server.loopback.rest());
+
+        server.use('/exp', function (req, res, next) {
+            req.isExp = true;
+            next();
+        });
+        server.use('/exp', server.loopback.rest());
+
+        server.use('/api', server.loopback.rest());
     });
 
     var remotes = server.remotes();
@@ -73,4 +80,8 @@ Context.prototype.localiseWebUrl = function (host) {
 
 Context.prototype.getUser = function () {
     return this.options.request.user;
+};
+
+Context.prototype.isExp = function () {
+    return this.options.request.isExp;
 };

@@ -16,8 +16,6 @@ module.exports = {
     adminIds: commaSeparated(process.env.ADMIN_IDS),
     googleApiKey: process.env.GOOGLE_API_KEY,
     iosAppUrl: process.env.IOS_APP_URL,
-    facebookAppId: process.env.FACEBOOK_APP_ID,
-    facebookAppNamespace: process.env.FACEBOOK_APP_NAMESPACE,
     facebookAppAccessToken: process.env.FACEBOOK_APP_ACCESS_TOKEN,
 };
 
