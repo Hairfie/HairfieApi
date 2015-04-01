@@ -372,7 +372,7 @@ module.exports = function(Business) {
         var timeWindows = _.flatten(_.values(timetable)),
             discounts   = _.reject(_.map(_.pluck(timeWindows, 'discount'), Number), _.isNaN);
 
-        return _.reduce(discounts, Math.max, 0);
+        return _.max(_.flatten([discounts, [0]]));
     }
 
     Business.observe('before save', function updateBestDiscount(ctx, next) {
