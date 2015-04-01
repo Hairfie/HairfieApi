@@ -11,7 +11,7 @@ var htmlToText = require('html-to-text');
 var moment = require('moment');
 
 module.exports = function (Email) {
-    var languages = ['en', 'fr'];
+    var locales = ['en', 'fr'];
 
     Email.notifySales = function (channel, data, links) {
         var links = links || {};
@@ -28,7 +28,7 @@ module.exports = function (Email) {
 
         return send({
             to: recipient,
-            language: 'en',
+            locale: 'en',
             template: 'notifySales',
             templateVars: {
                 env     : envLabel,
@@ -42,7 +42,7 @@ module.exports = function (Email) {
     Email.welcomeUser = function (user) {
         return send({
             to: user.getFullEmail(),
-            language: user.language,
+            locale: user.locale,
             template: 'welcomeUser',
             templateVars: {user: user}
         });
@@ -51,7 +51,7 @@ module.exports = function (Email) {
     Email.resetUserPassword = function (user, resetUrl) {
         return send({
             to: user.getFullEmail(),
-            language: user.language,
+            locale: user.locale,
             template: 'resetUserPassword',
             templateVars: {user: user, resetUrl: resetUrl}
         });
@@ -62,7 +62,7 @@ module.exports = function (Email) {
 
         return send({
             to: hairfie.customerEmail,
-            language: author.language,
+            locale: author.locale,
             template: 'sendHairfie',
             templateVars: {
                 hairfie         : hairfie,
@@ -91,7 +91,7 @@ module.exports = function (Email) {
     Email.welcomeBusinessMember = function (business, user) {
         return send({
             to: user.email,
-            language: user.language,
+            locale: user.locale,
             template: 'welcomeBusinessMember',
             templateVars: {
                 user    : user,
@@ -101,12 +101,12 @@ module.exports = function (Email) {
     };
 
     Email.confirmBooking = function (booking, business) {
-        var language = booking.language || 'fr';
+        var locale = booking.locale || 'fr';
         var timeslot = moment(booking.timeslot).format("D/MM/YYYY [à] HH:mm");
 
         return send({
             to: booking.email,
-            language: language,
+            locale: locale,
             template: 'confirmBooking',
             templateVars: {
                 booking    : booking,
@@ -120,20 +120,16 @@ module.exports = function (Email) {
         debug('Sending email', options)
         var app = Email.app;
 
-        var layout   = options.layout;
-        var language = options.language || languages[0];
+        var layout = options.layout;
+        var locale = bestLocale(locales, options.locale);
 
         if (!layout && false !== layout) layout = 'layout';
 
-        if (-1 === languages.indexOf(language)) {
-            language = languages[0];
-        }
-
-        var htmlBody = getHtmlBody(options.template, options.templateVars, language, layout),
+        var htmlBody = getHtmlBody(options.template, options.templateVars, locale, layout),
             textBody = htmlToText.fromString(htmlBody);
 
         var email = new Email({
-            subject : getSubject(options.template, options.templateVars, language),
+            subject : getSubject(options.template, options.templateVars, locale),
             from    : options.from || app.get('emailFrom'),
             to      : options.to,
             bcc     : options.bcc || app.get('emailBcc'),
@@ -156,26 +152,26 @@ module.exports = function (Email) {
         return deferred.promise;
     }
 
-    function getSubject(template, templateVars, language) {
+    function getSubject(template, templateVars, locale) {
         var config = require(path.resolve(__dirname, '../../server/emails/'+template+'.json'));
 
-        return ejs.compile(config.subject[language])(templateVars);
+        return ejs.compile(config.subject[locale])(templateVars);
     }
 
-    function getHtmlBody(template, templateVars, language, layout) {
+    function getHtmlBody(template, templateVars, locale, layout) {
         var css  = readCssFile('email'),
-            html = renderHtmlBody(template, templateVars, language, layout);
+            html = renderHtmlBody(template, templateVars, locale, layout);
 
 
         return juice.inlineContent(html, css);
     }
 
-    function renderHtmlBody(template, templateVars, language, layout) {
-        var html = loopback.template(templatePath(template, language, 'html'))(templateVars);
+    function renderHtmlBody(template, templateVars, locale, layout) {
+        var html = loopback.template(templatePath(template, locale, 'html'))(templateVars);
 
         // decorate with layout
         if (layout) {
-            html = loopback.template(templatePath(layout, language, 'html'))({
+            html = loopback.template(templatePath(layout, locale, 'html'))({
                 logoSrc     : Email.app.urlGenerator.mailImage('logo@2x.png'),
                 appStoreSrc : Email.app.urlGenerator.mailImage('app-store.png'),
                 appStoreUrl : Email.app.get('iosAppUrl'),
@@ -186,8 +182,8 @@ module.exports = function (Email) {
         return html;
     }
 
-    function getTextBody(template, templateVars, language) {
-        return loopback.template(templatePath(template, language, 'txt'))(templateVars);
+    function getTextBody(template, templateVars, locale) {
+        return loopback.template(templatePath(template, locale, 'txt'))(templateVars);
     }
 
     function readCssFile(name) {
@@ -196,11 +192,17 @@ module.exports = function (Email) {
         return fs.readFileSync(path, 'utf8')
     }
 
-    function templatePath(template, language, format) {
-        return relativePath(template + '.' + language + '.' + format + '.ejs');
+    function templatePath(template, locale, format) {
+        return relativePath(template + '.' + locale + '.' + format + '.ejs');
     }
 
     function relativePath(filename) {
         return path.resolve(__dirname, '../../server/emails/'+filename);
     }
+}
+
+function bestLocale(supported, preferred) {
+    var preferred = (preferred || '').substr(0, 2);
+
+    return -1 === supported.indexOf(preferred) ? supported[0] : preferred;
 }

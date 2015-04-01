@@ -9,7 +9,6 @@ module.exports = {
     cdnUrl: process.env.CDN_URL,
     restApiRoot: '/api',
     locales: commaSeparated(process.env.LOCALES),
-    defaultLanguage: process.env.DEFAULT_LANGUAGE,
     salesEventEmail: process.env.SALES_EVENT_EMAIL,
     emailFrom: process.env.EMAIL_FROM,
     emailBcc: process.env.EMAIL_BCC,

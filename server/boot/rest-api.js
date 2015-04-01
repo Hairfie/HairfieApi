@@ -82,6 +82,10 @@ Context.prototype.getUser = function () {
     return this.options.request.user;
 };
 
+Context.prototype.isMobile = function () {
+    return !this.isExp();
+};
+
 Context.prototype.isExp = function () {
     return this.options.request.isExp;
 };

@@ -36,8 +36,12 @@ module.exports = function(User) {
 
         user.phoneNumber = this.phoneNumber;
         user.email = this.email;
-        user.language   = this.language;
+        user.locale = this.locale;
         user.newsletter = this.newsletter;
+
+        if (context.isMobile()) { // BC mobile
+            user.language = this.locale;
+        }
 
         return user;
     };
@@ -83,10 +87,10 @@ module.exports = function(User) {
 
     User.validatesInclusionOf('gender', {in: [User.GENDER_MALE, User.GENDER_FEMALE]});
 
-    User.beforeSave = function (next) {
-        if (!this.language) this.language = User.app.get('defaultLanguage');
+    User.observe('save', function (ctx, next) {
+        if (ctx.instance && !ctx.instance.locale) ctx.instance.locale = User.app.get('locales')[0];
         next();
-    };
+    });
 
     User.afterCreate = function (next) {
         var user  = this,
@@ -142,7 +146,7 @@ module.exports = function(User) {
             lastName: profile.name && profile.name.familyName,
             gender: gender ? gender.toUpperCase() : null,
             picture: "http://graph.facebook.com/" + profile.id + '/picture',
-            language: profile.locale && profile.locale.substr(0, 2)
+            locale: (profile.locale || '').substr(0, 2)
         };
         return userObj;
     }
@@ -285,6 +289,11 @@ module.exports = function(User) {
         if (user.id.toString() != ctx.req.params.id.toString()) return next({statusCode: 403});
         next();
     }
+
+    User.beforeRemote('**', function renameLanguageToLocale(ctx, user, next) { // BC mobile
+        if (ctx.req.body && ctx.req.body.language) ctx.req.body.locale = ctx.req.body.language;
+        next();
+    });
 
     User.beforeRemote('findById', loggedInAsSubjectUser);
     User.beforeRemote('*.updateAttributes', loggedInAsSubjectUser);

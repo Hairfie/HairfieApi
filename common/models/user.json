@@ -24,7 +24,7 @@
       "type": "string",
       "required": true
     },
-    "language": {
+    "locale": {
       "type": "string"
     },
     "newsletter": {
