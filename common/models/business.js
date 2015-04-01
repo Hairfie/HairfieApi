@@ -164,10 +164,6 @@ module.exports = function(Business) {
         return isBookable;
     };
 
-    Business.prototype.hasDiscount = function() {
-        return this.bestDiscount > 0;
-    };
-
     Business.prototype.owner = function (cb) {
         if (!this.id) return cb(null, null);
 
