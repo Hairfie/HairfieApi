@@ -4,7 +4,7 @@ var md5 = require('MD5');
 var Promise = require('../../common/utils/Promise');
 var Q = require('q');
 var _ = require('lodash');
-var UUID = require('uuid');
+var Uuid = require('uuid');
 var Hooks = require('./hooks');
 
 
@@ -22,12 +22,8 @@ module.exports = function(User) {
     User.prototype.toRemoteObject = function (context) {
         var user = this.toRemoteShortObject(context);
 
-        if (this.accessToken) {
-            // TODO: add toRemoteObject method to access token
-            user.accessToken = {
-                id: this.accessToken.id,
-                ttl: this.accessToken.ttl
-            };
+        if (this.accessToken) { // BC mobile
+            user.accessToken = this.accessToken.toRemoteShortObject(context);
         }
 
         if (!this.equals(context.getUser())) {
@@ -97,7 +93,7 @@ module.exports = function(User) {
             Email = User.app.models.email;
 
         // emails should not be blocking
-        Email.welcomeUser(user);
+        Email.welcomeUser(user).fail(console.log);
         Email.notifySales('user registered', {
             'ID'        : user.id,
             'Gender'    : user.gender,
@@ -106,14 +102,18 @@ module.exports = function(User) {
             'Email'     : user.email,
             'Phone'     : user.phoneNumber,
             'Facebook?' : user.facebookId ? 'YES' : 'NO'
-        });
+        }).fail(console.log);
 
-        return Promise.ninvoke(user, 'createAccessToken', null)
-            .then(function (token) {
-                user.accessToken = token;
-            })
-            .then(next.bind(null, null), next);
+        next();
     }
+
+    User.afterRemote('create', function injectAccessToken(ctx, user, next) { // BC mobile
+        user.createAccessToken({/* no options */}, function (error, token) {
+            if (error) return next(error);
+            ctx.result.accessToken = token;
+            next();
+        });
+    });
 
     User.afterIdentityCreate = function (identity, next) {
         if (identity.profile.provider != 'facebook') return next();
@@ -135,7 +135,7 @@ module.exports = function(User) {
             + (profile.provider || provider) + '.com';
           }
         var username = provider + '.' + (profile.username || profile.id);
-        var password = UUID.v4();
+        var password = Uuid.v4();
         var gender = profile.gender;
 
         var userObj = {
