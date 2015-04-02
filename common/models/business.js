@@ -237,6 +237,7 @@ module.exports = function(Business) {
             ])
             .spread((function (rating, numHairfies, hairfieTagCounts, _tags, categories) {
                 var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
+
                 if (0 == pictures.length) {
                     pictures.push(Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject());
                 }
@@ -266,7 +267,7 @@ module.exports = function(Business) {
                     createdAt          : this.createdAt,
                     hairfieTagCounts   : hairfieTagCounts,
                     _tags              : _tags,
-                    categories         : lodash.map(categories, 'name'),
+                    categories         : this.addGenderToCategoriesName(categories),
                     averagePrice       : this.averagePrice,
                     updatedAt          : this.updatedAt
                 }
@@ -327,6 +328,15 @@ module.exports = function(Business) {
 
         return gender;
     };
+
+    Business.prototype.addGenderToCategoriesName = function(categories) {
+        var categoriesName = lodash.map(categories, 'name');
+
+        if (false != this.men)      categoriesName.push("Homme");
+        if (false != this.women)    categoriesName.push("Femme");
+
+        return lodash.uniq(categoriesName);
+    }
 
     Business.prototype.getHairfieTagCounts = function () {
         var Hairfie  = Business.app.models.Hairfie,
