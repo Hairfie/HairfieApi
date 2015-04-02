@@ -1,0 +1,4 @@
+{
+    "name": "AmazonS3Image",
+    "base": "Model"
+}

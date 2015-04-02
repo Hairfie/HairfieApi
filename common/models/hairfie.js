@@ -10,6 +10,14 @@ module.exports = function (Hairfie) {
     Hooks.generateId(Hairfie);
     Hooks.updateTimestamps(Hairfie);
 
+    Hairfie.observe('before save', function (ctx, next) {
+        if (ctx.instance) {
+
+        } else {
+
+        }
+    });
+
     Hairfie.validate('price', function (onError) {
         // validate structure
         if (undefined == this.price) return;
