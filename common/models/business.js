@@ -241,7 +241,7 @@ module.exports = function(Business) {
                     createdAt          : this.createdAt,
                     hairfieTagCounts   : hairfieTagCounts,
                     _tags              : _tags,
-                    categories         : lodash.map(categories, 'name'),
+                    categories         : this.addGenderToCategoriesName(categories),
                     averagePrice       : this.averagePrice,
                     updatedAt          : this.updatedAt
                 }
@@ -302,6 +302,15 @@ module.exports = function(Business) {
 
         return gender;
     };
+
+    Business.prototype.addGenderToCategoriesName = function(categories) {
+        var categoriesName = lodash.map(categories, 'name');
+
+        if (false != this.men)      categoriesName.push("Homme");
+        if (false != this.women)    categoriesName.push("Femme");
+
+        return lodash.uniq(categoriesName);
+    }
 
     Business.prototype.getHairfieTagCounts = function () {
         var Hairfie  = Business.app.models.Hairfie,

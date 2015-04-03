@@ -21,11 +21,12 @@ module.exports = function (program, app) {
                 .then(function(businesses) {
                     console.log("businesses", businesses.length);
                     return Promise.all(businesses.map(function(b) {
-                        return Promise.ninvoke(b, 'save');
+                        return Promise.npost(b, 'save');
                     }));
                 })
                 .then(function(result) {
                     console.log("success : ", result.length);
+
                     process.exit(0);
                 })
                 .catch(function (error) {
