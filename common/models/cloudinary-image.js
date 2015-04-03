@@ -21,7 +21,7 @@ module.exports = function (CloudinaryImage) {
     }
 
     CloudinaryImage.getType = function (container, id) {
-        return 'facebook' === container ? 'facebook' : 'cloudinary';
+        return 'facebook' === container ? 'facebook' : 'upload';
     };
 
     CloudinaryImage.getPublicId = function (container, id) {
