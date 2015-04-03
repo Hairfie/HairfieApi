@@ -29,8 +29,9 @@ module.exports = function (Image) {
             url         : this.getUrl(),
             secureUrl   : this.getSecureUrl(),
             cloudinary  : {
-                type    : CloudinaryImage.getType(this.container, this.id),
-                publicId: CloudinaryImage.getPublicId(this.container, this.id)
+                cloudName   : CloudinaryImage.getCloudName(),
+                publicId    : CloudinaryImage.getPublicId(this.container, this.id),
+                type        : CloudinaryImage.getType(this.container)
             }
         }
     };

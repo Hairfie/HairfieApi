@@ -20,7 +20,11 @@ module.exports = function (CloudinaryImage) {
         return folder;
     }
 
-    CloudinaryImage.getType = function (container, id) {
+    CloudinaryImage.getCloudName = function () {
+        return CloudinaryImage.dataSource.settings.cloudName;
+    };
+
+    CloudinaryImage.getType = function (container) {
         return 'facebook' === container ? 'facebook' : 'upload';
     };
 
@@ -30,7 +34,7 @@ module.exports = function (CloudinaryImage) {
 
     CloudinaryImage.getUrl = function (container, id, options) {
         return cloudinary.url(CloudinaryImage.getPublicId(container, id), _.assign({}, options, {
-            type: CloudinaryImage.getType(container, id)
+            type: CloudinaryImage.getType(container)
         }));
     };
 
