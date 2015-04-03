@@ -19,8 +19,6 @@ module.exports = function(Category) {
     };
 
     Category.prototype.toRemoteShortObject = function (context) {
-        var pictureObject = this.getPictureObject();
-
         return {
             id          : this.id,
             href        : Category.app.urlGenerator.api('categories/'+this.id),
@@ -30,9 +28,5 @@ module.exports = function(Category) {
             picture     : this.picture && this.picture.toRemoteShortObject(context),
             position    : this.position
         };
-    };
-
-    Category.prototype.getPictureObject = function () {
-        return Picture.fromDatabaseValue(this.picture, 'categories', Category.app);
     };
 };
