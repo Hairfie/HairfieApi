@@ -4,7 +4,18 @@ var _ = require('lodash');
 
 module.exports = function (Container) {
 
+    var containerRenames = {
+        'business-pictures': 'businesses',
+        'user-profile-pictures': 'users'
+    };
+
+    function applyContainerRenames(container) {
+        return containerRenames[container] || container;
+    }
+
     Container.upload = function (req, res, cb) {
+        req.params.container = applyContainerRenames(req.params.container);
+
         var Image = Container.app.models.Image;
 
         Image.upload(req, res)
@@ -29,6 +40,8 @@ module.exports = function (Container) {
     };
 
     Container.download = function (container, id, width, height, res, cb) {
+        var container = applyContainerRenames(container);
+
         var options = {};
         if (width || height) {
             options.crop = 'thumb';
