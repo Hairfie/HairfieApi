@@ -31,6 +31,10 @@
       "required": true,
       "index": "true"
     },
+    "pictures": {
+      "type": ["Image"]
+    },
+    "old_pictures": {"type": ["string"]},
     "gps": {
       "type": "geopoint"
     },

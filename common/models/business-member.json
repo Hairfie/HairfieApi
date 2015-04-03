@@ -1,6 +1,8 @@
 {
   "name": "BusinessMember",
   "plural": "BusinessMembers",
+  "idInjection": false,
+  "strict": true,
   "options": {
     "timestampable": true,
     "sharedMethodNames": [
@@ -45,8 +47,9 @@
       "type": "string"
     },
     "picture": {
-      "type": "string"
+      "type": "Image"
     },
+    "old_picture": {"type": "string"},
     "hidden": {
       "type": "boolean",
       "required": true

@@ -2,6 +2,8 @@
   "name": "user",
   "plural": "users",
   "base": "User",
+  "idInjection": false,
+  "strict": true,
   "options": {
     "mongodb": {
       "collection": "users"
@@ -32,8 +34,9 @@
       "default": false
     },
     "picture": {
-      "type": "string"
+      "type": "Image"
     },
+    "old_picture": {"type": "string"},
     "phoneNumber": {
       "type": "string"
     },

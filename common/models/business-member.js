@@ -9,6 +9,11 @@ var Hooks = require('./hooks');
 module.exports = function (BusinessMember) {
     Hooks.generateId(BusinessMember);
     Hooks.updateTimestamps(BusinessMember);
+    Hooks.hasImages(BusinessMember, {
+        picture: {
+            container: 'business-members'
+        }
+    });
 
     BusinessMember.GENDER_MALE = 'MALE';
     BusinessMember.GENDER_FEMALE = 'FEMALE';
@@ -27,8 +32,6 @@ module.exports = function (BusinessMember) {
     };
 
     BusinessMember.prototype.toRemoteShortObject = function (context) {
-        var pictureObject = this.getPictureObject();
-
         return {
             id          : this.id,
             href        : BusinessMember.app.urlGenerator.api('businessMembers/'+this.id),
@@ -37,16 +40,12 @@ module.exports = function (BusinessMember) {
             lastName    : this.lastName,
             email       : this.email,
             phoneNumber : this.phoneNumber,
-            picture     : pictureObject && pictureObject.toRemoteObject(),
+            picture     : this.picture && this.picture.toRemoteShortObject(context),
             hidden      : this.hidden,
             user        : RemoteObject.related(this, 'user', context),
             active      : this.active,
             numHairfies : Promise.npost(this, 'getNumHairfies')
         };
-    };
-
-    BusinessMember.prototype.getPictureObject = function () {
-        return Picture.fromDatabaseValue(this.picture, 'business-pictures', BusinessMember.app);
     };
 
     BusinessMember.prototype.getNumHairfies = function (cb) {

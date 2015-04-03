@@ -123,8 +123,20 @@
     "public": false
   },
   "container": {
-    "dataSource": "storage",
+    "dataSource": false,
     "public": true
+  },
+  "Image": {
+    "dataSource": "hairfieMongo",
+    "public": false
+  },
+  "CloudinaryImage": {
+    "dataSource": "cloudinary",
+    "public": false
+  },
+  "AmazonS3Image": {
+    "dataSource": "amazonS3",
+    "public": false
   },
   "TagCategory": {
     "dataSource": "hairfieMongo",

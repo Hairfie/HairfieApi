@@ -8,6 +8,11 @@ var Hooks = require('./hooks');
 module.exports = function(Category) {
     Hooks.generateId(Category);
     Hooks.updateTimestamps(Category);
+    Hooks.hasImages(Category, {
+        picture: {
+            container: 'categories'
+        }
+    });
 
     Category.prototype.toRemoteObject = function (context) {
         return this.toRemoteShortObject();
@@ -22,7 +27,7 @@ module.exports = function(Category) {
             name        : this.name,
             description : this.description,
             tags        : this.tags,
-            picture     : pictureObject && pictureObject.toRemoteObject(),
+            picture     : pictureObject && pictureObject.toShortRemoteObject(context),
             position    : this.position
         };
     };

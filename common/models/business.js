@@ -13,8 +13,18 @@ module.exports = function(Business) {
     Hooks.generateId(Business);
     Hooks.updateTimestamps(Business);
     Hooks.updateSearchIndex(Business, {index: 'business'});
+    Hooks.hasImages(Business, {
+        pictures: {
+            container: 'businesses',
+            multi: true
+        }
+    });
 
     Business.prototype.toRemoteObject = function (context) {
+
+
+
+
         var Hairfie        = Business.app.models.Hairfie,
             Hairdresser    = Business.app.models.Hairdresser,
             BusinessReview = Business.app.models.BusinessReview,
@@ -23,15 +33,6 @@ module.exports = function(Business) {
 
         return Promise.ninvoke(BusinessReview, 'getBusinessRating', this.id)
             .then((function (rating) {
-                var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject();
-
-                var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
-
-                // add street view when business has no picture
-                if (!context.isExp() && 0 == pictures.length) {
-                    pictures.push(streetViewPicture);
-                }
-
                 var activeHairdressers = Promise
                     .npost(this, 'getVisibleActiveMembers')
                     .then(function (members) {
@@ -44,23 +45,15 @@ module.exports = function(Business) {
                     return user && user.toRemoteShortObject(context);
                 });
 
-                return {
-                    id                 : this.id,
-                    href               : Business.app.urlGenerator.api('businesses/'+this.id),
-                    name               : this.name,
-                    phoneNumber        : this.phoneNumber,
-                    address            : this.address,
-                    slug               : this.slug(),
+                return lodash.assign(this.toRemoteShortObject(context), {
                     kind               : this.kind ? this.kind : 'SALON',
+                    gps                : this.gps,
                     men                : false != this.men,
                     women              : false != this.women,
                     children           : false != this.children,
                     owner              : owner,
                     description        : this.description,
-                    gps                : this.gps,
                     timetable          : this.timetable,
-                    thumbnail          : pictures[0],
-                    pictures           : pictures,
                     numHairfies        : Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
                     numReviews         : rating.numReviews,
                     rating             : rating.rating,
@@ -70,18 +63,17 @@ module.exports = function(Business) {
                     activeHairdressers : activeHairdressers,
                     landingPageUrl     : Business.app.urlGenerator.business(this, context),
                     facebookPage       : this.facebookPage && this.getFacebookPageObject().toRemoteShortObject(context),
-                    bestDiscount       : this.bestDiscount,
-                    averagePrice       : this.averagePrice,
                     createdAt          : this.createdAt,
                     updatedAt          : this.updatedAt
-                }
+                });
+
             }).bind(this));
     };
 
     Business.prototype.toRemoteShortObject = function (context) {
         var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject();
 
-        var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
+        var pictures = (this.pictures || []).map(function (p) { return p.toRemoteObject(context); });
 
         if (!context.isExp() && 0 == pictures.length) {
             pictures.push(streetViewPicture);
@@ -96,7 +88,8 @@ module.exports = function(Business) {
             address     : this.address,
             bestDiscount: this.bestDiscount,
             averagePrice: this.averagePrice,
-            pictures    : pictures
+            pictures    : pictures,
+            thumbnail   : pictures[0] // BC mobile
         };
     };
 
@@ -135,16 +128,6 @@ module.exports = function(Business) {
           }
 
           return doc;
-    };
-
-    Business.prototype.pictureObjects = function () {
-        if (!Array.isArray(this.pictures)) {
-            return [];
-        }
-
-        return this.pictures.map(function (picture) {
-            return Picture.fromDatabaseValue(picture, 'business-pictures', Business.app);
-        });
     };
 
     Business.prototype.isBookable = function() {
@@ -236,12 +219,6 @@ module.exports = function(Business) {
                 this.getAllCategories()
             ])
             .spread((function (rating, numHairfies, hairfieTagCounts, _tags, categories) {
-                var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
-
-                if (0 == pictures.length) {
-                    pictures.push(Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject());
-                }
-
                 return {
                     id                 : this.id,
                     objectID           : this.id.toString(),
@@ -255,15 +232,12 @@ module.exports = function(Business) {
                     gps                : this.gps,
                     _geoloc            : {lat: this.gps.lat, lng: this.gps.lng},
                     timetable          : this.timetable,
-                    thumbnail          : pictures[0],
-                    pictures           : pictures,
                     numHairfies        : numHairfies,
                     numReviews         : rating.numReviews,
                     rating             : rating.rating,
                     crossSell          : true,
                     isBookable         : this.isBookable(),
                     bestDiscount       : this.bestDiscount,
-                    landingPageUrl     : Business.app.urlGenerator.business(this),
                     createdAt          : this.createdAt,
                     hairfieTagCounts   : hairfieTagCounts,
                     _tags              : _tags,

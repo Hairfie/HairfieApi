@@ -1,14 +1,23 @@
 {
     "name": "Place",
     "plural": "Places",
+    "idInjection": false,
+    "strict": true,
     "properties": {
         "id": {
             "id": true,
             "type": "string"
         },
+        "picture": {
+           "type": "Image"
+        },
+        "old_picture": {"type": "string"},
         "name": {
             "type": "object",
             "required": true
+        },
+        "description": {
+            "type": "object"
         },
         "location": {
             "type": "geopoint",

@@ -1,0 +1,28 @@
+{
+    "name": "Image",
+    "plural": "Images",
+    "idInjection": false,
+    "strict": true,
+    "properties": {
+        "id": {
+            "id": true,
+            "type": "string"
+        },
+        "container": {
+            "type": "string",
+            "required": true
+        },
+        "cloudinary": {
+            "type": "object"
+        }
+    },
+    "options": {
+        "mongodb": {
+            "collection": "images"
+        }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [],
+    "methods": []
+}
