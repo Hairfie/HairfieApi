@@ -14,10 +14,7 @@ module.exports = function(Category) {
         }
     });
 
-    Category.prototype.toRemoteObject = function (context) {
-        return this.toRemoteShortObject();
-    };
-
+    Category.prototype.toRemoteObject =
     Category.prototype.toRemoteShortObject = function (context) {
         return {
             id          : this.id,
