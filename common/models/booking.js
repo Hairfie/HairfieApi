@@ -1,7 +1,7 @@
 'use strict';
 
 var Promise = require('../../common/utils/Promise');
-var moment = require('moment');
+var moment = require('moment-timezone');
 var Hooks = require('./hooks');
 
 module.exports = function (Booking) {
@@ -25,6 +25,7 @@ module.exports = function (Booking) {
             phoneNumber     : this.phoneNumber,
             comment         : this.comment,
             timeslot        : this.timeslot,
+            displayTimeslot : moment(this.timeslot).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
             discount        : this.discount,
             createdAt       : this.createdAt,
             updatedAt       : this.updatedAt
@@ -43,7 +44,7 @@ module.exports = function (Booking) {
                     'ID'              : booking.id,
                     'Salon'           : business.name,
                     'Tel du salon'    : business.phoneNumber,
-                    'Date & Heure de la demande' : moment(booking.timeslot).format("D/MM/YYYY [à] HH:mm"),
+                    'Date & Heure de la demande' : moment(booking.timeslot).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
                     'Client'          : booking.firstName + ' ' + booking.lastName,
                     'Genre'           : booking.gender,
                     'Email du client' : booking.email,

@@ -8,7 +8,7 @@ var juice = require('juice');
 var fs = require('fs');
 var debug = require('debug')('Model:Email');
 var htmlToText = require('html-to-text');
-var moment = require('moment');
+var moment = require('moment-timezone');
 
 module.exports = function (Email) {
     var locales = ['en', 'fr'];
@@ -102,7 +102,7 @@ module.exports = function (Email) {
 
     Email.confirmBooking = function (booking, business) {
         var locale = booking.locale || 'fr';
-        var timeslot = moment(booking.timeslot).format("D/MM/YYYY [à] HH:mm");
+        var timeslot = moment(booking.timeslot).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm");
 
         return send({
             to: booking.email,

@@ -12,6 +12,7 @@ var User = app.models.User;
 var Hairfie = app.models.Hairfie;
 var Business = app.models.Business;
 var BusinessMember = app.models.BusinessMember;
+var Booking = app.models.Booking;
 
 
 // open the repl session
@@ -28,6 +29,7 @@ replServer.context.User = User;
 replServer.context.Hairfie = Hairfie;
 replServer.context.Business = Business;
 replServer.context.BusinessMember = BusinessMember;
+replServer.context.Booking = Booking;
 
 replServer.context.find = find;
 replServer.context.findOne = findOne;
