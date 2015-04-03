@@ -47,8 +47,28 @@ module.exports = function (AmazonS3Image) {
             });
     };
 
+    AmazonS3Image.uploadFromContainer = function (oldContainer, oldFilename, newContainer) {
+        var oldBucket = containerBucket(oldContainer);
+        var newBucket = containerBucket(newContainer);
+        var newFilename = getFilename();
+
+        var params   = {
+            Bucket      : newBucket,
+            CopySource  : oldBucket+'/'+oldFilename,
+            Key         : newFilename
+        };
+
+        return Q.nfcall(s3().copyObject.bind(s3()), params)
+            .then(function (r) {
+                var result = {container: newContainer, id: idFromFilename(newFilename)};
+
+                var deferred = Q.defer();
+                setTimeout(function () { deferred.resolve(result); }, 1000);
+                return deferred.promise;
+            });
+    };
+
     AmazonS3Image.getDownloadUrl = function (container, id) {
-        var deferred = Q.defer();
         var params   = {
             Bucket  : containerBucket(container),
             Key     : idToFilename(id)

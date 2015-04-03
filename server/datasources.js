@@ -44,11 +44,12 @@ module.exports = {
         apiKey: process.env.CLOUDINARY_API_KEY,
         apiSecret: process.env.CLOUDINARY_API_SECRET,
         folders: {
-            hairfies: process.env.CLOUDINARY_FOLDER_HAIRFIES,
-            businesses: process.env.CLOUDINARY_FOLDER_BUSINESSES,
-            users: process.env.CLOUDINARY_FOLDER_USERS,
-            categories: process.env.CLOUDINARY_FOLDER_CATEGORIES,
-            places: process.env.CLOUDINARY_FOLDER_PLACES
+            'hairfies': process.env.CLOUDINARY_FOLDER_HAIRFIES,
+            'businesses': process.env.CLOUDINARY_FOLDER_BUSINESSES,
+            'business-members': process.env.CLOUDINARY_FOLDER_BUSINESS_MEMBERS,
+            'users': process.env.CLOUDINARY_FOLDER_USERS,
+            'categories': process.env.CLOUDINARY_FOLDER_CATEGORIES,
+            'places': process.env.CLOUDINARY_FOLDER_PLACES
         }
     },
     amazonS3: {
@@ -58,11 +59,16 @@ module.exports = {
         keyId: process.env.AMAZON_S3_KEY_ID,
         key: process.env.AMAZON_S3_SECRET,
         buckets: {
-            hairfies: process.env.AMAZON_S3_BUCKET_HAIRFIES,
-            businesses: process.env.AMAZON_S3_BUCKET_BUSINESSES,
-            users: process.env.AMAZON_S3_BUCKET_USERS,
-            categories: process.env.AMAZON_S3_BUCKET_CATEGORIES,
-            places: process.env.AMAZON_S3_BUCKET_PLACES
+            'hairfies': process.env.AMAZON_S3_BUCKET_HAIRFIES,
+            'businesses': process.env.AMAZON_S3_BUCKET_BUSINESSES,
+            'business-members': process.env.AMAZON_S3_BUCKET_BUSINESS_MEMBERS,
+            'users': process.env.AMAZON_S3_BUCKET_USERS,
+            'categories': process.env.AMAZON_S3_BUCKET_CATEGORIES,
+            'places': process.env.AMAZON_S3_BUCKET_PLACES,
+
+            'user-profile-pictures': process.env.AMAZON_S3_BUCKET_USER_PROFILE_PICTURES,
+            'business-pictures': process.env.AMAZON_S3_BUCKET_BUSINESS_PICTURES,
+            'category': process.env.AMAZON_S3_BUCKET_CATEGORY,
         }
     }
 };

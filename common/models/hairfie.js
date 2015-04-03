@@ -9,12 +9,10 @@ var Hooks = require('./hooks');
 module.exports = function (Hairfie) {
     Hooks.generateId(Hairfie);
     Hooks.updateTimestamps(Hairfie);
-
-    Hairfie.observe('before save', function (ctx, next) {
-        if (ctx.instance) {
-
-        } else {
-
+    Hooks.hasImages(Hairfie, {
+        pictures: {
+            container: 'hairfies',
+            multi: true
         }
     });
 
@@ -32,31 +30,7 @@ module.exports = function (Hairfie) {
         if (this.price.currency != 'EUR') return onError();
     });
 
-    Hairfie.validateAsync('pictures', function (onError, onDone) {
-        // Check only first picture, bad
-        var picture = this.pictures[0];
-
-        Hairfie.getApp(function (_, app) {
-            app.models.container.getFile('hairfies', picture, function (_, file) {
-                if (!file) onError();
-                onDone();
-            });
-        });
-
-        // var pictures = this.pictures;
-        // Hairfie.getApp(function (_, app) {
-        //     return Q.all(pictures.map(function(picture) {
-        //         return Q.nfcall(app.models.container.getFile, 'hairfies', picture);
-        //     }))
-        //     .then(function (files) {
-        //         console.log(files);
-        //         onDone();
-        //     })
-        //     .fail((function (err) {
-        //         onError();
-        //     }).bind(this));
-        // });
-    }, {message: 'should exists'});
+    Hairfie.validate('pictures', function (reject) { (this.pictures || []).length > 0 || reject() }, {message: 'at least one'});
 
     Hairfie.validateAsync('businessId', function (onError, onDone) {
         if (!this.businessId) return onDone(); // business is optional
@@ -82,7 +56,7 @@ module.exports = function (Hairfie) {
             return businessMember && businessMember.toRemoteShortObject(context);
         });
 
-        return lodash.assign(this.toRemoteShortObject(), {
+        return lodash.assign(this.toRemoteShortObject(context), {
             author          : Promise.ninvoke(this.author).then(function (author) {
                 return author ? author.toRemoteShortObject(context) : null;
             }),
@@ -104,12 +78,12 @@ module.exports = function (Hairfie) {
     };
 
     Hairfie.prototype.toRemoteShortObject = function (context) {
-        var pictures = this.pictureObjects().map(function (picture) { return picture.toRemoteObject(); });
+        var pictures = (this.pictures || []).map(function (p) { return p.toRemoteShortObject(context); });
 
         return {
             id              : this.id,
             href            : Hairfie.app.urlGenerator.api('hairfies/'+this.id),
-            picture         : pictures[pictures.length - 1],
+            picture         : lodash.first(pictures),
             pictures        : pictures,
             price           : this.price,
             description     : this.description ? this.description : '',

@@ -27,13 +27,18 @@ module.exports = function (Image) {
             id          : this.id,
             container   : this.container,
             url         : this.getUrl(),
-            secureUrl   : this.getSecureUrl()
+            secureUrl   : this.getSecureUrl(),
+            cloudinary  : {
+                type    : CloudinaryImage.getType(this.container, this.id),
+                publicId: CloudinaryImage.getPublicId(this.container, this.id)
+            }
         }
     };
 
     Image.prototype.getUrl = function (image) {
         return Image.app.models.CloudinaryImage.getUrl(this.container, this.id);
     };
+
     Image.prototype.getSecureUrl = function (image) {
         return Image.app.models.CloudinaryImage.getUrl(this.container, this.id, {secure: true});
     };
@@ -64,6 +69,23 @@ module.exports = function (Image) {
             });
     };
 
+    Image.uploadFromAmazonS3 = function (oldContainer, oldName, newContainer) {
+        var AmazonS3Image   = Image.app.models.AmazonS3Image;
+        var CloudinaryImage = Image.app.models.CloudinaryImage;
+
+        return AmazonS3Image.uploadFromContainer(oldContainer, oldName, newContainer)
+            .then(function (file) {
+                return AmazonS3Image
+                    .getDownloadUrl(file.container, file.id)
+                    .then(function (url) {
+                        return CloudinaryImage.uploadFromUrl(file.container, file.id, url);
+                    })
+                    .then(function (result) {
+                        return Image.createFromCloudinaryImage(file.container, file.id, result);
+                    });
+            });
+    };
+
     Image.createFromCloudinaryImage = function (container, id, cloudinaryImage) {
         var deferred = Q.defer();
 
@@ -88,5 +110,12 @@ module.exports = function (Image) {
         });
 
         return deferred.promise;
+    };
+
+    Image.instanceFromFacebookId = function (facebookId) {
+        return new Image({
+            id          : facebookId,
+            container   : 'facebook'
+        });
     };
 };

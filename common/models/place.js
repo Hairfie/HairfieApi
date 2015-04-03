@@ -9,6 +9,11 @@ var Hooks = require('./hooks');
 module.exports = function(Place) {
     Hooks.generateId(Place);
     Hooks.updateTimestamps(Place);
+    Hooks.hasImages(Place, {
+        picture: {
+            container: 'places'
+        }
+    });
 
     Place.observe('before save', function getParent(ctx, next) {
         var place = ctx.instance;
@@ -26,17 +31,14 @@ module.exports = function(Place) {
         }
     });
 
-    Place.prototype.toRemoteObject = function (context) {
-        return this.toRemoteShortObject(context);
-    };
-
+    Place.prototype.toRemoteObject =
     Place.prototype.toRemoteShortObject = function (context) {
         return {
             id          : this.id,
             href        : Place.app.urlGenerator.api('places/'+this.id),
             name        : context.localized(this.name),
             description : context.localized(this.description),
-            picture     : this.picture &&  Picture.fromDatabaseValue(this.picture, 'places', Place.app).toRemoteObject(),
+            picture     : this.picture && this.picture.toRemoteObject(context),
             location    : this.location,
             bounds      : this.bounds,
             parent      : this.parent(context)

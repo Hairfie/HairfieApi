@@ -11,6 +11,16 @@ var Hooks = require('./hooks');
 module.exports = function(User) {
     Hooks.generateId(User);
     Hooks.updateTimestamps(User);
+    Hooks.hasImages(User, {
+        picture: {
+            container: 'users'
+        }
+    });
+
+    User.observe('save', function (ctx, next) {
+        if (ctx.instance && !ctx.instance.locale) ctx.instance.locale = User.app.get('locales')[0];
+        next();
+    });
 
     User.GENDER_MALE = 'MALE';
     User.GENDER_FEMALE = 'FEMALE';
@@ -45,9 +55,14 @@ module.exports = function(User) {
     User.prototype.toRemoteShortObject = function (context) {
         var Hairfie             = User.app.models.Hairfie,
             BusinessReview      = User.app.models.BusinessReview,
-            picture             = this.getPictureObject(),
+            picture             = this.pictures && this.picture.toRemoteShortObject(context),
             numHairfies         = Promise.ninvoke(Hairfie, 'count', {authorId: this.id}),
             numBusinessReviews  = Promise.ninvoke(BusinessReview, 'count', {authorId: this.id});
+
+        if (!picture && this.facebookId) {
+            // fallback to facebook picture
+            picture = User.app.models.Image.instanceFromFacebookId(this.facebookId).toRemoteShortObject(context);
+        }
 
         return {
             id                  : this.id,
@@ -55,14 +70,10 @@ module.exports = function(User) {
             gender              : this.gender,
             firstName           : this.firstName,
             lastName            : this.lastName,
-            picture             : picture ? picture.toRemoteObject() : null,
+            picture             : picture,
             numHairfies         : numHairfies,
             numBusinessReviews  : numBusinessReviews
         };
-    };
-
-    User.prototype.getPictureObject = function () {
-        return Picture.fromDatabaseValue(this.picture, 'user-profile-pictures', User.app);
     };
 
     User.prototype.isManagerOfBusiness = function (businessId) {
@@ -83,10 +94,6 @@ module.exports = function(User) {
 
     User.validatesInclusionOf('gender', {in: [User.GENDER_MALE, User.GENDER_FEMALE]});
 
-    User.observe('save', function (ctx, next) {
-        if (ctx.instance && !ctx.instance.locale) ctx.instance.locale = User.app.get('locales')[0];
-        next();
-    });
 
     User.afterCreate = function (next) {
         var user  = this,

@@ -11,6 +11,8 @@
       "collection": "categories"
     }
   },
+  "idInjection": false,
+  "strict": true,
   "properties": {
     "id": {
       "type": "string",
@@ -30,8 +32,9 @@
       "required": true
     },
     "picture": {
-      "type": "string"
+      "type": "Image"
     },
+    "old_picture": {"type": "string"},
     "position": {
       "type": "number"
     }

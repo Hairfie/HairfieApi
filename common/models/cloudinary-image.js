@@ -1,6 +1,7 @@
 'use strict';
 
 var Q = require('q');
+var _ = require('lodash')
 var cloudinary = require('cloudinary');
 
 module.exports = function (CloudinaryImage) {
@@ -19,12 +20,18 @@ module.exports = function (CloudinaryImage) {
         return folder;
     }
 
+    CloudinaryImage.getType = function (container, id) {
+        return 'facebook' === container ? 'facebook' : 'cloudinary';
+    };
+
     CloudinaryImage.getPublicId = function (container, id) {
-        return containerFolder(container)+'/'+id;
+        return 'facebook' === container ? id : containerFolder(container)+'/'+id;
     };
 
     CloudinaryImage.getUrl = function (container, id, options) {
-        return cloudinary.url(CloudinaryImage.getPublicId(container, id), options);
+        return cloudinary.url(CloudinaryImage.getPublicId(container, id), _.assign({}, options, {
+            type: CloudinaryImage.getType(container, id)
+        }));
     };
 
     CloudinaryImage.uploadFromUrl = function (container, id, url) {
