@@ -1,7 +1,4 @@
-var Promise = require('../../common/utils/Promise'),
-    Q = require('q'),
-    RemoteObject = require('../utils/RemoteObject'),
-    lodash = require('lodash');
+'use strict';
 
 var Hooks = require('./hooks');
 
