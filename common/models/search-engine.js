@@ -158,7 +158,7 @@ module.exports = function (SearchEngine) {
                         var body = [];
                         businesses.map(function (business) {
                             body.push({index: {_index:getIndex(), _type:'business', _id:business.id.toString()}});
-                            body.push(business.toSearchIndexObject());
+                            body.push(business.toSearchIndexObject(context));
                         });
 
                         getClient().bulk({body:body}, function (error) {

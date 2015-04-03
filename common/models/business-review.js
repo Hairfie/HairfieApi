@@ -31,9 +31,9 @@ module.exports = function (BusinessReview) {
                     rating      : this.rating,
                     criteria    : this.criteria || {},
                     comment     : this.comment,
-                    author      : author ? author.toRemoteShortObject() : null,
+                    author      : author ? author.toRemoteShortObject(context) : null,
                     business    : Promise.ninvoke(this.business).then(function (business) {
-                        return business ? business.toRemoteShortObject() : null;
+                        return business ? business.toRemoteShortObject(context) : null;
                     }),
                     createdAt   : this.createdAt,
                     updatedAt   : this.updatedAt

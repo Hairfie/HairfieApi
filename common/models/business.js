@@ -71,7 +71,7 @@ module.exports = function(Business) {
     };
 
     Business.prototype.toRemoteShortObject = function (context) {
-        var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject();
+        var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject(context);
 
         var pictures = (this.pictures || []).map(function (p) { return p.toRemoteObject(context); });
 
@@ -568,7 +568,7 @@ module.exports = function(Business) {
             .then(function (business) {
                 if (!business || !business.facebookPage) return cb({statusCode: 404});
 
-                cb(null, business.getFacebookPageObject());
+                cb(null, business.getFacebookPageObject(context));
             })
             .fail(cb);
     };
@@ -604,7 +604,7 @@ module.exports = function(Business) {
 
                     business.save({}, function (error) {
                         if (error) return cb({statusCode: 500});
-                        cb(null, business.getFacebookPageObject());
+                        cb(null, business.getFacebookPageObject(context));
                     });
                 });
             })
@@ -643,7 +643,7 @@ module.exports = function(Business) {
             var customers = hairfies.map(function(hairfie) {
                 return {
                     email      : hairfie.customerEmail,
-                    hairfie    : hairfie.toRemoteObject()
+                    hairfie    : hairfie.toRemoteObject(context)
                 };
             });
             var result = lodash.reduce(customers, function (prev, current) {

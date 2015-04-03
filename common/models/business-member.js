@@ -25,7 +25,7 @@ module.exports = function (BusinessMember) {
     //BusinessMember.validatesInclusionOf('gender', {in: [BusinessMember.GENDER_MALE, BusinessMember.GENDER_FEMALE]});
 
     BusinessMember.prototype.toRemoteObject = function (context) {
-        var obj = this.toRemoteShortObject();
+        var obj = this.toRemoteShortObject(context);
         obj.business = RemoteObject.related(this, 'business', context);
 
         return obj;

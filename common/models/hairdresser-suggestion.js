@@ -21,14 +21,14 @@ module.exports = function (HairdresserSuggestion) {
         });
     }, {message: 'exists'});
 
-    HairdresserSuggestion.prototype.toRemoteObject = function () {
+    HairdresserSuggestion.prototype.toRemoteObject = function (context) {
         return {
             id          : this.id,
             business    : Promise.npost(this, 'business').then(function (business) {
                 return business ? business.toRemoteShortObject() : null;
             }),
             author      : Promise.npost(this, 'author').then(function (user) {
-                return user ? user.toRemoteShortObject() : null;
+                return user ? user.toRemoteShortObject(context) : null;
             }),
             firstName   : this.firstName,
             lastName    : this.lastName

@@ -8,14 +8,7 @@ module.exports = function (BusinessClaim) {
     Hooks.generateId(BusinessClaim);
     Hooks.updateTimestamps(BusinessClaim);
 
-    BusinessClaim.prototype.toRemoteObject = function () {
-        var pictures = [];
-        if (Array.isArray(this.pictures)) {
-            pictures.map(function (picture) {
-                return Picture.fromDatabaseValue(picture, 'business-pictures', BusinessClaim.app).toRemoteObject();
-            });
-        }
-
+    BusinessClaim.prototype.toRemoteObject = function (context) {
         var obj = this.toObject();
         obj.href = BusinessClaim.app.urlGenerator.api('businessClaims/'+this.id);
         obj.pictures = pictures;
