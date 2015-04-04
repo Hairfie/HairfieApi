@@ -43,7 +43,7 @@ module.exports = function (CloudinaryImage) {
     CloudinaryImage.getUrl = function (container, id, options) {
         return cloudinary.url(CloudinaryImage.getPublicId(container, id), _.assign({}, options, {
             type            : CloudinaryImage.getType(container),
-            transformation  : CloudinaryImage.getTransformation(container)
+            transformation  : CloudinaryImage.getTransformations(container)
         }));
     };
 

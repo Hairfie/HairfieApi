@@ -29,9 +29,10 @@ module.exports = function (Image) {
             url         : this.getUrl(),
             secureUrl   : this.getSecureUrl(),
             cloudinary  : {
-                cloudName   : CloudinaryImage.getCloudName(),
-                publicId    : CloudinaryImage.getPublicId(this.container, this.id),
-                type        : CloudinaryImage.getType(this.container)
+                cloudName       : CloudinaryImage.getCloudName(),
+                publicId        : CloudinaryImage.getPublicId(this.container, this.id),
+                type            : CloudinaryImage.getType(this.container),
+                transformation  : CloudinaryImage.getTransformations(this.container)
             }
         }
     };
