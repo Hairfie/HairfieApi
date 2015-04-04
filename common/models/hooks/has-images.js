@@ -4,6 +4,25 @@ var _ = require('lodash');
 var Q = require('q');
 
 module.exports = function (Model, options) {
+
+    // QUICK FIX: why?
+    Model.beforeRemote('create', function (ctx, unused, next) {
+        _.forIn(options, function (settings, property) {
+            var val = ctx.req.body[property];
+            if (val) {
+                if (_.isArray(val)) {
+                    ctx.req.body[property] = _.map(val, function (v) {
+                        return _.isString(v) ? {id: v} : v;
+                    });
+                } else {
+                    ctx.req.body[property] = _.isString(val) ? {id: val} : val;
+                }
+            }
+        });
+        next();
+    });
+
+
     Model.observe('before save', function (ctx, next) {
         var Image = Model.app.models.Image;
 

@@ -197,11 +197,6 @@ module.exports = function (Hairfie) {
     Hairfie.beforeRemote('create', function (ctx, _, next) {
         ctx.req.body.authorId = ctx.req.accessToken.userId;
 
-        if (ctx.req.body.picture) {
-            ctx.req.body.pictures = [ctx.req.body.picture];
-            delete ctx.req.body.picture;
-        }
-
         // keep backward compatibility (hairdressers -> business members)
         if (!ctx.req.body.businessMemberId) ctx.req.body.businessMemberId = ctx.req.body.hairdresserId;
         delete ctx.req.body.hairdresserId;
