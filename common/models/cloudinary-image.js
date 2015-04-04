@@ -28,13 +28,22 @@ module.exports = function (CloudinaryImage) {
         return 'facebook' === container ? 'facebook' : 'upload';
     };
 
+    CloudinaryImage.getTransformations = function (container) {
+        return 'hairfies' === container ? ['watermark'] : [];
+    };
+
     CloudinaryImage.getPublicId = function (container, id) {
-        return 'facebook' === container ? id : containerFolder(container)+'/'+id;
+        if (container === 'facebook') {
+            return id;
+        }
+
+        return containerFolder(container)+'/'+id;
     };
 
     CloudinaryImage.getUrl = function (container, id, options) {
         return cloudinary.url(CloudinaryImage.getPublicId(container, id), _.assign({}, options, {
-            type: CloudinaryImage.getType(container)
+            type            : CloudinaryImage.getType(container),
+            transformation  : CloudinaryImage.getTransformation(container)
         }));
     };
 
@@ -55,5 +64,4 @@ module.exports = function (CloudinaryImage) {
 
         return deferred.promise;
     };
-
 };
