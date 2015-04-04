@@ -25,7 +25,7 @@ module.exports = function (AmazonS3Image) {
         var options   = {
             container           : bucket, // for the connecter container == bucket
             getFilename         : getFilename,
-            allowedContentTypes : allowedContentTypes
+            //allowedContentTypes : allowedContentTypes
         };
 
         return Q.nfcall(AmazonS3Image.upload, req, res, options)
