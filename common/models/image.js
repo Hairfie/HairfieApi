@@ -104,7 +104,7 @@ module.exports = function (Image) {
     function processAmazonS3Image(file) {
         var AmazonS3Image   = Image.app.models.AmazonS3Image;
         var KrakenImage     = Image.app.models.KrakenImage;
-        var CloudinaryImage = Image.app.models.AmazonS3Image;
+        var CloudinaryImage = Image.app.models.CloudinaryImage;
 
         return AmazonS3Image
             .getDownloadUrl(file.container, file.id)

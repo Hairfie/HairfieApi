@@ -27,33 +27,23 @@ module.exports = function (KrakenImage) {
      */
     KrakenImage.optimize = function (id, url) {
         var deferred = Q.defer();
+        var key = id+'-lossy';
         var options = {
-            url     : sourceUrl,
+            url     : url,
             lossy   : true,
             wait    : true,
-            dev     : !!KrakenImage.dataSource.settings.sandbox,
             s3_store: {
                 key     : KrakenImage.dataSource.settings.awsKey,
                 secret  : KrakenImage.dataSource.settings.awsSecret,
                 bucket  : KrakenImage.dataSource.settings.awsS3Bucket,
                 region  : KrakenImage.dataSource.settings.awsS3Region,
-                path    : id+'-lossy'
+                path    : key
             }
         };
 
         kraken.url(options, function (data) {
             if (!data.success) return deferred.reject(data.error);
-
-            var params = {
-                Bucket  : KrakenImage.dataSource.settings.awsS3Bucket,
-                Key     : options.path
-            };
-
-            s3.getSignedUrl('getObject', params, function (error, url) {
-                if (error) return deferred.reject(error);
-                deferred.resolve(url);
-            });
-
+            deferred.resolve(data.kraked_url);
         });
 
         return deferred.promise;
