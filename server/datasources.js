@@ -1,5 +1,7 @@
 'use strict';
 
+function bool(v) { return 'true' == v; }
+
 module.exports = {
     hairfieMongo: {
         name: 'hairfieMongo',
@@ -70,5 +72,16 @@ module.exports = {
             'business-pictures': process.env.AMAZON_S3_BUCKET_BUSINESS_PICTURES,
             'category': process.env.AMAZON_S3_BUCKET_CATEGORY,
         }
+    },
+    kraken: {
+        name: 'kraken',
+        connector: 'memory',
+        apiKey: process.env.KRAKEN_API_KEY,
+        apiSecret: process.env.KRAKEN_API_SECRET,
+        sandbox: bool(process.env.KRAKEN_SANDBOX),
+        awsKey: process.env.KRAKEN_AWS_KEY,
+        awsSecret: process.env.KRAKEN_AWS_SECRET,
+        awsS3Bucket: process.env.KRAKEN_AWS_S3_BUCKET,
+        awsS3Region: process.env.KRAKEN_AWS_S3_REGION
     }
 };

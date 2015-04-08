@@ -51,18 +51,8 @@ module.exports = function (Image) {
 
         return AmazonS3Image.uploadFromRequest(req, res)
             .then(function (files) {
-                var pairs = _.pairs(files);
-
-                var promises = _.map(_.pluck(pairs, 1), function (file) {
-                    return AmazonS3Image
-                        .getDownloadUrl(file.container, file.id)
-                        .then(function (url) {
-                            return CloudinaryImage.uploadFromUrl(file.container, file.id, url);
-                        })
-                        .then(function (result) {
-                            return Image.createFromCloudinaryImage(file.container, file.id, result);
-                        });
-                });
+                var pairs    = _.pairs(files);
+                var promises = _.map(_.pluck(pairs, 1), processAmazonS3Image);
 
                 return Q.all(promises).then(function (images) {
                     // rebuild field-to-image map
@@ -75,17 +65,7 @@ module.exports = function (Image) {
         var AmazonS3Image   = Image.app.models.AmazonS3Image;
         var CloudinaryImage = Image.app.models.CloudinaryImage;
 
-        return AmazonS3Image.uploadFromContainer(oldContainer, oldName, newContainer)
-            .then(function (file) {
-                return AmazonS3Image
-                    .getDownloadUrl(file.container, file.id)
-                    .then(function (url) {
-                        return CloudinaryImage.uploadFromUrl(file.container, file.id, url);
-                    })
-                    .then(function (result) {
-                        return Image.createFromCloudinaryImage(file.container, file.id, result);
-                    });
-            });
+        return AmazonS3Image.uploadFromContainer(oldContainer, oldName, newContainer).then(processAmazonS3Image);
     };
 
     Image.createFromCloudinaryImage = function (container, id, cloudinaryImage) {
@@ -120,4 +100,22 @@ module.exports = function (Image) {
             container   : 'facebook'
         });
     };
+
+    function processAmazonS3Image(file) {
+        var AmazonS3Image   = Image.app.models.AmazonS3Image;
+        var KrakenImage     = Image.app.models.KrakenImage;
+        var CloudinaryImage = Image.app.models.AmazonS3Image;
+
+        return AmazonS3Image
+            .getDownloadUrl(file.container, file.id)
+            .then(function (sourceUrl) {
+                return KrakenImage.optimize(file.id, sourceUrl);
+            })
+            .then(function (optimizedUrl) {
+                return CloudinaryImage.uploadFromUrl(file.container, file.id, optimizedUrl);
+            })
+            .then(function (result) {
+                return Image.createFromCloudinaryImage(file.container, file.id, result);
+            });
+    }
 };

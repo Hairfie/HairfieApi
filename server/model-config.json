@@ -138,6 +138,10 @@
     "dataSource": "amazonS3",
     "public": false
   },
+  "KrakenImage": {
+    "dataSource": "kraken",
+    "public": false
+  },
   "TagCategory": {
     "dataSource": "hairfieMongo",
     "public": false

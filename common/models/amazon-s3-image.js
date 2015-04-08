@@ -76,5 +76,4 @@ module.exports = function (AmazonS3Image) {
 
         return Q.nfcall(s3().getSignedUrl.bind(s3()), 'getObject', params);
     };
-
 };
