@@ -11,7 +11,6 @@ module.exports = function (BusinessClaim) {
     BusinessClaim.prototype.toRemoteObject = function (context) {
         var obj = this.toObject();
         obj.href = BusinessClaim.app.urlGenerator.api('businessClaims/'+this.id);
-        obj.pictures = pictures;
 
         return obj;
     };
@@ -19,6 +18,7 @@ module.exports = function (BusinessClaim) {
     // business claims are associated to currently logged in user
     BusinessClaim.beforeRemote('create', function (ctx, _, next) {
         ctx.req.body.authorId = ctx.req.accessToken.userId;
+
         if(ctx.req.body.pictures) {
             var pattern = /^((http|https):\/\/)/;
             ctx.req.body.pictures = lodash.filter(ctx.req.body.pictures, function(url) { return !pattern.test(url)});
