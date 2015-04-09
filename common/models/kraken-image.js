@@ -42,7 +42,7 @@ module.exports = function (KrakenImage) {
         };
 
         kraken.url(options, function (data) {
-            if (!data.success) return deferred.reject(data.error);
+            if (!data.success) return deferred.reject('Kraken API error: '+data.message);
             deferred.resolve(data.kraked_url);
         });
 
