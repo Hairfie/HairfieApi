@@ -34,12 +34,16 @@ module.exports = function mountRestApi(server) {
     });
 };
 
-function processResult(Model, context, result) {
+function processResult(Model, context, result, short) {
     if (null === result || undefined === result) return Promise(result);
     if (Array.isArray(result)) {
         return Promise.map(result, function (record) {
-            return processResult(Model, context, record);
+            return processResult(Model, context, record, short || !context.isMobile());
         });
+    }
+
+    if (short && result.toRemoteShortObject) {
+        return Promise(result.toRemoteShortObject(context)).then(Promise.resolveDeep);
     }
 
     if (result.toRemoteObject) {

@@ -21,10 +21,6 @@ module.exports = function(Business) {
     });
 
     Business.prototype.toRemoteObject = function (context) {
-
-
-
-
         var Hairfie        = Business.app.models.Hairfie,
             Hairdresser    = Business.app.models.Hairdresser,
             BusinessReview = Business.app.models.BusinessReview,
