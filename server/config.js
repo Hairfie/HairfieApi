@@ -10,6 +10,7 @@ module.exports = {
     restApiRoot: '/api',
     locales: commaSeparated(process.env.LOCALES),
     salesEventEmail: process.env.SALES_EVENT_EMAIL,
+    eventStreamEmail: process.env.EVENT_STREAM_EMAIL,
     emailFrom: process.env.EMAIL_FROM,
     emailBcc: process.env.EMAIL_BCC,
     adminIds: commaSeparated(process.env.ADMIN_IDS),

@@ -101,7 +101,7 @@ module.exports = function(User) {
 
         // emails should not be blocking
         Email.welcomeUser(user).fail(console.log);
-        Email.notifySales('user registered', {
+        Email.notifyAll('user registered', {
             'ID'        : user.id,
             'Gender'    : user.gender,
             'First name': user.firstName,

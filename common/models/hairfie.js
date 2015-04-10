@@ -256,7 +256,7 @@ module.exports = function (Hairfie) {
                 'Business phone'  : business.phoneNumber
             };
 
-            Email.notifySales(label, emailObject).fail(console.log);
+            Email.notifyAll(label, emailObject).fail(console.log);
 
             // update business with tags
             business.hairfieTags = business.hairfieTags || {};

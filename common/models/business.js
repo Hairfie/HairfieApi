@@ -331,7 +331,7 @@ module.exports = function(Business) {
     Business.afterCreate = function (next) {
         var business = this;
 
-        Business.app.models.email.notifySales('Business created', {
+        Business.app.models.email.notifyAll('Business created', {
             'ID'       : business.id,
             'Url'      : Business.app.urlGenerator.business(business),
             'Name'     : business.name,

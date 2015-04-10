@@ -39,6 +39,32 @@ module.exports = function (Email) {
         });
     };
 
+    Email.notifyAll = function (channel, data, links) {
+        var links = links || {};
+
+        var env = Email.app.get('env');
+        var envLabel = (env.toLowerCase() !== 'production') ? '[' + env + ']' : '';
+
+        var recipient = Email.app.get("eventStreamEmail");
+
+        if (!recipient) {
+            debug('Notify all: no eventStreamEmail configured, skipping');
+            return Q(null);
+        }
+
+        return send({
+            to: recipient,
+            locale: 'en',
+            template: 'notifySales',
+            templateVars: {
+                env     : envLabel,
+                channel : channel,
+                data    : data,
+                links   : links
+            }
+        });
+    };
+
     Email.welcomeUser = function (user) {
         return send({
             to: user.getFullEmail(),

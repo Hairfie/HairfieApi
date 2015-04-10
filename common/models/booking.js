@@ -40,7 +40,7 @@ module.exports = function (Booking) {
             .then(function (business) {
                 Email.confirmBooking(booking, business);
 
-                return Booking.app.models.email.notifySales('Demande de réservation', {
+                return Booking.app.models.email.notifyAll('Demande de réservation', {
                     'ID'              : booking.id,
                     'Salon'           : business.name,
                     'Tel du salon'    : business.phoneNumber,
