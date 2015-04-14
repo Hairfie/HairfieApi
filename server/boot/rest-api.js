@@ -8,13 +8,22 @@ module.exports = function mountRestApi(server) {
     server.on('routes defined', function () {
         var restApiRoot = server.get('restApiRoot');
 
-        server.use('/exp', function (req, res, next) {
+        server.use('/:apiVersion', function (req, res, next) {
+            req.apiVersion = req.params.apiVersion;
+            console.log('api version :', req.apiVersion);
+            next();
+        });
+
+        server.use('/v1', function (req, res, next) {
             req.isExp = true;
             next();
         });
-        server.use('/exp', server.loopback.rest());
 
-        server.use('/api', server.loopback.rest());
+        server.use('/old', function (req, res, next) {
+            res.send("Outdated");
+        });
+
+        server.use('/:apiVersion', server.loopback.rest());
     });
 
     var remotes = server.remotes();

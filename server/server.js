@@ -121,11 +121,7 @@ for (var s in passportConfig) {
     passportConfigurator.configureProvider(s, c);
 }
 
-app.use(
-    [
-        '/api/auth/facebook/token',
-        '/exp/auth/facebook/token'
-    ],
+app.use('/*/auth/facebook/token',
     passport.authenticate('facebook-token-auth', {
         scope: passportConfig['facebook-token-auth'].scope
     }),
@@ -140,11 +136,7 @@ app.use(
     }
 );
 
-app.use(
-    [
-        '/api/link/facebook/token',
-        '/exp/link/facebook/token'
-    ],
+app.use('/*/link/facebook/token',
     passport.authorize('facebook-token-link', {
         scope: passportConfig['facebook-token-link'].scope
     }),

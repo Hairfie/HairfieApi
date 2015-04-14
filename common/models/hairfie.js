@@ -65,7 +65,7 @@ module.exports = function (Hairfie) {
             numLikes        : this.getNumLikes(),
             selfMade        : !!this.selfMade,
             tags            : this.getTags().then(function (tags) {
-                return tags.map(function (tag) { return tag.toRemoteShortObject(context) });
+                return tags ? tags.map(function (tag) { return tag.toRemoteShortObject(context) }) : null;
             }),
             displayBusiness : this.displayBusiness(),
             hidden          : this.hidden,
@@ -145,6 +145,7 @@ module.exports = function (Hairfie) {
     };
 
     Hairfie.prototype.getTags = function () {
+        if(!this.tags) return Q(false);
         return Q.ninvoke(Hairfie.app.models.Tag, 'findByIds', this.tags);
     };
 
