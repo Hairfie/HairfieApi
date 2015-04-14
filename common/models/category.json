@@ -31,10 +31,15 @@
       ],
       "required": true
     },
+    "genders": {
+      "type": [
+        "string"
+      ],
+      "required": true
+    },
     "picture": {
       "type": "Image"
     },
-    "old_picture": {"type": "string"},
     "position": {
       "type": "number"
     }

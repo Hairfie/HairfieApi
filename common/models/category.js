@@ -1,6 +1,8 @@
 'use strict';
 
 var Hooks = require('./hooks');
+var Q = require('q');
+var _ = require('lodash');
 
 module.exports = function(Category) {
     Hooks.generateId(Category);
@@ -22,5 +24,16 @@ module.exports = function(Category) {
             picture     : this.picture && this.picture.toRemoteShortObject(context),
             position    : this.position
         };
+    };
+
+    Category.listForTagsAndGenders = function (tags, genders) {
+        return Q.ninvoke(Category, 'find', {
+            where: {
+                or: [
+                    {tags: {inq: _.pluck(tags, 'id')}},
+                    {genders: {inq: _.map(genders, function (g) { return (g || '').toLowerCase(); })}}
+                ]
+            }
+        });
     };
 };

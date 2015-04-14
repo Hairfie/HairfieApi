@@ -1,14 +1,13 @@
 'use strict';
 
-var Promise = require('../../common/utils/Promise'),
-    Q = require('q'),
-    lodash = require('lodash');
-
+var Q = require('q');
+var _ = require('lodash');
 var Hooks = require('./hooks');
 
 module.exports = function (Hairfie) {
     Hooks.generateId(Hairfie);
     Hooks.updateTimestamps(Hairfie);
+    Hooks.updateSearchIndex(Hairfie, {index: 'hairfie'});
     Hooks.hasImages(Hairfie, {
         pictures: {
             container: 'hairfies',
@@ -43,32 +42,30 @@ module.exports = function (Hairfie) {
     Hairfie.validateAsync('tags', function (onError, onDone) {
         if (!Array.isArray(this.tags) || 0 == this.tags.length) return onDone();
 
-        this.tagObjects((function (error, tags) {
+        this.getTags().then(function (tags) {
             if (tags.length != this.tags.length) return onError();
             onDone();
-        }).bind(this));
+        }.bind(this), onError);
     }, {message: 'all exist'});
 
     Hairfie.prototype.toRemoteObject = function (context) {
-        var HairfieLike = Hairfie.app.models.HairfieLike;
-
-        var businessMember = Promise.npost(this, 'businessMember').then(function (businessMember) {
+        var businessMember = Q.npost(this, 'businessMember').then(function (businessMember) {
             return businessMember && businessMember.toRemoteShortObject(context);
         });
 
-        return lodash.assign(this.toRemoteShortObject(context), {
-            author          : Promise.ninvoke(this.author).then(function (author) {
+        return _.assign(this.toRemoteShortObject(context), {
+            author          : Q.ninvoke(this.author).then(function (author) {
                 return author ? author.toRemoteShortObject(context) : null;
             }),
-            business        : Promise.ninvoke(this.business).then(function (business) {
+            business        : Q.ninvoke(this.business).then(function (business) {
                 return business ? business.toRemoteShortObject(context) : null;
             }),
             hairdresser     : businessMember, // NOTE: BC
             businessMember  : businessMember,
-            numLikes        : Promise.ninvoke(HairfieLike, 'count', {hairfieId: this.id}),
+            numLikes        : this.getNumLikes(),
             selfMade        : !!this.selfMade,
-            tags            : Promise.npost(this, 'tagObjects').then(function (tags) {
-                return Promise.map(tags, function (tag) { return tag.toRemoteShortObject(context); });
+            tags            : this.getTags().then(function (tags) {
+                return tags.map(function (tag) { return tag.toRemoteShortObject(context) });
             }),
             displayBusiness : this.displayBusiness(),
             hidden          : this.hidden,
@@ -83,7 +80,7 @@ module.exports = function (Hairfie) {
         return {
             id              : this.id,
             href            : Hairfie.app.urlGenerator.api('hairfies/'+this.id),
-            picture         : lodash.first(pictures),
+            picture         : _.first(pictures),
             pictures        : pictures,
             price           : this.price,
             description     : this.description ? this.description : '',
@@ -91,31 +88,70 @@ module.exports = function (Hairfie) {
         };
     };
 
+    Hairfie.prototype.toSearchDocument = function () {
+        return Q
+            .all([
+                this.getBusiness(),
+                this.getTags(),
+                this.getCategories(),
+                this.getNumLikes(),
+                this.getLastLike()
+            ])
+            .spread(function (business, tags, categories, numLikes, lastLike) {
+                return {
+                    price       : this.price,
+                    numLikes    : numLikes,
+                    business    : business && {
+                        name        : business.name,
+                        address     : business.address,
+                    },
+                    _geoloc     : business && {
+                        lat : business.gps.lat,
+                        lng : business.gps.lng
+                    },
+                    _tags       : tags.map(function (t) { return t.name && t.name.fr; }),
+                    categories  : categories.map(function (c) { return c.name; }),
+                    lastLikeAt  : lastLike.createdAt,
+                    createdAt   : this.createdAt
+                }
+            }.bind(this));
+    };
+
     Hairfie.prototype.displayBusiness = function(authorId) {
-        if (!this.businessId) return Promise(false);
+        if (!this.businessId) return Q(false);
 
         var businessId = this.businessId;
-        return Promise.npost(this, 'author')
+        return Q.npost(this, 'author')
             .then(function (user) {
                 return !!user && user.isManagerOfBusiness(businessId);
             });
     };
 
-    // Hairfie.prototype.pictureObject = function () {
-    //     return this.pictureObjects()[0];
-    // };
+    Hairfie.prototype.getBusiness = function () {
+        return Q.ninvoke(this, 'business');
+    };
 
-    Hairfie.prototype.pictureObjects = function () {
-        var pictures = !Array.isArray(this.pictures) ? [this.picture] : this.pictures;
+    Hairfie.prototype.getNumLikes = function () {
+        return Q.ninvoke(Hairfie.app.models.HairfieLike, 'count', {hairfieId: this.id});
+    };
 
-        return pictures.map(function (picture) {
-            return Picture.fromDatabaseValue(picture, 'hairfies', Hairfie.app);
+    Hairfie.prototype.getLastLike = function () {
+        return Q.ninvoke(Hairfie.app.models.HairfieLike, 'findOne', {
+            where: {
+                hairfieId: this.id
+            },
+            order: 'createdAt DESC'
         });
     };
 
-    Hairfie.prototype.tagObjects = function (callback) {
-        if (!Array.isArray(this.tags)) return callback(null, []);
-        Hairfie.app.models.Tag.findByIds(this.tags, callback);
+    Hairfie.prototype.getTags = function () {
+        return Q.ninvoke(Hairfie.app.models.Tag, 'findByIds', this.tags);
+    };
+
+    Hairfie.prototype.getCategories = function () {
+        return this.getTags().then(function (tags) {
+            return Hairfie.app.models.Category.listForTagsAndGenders(tags);
+        });
     };
 
     Hairfie.hide = function (req, next) {
@@ -141,14 +177,14 @@ module.exports = function (Hairfie) {
         if (req.body.facebook) networks.push('facebook');
         if (req.body.facebookPage) networks.push('facebookPage');
 
-        Promise.ninvoke(Hairfie, 'findById', req.params.hairfieId)
+        Q.ninvoke(Hairfie, 'findById', req.params.hairfieId)
             .then(function (hairfie) {
                 if (!hairfie) return next({statusCode: 404});
                 if (hairfie.authorId.toString() != req.user.id.toString()) return next({statusCode: 403});
 
                 return [
                     hairfie,
-                    Promise.npost(hairfie, 'business')
+                    Q.npost(hairfie, 'business')
                 ];
             })
             .spread(function (hairfie, business) {
@@ -194,7 +230,7 @@ module.exports = function (Hairfie) {
     };
 
     // set user id from access token
-    Hairfie.beforeRemote('create', function (ctx, _, next) {
+    Hairfie.beforeRemote('create', function (ctx, unused, next) {
         ctx.req.body.authorId = ctx.req.accessToken.userId;
 
         // keep backward compatibility (hairdressers -> business members)
@@ -205,9 +241,9 @@ module.exports = function (Hairfie) {
     });
 
     function createReviewRequest(hairfie) {
-        if (!hairfie.customerEmail || !hairfie.businessId) return Promise(null);
+        if (!hairfie.customerEmail || !hairfie.businessId) return Q(null);
 
-        return Promise.ninvoke(Hairfie.app.models.BusinessReviewRequest, 'create', {
+        return Q.ninvoke(Hairfie.app.models.BusinessReviewRequest, 'create', {
             businessId  : hairfie.businessId,
             hairfieId   : hairfie.id,
             email       : hairfie.customerEmail
@@ -215,13 +251,13 @@ module.exports = function (Hairfie) {
     }
 
     function getAveragePriceForTag(hairfie, tagName) {
-        if (!hairfie.businessId) return Promise(null);
+        if (!hairfie.businessId) return Q(null);
         var Tag = Hairfie.app.models.Tag;
 
 
-        return Promise.ninvoke(Tag, 'findOne', {where: {or: [{"name.fr": tagName}, {"name.en": tagName}] }})
+        return Q.ninvoke(Tag, 'findOne', {where: {or: [{"name.fr": tagName}, {"name.en": tagName}] }})
             .then(function(tag) {
-                return Promise.ninvoke(Hairfie, 'getBusinessAveragePriceForTag', hairfie.businessId, tag.id);
+                return Q.ninvoke(Hairfie, 'getBusinessAveragePriceForTag', hairfie.businessId, tag.id);
             });
     }
 
@@ -229,11 +265,11 @@ module.exports = function (Hairfie) {
         var Email = Hairfie.app.models.email;
 
         Q.all([
-            Promise.ninvoke(this, 'author'),
-            Promise.ninvoke(this, 'business'),
+            Q.ninvoke(this, 'author'),
+            Q.ninvoke(this, 'business'),
             createReviewRequest(this),
-            Promise.ninvoke(this, 'businessMember'),
-            Promise.ninvoke(this, 'tagObjects'),
+            Q.ninvoke(this, 'businessMember'),
+            this.getTags(),
             getAveragePriceForTag(this, 'Man'),
             getAveragePriceForTag(this, 'Woman')
 
@@ -252,7 +288,7 @@ module.exports = function (Hairfie) {
                 'Hairdresser tagged' : businessMember ? businessMember.firstName + ' ' + businessMember.lastName : 'Non rempli',
                 'User who posted'          : author.firstName + ' ' + author.lastName,
                 'Customer email'  : this.customerEmail,
-                'Tags'            : lodash.map(tags, function(tag) {return tag.name.fr }),
+                'Tags'            : _.map(tags, function(tag) {return tag.name.fr }),
                 'Business phone'  : business.phoneNumber
             };
 
@@ -260,7 +296,7 @@ module.exports = function (Hairfie) {
 
             // update business with tags
             business.hairfieTags = business.hairfieTags || {};
-            lodash.map(tags, function (tag) {
+            _.map(tags, function (tag) {
                 business.hairfieTags[tag.id] = (business.hairfieTags[tag.id] || 0) + 1;
             });
 
@@ -277,7 +313,7 @@ module.exports = function (Hairfie) {
     }
 
     Hairfie.listMostLikedSince = function (date, limit) {
-        var deferred = Promise.defer();
+        var deferred = Q.defer();
         var HairfieLike = Hairfie.app.models.HairfieLike;
         var collection = HairfieLike.dataSource.connector.collection(HairfieLike.definition.name);
 
@@ -291,7 +327,7 @@ module.exports = function (Hairfie) {
         collection.aggregate(pipe, function (error, result) {
             if (error) return deferred.reject(error);
 
-            Hairfie.findByIds(lodash.pluck(result, '_id'), function (error, hairfies) {
+            Hairfie.findByIds(_.pluck(result, '_id'), function (error, hairfies) {
                 if (error) deferred.reject(error);
                 else deferred.resolve(hairfies);
             });
