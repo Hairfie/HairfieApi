@@ -368,7 +368,7 @@ module.exports = function(Business) {
         next();
     });
 
-    Business.nearby = function(here, query, clientTypes, page, limit, callback) {
+    Business.nearby = function(here, query, clientTypes, facetFilters, page, limit, callback) {
         var collection = Business.dataSource.connector.collection(Business.definition.name);
 
         // TODO: remove me as soon as the 1.6.3 version of the app is released
@@ -795,6 +795,7 @@ module.exports = function(Business) {
             {arg: 'here', type: 'string', required: true, description: 'geo location:{lng: ,lat:}. For ex : 2.30,48.87'},
             {arg: 'query', type: 'string', description: 'plain text search'},
             {arg: 'clientTypes', type: 'array'},
+            {arg: 'facetFilters', type: 'array', description: 'Filters based on facets'},
             {arg: 'page', type: 'number', description: 'number of pages (page size defined by limit)'},
             {arg: 'limit', type: 'number', description: 'number of businesses to get, default=10'}
         ],
