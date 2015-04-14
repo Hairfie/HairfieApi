@@ -1,10 +1,10 @@
 'use strict';
 
-var async = require('async');
+var Q = require('q');
+var _ = require('lodash');
 var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 var Promise = require('../../common/utils/Promise');
 var getSlug = require('speakingurl');
-var lodash = require('lodash');
 var Control = require('../utils/AccessControl');
 var ejs = require('elastic.js');
 var Hooks = require('./hooks');
@@ -41,7 +41,7 @@ module.exports = function(Business) {
                     return user && user.toRemoteShortObject(context);
                 });
 
-                return lodash.assign(this.toRemoteShortObject(context), {
+                return _.assign(this.toRemoteShortObject(context), {
                     kind               : this.kind ? this.kind : 'SALON',
                     gps                : this.gps,
                     men                : false != this.men,
@@ -116,16 +116,6 @@ module.exports = function(Business) {
         return getSlug(this.name);
     };
 
-    Business.prototype.toSearchIndexObject = function () {
-          var doc = {};
-          doc.name = this.name;
-          if (this.gps) {
-              doc.gps = {lat: this.gps.lat, lon: this.gps.lng};
-          }
-
-          return doc;
-    };
-
     Business.prototype.isBookable = function() {
         // bypass to allow discount less booking
         if (this.bookable) {
@@ -133,9 +123,9 @@ module.exports = function(Business) {
         }
 
         var isBookable = false;
-        lodash.each(this.timetable, function(day) {
+        _.each(this.timetable, function(day) {
             if(day.length > 0) {
-                lodash.each(day, function(timewindow) {
+                _.each(day, function(timewindow) {
                     if(timewindow.discount) { isBookable = true };
                 });
             }
@@ -210,11 +200,10 @@ module.exports = function(Business) {
         return Promise.all([
                 Promise.ninvoke(BusinessReview, 'getBusinessRating', this.id),
                 Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
-                this.getHairfieTagCounts(),
-                this.getAllTags(),
-                this.getAllCategories()
+                this.getTags(),
+                this.getCategories()
             ])
-            .spread((function (rating, numHairfies, hairfieTagCounts, _tags, categories) {
+            .spread(function (rating, numHairfies, tags, categories) {
                 return {
                     id                 : this.id,
                     objectID           : this.id.toString(),
@@ -235,20 +224,18 @@ module.exports = function(Business) {
                     isBookable         : this.isBookable(),
                     bestDiscount       : this.bestDiscount,
                     createdAt          : this.createdAt,
-                    hairfieTagCounts   : hairfieTagCounts,
-                    _tags              : _tags,
-                    categories         : this.addGenderToCategoriesName(categories),
+                    _tags              : tags.map(function (t) { return t.name && t.name.fr; }),
+                    categories         : categories,
                     averagePrice       : this.averagePrice,
                     updatedAt          : this.updatedAt
                 }
-            }).bind(this));
+            }.bind(this));
     };
 
-    Business.prototype.getAllTags = function () {
-        var Hairfie  = Business.app.models.Hairfie,
-            Tag      = Business.app.models.Tag,
-            ObjectID = Hairfie.dataSource.ObjectID,
-            hairfies = Hairfie.dataSource.connector.collection(Hairfie.definition.name);
+    Business.prototype.getTags = function () {
+        var Tag = Business.app.models.Tag;
+        var Hairfie = Business.app.models.Hairfie;
+        var hairfies = Hairfie.dataSource.connector.collection(Hairfie.definition.name);
 
         var pipe = [
             {$match: {businessId: this.id}},
@@ -256,76 +243,25 @@ module.exports = function(Business) {
             {$group: {_id: "$tags"}}
         ];
 
-        return Promise.ninvoke(hairfies, 'aggregate', pipe)
+        return Q.ninvoke(hairfies, 'aggregate', pipe)
             .then(function (results) {
-                return Promise.ninvoke(Tag, 'findByIds', lodash.map(results, '_id'));
-            })
-            .then(function(tags) {
-                return lodash.map(tags, function(tag) { return tag.name.fr });
+                return Q.ninvoke(Tag, 'findByIds', _.map(results, '_id'));
             });
     };
 
-    Business.prototype.getAllCategories = function () {
-        var Hairfie  = Business.app.models.Hairfie,
-            Tag      = Business.app.models.Tag,
-            Category = Business.app.models.Category,
-            hairfies = Hairfie.dataSource.connector.collection(Hairfie.definition.name);
-
-        var pipe = [
-            {$match: {businessId: this.id}},
-            {$unwind: "$tags"},
-            {$group: {_id: "$tags"}}
-        ];
-
-        return Promise.ninvoke(hairfies, 'aggregate', pipe)
-            .then(function (results) {
-                return Promise.all(
-                    lodash.map(results, function(tag) {
-                        return Promise.ninvoke(Category, 'find', {where: {tags: tag._id}});
-                    })
-                )
-            })
-            .then(function(categories) {
-                return lodash.uniq(lodash.flatten(categories), 'id');
-            });
+    Business.prototype.getCategories = function () {
+        return this.getTags().then(function (tags) {
+            return Business.app.models.Category.listForTagsAndGenders(tags, this.getGenders());
+        });
     };
 
-    Business.prototype.getGenderArray = function () {
+    Business.prototype.getGenders = function () {
         var gender = [];
         if (false != this.men)      gender.push("men");
         if (false != this.women)    gender.push("women");
         if (false != this.children) gender.push("children");
 
         return gender;
-    };
-
-    Business.prototype.addGenderToCategoriesName = function(categories) {
-        var categoriesName = lodash.map(categories, 'name');
-
-        if (false != this.men)      categoriesName.push("Homme");
-        if (false != this.women)    categoriesName.push("Femme");
-
-        return lodash.uniq(categoriesName);
-    }
-
-    Business.prototype.getHairfieTagCounts = function () {
-        var Hairfie  = Business.app.models.Hairfie,
-            hairfies = Hairfie.dataSource.connector.collection(Hairfie.definition.name);
-
-        var pipe = [
-            {$match: {businessId: this.id}},
-            {$unwind: "$tags"},
-            {$group: {_id: "$tags", count: {$sum: 1}}},
-        ];
-
-        return Promise.ninvoke(hairfies, 'aggregate', pipe)
-            .then(function (results) {
-                var tagCounts = {};
-                results.forEach(function (result) {
-                    tagCounts[result._id] = result.count;
-                });
-                return tagCounts;
-            });
     };
 
     Business.afterCreate = function (next) {
@@ -347,8 +283,6 @@ module.exports = function(Business) {
     };
 
     function bestDiscountOfTimetable(timetable) {
-        var _ = lodash; // shorten a bit the lines above
-
         var timeWindows = _.flatten(_.values(timetable)),
             discounts   = _.reject(_.map(_.pluck(timeWindows, 'discount'), Number), _.isNaN);
 
@@ -360,7 +294,7 @@ module.exports = function(Business) {
             ctx.instance.bestDiscount = bestDiscountOfTimetable(ctx.instance.timetable);
         } else {
             // update only when timetable is updated
-            if (!lodash.isUndefined(ctx.data.timetable)) {
+            if (!_.isUndefined(ctx.data.timetable)) {
                 ctx.data.bestDiscount = bestDiscountOfTimetable(ctx.data.timetable);
             }
         }
@@ -372,7 +306,7 @@ module.exports = function(Business) {
         var collection = Business.dataSource.connector.collection(Business.definition.name);
 
         // TODO: remove me as soon as the 1.6.3 version of the app is released
-        if (lodash.isString(here)) {
+        if (_.isString(here)) {
             var tmpGeoPoint = GeoPoint(here);
             here = tmpGeoPoint.lng+','+tmpGeoPoint.lat;
         }
@@ -393,7 +327,7 @@ module.exports = function(Business) {
             return Promise.ninvoke(Business, 'mongoNearby', here, clientTypes, skip, limit)
                 .then(function(result) {
                     // Fix me by instantiating business from JSON
-                    return Promise.ninvoke(Business, 'findByIds', lodash.pluck(result, '_id'));
+                    return Promise.ninvoke(Business, 'findByIds', _.pluck(result, '_id'));
                 });
         }
     }
@@ -451,15 +385,15 @@ module.exports = function(Business) {
         }
 
         if(genders) {
-            params.facetFilters += ',(' + lodash.map(genders, function(gender) {
+            params.facetFilters += ',(' + _.map(genders, function(gender) {
                 return "genders:"+gender;
             }).join(',') + ')';
         }
 
         if(facetFilters) {
-            lodash.forEach(facetFilters, function(filters, facetFilter) {
-                filters = lodash.isArray(filters) ? filters : [filters];
-                facetFiltersArr.push('(' + lodash.map(lodash.toArray(filters), function(filter) {
+            _.forEach(facetFilters, function(filters, facetFilter) {
+                filters = _.isArray(filters) ? filters : [filters];
+                facetFiltersArr.push('(' + _.map(_.toArray(filters), function(filter) {
                     return facetFilter + ':' + filter;
                 }).join(',') + ')' );
             });
@@ -495,7 +429,7 @@ module.exports = function(Business) {
                 return {
                     toRemoteObject: function (context) {
                         return {
-                            hits: lodash.map(businesses, function(business) {
+                            hits: _.map(businesses, function(business) {
                                 return business.toRemoteShortObject(context)
                             }),
                             facets: result.facets,
@@ -516,7 +450,7 @@ module.exports = function(Business) {
             .then(function(businesses) {
                 return {
                     toRemoteObject: function (context) {
-                        return lodash.map(businesses, function(business) {
+                        return _.map(businesses, function(business) {
                             return business.toRemoteObject(context)
                         })
                     }
@@ -545,7 +479,7 @@ module.exports = function(Business) {
                 return AlgoliaSearchEngine.search('business', '', params);
             })
             .then(function(result) {
-                result.hits = lodash.filter(result.hits, function(business) { return business.id != businessId });
+                result.hits = _.filter(result.hits, function(business) { return business.id != businessId });
                 return result;
             })
             .then(processAlgoliaForNearby)
@@ -642,8 +576,8 @@ module.exports = function(Business) {
                     hairfie    : hairfie.toRemoteObject(context)
                 };
             });
-            var result = lodash.reduce(customers, function (prev, current) {
-                var customer = lodash.find(prev, function (old) {
+            var result = _.reduce(customers, function (prev, current) {
+                var customer = _.find(prev, function (old) {
                     return old.email === current.email;
                 });
                 if (customer === undefined) {
@@ -652,7 +586,7 @@ module.exports = function(Business) {
                     delete current.hairfie;
                     prev.push(current);
                 } else {
-                    if (!lodash.isArray(customer.hairfies)) {
+                    if (!_.isArray(customer.hairfies)) {
                         customer.hairfies = [customer.hairfie];
                     }
                     customer.numHairfies++;
@@ -746,7 +680,7 @@ module.exports = function(Business) {
             })
             .then(function(hairfieTagCounts) {
                 return Promise.all([
-                    Promise.ninvoke(Tag, 'findByIds', lodash.keys(hairfieTagCounts)),
+                    Promise.ninvoke(Tag, 'findByIds', _.keys(hairfieTagCounts)),
                     hairfieTagCounts
                 ]);
             })
@@ -755,7 +689,7 @@ module.exports = function(Business) {
                     hairfieTagCounts = arr[1];
 
                 return {toRemoteObject: function (context) {
-                    return lodash.sortBy(lodash.map(tags, function(tag) {
+                    return _.sortBy(_.map(tags, function(tag) {
                         return {
                             tag: tag.toRemoteObject(context),
                             tagCount: hairfieTagCounts[tag.id]
@@ -765,14 +699,14 @@ module.exports = function(Business) {
             });
     };
 
-    Business.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, _, next) {
+    Business.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, unused, next) {
         ctx.req.user.isManagerOfBusiness(ctx.instance.id)
             .then(function (isManager) {
                 if (!isManager) return next({statusCode: 403});
 
                 if (ctx.req.body.pictures) {
                     var pattern = /^((http|https):\/\/)/;
-                    ctx.req.body.pictures = lodash.filter(ctx.req.body.pictures, function(url) { return !pattern.test(url)});
+                    ctx.req.body.pictures = _.filter(ctx.req.body.pictures, function(url) { return !pattern.test(url)});
                 }
 
                 if (ctx.req.body.phoneNumber) {
