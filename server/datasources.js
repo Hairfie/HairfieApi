@@ -14,9 +14,55 @@ module.exports = {
     algoliaSearchEngine: {
         name: "algoliaSearchEngine",
         type: "memory",
-        index: {
-            business: process.env.ALGOLIA_INDEX_BUSINESS,
-            hairfie: process.env.ALGOLIA_INDEX_HAIRFIE
+        indices: {
+            business: {
+                index: process.env.ALGOLIA_INDEX_BUSINESS,
+                model: 'Business',
+                settings: {
+                    attributesForFaceting: [
+                        'genders',
+                        'categories',
+                        '_tags'
+                    ],
+                    attributesToIndex: [
+                        'name',
+                        'categories',
+                        'address.city',
+                        '_tags',
+                        'address.streetName',
+                        'address.zipCode'
+                    ],
+                    customRanking: [
+                        'desc(numHairfies)',
+                        'desc(rating)',
+                        'desc(numReviews)'
+                    ]
+                }
+            },
+            hairfie: {
+                index: process.env.ALGOLIA_INDEX_HAIRFIE,
+                model: 'Hairfie',
+                settings: {
+                    attributesForFaceting: [
+                        'categories',
+                        '_tags',
+                        'price.amount'
+                    ],
+                    attributesToIndex: [
+                        'business.name',
+                        'business.address.city',
+                        'business.address.streetName',
+                        'business.address.zipCode',
+                        'categories',
+                        '_tags'
+                    ],
+                    customRanking: [
+                        'desc(createdAt)',
+                        'desc(numLikes)',
+                        'desc(lastLikeAt)'
+                    ]
+                }
+            }
         },
         applicationId:  process.env.ALGOLIA_APPLICATION_ID,
         apiKey: process.env.ALGOLIA_API_KEY

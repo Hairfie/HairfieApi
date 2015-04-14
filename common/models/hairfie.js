@@ -99,6 +99,7 @@ module.exports = function (Hairfie) {
             ])
             .spread(function (business, tags, categories, numLikes, lastLike) {
                 return {
+                    objectID    : this.id,
                     price       : this.price,
                     numLikes    : numLikes,
                     business    : business && {
@@ -111,7 +112,7 @@ module.exports = function (Hairfie) {
                     },
                     _tags       : tags.map(function (t) { return t.name && t.name.fr; }),
                     categories  : categories.map(function (c) { return c.name; }),
-                    lastLikeAt  : lastLike.createdAt,
+                    lastLikeAt  : lastLike && lastLike.createdAt,
                     createdAt   : this.createdAt
                 }
             }.bind(this));
@@ -145,7 +146,7 @@ module.exports = function (Hairfie) {
     };
 
     Hairfie.prototype.getTags = function () {
-        return Q.ninvoke(Hairfie.app.models.Tag, 'findByIds', this.tags);
+        return Q.ninvoke(Hairfie.app.models.Tag, 'findByIds', this.tags || []);
     };
 
     Hairfie.prototype.getCategories = function () {
@@ -336,6 +337,71 @@ module.exports = function (Hairfie) {
         return deferred.promise;
     };
 
+    /**
+     * Query params:
+     * - q
+     * - bounds
+     * - location
+     * - radius
+     * - priceMin
+     * - priceMax
+     * - categories
+     */
+    Hairfie.search = function (req) {
+        var params = {};
+        params.page = Math.max(1, req.query.page || 1) - 1;
+        params.facets = ['categories', 'price.amount'],
+        params.hitsPerPage = Math.max(1, Math.min(20, req.query.pageSize || 10));
+        params.facetFilters = [];
+        params.numericFilters = [];
+
+        // search location
+        if (req.query.bounds) {
+            params.insideBoundingBox = req.query.bounds;
+        } else if (req.query.limit) {
+            params.aroundLatLng = req.query.location;
+            params.aroundRadius = req.query.radius || 1000;
+        }
+
+        // pagination
+
+        // filter by categories
+        _.map(asArray(req.query.categories), function (category) {
+            params.facetFilters.push('categories:'+category);
+        });
+
+        // filter by price
+        if (req.query.priceMin) {
+            params.numericFilters.push('price.amount >= '+req.query.priceMin);
+        }
+        if (req.query.priceMax) {
+            params.numericFilters.push('price.amount <= '+req.query.priceMax);
+        }
+
+        return Hairfie.app.models.AlgoliaSearchEngine
+            .search('hairfie', req.query.q || '', params)
+            .then(function (result) {
+                return [
+                    result,
+                    Q.ninvoke(Hairfie, 'findByIds', _.pluck(result.hits, 'objectID'))
+                ];
+            })
+            .spread(function (result, hairfies) {
+                return {
+                    toRemoteObject: function (context) {
+                        return {
+                            hits        : _.map(hairfies, function (hairfie) {
+                                return hairfie.toRemoteShortObject(context);
+                            }),
+                            numHits     : result.nbHits,
+                            categories  : (result.facets || {}).categories || {},
+                            price       : (result.facets_stats || {})['price.amount']
+                        };
+                    }
+                };
+            });
+    };
+
     Hairfie.remoteMethod('share', {
         description: 'Shares a hairfie on social networks',
         accepts: [
@@ -352,4 +418,19 @@ module.exports = function (Hairfie) {
         ],
         http: { path: '/:hairfieId', verb: 'DELETE' }
     });
+
+    Hairfie.remoteMethod('search', {
+        description: 'Search hairfies',
+        accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}}
+        ],
+        returns: {root: true},
+        http: {path: '/search', verb: 'GET'}
+    });
 };
+
+function asArray(v) {
+    if (_.isArray(v)) return v;
+    if (_.isUndefined(v)) return [];
+    return [v];
+}

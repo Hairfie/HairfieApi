@@ -1,120 +1,110 @@
 "use strict";
 
 var Algolia = require('algolia-search');
-var Promise = require('../../common/utils/Promise');
+var Q = require('q');
+var _ = require('lodash');
 
 module.exports = function (AlgoliaSearchEngine) {
+    AlgoliaSearchEngine.indexes = {};
 
     var client = null;
+    var indices = {};
 
-    function getSettings() {
+    function settings() {
         return AlgoliaSearchEngine.dataSource.settings;
     }
 
-    function getIndex(type) {
-        return getSettings().index[type];
+    function indexModel(indexName) {
+        return settings().indices[indexName].model;
+    }
+
+    function indexSettings(indexName) {
+        return settings().indices[indexName].settings;
+    }
+
+    function indexByName(indexName) {
+        return getClient().initIndex(settings().indices[indexName].index);
+    }
+
+    function modelSearchDocument(model) {
+        return model.toSearchDocument();
     }
 
     function getClient() {
         if (!client) {
-            client = new Algolia(getSettings().applicationId, getSettings().apiKey);
+            client = new Algolia(settings().applicationId, settings().apiKey);
         }
 
         return client;
     }
 
+    function runAlgolia(desc, action) {
+        var deferred = Q.defer();
 
-    AlgoliaSearchEngine.displayInfos = function () {
-        console.log("getSettings :", getSettings());
-        return;
-    };
-
-    AlgoliaSearchEngine.dropIndex = function (type) {
-        var deferred = Promise.defer();
-
-        var index = getClient().initIndex(getIndex(type));
-        index.clearIndex(deferred.makeNodeResolver());
+        action(function (error, content) {
+            if (error) deferred.reject('Failed to '+desc+': '+content.message);
+            else deferred.resolve(content);
+        });
 
         return deferred.promise;
     }
 
-
-    AlgoliaSearchEngine.saveObject = function (type, data) {
-        var deferred = Promise.defer();
-        var index = getClient().initIndex(getIndex(type));
-        index.saveObject(data, deferred.makeNodeResolver());
-
-        return deferred.promise;
-    }
-
-    AlgoliaSearchEngine.delete = function (type, id) {
-        var deferred = Promise.defer();
-        var index = getClient().initIndex(getIndex(type));
-
-        index.deleteObject(id, deferred.makeNodeResolver());
-
-        return deferred.promise;
-    }
-
-    AlgoliaSearchEngine.search = function (type, query, params) {
-        var deferred = Promise.defer();
-        var index = getClient().initIndex(getIndex(type));
-        index.search(query, deferred.makeNodeResolver(), params);
-
-        return deferred.promise;
-    }
-
-    AlgoliaSearchEngine.defineSettings = function (type, settings) {
-        var deferred = Promise.defer();
-
-        var index = getClient().initIndex(getIndex(type));
-        index.setSettings(settings, deferred.makeNodeResolver());
-
-        return deferred.promise;
-    }
-
-    AlgoliaSearchEngine.defineAllSettings = function () {
-        return AlgoliaSearchEngine.defineSettings('business', {
-            attributesForFaceting: ['genders', 'categories', '_tags'],
-            attributesToIndex: ['name','categories','address.city','_tags', 'address.streetName','address.zipCode'],
-            customRanking: ['desc(numHairfies)', 'desc(rating)', 'desc(numReviews)']
+    AlgoliaSearchEngine.dropIndex = function (indexName) {
+        return runAlgolia('drop index', function (resolver) {
+            indexByName(indexName).clearIndex(resolver);
         });
     };
 
-    AlgoliaSearchEngine.indexAll = function (progressHandler) {
-        var Business = AlgoliaSearchEngine.app.models.Business;
-        var deferred = Promise.defer();
-        var index = getClient().initIndex(getIndex('business'));
-        var limit = 100;
+    AlgoliaSearchEngine.saveDocument = function (indexName, body) {
+        return runAlgolia('save document', function (resolver) {
+            indexByName(indexName).saveDocument(body, resolver);
+        });
+    };
 
-        function loop(skip) {
-            if (progressHandler) progressHandler({done: skip});
+    AlgoliaSearchEngine.deleteDocument = function (indexName, id) {
+        return runAlgolia('delete document', function (resolver) {
+            indexByName(indexName).deleteObject(id, resolver);
+        });
+    };
 
-            Business.find({order: 'updatedAt DESC', limit: limit, skip: skip}, function (error, businesses) {
+    AlgoliaSearchEngine.search = function (indexName, query, params) {
+        return runAlgolia('search', function (resolver) {
+            indexByName(indexName).search(query, resolver, params);
+        });
+    };
 
-                return Promise.map(businesses, function (business) {
-                        return business.toSearchDocument();
-                    })
-                    .then(Promise.resolveDeep)
-                    .then(function(body) {
-                        index.saveObjects(body, function(error, content) {
-                            if (error) {
-                                console.error("ERROR: %s", content.message);
-                                return deferred.reject(error);
-                            }
+    AlgoliaSearchEngine.configureIndex = function (indexName) {
+        return runAlgolia('configure index', function (resolver) {
+            indexByName(indexName).setSettings(indexSettings(indexName), resolver);
+        });
+    };
 
-                            if (businesses.length < limit) {
-                                deferred.resolve(null);
-                            } else {
-                                loop(skip + limit);
-                            }
+    AlgoliaSearchEngine.indexAll = function (indexName, onProgress) {
+        var Model = AlgoliaSearchEngine.app.models[indexModel(indexName)];
+        var onProgress = onProgress || _.noop;
+        var chunkSize = 100;
+        var index = indexByName(indexName);
+
+        return Q.ninvoke(Model, 'count')
+            .then(function (total) {
+                var loop = function (skip) {
+                    onProgress({total: total, done: skip});
+
+                    return Q.ninvoke(Model, 'find', {limit: chunkSize, skip: skip})
+                        .then(function (models) {
+                            return Q.all(_.map(models, modelSearchDocument))
+                                .then(function (docs) {
+                                    return runAlgolia('save documents', function (resolver) {
+                                        index.saveObjects(docs, resolver);
+                                    });
+                                })
+                                .then(function () {
+                                    return models.length < chunkSize ? null : loop(skip + chunkSize);
+                                });
                         });
-                    });
+                };
+
+                return loop(0);
             });
-        }
-
-        loop(0);
-
-        return deferred.promise;
     };
 }
