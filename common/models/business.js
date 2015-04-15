@@ -300,23 +300,37 @@ module.exports = function(Business) {
         next();
     });
 
-    Business.nearby = function(req, here, query, clientTypes, facetFilters, page, limit, callback) {
-        var collection = Business.dataSource.connector.collection(Business.definition.name);
+    /**
+     * Query params:
+     * - q
+     * - query (deprecated)
+     * - location
+     * - facetFilters
+     * - clientTypes (deprecated)
+     * - page
+     * - limit
+     */
+    Business.nearby = function(req) {
 
-        var maxDistance = 8000,
-            here        = GeoPoint(here),
-            page        = Math.max(page || 1),
-            limit       = Math.min(limit || 10, 100),
-            skip        = limit * (page - 1),
-            query       = query || '';
+        var params = {};
 
-        if(query && query.length != 0 || facetFilters && facetFilters.length != 0) {
-            return Q.ninvoke(Business, 'algoliaSearch', here, maxDistance, null, query, clientTypes, facetFilters, null, page, limit)
-                .then(processAlgoliaForNearby)
-                .nodeify(callback);
+        if(req.query.here) req.query.location = req.query.here;
+
+        params.maxDistance  = 8000;
+        params.location     = GeoPoint(req.query.location);
+        params.page         = Math.max(req.query.page || 1),
+        params.limit        = Math.min(req.query.limit || 10, 100),
+        params.skip         = params.limit * (params.page - 1),
+        params.q            = req.query.q || req.query.query;
+
+        params.facetFilters = req.query.facetFilters;
+        params.clientTypes = req.query.clientTypes;
+
+        if(params.q && params.q.length != 0 || params.facetFilters && params.facetFilters.length != 0) {
+            return Q.ninvoke(Business, 'algoliaSearch', params)
+                .then(processAlgoliaForNearby);
         } else {
-            console.log("mongoNearby");
-            return Q.ninvoke(Business, 'mongoNearby', here, clientTypes, skip, limit)
+            return Q.ninvoke(Business, 'mongoNearby', params.location, params.clientTypes, params.skip, params.limit)
                 .then(function(result) {
                     // Fix me by instantiating business from JSON
                     return Q.ninvoke(Business, 'findByIds', _.pluck(result, '_id'));
@@ -324,21 +338,36 @@ module.exports = function(Business) {
         }
     }
 
-    Business.search = function(req, location, radius, bounds, query, genders, facetFilters, price, page, limit, callback) {
-        var maxDistance = radius || 10000,
-            location    = location ? GeoPoint(location) : null,
-            bounds      = !bounds ? undefined : {
-                northEast: GeoPoint(bounds.northEast),
-                southWest: GeoPoint(bounds.southWest)
-            },
-            page        = Math.max(page || 1),
-            limit       = Math.min(limit || 10, 100),
-            query       = query || '';
+    /**
+     * Query params:
+     * - q
+     * - query (deprecated)
+     * - location
+     * - radius
+     * - bounds
+     * - facetFilters
+     * - clientTypes (deprecated)
+     * - price
+     * - page
+     * - limit
+     */
+    Business.search = function(req) {
+        var params = {};
 
-        return Q.ninvoke(Business, 'algoliaSearch', location, maxDistance, bounds, query, genders, facetFilters, price, page, limit)
-            .then(processAlgoliaForSearch)
-            .nodeify(callback)
-        ;
+        params.maxDistance  = req.query.radius || 10000,
+        params.location     = req.query.location ? GeoPoint(req.query.location) : null,
+        params.bounds       = !req.query.bounds ? undefined : {
+                                    northEast: GeoPoint(req.query.bounds.northEast),
+                                    southWest: GeoPoint(req.query.bounds.southWest)
+                                },
+        params.facetFilters = req.query.facetFilters,
+        params.page         = Math.max(req.query.page || 1),
+        params.limit        = Math.min(req.query.limit || 10, 100),
+        params.skip         = params.limit * (params.page - 1),
+        params.q            = req.query.q || req.query.query;
+
+        return Q.ninvoke(Business, 'algoliaSearch', params)
+            .then(processAlgoliaForSearch);
     }
 
     Business.mongoNearby = function(here, clientTypes, skip, limit, callback) {
@@ -353,37 +382,45 @@ module.exports = function(Business) {
             callback(null, businesses);
         });
     }
-
-    Business.algoliaSearch = function(location, maxDistance, bounds, query, genders, facetFilters, price, page, limit, callback)  {
+// location, maxDistance, bounds, query, genders, facetFilters, price, page, limit, callback
+    Business.algoliaSearch = function(params, callback)  {
         var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
 
-        var params = {
-            hitsPerPage: limit,
-            page: page - 1,
+        // TODO : MERGE params and algolia params.
+
+        var algoliaParams = {
+            hitsPerPage: params.limit,
+            page: params.page - 1,
             facets: '*'
         };
 
         var numericFiltersArr = [];
         var facetFiltersArr = [];
 
+        var location    = params.location ? GeoPoint(params.location) : null,
+            bounds      = !params.bounds ? undefined : {
+                northEast: GeoPoint(params.bounds.northEast),
+                southWest: GeoPoint(params.bounds.southWest)
+            };
+
         if (location) {
-            params.aroundLatLng = location.asLatLngString(),
-            params.aroundRadius = maxDistance,
-            params.aroundPrecision = 10
+            algoliaParams.aroundLatLng = location.asLatLngString(),
+            algoliaParams.aroundRadius = params.maxDistance,
+            algoliaParams.aroundPrecision = 10
         }
 
         if (bounds) {
-            params.insideBoundingBox = bounds.northEast.asLatLngString()+','+bounds.southWest.asLatLngString();
+            algoliaParams.insideBoundingBox = bounds.northEast.asLatLngString()+','+bounds.southWest.asLatLngString();
         }
 
-        if(genders) {
-            params.facetFilters += ',(' + _.map(genders, function(gender) {
+        if(params.genders) {
+            params.facetFilters += ',(' + _.map(params.genders, function(gender) {
                 return "genders:"+gender;
             }).join(',') + ')';
         }
 
-        if(facetFilters) {
-            _.forEach(facetFilters, function(filters, facetFilter) {
+        if(params.facetFilters) {
+            _.forEach(params.facetFilters, function(filters, facetFilter) {
                 filters = _.isArray(filters) ? filters : [filters];
                 facetFiltersArr.push(_.map(_.toArray(filters), function(filter) {
                     return facetFilter + ':' + filter;
@@ -391,25 +428,25 @@ module.exports = function(Business) {
             });
         }
 
-        if(price && price.min) {
-            numericFiltersArr.push('(averagePrice.men>' + price.min + ',averagePrice.women>' + price.min + ')');
+        if(params.price && params.price.min) {
+            numericFiltersArr.push('(averagePrice.men>' + params.price.min + ',averagePrice.women>' + params.price.min + ')');
         }
 
-        if(price && price.max) {
-            numericFiltersArr.push('(averagePrice.men<' + price.max + ',averagePrice.women<' + price.max + ')');
+        if(params.price && params.price.max) {
+            numericFiltersArr.push('(averagePrice.men<' + price.max + ',averagePrice.women<' + params.price.max + ')');
         }
 
         if(numericFiltersArr.length > 0) {
-            params.numericFilters = numericFiltersArr.join(',');
+            algoliaParams.numericFilters = numericFiltersArr.join(',');
         }
 
         if(facetFiltersArr.length > 0) {
-            params.facetFilters = facetFiltersArr.join(',');
+            algoliaParams.facetFilters = facetFiltersArr.join(',');
         }
 
-        console.log("Algolia sent Params :", params);
+        var query = params.q || '';
 
-        return AlgoliaSearchEngine.search('business', query, params)
+        return AlgoliaSearchEngine.search('business', query, algoliaParams)
             .nodeify(callback);
     }
 
@@ -718,15 +755,7 @@ module.exports = function(Business) {
     Business.remoteMethod('nearby', {
         description: 'Find nearby locations around you',
         accepts: [
-            {arg: 'req', type: 'object', 'http': {source: 'req'}},
-
-            // Deprecated
-            {arg: 'here', type: 'string', required: true, description: 'geo location:{lng: ,lat:}. For ex : 2.30,48.87'},
-            {arg: 'query', type: 'string', description: 'plain text search'},
-            {arg: 'clientTypes', type: 'array'},
-            {arg: 'facetFilters', type: 'array', description: 'Filters based on facets'},
-            {arg: 'page', type: 'number', description: 'number of pages (page size defined by limit)'},
-            {arg: 'limit', type: 'number', description: 'number of businesses to get, default=10'}
+            {arg: 'req', type: 'object', 'http': {source: 'req'}}
         ],
         returns: {arg: 'businesses', root: true},
         http: { verb: 'GET' }
