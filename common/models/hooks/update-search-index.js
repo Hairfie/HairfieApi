@@ -3,6 +3,12 @@
 var Q = require('q');
 var _ = require('lodash');
 
+/**
+ * TODO: 2015-04-15 Antoine: guess index from the data-source configuration
+ * TODO: 2015-04-15 Antoine: automatically add the hook to models based on the
+ *                           data-source configuration
+ */
+
 module.exports = function (Model, options) {
     var options = options || {};
 
@@ -25,7 +31,7 @@ module.exports = function (Model, options) {
                 else return instance.toSearchDocument();
             })
             .then(function (doc) {
-                Engine.saveObject(options.index, doc);
+                Engine.saveDocument(options.index, doc);
             })
             .fail(console.log);
 
@@ -37,7 +43,7 @@ module.exports = function (Model, options) {
         var Engine = Model.app.models.AlgoliaSearchEngine;
         var id = tryGetId(ctx.where);
         if (id) {
-            Engine.delete(options.index, id).fail(console.log);
+            Engine.deleteDocument(options.index, id).fail(console.log);
         }
 
         next(); // fire and forget

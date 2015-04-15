@@ -3,10 +3,8 @@
 var Q = require('q');
 var _ = require('lodash');
 var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
-var Promise = require('../../common/utils/Promise');
 var getSlug = require('speakingurl');
 var Control = require('../utils/AccessControl');
-var ejs = require('elastic.js');
 var Hooks = require('./hooks');
 
 module.exports = function(Business) {
@@ -27,17 +25,17 @@ module.exports = function(Business) {
             BusinessMember = Business.app.models.BusinessMember,
             User           = Business.app.models.User;
 
-        return Promise.ninvoke(BusinessReview, 'getBusinessRating', this.id)
+        return Q.ninvoke(BusinessReview, 'getBusinessRating', this.id)
             .then((function (rating) {
-                var activeHairdressers = Promise
+                var activeHairdressers = Q
                     .npost(this, 'getVisibleActiveMembers')
                     .then(function (members) {
-                        return Promise.all(members.map(function (member) {
+                        return Q.all(members.map(function (member) {
                                 return member.toRemoteShortObject(context);
                         }));
                     });
 
-                var owner = Promise.npost(this, 'owner').then(function (user) {
+                var owner = Q.npost(this, 'owner').then(function (user) {
                     return user && user.toRemoteShortObject(context);
                 });
 
@@ -50,7 +48,7 @@ module.exports = function(Business) {
                     owner              : owner,
                     description        : this.description,
                     timetable          : this.timetable,
-                    numHairfies        : Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
+                    numHairfies        : Q.ninvoke(Hairfie, 'count', {businessId: this.id}),
                     numReviews         : rating.numReviews,
                     rating             : rating.rating,
                     crossSell          : true,
@@ -98,7 +96,7 @@ module.exports = function(Business) {
             toRemoteObject: function (context) {
                 return {
                     name        : facebookPage.name,
-                    user        : Promise.ninvoke(User, 'findById', facebookPage.userId).then(function (user) {
+                    user        : Q.ninvoke(User, 'findById', facebookPage.userId).then(function (user) {
                         return user && user.toRemoteShortObject(context);
                     }),
                     createdAt   : facebookPage.createdAt
@@ -169,7 +167,7 @@ module.exports = function(Business) {
         var where = {};
         where.businessId = this.id;
 
-        var deferred = Promise.defer();
+        var deferred = Q.defer();
 
         BusinessService.find({where: where}, function(error, services) {
             if(error) deferred.reject(error);
@@ -180,7 +178,7 @@ module.exports = function(Business) {
     };
 
     Business.prototype.isClaimed = function () {
-        var deferred = Promise.defer();
+        var deferred = Q.defer();
         var BusinessMember = Business.app.models.BusinessMember;
         var where = {};
         where.businessId = this.id;
@@ -197,9 +195,9 @@ module.exports = function(Business) {
         var BusinessReview = Business.app.models.BusinessReview,
             Hairfie        = Business.app.models.Hairfie;
 
-        return Promise.all([
-                Promise.ninvoke(BusinessReview, 'getBusinessRating', this.id),
-                Promise.ninvoke(Hairfie, 'count', {businessId: this.id}),
+        return Q.all([
+                Q.ninvoke(BusinessReview, 'getBusinessRating', this.id),
+                Q.ninvoke(Hairfie, 'count', {businessId: this.id}),
                 this.getTags(),
                 this.getCategories()
             ])
@@ -319,15 +317,15 @@ module.exports = function(Business) {
             query       = query || '';
 
         if(query && query.length != 0 || facetFilters && facetFilters.length != 0) {
-            return Promise.ninvoke(Business, 'algoliaSearch', here, maxDistance, null, query, clientTypes, facetFilters, null, page, limit)
+            return Q.ninvoke(Business, 'algoliaSearch', here, maxDistance, null, query, clientTypes, null, null, page, limit)
                 .then(processAlgoliaForNearby)
                 .nodeify(callback);
         } else {
             console.log("mongoNearby");
-            return Promise.ninvoke(Business, 'mongoNearby', here, clientTypes, skip, limit)
+            return Q.ninvoke(Business, 'mongoNearby', here, clientTypes, skip, limit)
                 .then(function(result) {
                     // Fix me by instantiating business from JSON
-                    return Promise.ninvoke(Business, 'findByIds', _.pluck(result, '_id'));
+                    return Q.ninvoke(Business, 'findByIds', _.pluck(result, '_id'));
                 });
         }
     }
@@ -343,7 +341,7 @@ module.exports = function(Business) {
             limit       = Math.min(limit || 10, 100),
             query       = query || '';
 
-        return Promise.ninvoke(Business, 'algoliaSearch', location, maxDistance, bounds, query, genders, facetFilters, price, page, limit)
+        return Q.ninvoke(Business, 'algoliaSearch', location, maxDistance, bounds, query, genders, facetFilters, price, page, limit)
             .then(processAlgoliaForSearch)
             .nodeify(callback)
         ;
@@ -393,9 +391,9 @@ module.exports = function(Business) {
         if(facetFilters) {
             _.forEach(facetFilters, function(filters, facetFilter) {
                 filters = _.isArray(filters) ? filters : [filters];
-                facetFiltersArr.push('(' + _.map(_.toArray(filters), function(filter) {
+                facetFiltersArr.push(_.map(_.toArray(filters), function(filter) {
                     return facetFilter + ':' + filter;
-                }).join(',') + ')' );
+                }).join(','));
             });
         }
 
@@ -424,7 +422,7 @@ module.exports = function(Business) {
     function processAlgoliaForSearch(result) {
         var ids = result.hits.map(function (hit) { return hit.id; });
 
-        return Promise.denodeify(Business.findByIds.bind(Business))(ids)
+        return Q.denodeify(Business.findByIds.bind(Business))(ids)
             .then(function(businesses) {
                 return {
                     toRemoteObject: function (context) {
@@ -446,7 +444,7 @@ module.exports = function(Business) {
     function processAlgoliaForNearby(result) {
         var ids = result.hits.map(function (hit) { return hit.id; });
 
-        return Promise.denodeify(Business.findByIds.bind(Business))(ids)
+        return Q.denodeify(Business.findByIds.bind(Business))(ids)
             .then(function(businesses) {
                 return {
                     toRemoteObject: function (context) {
@@ -463,7 +461,7 @@ module.exports = function(Business) {
         var maxDistance = 5000,
             limit       = Math.min(limit || 10, 100);
 
-        return Promise.denodeify(Business.findById.bind(Business))(businessId)
+        return Q.denodeify(Business.findById.bind(Business))(businessId)
             .then(function(business) {
                 // @todo handle the case the business has no location
                 if (!business.gps) return callback('business has no location');
@@ -493,7 +491,7 @@ module.exports = function(Business) {
             .then(function (isManager) {
                 if (!isManager) return cb({statusCode: 403});
 
-                return Promise.ninvoke(Business, 'findById', businessId);
+                return Q.ninvoke(Business, 'findById', businessId);
             })
             .then(function (business) {
                 if (!business || !business.facebookPage) return cb({statusCode: 404});
@@ -510,7 +508,7 @@ module.exports = function(Business) {
             .then(function (isManager) {
                 if (!isManager) return cb({statusCode: 403});
 
-                return Promise.ninvoke(Business, 'findById', businessId);
+                return Q.ninvoke(Business, 'findById', businessId);
             })
             .then(function (business) {
                 if (!business) return cb({statusCode: 404});
@@ -547,13 +545,13 @@ module.exports = function(Business) {
             .then(function (isManager) {
                 if (!isManager) return cb({statusCode: 403});
 
-                return Promise.ninvoke(Business, 'findById', businessId);
+                return Q.ninvoke(Business, 'findById', businessId);
             })
             .then(function (business) {
                 if (!business) return cb({statusCode: 404});
 
                 business.facebookPage = null;
-                return Promise.ninvoke(business, 'save');
+                return Q.ninvoke(business, 'save');
             })
             .then(cb.bind(null, null), cb);
     };
@@ -564,7 +562,7 @@ module.exports = function(Business) {
 
         var filter = {where: {businessId: this.id, customerEmail: {neq: null}}, order: 'createdAt DESC'};
 
-        var deferred  = Promise.defer();
+        var deferred  = Q.defer();
 
 
         Hairfie.find(filter, function(error, hairfies) {
@@ -608,7 +606,7 @@ module.exports = function(Business) {
             .then(function (isManager) {
                 if (!isManager) return cb({statusCode: 403});
 
-                return Promise.ninvoke(Business, 'findById', businessId);
+                return Q.ninvoke(Business, 'findById', businessId);
             })
             .then(function (business) {
                 if (!business) return cb({statusCode: 404});
@@ -624,7 +622,7 @@ module.exports = function(Business) {
         var adminIds = app.get('adminIds');
         if (!user) return cb({statusCode: 401});
 
-        return Promise.ninvoke(Business, 'findById', businessId)
+        return Q.ninvoke(Business, 'findById', businessId)
             .then(function(business) {
                 if (!business) return cb({statusCode: 404});
                 return business.isClaimed()
@@ -632,7 +630,7 @@ module.exports = function(Business) {
             .then(function(isClaimed) {
                 if (isClaimed) return cb({statusCode: 403});
 
-                return Promise.ninvoke(BusinessMember, 'create', {
+                return Q.ninvoke(BusinessMember, 'create', {
                     businessId: businessId,
                     userId: user.id,
                     gender: user.gender,
@@ -648,13 +646,13 @@ module.exports = function(Business) {
                 cb(null, businessMember);
             })
             .then(function() {
-                return Promise.ninvoke(User, 'findByIds', adminIds)
+                return Q.ninvoke(User, 'findByIds', adminIds)
             })
             .then(function(admins) {
-                return Promise.all(admins.map(function(admin) {
+                return Q.all(admins.map(function(admin) {
                     var adminData = {userId: admin.id, businessId: businessId};
 
-                    Promise.ninvoke(BusinessMember, 'findOrCreate', {where: adminData}, {
+                    Q.ninvoke(BusinessMember, 'findOrCreate', {where: adminData}, {
                         businessId: businessId,
                         userId: admin.id,
                         gender: admin.gender,
@@ -674,13 +672,13 @@ module.exports = function(Business) {
     Business.tags = function (businessId, callback) {
         var Tag = Business.app.models.Tag;
 
-        return Promise.ninvoke(Business, 'findById', businessId)
+        return Q.ninvoke(Business, 'findById', businessId)
             .then(function(business) {
                 return business.getHairfieTagCounts();
             })
             .then(function(hairfieTagCounts) {
-                return Promise.all([
-                    Promise.ninvoke(Tag, 'findByIds', _.keys(hairfieTagCounts)),
+                return Q.all([
+                    Q.ninvoke(Tag, 'findByIds', _.keys(hairfieTagCounts)),
                     hairfieTagCounts
                 ]);
             })

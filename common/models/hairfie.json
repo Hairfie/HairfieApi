@@ -8,7 +8,8 @@
       "findById",
       "create",
       "share",
-      "hide"
+      "hide",
+      "search"
     ],
     "mongodb": {
       "collection": "hairfies"
