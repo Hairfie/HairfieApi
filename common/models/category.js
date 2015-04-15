@@ -18,8 +18,8 @@ module.exports = function(Category) {
         return {
             id          : this.id,
             href        : Category.app.urlGenerator.api('categories/'+this.id),
-            name        : this.name,
-            description : this.description,
+            name        : context.localized(this.name),
+            description : context.localized(this.description),
             tags        : this.tags,
             picture     : this.picture && this.picture.toRemoteShortObject(context),
             position    : this.position

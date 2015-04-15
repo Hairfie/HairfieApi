@@ -2,6 +2,7 @@
 
 var Promise = require('../../common/utils/Promise');
 var locale = require('locale');
+var _ = require('lodash');
 
 module.exports = function mountRestApi(server) {
     // we need to wait for the custom routes to be defined
@@ -73,6 +74,8 @@ function Context(options) {
 
 Context.prototype.localized = function (value) {
     if (!value) return;
+
+    if(_.isString(value)) return value;
 
     var supported = new locale.Locales(Object.keys(value)),
         current   = new locale.Locales(this.options.request.locale),
