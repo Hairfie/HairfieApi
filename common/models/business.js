@@ -318,8 +318,8 @@ module.exports = function(Business) {
             skip        = limit * (page - 1),
             query       = query || '';
 
-        if(query && query.length != 0) {
-            return Promise.ninvoke(Business, 'algoliaSearch', here, maxDistance, null, query, clientTypes, null, null, page, limit)
+        if(query && query.length != 0 || facetFilters && facetFilters.length != 0) {
+            return Promise.ninvoke(Business, 'algoliaSearch', here, maxDistance, null, query, clientTypes, facetFilters, null, page, limit)
                 .then(processAlgoliaForNearby)
                 .nodeify(callback);
         } else {
