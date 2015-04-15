@@ -300,14 +300,8 @@ module.exports = function(Business) {
         next();
     });
 
-    Business.nearby = function(here, query, clientTypes, facetFilters, page, limit, callback) {
+    Business.nearby = function(req, here, query, clientTypes, facetFilters, page, limit, callback) {
         var collection = Business.dataSource.connector.collection(Business.definition.name);
-
-        // TODO: remove me as soon as the 1.6.3 version of the app is released
-        if (_.isString(here)) {
-            var tmpGeoPoint = GeoPoint(here);
-            here = tmpGeoPoint.lng+','+tmpGeoPoint.lat;
-        }
 
         var maxDistance = 8000,
             here        = GeoPoint(here),
@@ -317,7 +311,7 @@ module.exports = function(Business) {
             query       = query || '';
 
         if(query && query.length != 0 || facetFilters && facetFilters.length != 0) {
-            return Q.ninvoke(Business, 'algoliaSearch', here, maxDistance, null, query, clientTypes, null, null, page, limit)
+            return Q.ninvoke(Business, 'algoliaSearch', here, maxDistance, null, query, clientTypes, facetFilters, null, page, limit)
                 .then(processAlgoliaForNearby)
                 .nodeify(callback);
         } else {
@@ -330,7 +324,7 @@ module.exports = function(Business) {
         }
     }
 
-    Business.search = function(location, radius, bounds, query, genders, facetFilters, price, page, limit, callback) {
+    Business.search = function(req, location, radius, bounds, query, genders, facetFilters, price, page, limit, callback) {
         var maxDistance = radius || 10000,
             location    = location ? GeoPoint(location) : null,
             bounds      = !bounds ? undefined : {
@@ -724,6 +718,9 @@ module.exports = function(Business) {
     Business.remoteMethod('nearby', {
         description: 'Find nearby locations around you',
         accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}},
+
+            // Deprecated
             {arg: 'here', type: 'string', required: true, description: 'geo location:{lng: ,lat:}. For ex : 2.30,48.87'},
             {arg: 'query', type: 'string', description: 'plain text search'},
             {arg: 'clientTypes', type: 'array'},
@@ -738,6 +735,9 @@ module.exports = function(Business) {
     Business.remoteMethod('search', {
         description: 'Search businesses',
         accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}},
+
+            // deprecated
             {arg: 'location', type: 'object', description: 'location:{lng: ,lat:}. For ex : 2.30,48.87'},
             {arg: 'radius', type: 'number', description: 'Radius in meter around the geo location' },
             {arg: 'bounds', type: 'object', description: '{northEast: {lng: x1, lat: y1}, southWest: {lng: x2, lat: y2}}' },
