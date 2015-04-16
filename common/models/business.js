@@ -765,17 +765,6 @@ module.exports = function(Business) {
         description: 'Search businesses',
         accepts: [
             {arg: 'req', type: 'object', 'http': {source: 'req'}},
-
-            // deprecated
-            {arg: 'location', type: 'object', description: 'location:{lng: ,lat:}. For ex : 2.30,48.87'},
-            {arg: 'radius', type: 'number', description: 'Radius in meter around the geo location' },
-            {arg: 'bounds', type: 'object', description: '{northEast: {lng: x1, lat: y1}, southWest: {lng: x2, lat: y2}}' },
-            {arg: 'query', type: 'string', description: 'plain text search'},
-            {arg: 'clientTypes', type: 'array'},
-            {arg: 'facetFilters', type: 'array', description: 'Filters based on facets'},
-            {arg: 'price', type: 'object', description: 'price:{min: ,max:}'},
-            {arg: 'page', type: 'number', description: 'number of pages (page size defined by limit)'},
-            {arg: 'limit', type: 'number', description: 'number of businesses to get, default=10'}
         ],
         returns: {arg: 'results', root: true},
         http: { verb: 'GET' }
