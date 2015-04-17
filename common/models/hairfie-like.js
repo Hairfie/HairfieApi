@@ -12,7 +12,7 @@ module.exports = function (HairfieLike) {
         next();
 
         // in background
-        Hairfie = HairfieLike.app.models.Hairfie;
+        var Hairfie = HairfieLike.app.models.Hairfie;
         if (ctx.instance) {
             Hairfie.findById(ctx.instance.hairfieId, function (error, hairfie) {
                 if (!hairfie) return;
