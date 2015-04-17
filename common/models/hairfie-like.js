@@ -7,6 +7,22 @@ module.exports = function (HairfieLike) {
     Hooks.generateId(HairfieLike);
     Hooks.updateTimestamps(HairfieLike);
 
+    // update the related Hairfie
+    function saveHairfie(ctx, next) {
+        next();
+
+        // in background
+        Hairfie = HairfieLike.app.models.Hairfie;
+        if (ctx.instance) {
+            Hairfie.findById(ctx.instance.hairfieId, function (error, hairfie) {
+                if (!hairfie) return;
+                hairfie.save();
+            });
+        }
+    }
+    HairfieLike.observe('after save', saveHairfie);
+    HairfieLike.observe('after delete', saveHairfie);
+
     HairfieLike.prototype.toRemoteObject = function (context) {
         return {
             hairfie : Promise.ninvoke(this.hairfie).then(function (hairfie) {
