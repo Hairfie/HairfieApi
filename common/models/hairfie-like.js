@@ -1,6 +1,7 @@
 'use strict';
 
 var Promise = require('../../common/utils/Promise');
+var _ = require('lodash');
 var Hooks = require('./hooks');
 
 module.exports = function (HairfieLike) {
@@ -9,19 +10,30 @@ module.exports = function (HairfieLike) {
 
     // update the related Hairfie
     function saveHairfie(ctx, next) {
-        next();
-
-        // in background
         var Hairfie = HairfieLike.app.models.Hairfie;
+        var hairfieIds = [];
+
+        var updateHairfies = function (hairfieIds) {
+            next(); // run updates in background
+
+            _.map(hairfieIds, function (id) {
+                Hairfie.findById(id, function (error, hairfie) {
+                    if (!hairfie) return;
+                    hairfie.save(_.noop);
+                });
+            });
+        };
+
         if (ctx.instance) {
-            Hairfie.findById(ctx.instance.hairfieId, function (error, hairfie) {
-                if (!hairfie) return;
-                hairfie.save();
+            updateHairfies([ctx.instance.hairfieId]);
+        } else {
+            HairfieLike.find({where: ctx.where, limit: 100}, function (error, likes) {
+                updateHairfies(_.pluck(likes, 'hairfieId'));
             });
         }
     }
-    HairfieLike.observe('after save', saveHairfie);
-    HairfieLike.observe('after delete', saveHairfie);
+    HairfieLike.observe('before save', saveHairfie);
+    HairfieLike.observe('before delete', saveHairfie);
 
     HairfieLike.prototype.toRemoteObject = function (context) {
         return {

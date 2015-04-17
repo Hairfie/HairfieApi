@@ -31,9 +31,11 @@ module.exports = function (Model, options) {
                 else return instance.toSearchDocument();
             })
             .then(function (doc) {
-                Engine.saveDocument(options.index, doc);
+                return Engine.saveDocument(options.index, doc);
             })
-            .fail(console.log);
+            .fail(function (error) {
+                console.log('Failed to update search document:', error, error.stack);
+            });
 
         next(); // fire and forget
     });
