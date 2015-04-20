@@ -14,6 +14,9 @@ var Business = app.models.Business;
 var BusinessMember = app.models.BusinessMember;
 var Booking = app.models.Booking;
 
+var cloudinary = require('cloudinary');
+cloudinary.config({cloudName: process.env.CLOUDINARY_CLOUD_NAME,apiKey: process.env.CLOUDINARY_API_KEY,apiSecret: process.env.CLOUDINARY_API_SECRET});
+
 
 // open the repl session
 var replServer = require('otaat-repl').start({
@@ -30,6 +33,9 @@ replServer.context.Hairfie = Hairfie;
 replServer.context.Business = Business;
 replServer.context.BusinessMember = BusinessMember;
 replServer.context.Booking = Booking;
+
+replServer.context.cloudinary = cloudinary;
+
 
 replServer.context.find = find;
 replServer.context.findOne = findOne;
