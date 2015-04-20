@@ -57,7 +57,7 @@ module.exports = function (AlgoliaSearchEngine) {
 
     AlgoliaSearchEngine.saveDocument = function (indexName, body) {
         return runAlgolia('save document', function (resolver) {
-            indexByName(indexName).saveDocument(body, resolver);
+            indexByName(indexName).saveObject(body, resolver);
         });
     };
 
