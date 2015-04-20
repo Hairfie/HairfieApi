@@ -96,7 +96,7 @@
   },
   "accessToken": {
     "dataSource": "hairfieMongo",
-    "public": false
+    "public": true
   },
   "application": {
     "dataSource": "hairfieMongo",

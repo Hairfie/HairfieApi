@@ -92,6 +92,13 @@ module.exports = function(User) {
         return deferred.promise;
     };
 
+    User.prototype.getPermissions = function () {
+        var perms = [];
+        if (this.admin) perms.push('IMPERSONATE_USER');
+
+        return perms;
+    };
+
     User.validatesInclusionOf('gender', {in: [User.GENDER_MALE, User.GENDER_FEMALE]});
 
 

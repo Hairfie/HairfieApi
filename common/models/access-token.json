@@ -3,13 +3,38 @@
   "plural": "accessTokens",
   "base": "AccessToken",
   "options": {
+    "sharedMethodNames": [
+      "impersonate"
+    ],
     "mongodb": {
       "collection": "accessTokens"
     }
   },
-  "properties": {},
+  "properties": {
+    "parentId": {
+      "type": "string"
+    }
+  },
   "validations": [],
-  "relations": {},
-  "acls": [],
+  "relations": {
+    "parent": {
+      "type": "belongsTo",
+      "model": "accessToken",
+      "foreignKey": "parentId"
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "property": "impersonate",
+      "permission": "ALLOW"
+    }
+  ],
   "methods": []
 }

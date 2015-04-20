@@ -36,12 +36,14 @@
     "picture": {
       "type": "Image"
     },
-    "old_picture": {"type": "string"},
     "phoneNumber": {
       "type": "string"
     },
     "facebookId": {
       "type": "string"
+    },
+    "admin": {
+      "type": "boolean"
     }
   },
   "validations": [],
