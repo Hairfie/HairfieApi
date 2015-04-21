@@ -32,6 +32,29 @@ module.exports = function (Booking) {
         };
     };
 
+    Booking.confirm = function(req, next) {
+        Promise.ninvoke(Booking, 'findById', req.params.bookingId)
+            .then(function (booking) {
+                if (!booking) return next({statusCode: 404});
+                if (booking.confirmed) return next({statusCode: 401});
+
+                booking.confirmed = true;
+
+                return Promise.all[
+                    Promise.ninvoke(Booking.app.models.BusinessReviewRequest, 'create', {
+                        businessId  : booking.businessId,
+                        bookingId   : booking.id,
+                        email       : booking.email
+                    }),
+                    Promise.npost(booking, 'save')
+                ];
+            })
+            .then(function(results) {
+                console.log("result:", results);
+                next();
+            });
+    };
+
     Booking.afterCreate = function (next) {
         var Email = Booking.app.models.email;
         var booking = this;
@@ -56,4 +79,13 @@ module.exports = function (Booking) {
 
         next();
     };
+
+    Booking.remoteMethod('confirm', {
+        description: 'Confirm the booking',
+        accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}}
+        ],
+        returns: {arg: 'result', root: true},
+        http: { path: '/:bookingId/confirm', verb: 'POST' }
+    });
 };

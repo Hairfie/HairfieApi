@@ -17,9 +17,9 @@ module.exports = function (BusinessReviewRequest) {
             hairfie : Promise.npost(this, 'hairfie').then(function (hairfie) {
                 return hairfie && hairfie.toRemoteShortObject(hairfie);
             }),
-            // booking : Promise.npost(this, 'booking').then(function (booking) {
-            //     return booking && booking.toRemoteShortObject(booking);
-            // }),
+            booking : Promise.npost(this, 'booking').then(function (booking) {
+                return booking && booking.toRemoteShortObject(booking);
+            }),
             email   : this.email,
             canWrite: this.canWrite(),
             used    : !!this.reviewId

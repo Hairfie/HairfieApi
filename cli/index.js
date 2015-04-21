@@ -10,7 +10,7 @@ var commands = [
     'save-all-businesses',
     'build-search-index',
     'configure-algolia',
-    'send-business-review-requests',
+    'send-business-review-requests'
 ];
 
 commands.forEach(function (command) {

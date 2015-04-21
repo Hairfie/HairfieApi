@@ -19,7 +19,7 @@ cloudinary.config({cloudName: process.env.CLOUDINARY_CLOUD_NAME,apiKey: process.
 
 
 // open the repl session
-var replServer = require('otaat-repl').start({
+var replServer = require('repl').start({
   prompt: "HairfieAPI (" + env + ") > ",
 });
 
