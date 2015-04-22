@@ -15,10 +15,10 @@ module.exports = function (BusinessReviewRequest) {
                 return business && business.toRemoteShortObject(context);
             }),
             hairfie : Promise.npost(this, 'hairfie').then(function (hairfie) {
-                return hairfie && hairfie.toRemoteShortObject(hairfie);
+                return hairfie && hairfie.toRemoteShortObject(context);
             }),
             booking : Promise.npost(this, 'booking').then(function (booking) {
-                return booking && booking.toRemoteShortObject(booking);
+                return booking && booking.toRemoteObject(context);
             }),
             email   : this.email,
             canWrite: this.canWrite(),

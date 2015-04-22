@@ -52,6 +52,11 @@
       "type": "belongsTo",
       "model": "BusinessReview",
       "foreignKey": "reviewId"
+    },
+    "booking": {
+      "type": "belongsTo",
+      "model": "Booking",
+      "foreignKey": "bookingId"
     }
   },
   "acls": [],

@@ -11,7 +11,8 @@ module.exports = function (Booking) {
     Booking.GENDER_MALE = 'MALE';
     Booking.GENDER_FEMALE = 'FEMALE';
 
-    Booking.prototype.toRemoteObject = function (context) {
+    Booking.prototype.toRemoteObject =
+    Booking.prototype.toShortRemoteObject = function (context) {
         return {
             id              : this.id,
             href            : Booking.app.urlGenerator.api('bookings/'+this.id),
