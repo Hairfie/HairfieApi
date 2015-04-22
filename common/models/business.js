@@ -348,6 +348,7 @@ module.exports = function(Business) {
      * - facetFilters
      * - clientTypes (deprecated)
      * - price
+     * - withDiscount
      * - page
      * - limit
      */
@@ -364,6 +365,7 @@ module.exports = function(Business) {
         params.page         = Math.max(req.query.page || 1),
         params.limit        = Math.min(req.query.limit || 10, 100),
         params.skip         = params.limit * (params.page - 1),
+        params.withDiscount = req.query.withDiscount,
         params.q            = req.query.q || req.query.query;
 
         return Q.ninvoke(Business, 'algoliaSearch', params)
@@ -382,7 +384,7 @@ module.exports = function(Business) {
             callback(null, businesses);
         });
     }
-// location, maxDistance, bounds, query, genders, facetFilters, price, page, limit, callback
+
     Business.algoliaSearch = function(params, callback)  {
         var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
 
@@ -434,6 +436,10 @@ module.exports = function(Business) {
 
         if(params.price && params.price.max) {
             numericFiltersArr.push('(averagePrice.men<' + price.max + ',averagePrice.women<' + params.price.max + ')');
+        }
+
+        if(params.withDiscount) {
+            numericFiltersArr.push('(bestDiscount>0)');
         }
 
         if(numericFiltersArr.length > 0) {
