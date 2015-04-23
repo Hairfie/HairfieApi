@@ -6,11 +6,11 @@ module.exports = {
     },
     hairfie: {
         app: 'website',
-        path: '/hairfies/:id'
+        path: '/hairfie/:id'
     },
     business: {
         app: 'website',
-        path: '/businesses/:id/:slug'
+        path: '/coiffeur/:id/:slug'
     },
     businessReviewRequest: {
         app: 'website',
