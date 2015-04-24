@@ -35,6 +35,12 @@
       "principalId": "$everyone",
       "property": "impersonate",
       "permission": "ALLOW"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "property": "findById",
+      "permission": "ALLOW"
     }
   ],
   "methods": []
