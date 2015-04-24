@@ -4,6 +4,7 @@
   "base": "AccessToken",
   "options": {
     "sharedMethodNames": [
+      "findById",
       "impersonate"
     ],
     "mongodb": {
