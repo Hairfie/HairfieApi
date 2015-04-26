@@ -34,6 +34,7 @@ module.exports = function (BusinessMember) {
     BusinessMember.prototype.toRemoteShortObject = function (context) {
         return {
             id          : this.id,
+            businessId  : this.businessId,
             href        : BusinessMember.app.urlGenerator.api('businessMembers/'+this.id),
             gender      : this.gender,
             firstName   : this.firstName,
@@ -42,6 +43,7 @@ module.exports = function (BusinessMember) {
             phoneNumber : this.phoneNumber,
             picture     : this.picture && this.picture.toRemoteShortObject(context),
             hidden      : this.hidden,
+            userId      : this.userId,
             user        : RemoteObject.related(this, 'user', context),
             active      : this.active,
             numHairfies : Promise.npost(this, 'getNumHairfies')
