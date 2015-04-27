@@ -248,8 +248,9 @@ module.exports = function(Business) {
     };
 
     Business.prototype.getCategories = function () {
-        return this.getTags().then(function (tags) {
-            return Business.app.models.Category.listForTagsAndGenders(tags, this.getGenders());
+        var b = this;
+        return b.getTags().then(function (tags) {
+            return Business.app.models.Category.listForTagsAndGenders(tags, b.getGenders());
         });
     };
 
@@ -634,6 +635,15 @@ module.exports = function(Business) {
         });
 
         return deferred.promise;
+    };
+
+    Business.prototype.getGenderArray = function () {
+        var gender = [];
+        if (false != this.men)      gender.push("men");
+        if (false != this.women)    gender.push("women");
+        if (false != this.children) gender.push("children");
+
+        return gender;
     };
 
     Business.getCustomers = function (businessId, user, cb) {
