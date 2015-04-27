@@ -52,9 +52,9 @@ function processResult(Model, context, result, short) {
         });
     }
 
-    if (short && result.toRemoteShortObject) {
-        return Promise(result.toRemoteShortObject(context)).then(Promise.resolveDeep);
-    }
+    //if (short && result.toRemoteShortObject) {
+    //    return Promise(result.toRemoteShortObject(context)).then(Promise.resolveDeep);
+    //}
 
     if (result.toRemoteObject) {
         return Promise(result.toRemoteObject(context)).then(Promise.resolveDeep);
