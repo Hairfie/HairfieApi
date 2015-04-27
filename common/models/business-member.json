@@ -49,14 +49,13 @@
     "picture": {
       "type": "Image"
     },
-    "old_picture": {"type": "string"},
     "hidden": {
       "type": "boolean",
       "required": true
     },
     "active": {
       "type": "boolean",
-      "required": true
+      "default": true
     }
   },
   "validations": [],
