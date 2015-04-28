@@ -94,7 +94,7 @@ module.exports = function(User) {
 
     User.prototype.getPermissions = function () {
         var perms = [];
-        if (this.admin) perms.push('IMPERSONATE_USER');
+        if (this.admin) perms.push('IMPERSONATE_TOKEN');
 
         return perms;
     };
