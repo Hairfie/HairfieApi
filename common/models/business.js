@@ -466,7 +466,7 @@ module.exports = function(Business) {
                     toRemoteObject: function (context) {
                         return {
                             hits: _.map(businesses, function(business) {
-                                return business.toRemoteShortObject(context)
+                                return business.toRemoteObject(context)
                             }),
                             facets: result.facets,
                             nbHits : result.nbHits,

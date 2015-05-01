@@ -391,7 +391,7 @@ module.exports = function (Hairfie) {
                     toRemoteObject: function (context) {
                         return {
                             hits        : _.map(hairfies, function (hairfie) {
-                                return hairfie.toRemoteShortObject(context);
+                                return hairfie.toRemoteObject(context);
                             }),
                             numHits     : result.nbHits,
                             categories  : (result.facets || {}).categories || {},
