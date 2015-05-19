@@ -7,6 +7,7 @@ app.emit('started'); // TODO: models setup should not depend on server
 
 var commands = [
     'remove-business',
+    'remove-hairfie',
     'save-all-businesses',
     'build-search-index',
     'configure-algolia',
