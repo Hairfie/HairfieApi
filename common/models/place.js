@@ -173,7 +173,10 @@ function geocode(address, language) {
             language: language
         })
         .end(function (error, response) {
-            if (error) return deferred.reject(error);
+            if (error) {
+                console.log("error in geocode", error);
+                return deferred.reject(error);
+            }
 
             deferred.resolve(response.body.results);
         });
