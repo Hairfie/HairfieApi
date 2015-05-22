@@ -6,6 +6,7 @@
       "create",
       "updateAttributes",
       "find",
+      "findById",
       "deleteById"
     ],
     "mongodb": {
