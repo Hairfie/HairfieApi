@@ -11,6 +11,9 @@ module.exports = function (BusinessService) {
         return {
             id              : this.id,
             href            : BusinessService.app.urlGenerator.api('businessServices/'+this.id),
+            business        : Promise.npost(this, 'business').then(function (business) {
+                return business ? business.toRemoteShortObject(context) : null;
+            }),
             businessId      : this.businessId,
             label           : this.label,
             price           : this.price,
