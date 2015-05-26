@@ -46,6 +46,10 @@
     "dataSource": "hairfieMongo",
     "public": true
   },
+  "BusinessLead": {
+    "dataSource": "hairfieMongo",
+    "public": true
+  },
   "BusinessService": {
     "dataSource": "hairfieMongo",
     "public": true

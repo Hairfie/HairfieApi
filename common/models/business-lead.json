@@ -1,0 +1,36 @@
+{
+  "name": "BusinessLead",
+  "plural": "BusinessLeads",
+  "options": {
+    "sharedMethodNames": [
+      "findById",
+      "create"
+    ],
+    "mongodb": {
+      "collection": "businessLeads"
+    }
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "id": true
+    },
+    "businessName": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "phoneNumber": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+  },
+  "acls": [],
+  "methods": []
+}
