@@ -19,6 +19,7 @@ module.exports = function (Booking) {
             business        : Promise.ninvoke(this.business).then(function (business) {
                 return business ? business.toRemoteShortObject(context) : null;
             }),
+            confirmed       : this.confirmed,
             firstName       : this.firstName,
             lastName        : this.lastName,
             gender          : this.gender,
@@ -33,26 +34,24 @@ module.exports = function (Booking) {
         };
     };
 
-    Booking.confirm = function(req, next) {
-        Promise.ninvoke(Booking, 'findById', req.params.bookingId)
+    Booking.confirm = function(req) {
+        return Promise.ninvoke(Booking, 'findById', req.params.bookingId)
             .then(function (booking) {
                 if (!booking) return next({statusCode: 404});
                 if (booking.confirmed) return next({statusCode: 401});
 
-                booking.confirmed = true;
+                //booking.confirmed = true;
 
-                return Promise.all[
+                return Promise.npost(booking, 'save');
+
+                return Promise.all([
                     Promise.ninvoke(Booking.app.models.BusinessReviewRequest, 'create', {
                         businessId  : booking.businessId,
                         bookingId   : booking.id,
                         email       : booking.email
                     }),
                     Promise.npost(booking, 'save')
-                ];
-            })
-            .then(function(results) {
-                console.log("result:", results);
-                next();
+                ]);
             });
     };
 
