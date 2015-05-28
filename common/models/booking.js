@@ -40,10 +40,12 @@ module.exports = function (Booking) {
                 if (!booking) return next({statusCode: 404});
                 if (booking.confirmed) return next({statusCode: 401});
 
-                //booking.confirmed = true;
+                booking.confirmed = true;
 
                 return Promise.npost(booking, 'save');
 
+                // NOTE: confirmed means the hairdresser has accepted the booking
+                //       we need another step to acknowledge the actual cut
                 return Promise.all([
                     Promise.ninvoke(Booking.app.models.BusinessReviewRequest, 'create', {
                         businessId  : booking.businessId,
