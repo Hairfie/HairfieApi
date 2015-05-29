@@ -21,7 +21,7 @@ module.exports = function (Booking) {
     Booking.observe('before save', function (ctx, next) {
         if (ctx.instance && ctx.instance.timeslot && !ctx.instance.dateTime) ctx.instance.dateTime = ctx.instance.timeslot;
 
-        if (ctx.instance && ctx.instance.status == Booking.STATUS_WAITING) {
+        if (ctx.instance && ctx.instance.status == Booking.STATUS_NOT_CONFIRMED) {
             if (!ctx.instance.userCheckCode) ctx.instance.userCheckCode = Math.floor(Math.random()*9000) + 1000;
             ctx.phoneNumber = phone(ctx.phoneNumber, 'FR');
         }
@@ -30,8 +30,8 @@ module.exports = function (Booking) {
     });
 
     Booking.observe('after save', function (ctx, next) {
-        var TextMessage     = Booking.app.models.TextMessage;
-        if (ctx.instance && ctx.instance.userCheckCode && !ctx.instance.userCheck && ctx.instance.status == Booking.STATUS_WAITING) {
+        if (ctx.instance && ctx.instance.userCheckCode && !ctx.instance.userCheck && ctx.instance.status == Booking.STATUS_NOT_CONFIRMED) {
+            var TextMessage     = Booking.app.models.TextMessage;
             TextMessage.send(ctx.instance.phoneNumber, "Voici votre code pour valider votre réservation : " + ctx.instance.userCheckCode);
         }
         next();
@@ -77,7 +77,7 @@ module.exports = function (Booking) {
                 if(booking.userCheckCode != userCheckCode) return cb({statusCode: 401})
 
                 booking.userCheck = true;
-                booking.status = Booking.REQUEST;
+                booking.status = Booking.STATUS_REQUEST;
 
                 return Promise.npost(booking, 'save');
             });

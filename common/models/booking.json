@@ -63,7 +63,7 @@
     "status": {
         "type": "string",
         "required": true,
-        "default": "WAITING"
+        "default": "NOT_CONFIRMED"
     },
     "userCheck": {
         "type": "boolean",

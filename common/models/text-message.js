@@ -11,11 +11,16 @@ module.exports = function (TextMessage) {
     });
 
     TextMessage.send = function (toNumber, body) {
+        var env = TextMessage.app.get('env');
+
+        var envLabel = (env.toLowerCase() !== 'production') ? '[' + env + '] ' : ' ';
+        console.log("env", env);
+        console.log("envLabel", envLabel);
+
         return client.sendMessage({
             to: toNumber,
             from: "+33975182080",
-            body: body
-
+            body: envLabel + body
         }).then(function(responseData) {
             console.log('Successfully send message', responseData);
             return responseData;
