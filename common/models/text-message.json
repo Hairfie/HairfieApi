@@ -1,0 +1,4 @@
+{
+    "name": "TextMessage",
+    "base": "Model"
+}

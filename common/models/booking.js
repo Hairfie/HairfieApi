@@ -3,12 +3,14 @@
 var Promise = require('../../common/utils/Promise');
 var moment = require('moment-timezone');
 var Hooks = require('./hooks');
+var phone = require('phone');
 
 module.exports = function (Booking) {
     Hooks.generateId(Booking);
     Hooks.updateTimestamps(Booking);
 
-    Booking.STATUS_WAITING          = 'WAITING';
+    Booking.STATUS_NOT_CONFIRMED    = 'NOT_CONFIRMED';
+    Booking.STATUS_REQUEST          = 'REQUEST';
     Booking.STATUS_CONFIRMED        = 'CONFIRMED';
     Booking.STATUS_NOT_AVAILABLE    = 'NOT_AVAILABLE';  // Business not available
     Booking.STATUS_CANCELLED        = 'CANCELLED';      // Cancelled by user
@@ -18,6 +20,20 @@ module.exports = function (Booking) {
 
     Booking.observe('before save', function (ctx, next) {
         if (ctx.instance && ctx.instance.timeslot && !ctx.instance.dateTime) ctx.instance.dateTime = ctx.instance.timeslot;
+
+        if (ctx.instance && ctx.instance.status == Booking.STATUS_WAITING) {
+            if (!ctx.instance.userCheckCode) ctx.instance.userCheckCode = Math.floor(Math.random()*9000) + 1000;
+            ctx.phoneNumber = phone(ctx.phoneNumber, 'FR');
+        }
+
+        next();
+    });
+
+    Booking.observe('after save', function (ctx, next) {
+        var TextMessage     = Booking.app.models.TextMessage;
+        if (ctx.instance && ctx.instance.userCheckCode && !ctx.instance.userCheck && ctx.instance.status == Booking.STATUS_WAITING) {
+            TextMessage.send(ctx.instance.phoneNumber, "Voici votre code pour valider votre réservation : " + ctx.instance.userCheckCode);
+        }
         next();
     });
 
@@ -44,9 +60,27 @@ module.exports = function (Booking) {
             displayTimeslot : moment(dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
             discount        : this.discount,
             status          : this.status ? this.status : Booking.STATUS_WAITING,
+            userCheck       : this.userCheck,
+            userCheckCode   : this.userCheckCode,
             createdAt       : this.createdAt,
             updatedAt       : this.updatedAt
         };
+    };
+
+    Booking.userCheck = function(bookingId, userCheckCode, cb) {
+        if (!userCheckCode) return cb({statusCode: 401});
+
+        return Promise.ninvoke(Booking, 'findById', bookingId)
+            .then(function (booking) {
+                if (!booking) return cb({statusCode: 404});
+
+                if(booking.userCheckCode != userCheckCode) return cb({statusCode: 401})
+
+                booking.userCheck = true;
+                booking.status = Booking.REQUEST;
+
+                return Promise.npost(booking, 'save');
+            });
     };
 
     Booking.confirm = function(req, businessId, user, cb) {
@@ -123,6 +157,16 @@ module.exports = function (Booking) {
 
         next();
     };
+
+    Booking.remoteMethod('userCheck', {
+        description: 'Verify the number',
+        accepts: [
+            {arg: 'bookingId', type: 'string', required: true, description: 'ID of the booking'},
+            {arg: 'userCheckCode', type: 'string', required: true, description: 'User Check Code'},
+        ],
+        returns: {arg: 'result', root: true},
+        http: { path: '/:bookingId/userCheck', verb: 'POST' }
+    });
 
     Booking.remoteMethod('confirm', {
         description: 'Confirm the booking',

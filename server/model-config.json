@@ -181,5 +181,9 @@
   "Station": {
     "dataSource": "hairfieMongo",
     "public": true
+  },
+  "TextMessage": {
+    "dataSource": "twilio",
+    "public": false
   }
 }

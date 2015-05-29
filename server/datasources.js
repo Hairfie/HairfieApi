@@ -126,5 +126,11 @@ module.exports = {
         awsSecret: process.env.KRAKEN_AWS_SECRET,
         awsS3Bucket: process.env.KRAKEN_AWS_S3_BUCKET,
         awsS3Region: process.env.KRAKEN_AWS_S3_REGION
+    },
+    twilio: {
+        name: 'twilio',
+        connector: 'memory',
+        twilioAccountSID: process.env.TWILIO_ACCOUNT_SID,
+        twilioAuthToken: process.env.TWILIO_AUTH_TOKEN
     }
 };
