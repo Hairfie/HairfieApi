@@ -12,7 +12,7 @@ module.exports = function (Booking) {
     Booking.STATUS_CONFIRMED        = 'CONFIRMED';
     Booking.STATUS_NOT_AVAILABLE    = 'NOT_AVAILABLE';  // Business not available
     Booking.STATUS_CANCELLED        = 'CANCELLED';      // Cancelled by user
-    Booking.STATUS_DONE             = 'DONE';
+    Booking.STATUS_HONORED          = 'HONORED';
     Booking.STATUS_NOSHOW           = 'NOSHOW';
 
 
@@ -86,7 +86,7 @@ module.exports = function (Booking) {
             .then(function (booking) {
                 if (!booking) return next({statusCode: 404});
 
-                booking.status = Booking.STATUS_DONE;
+                booking.status = Booking.STATUS_HONORED;
 
                 return Promise.all([
                     Promise.ninvoke(Booking.app.models.BusinessReviewRequest, 'create', {
