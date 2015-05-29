@@ -126,14 +126,14 @@ module.exports = function (Email) {
         });
     };
 
-    Email.confirmBooking = function (booking, business) {
+    Email.confirmBookingRequest = function (booking, business) {
         var locale = booking.locale || 'fr';
         var timeslot = moment(booking.timeslot).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm");
 
         return send({
             to: booking.email,
             locale: locale,
-            template: 'confirmBooking',
+            template: 'confirmBookingRequest',
             templateVars: {
                 booking    : booking,
                 business   : business,

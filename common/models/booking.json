@@ -45,9 +45,12 @@
     "comment": {
       "type": "string"
     },
+    "dateTime": {
+        "type": "Date",
+        "required": true
+    },
     "timeslot": {
-      "type": "Date",
-      "required": true
+      "type": "Date"
     },
     "discount": {
       "type": "string"
@@ -55,6 +58,11 @@
     "confirmed": {
         "type": "boolean",
         "default": false
+    },
+    "status": {
+        "type": "string",
+        "required": true,
+        "default": "WAITING"
     }
   },
   "validations": [],
