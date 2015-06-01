@@ -23,16 +23,15 @@ module.exports = function (Booking) {
 
         if (ctx.instance && ctx.instance.status == Booking.STATUS_NOT_CONFIRMED) {
             if (!ctx.instance.userCheckCode) ctx.instance.userCheckCode = Math.floor(Math.random()*9000) + 1000;
-            ctx.phoneNumber = phone(ctx.phoneNumber, 'FR');
+            ctx.instance.phoneNumber = phone(ctx.instance.phoneNumber, 'FR')[0];
         }
-
         next();
     });
 
     Booking.observe('after save', function (ctx, next) {
         if (ctx.instance && ctx.instance.userCheckCode && !ctx.instance.userCheck && ctx.instance.status == Booking.STATUS_NOT_CONFIRMED) {
             var TextMessage     = Booking.app.models.TextMessage;
-            TextMessage.send(ctx.instance.phoneNumber, "Voici votre code pour valider votre réservation : " + ctx.instance.userCheckCode);
+            TextMessage.send(ctx.instance.phoneNumber, "Votre code pour valider votre réservation sur Hairfie : " + ctx.instance.userCheckCode);
         }
         next();
     });
