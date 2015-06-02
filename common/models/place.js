@@ -105,12 +105,7 @@ module.exports = function(Place) {
             .replace('[', '')
             .replace(/\s+/g, ' ');
 
-        console.log("address", address);
-
         var address = decodeURI(address);
-
-        console.log("address", address);
-
 
         // 1. Try to find exact match by name
         Place.findOne({where:{'name.fr': address}}, function (error, place) {
