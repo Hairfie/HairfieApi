@@ -4,6 +4,14 @@ var Q = require('q');
 
 module.exports = function (AccessToken) {
 
+    AccessToken.observe('before save', function (ctx, next) {
+        console.log("ctx.instance", ctx.instance);
+        if(ctx.instance && !ctx.instance.ttl) {
+            ctx.instance.ttl = 1209600;
+        }
+        next();
+    });
+
     AccessToken.prototype.toRemoteObject =
     AccessToken.prototype.toRemoteShortObject = function (context) {
         var User = AccessToken.app.models.user;
