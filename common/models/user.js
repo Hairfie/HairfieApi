@@ -159,9 +159,9 @@ module.exports = function(User) {
             firstName: profile.name && profile.name.givenName,
             lastName: profile.name && profile.name.familyName,
             gender: gender ? gender.toUpperCase() : null,
-            picture: "http://graph.facebook.com/" + profile.id + '/picture',
             locale: (profile.locale || '').substr(0, 2)
         };
+
         return userObj;
     }
 
