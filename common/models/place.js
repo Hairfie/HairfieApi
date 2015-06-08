@@ -105,8 +105,9 @@ module.exports = function(Place) {
             .replace('[', '')
             .replace(/\s+/g, ' ');
 
-        var address = decodeURIComponent(decodeURI(address));
+        var address = decodeRecursively(address);
 
+        console.log("decoded address", address);
         // 1. Try to find exact match by name
         Place.findOne({where:{'name.fr': address}}, function (error, place) {
             if (error) return cb(error);
@@ -183,3 +184,11 @@ function geocode(address, language) {
 
     return deferred.promise;
 };
+
+var decodeRecursively = function(stringToDecode) {
+    if(stringToDecode.indexOf('%') != -1) {
+        return decodeRecursively(decodeURI(stringToDecode));
+    }
+
+    return stringToDecode;
+}
