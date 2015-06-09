@@ -6,7 +6,8 @@
       "find",
       "findById",
       "create",
-      "confirm"
+      "confirm",
+      "userCheck"
     ],
     "mongodb": {
       "collection": "bookings"
@@ -45,9 +46,12 @@
     "comment": {
       "type": "string"
     },
+    "dateTime": {
+        "type": "Date",
+        "required": true
+    },
     "timeslot": {
-      "type": "Date",
-      "required": true
+      "type": "Date"
     },
     "discount": {
       "type": "string"
@@ -55,6 +59,18 @@
     "confirmed": {
         "type": "boolean",
         "default": false
+    },
+    "status": {
+        "type": "string",
+        "required": true,
+        "default": "NOT_CONFIRMED"
+    },
+    "userCheck": {
+        "type": "boolean",
+        "default": false
+    },
+    "userCheckCode": {
+        "type": "string"
     }
   },
   "validations": [],
