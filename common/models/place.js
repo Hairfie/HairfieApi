@@ -107,7 +107,7 @@ module.exports = function(Place) {
 
         var address = decodeRecursively(address);
 
-        console.log("decoded address", address);
+        console.log("decoded address :", address);
         // 1. Try to find exact match by name
         Place.findOne({where:{'name.fr': address}}, function (error, place) {
             if (error) return cb(error);
