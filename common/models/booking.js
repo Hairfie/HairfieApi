@@ -83,18 +83,25 @@ module.exports = function (Booking) {
     };
 
     Booking.confirm = function(req, businessId, user, cb) {
-        if (!user) return cb({statusCode: 401});
+        console.log("req.apiVersion", req.apiVersion);
+        if(req.apiVersion == "v1") {
+            console.log("Api v1 : no security on confirmation");
+        } else {
+            if (!user) return cb({statusCode: 401, message: 'You must be logged in to confirm a booking'});
+        }
 
-        return user.isManagerOfBusiness(businessId)
-            .then(function (isManager) {
-                if (!isManager) return cb({statusCode: 403});
-
-                return Promise.ninvoke(Booking, 'findById', req.params.bookingId)
-            })
+        return Promise.ninvoke(Booking, 'findById', req.params.bookingId)
             .then(function (booking) {
                 if (!booking) return cb({statusCode: 404});
-                if (booking.confirmed) return cb({statusCode: 401});
-
+                var businessId = booking.businessId;
+                var isManager = user ? user.isManagerOfBusiness(businessId) : true;
+                return [
+                    isManager,
+                    booking
+                ];
+            })
+            .spread(function(isManager, booking) {
+                if (!isManager) return cb({statusCode: 403, message: 'You must be a manager of this business to confirm a booking'});
                 booking.confirmed = true;
                 booking.status = Booking.STATUS_CONFIRMED;
 
