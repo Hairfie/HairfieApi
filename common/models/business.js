@@ -69,7 +69,8 @@ module.exports = function(Business) {
 
         var pictures = (this.pictures || []).map(function (p) { return p.toRemoteObject(context); });
 
-        if (!context.isExp() && 0 == pictures.length) {
+
+        if (context.isApiVersion('<1')) {
             pictures.push(streetViewPicture);
         }
 

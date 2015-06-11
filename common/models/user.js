@@ -45,7 +45,7 @@ module.exports = function(User) {
         user.locale = this.locale;
         user.newsletter = this.newsletter;
 
-        if (context.isMobile()) { // BC mobile
+        if (context.isApiVersion('<1')) { // BC mobile
             user.language = this.locale;
         }
 

@@ -3,6 +3,7 @@
 var Promise = require('../../common/utils/Promise');
 var locale = require('locale');
 var _ = require('lodash');
+var semver = require('semver');
 
 module.exports = function mountRestApi(server) {
     // we need to wait for the custom routes to be defined
@@ -12,11 +13,6 @@ module.exports = function mountRestApi(server) {
         server.use('/:apiVersion', function (req, res, next) {
             req.apiVersion = req.params.apiVersion;
             console.log('api version :', req.apiVersion);
-            next();
-        });
-
-        server.use('/v1', function (req, res, next) {
-            req.isExp = true;
             next();
         });
 
@@ -44,17 +40,13 @@ module.exports = function mountRestApi(server) {
     });
 };
 
-function processResult(Model, context, result, short) {
+function processResult(Model, context, result) {
     if (null === result || undefined === result) return Promise(result);
     if (Array.isArray(result)) {
         return Promise.map(result, function (record) {
-            return processResult(Model, context, record, short || !context.isMobile());
+            return processResult(Model, context, record);
         });
     }
-
-    //if (short && result.toRemoteShortObject) {
-    //    return Promise(result.toRemoteShortObject(context)).then(Promise.resolveDeep);
-    //}
 
     if (result.toRemoteObject) {
         return Promise(result.toRemoteObject(context)).then(Promise.resolveDeep);
@@ -98,10 +90,6 @@ Context.prototype.getUser = function () {
     return this.options.request.user;
 };
 
-Context.prototype.isMobile = function () {
-    return !this.isExp();
-};
-
-Context.prototype.isExp = function () {
-    return this.options.request.isExp;
+Context.prototype.isApiVersion = function (v) {
+    return semver.satisfies(this.options.request.apiVersion, v);
 };
