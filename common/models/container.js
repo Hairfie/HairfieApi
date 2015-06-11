@@ -23,7 +23,7 @@ module.exports = function (Container) {
                 return {
                     toRemoteObject: function (context) {
                         var obj = _.mapValues(files, function (f) { return f.toRemoteObject(context); });
-                        if (context.isVersion('<1')) {
+                        if (context.isApiVersion('<1')) {
                             return {
                                 result: {
                                     files: obj
