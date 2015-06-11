@@ -21,11 +21,16 @@ module.exports = function mountRestApi(server) {
                     version = '1.0.0';
                 case 'v1.1':
                     version = '1.1.0';
+                    break;
             }
 
-            req.apiVersion = version;
-            console.log('api version :', req.apiVersion);
-            next();
+            if (version) {
+                req.apiVersion = version;
+                console.log('api version :', req.apiVersion);
+                next();
+            } else {
+                next({ status: 404, message: 'The specified API version does not exist.' });
+            }
         });
 
         server.use('/old', function (req, res, next) {
