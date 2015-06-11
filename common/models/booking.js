@@ -84,7 +84,7 @@ module.exports = function (Booking) {
 
     Booking.confirm = function(req, businessId, user, cb) {
         console.log("req.apiVersion", req.apiVersion);
-        if(req.apiVersion == 'v1')) {
+        if(req.apiVersion == 'v1') {
             console.log("Api v1 : no security on confirmation");
         } else {
             if (!user) return cb({statusCode: 401, message: 'You must be logged in to confirm a booking'});
