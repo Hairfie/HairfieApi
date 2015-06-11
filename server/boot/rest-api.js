@@ -11,7 +11,19 @@ module.exports = function mountRestApi(server) {
         var restApiRoot = server.get('restApiRoot');
 
         server.use('/:apiVersion', function (req, res, next) {
-            req.apiVersion = req.params.apiVersion;
+
+            var version;
+            switch (req.params.apiVersion) {
+                case 'v0':
+                    version = '0.0.0';
+                    break;
+                case 'v1':
+                    version = '1.0.0';
+                case 'v1.1':
+                    version = '1.1.0';
+            }
+
+            req.apiVersion = version;
             console.log('api version :', req.apiVersion);
             next();
         });
