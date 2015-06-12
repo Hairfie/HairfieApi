@@ -350,7 +350,7 @@ module.exports = function (Hairfie) {
     Hairfie.search = function (req) {
         var params = {};
         params.page = Math.max(1, req.query.page || 1) - 1;
-        params.facets = ['categories', 'price.amount'],
+        params.facets = ['categories', 'price.amount', '_tags'],
         params.hitsPerPage = Math.max(1, Math.min(20, req.query.pageSize || 10));
         params.facetFilters = [];
         params.numericFilters = [];
@@ -368,6 +368,11 @@ module.exports = function (Hairfie) {
         // filter by categories
         _.map(asArray(req.query.categories), function (category) {
             params.facetFilters.push('categories:'+category);
+        });
+
+        // filter by categories
+        _.map(asArray(req.query.tags), function (tag) {
+            params.facetFilters.push('_tags:'+tag);
         });
 
         // filter by price
@@ -395,6 +400,7 @@ module.exports = function (Hairfie) {
                             }),
                             numHits     : result.nbHits,
                             categories  : (result.facets || {}).categories || {},
+                            tags        : (result.facets || {})._tags || {},
                             price       : (result.facets_stats || {})['price.amount']
                         };
                     }
