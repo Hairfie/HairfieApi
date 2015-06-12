@@ -142,6 +142,24 @@ module.exports = function (Email) {
         });
     };
 
+    Email.notifyBookingConfirmed = function (booking, business) {
+        var locale = 'fr'; //booking.locale || 'fr';
+        var timeslot = moment(booking.timeslot).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm");
+
+        return send({
+            to: booking.email,
+            locale: locale,
+            template: 'notifyBookingConfirmed',
+            templateVars: {
+                booking: booking,
+                business: business,
+                businessUrl: Email.app.urlGenerator.business(business),
+                address: business.address || {},
+                timeslot: timeslot
+            }
+        });
+    };
+
     function send(options) {
         debug('Sending email', options)
         var app = Email.app;

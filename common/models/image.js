@@ -12,7 +12,7 @@ module.exports = function (Image) {
     Image.prototype.toRemoteShortObject = function (context) {
         var CloudinaryImage = Image.app.models.CloudinaryImage;
 
-        if (context.isMobile()) {
+        if (context.isApiVersion('<1')) {
             return {
                 container   : this.container,
                 name        : this.id,

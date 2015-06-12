@@ -105,6 +105,15 @@ module.exports = function (Booking) {
                 booking.status = Booking.STATUS_CONFIRMED;
 
                 return Promise.npost(booking, 'save');
+            })
+            .then(function (booking) {
+
+                // notify client of the booking confirmation
+                var Email = Booking.app.models.email;
+                booking.business(function (err, business) {
+                    Email.notifyBookingConfirmed(booking, business);
+                });
+
             });
     };
 
