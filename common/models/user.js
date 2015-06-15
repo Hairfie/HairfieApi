@@ -333,7 +333,24 @@ module.exports = function(User) {
         next();
     });
 
+    User.observe('access', function(ctx, next){
+        if (ctx.query.where !== undefined && ctx.query.where.email !== undefined ) {
+            ctx.query.where.email = ctx.query.where.email.toLowerCase();
+        }
+        next();
+    });
+
+    User.observe('before save', function(ctx, next){
+        if (ctx.instance !== undefined && ctx.instance.email !== undefined){
+            ctx.instance.email = ctx.instance.email.toLowerCase();
+        } else if (ctx.data.email !== undefined){
+            ctx.data.email = ctx.data.email.toLowerCase();
+        }
+        next();
+    });
+
     User.sharedClass.find('find', true).shared = false;
+
     User.remoteMethod('query', {
         description: 'Returns users list',
         accepts: [
