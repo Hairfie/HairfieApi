@@ -4,6 +4,7 @@ var Promise = require('../../common/utils/Promise');
 var moment = require('moment-timezone');
 var Hooks = require('./hooks');
 var phone = require('phone');
+var semver = require('semver');
 
 module.exports = function (Booking) {
     Hooks.generateId(Booking);
@@ -82,8 +83,8 @@ module.exports = function (Booking) {
             });
     };
 
-    Booking.confirm = function(req, businessId, user, cb) {
-        if(req.apiVersion == "v1") {
+    Booking.confirm = function(req, user, cb) {
+        if(semver.satisfies(req.apiVersion, '<1.1')){
             console.log("Api v1 : no security on confirmation");
         } else {
             if (!user) return cb({statusCode: 401, message: 'You must be logged in to confirm a booking'});
@@ -118,6 +119,8 @@ module.exports = function (Booking) {
     };
 
     Booking.cancel = function(req) {
+        if (!user) return cb({statusCode: 401, message: 'You must be logged in to confirm a booking'});
+
         return Promise.ninvoke(Booking, 'findById', req.params.bookingId)
             .then(function (booking) {
                 if (!booking) return next({statusCode: 404});
@@ -129,10 +132,21 @@ module.exports = function (Booking) {
             });
     };
 
-    Booking.done = function(req) {
+    Booking.honored = function(req, user, cb) {
+        if (!user) return cb({statusCode: 401, message: 'You must be logged in to honor a booking'});
+
         return Promise.ninvoke(Booking, 'findById', req.params.bookingId)
             .then(function (booking) {
-                if (!booking) return next({statusCode: 404});
+                if (!booking) return cb({statusCode: 404});
+                var businessId = booking.businessId;
+                var isManager = user ? user.isManagerOfBusiness(businessId) : true;
+                return [
+                    isManager,
+                    booking
+                ];
+            })
+            .spread(function(isManager, booking) {
+                if (!isManager) return cb({statusCode: 403, message: 'You must be a manager of this business to confirm a booking'});
 
                 booking.status = Booking.STATUS_HONORED;
 
@@ -186,10 +200,19 @@ module.exports = function (Booking) {
         description: 'Confirm the booking',
         accepts: [
             {arg: 'req', type: 'object', 'http': {source: 'req'}},
-            {arg: 'businessId', type: 'string', description: 'ID of the reference business'},
             {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
         ],
         returns: {arg: 'result', root: true},
         http: { path: '/:bookingId/confirm', verb: 'POST' }
+    });
+
+    Booking.remoteMethod('honored', {
+        description: 'The booking is honored',
+        accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}},
+            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
+        ],
+        returns: {arg: 'result', root: true},
+        http: { path: '/:bookingId/honored', verb: 'POST' }
     });
 };
