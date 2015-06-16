@@ -84,10 +84,14 @@ module.exports = function(User) {
         where.businessId = businessId;
         where.active = true;
 
-        BusinessMember.findOne({where: where}, function (error, bm) {
-            if (error) deferred.reject(error);
-            deferred.resolve(!!bm);
-        });
+        if(this.admin) {
+            deferred.resolve(true);
+        } else {
+            BusinessMember.findOne({where: where}, function (error, bm) {
+                if (error) deferred.reject(error);
+                deferred.resolve(!!bm);
+            });
+        }
 
         return deferred.promise;
     };
