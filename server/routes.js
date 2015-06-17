@@ -2,7 +2,7 @@
 
 module.exports = {
     api: {
-        path: '/api/:path'
+        path: '/v1.1/:path'
     },
     hairfie: {
         app: 'website',
@@ -18,7 +18,7 @@ module.exports = {
     },
     pictureDownload: {
         app: 'cdn',
-        path: '/api/containers/:container/download/:name'
+        path: '/v1.1/containers/:container/download/:name'
     },
     streetView: {
         path: '/service/google/streetview/:latitude/:longitude'
@@ -31,9 +31,9 @@ module.exports = {
         path: '/:path'
     },
     acceptBusinessMemberClaim: {
-        path: '/api/businessMemberClaims/:id/accept'
+        path: '/v1.1/businessMemberClaims/:id/accept'
     },
     refuseBusinessMemberClaim: {
-        path: '/api/businessMemberClaims/:id/refuse'
+        path: '/v1.1/businessMemberClaims/:id/refuse'
     }
 };
