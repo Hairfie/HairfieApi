@@ -108,6 +108,10 @@
         "men": "number",
         "women": "number"
       }
+    },
+    "bookable": {
+        "type": "boolean",
+        "default": true
     }
   },
   "validations": [],

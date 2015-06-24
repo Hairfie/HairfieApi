@@ -115,21 +115,9 @@ module.exports = function(Business) {
         return getSlug(this.name);
     };
 
-    Business.prototype.isBookable = function() {
-        // bypass to allow discount less booking
-        if (this.bookable) {
-            return true;
-        }
 
-        var isBookable = false;
-        _.each(this.timetable, function(day) {
-            if(day.length > 0) {
-                _.each(day, function(timewindow) {
-                    if(timewindow.discount) { isBookable = true };
-                });
-            }
-        });
-        return isBookable;
+    Business.prototype.isBookable = function() {
+        return _.isBoolean(this.bookable) ?  this.bookable : true;
     };
 
     Business.prototype.owner = function (cb) {
