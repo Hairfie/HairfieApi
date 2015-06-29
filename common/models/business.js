@@ -53,6 +53,7 @@ module.exports = function(Business) {
                     rating             : rating.rating,
                     crossSell          : true,
                     isBookable         : this.isBookable(),
+                    displayPhoneNumber : this.displayPhoneNumber,
                     services           : this.getServices(),
                     activeHairdressers : activeHairdressers,
                     landingPageUrl     : Business.app.urlGenerator.business(this, context),
