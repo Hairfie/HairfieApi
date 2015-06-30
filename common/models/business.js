@@ -6,6 +6,8 @@ var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 var getSlug = require('speakingurl');
 var Control = require('../utils/AccessControl');
 var Hooks = require('./hooks');
+var phone = require('node-phonenumber')
+var phoneUtil = phone.PhoneNumberUtil.getInstance();
 
 module.exports = function(Business) {
     Hooks.generateId(Business);
@@ -80,7 +82,7 @@ module.exports = function(Business) {
             href        : Business.app.urlGenerator.api('businesses/'+this.id),
             name        : this.name,
             slug        : this.slug(),
-            phoneNumber : this.phoneNumber,
+            phoneNumber : phoneUtil.format(phoneUtil.parse(this.phoneNumber,'FR'), phone.PhoneNumberFormat.INTERNATIONAL),
             address     : this.address,
             bestDiscount: this.bestDiscount,
             averagePrice: this.averagePrice,
