@@ -77,12 +77,17 @@ module.exports = function(Business) {
             pictures.push(streetViewPicture);
         }
 
+        var phoneNumberToDisplay = this.phoneNumber;
+        if(phoneNumberToDisplay) {
+            phoneNumberToDisplay = phoneUtil.format(phoneUtil.parse(phoneNumberToDisplay,'FR'), phone.PhoneNumberFormat.INTERNATIONAL)
+        }
+
         return {
             id          : this.id,
             href        : Business.app.urlGenerator.api('businesses/'+this.id),
             name        : this.name,
             slug        : this.slug(),
-            phoneNumber : phoneUtil.format(phoneUtil.parse(this.phoneNumber,'FR'), phone.PhoneNumberFormat.INTERNATIONAL),
+            phoneNumber : phoneNumberToDisplay,
             address     : this.address,
             bestDiscount: this.bestDiscount,
             averagePrice: this.averagePrice,
