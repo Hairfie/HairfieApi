@@ -72,15 +72,17 @@ module.exports = function(Business) {
 
         var pictures = (this.pictures || []).map(function (p) { return p.toRemoteObject(context); });
 
+        var phoneNumberToDisplay = this.phoneNumber;
 
         if (context.isApiVersion('<1')) {
             pictures.push(streetViewPicture);
+        } else {
+            if(phoneNumberToDisplay) {
+                phoneNumberToDisplay = phoneUtil.format(phoneUtil.parse(phoneNumberToDisplay,'FR'), phone.PhoneNumberFormat.INTERNATIONAL)
+            }
         }
 
-        var phoneNumberToDisplay = this.phoneNumber;
-        if(phoneNumberToDisplay) {
-            phoneNumberToDisplay = phoneUtil.format(phoneUtil.parse(phoneNumberToDisplay,'FR'), phone.PhoneNumberFormat.INTERNATIONAL)
-        }
+
 
         return {
             id          : this.id,
