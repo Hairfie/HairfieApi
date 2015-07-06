@@ -6,6 +6,8 @@ var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 var getSlug = require('speakingurl');
 var Control = require('../utils/AccessControl');
 var Hooks = require('./hooks');
+var phone = require('node-phonenumber')
+var phoneUtil = phone.PhoneNumberUtil.getInstance();
 
 module.exports = function(Business) {
     Hooks.generateId(Business);
@@ -53,6 +55,7 @@ module.exports = function(Business) {
                     rating             : rating.rating,
                     crossSell          : true,
                     isBookable         : this.isBookable(),
+                    displayPhoneNumber : this.displayPhoneNumber,
                     services           : this.getServices(),
                     activeHairdressers : activeHairdressers,
                     landingPageUrl     : Business.app.urlGenerator.business(this, context),
@@ -69,17 +72,24 @@ module.exports = function(Business) {
 
         var pictures = (this.pictures || []).map(function (p) { return p.toRemoteObject(context); });
 
+        var phoneNumberToDisplay = this.phoneNumber;
 
         if (context.isApiVersion('<1')) {
             pictures.push(streetViewPicture);
+        } else {
+            if(phoneNumberToDisplay) {
+                phoneNumberToDisplay = phoneUtil.format(phoneUtil.parse(phoneNumberToDisplay,'FR'), phone.PhoneNumberFormat.INTERNATIONAL)
+            }
         }
+
+
 
         return {
             id          : this.id,
             href        : Business.app.urlGenerator.api('businesses/'+this.id),
             name        : this.name,
             slug        : this.slug(),
-            phoneNumber : this.phoneNumber,
+            phoneNumber : phoneNumberToDisplay,
             address     : this.address,
             bestDiscount: this.bestDiscount,
             averagePrice: this.averagePrice,
@@ -115,21 +125,9 @@ module.exports = function(Business) {
         return getSlug(this.name);
     };
 
-    Business.prototype.isBookable = function() {
-        // bypass to allow discount less booking
-        if (this.bookable) {
-            return true;
-        }
 
-        var isBookable = false;
-        _.each(this.timetable, function(day) {
-            if(day.length > 0) {
-                _.each(day, function(timewindow) {
-                    if(timewindow.discount) { isBookable = true };
-                });
-            }
-        });
-        return isBookable;
+    Business.prototype.isBookable = function() {
+        return _.isBoolean(this.bookable) ?  this.bookable : true;
     };
 
     Business.prototype.owner = function (cb) {

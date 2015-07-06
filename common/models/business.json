@@ -108,6 +108,14 @@
         "men": "number",
         "women": "number"
       }
+    },
+    "bookable": {
+        "type": "boolean",
+        "default": true
+    },
+    "displayPhoneNumber": {
+        "type": "boolean",
+        "default": false
     }
   },
   "validations": [],
