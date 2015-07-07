@@ -9,7 +9,7 @@ module.exports = function (Top) {
     Top.hairfies = function (limit, cb) {
         var limit = Math.max(0, Math.min(20, limit || 10));
         var Hairfie = Top.app.models.Hairfie;
-        var lastMonth = moment().subtract(1, 'month').toDate();
+        var lastMonth = moment().subtract(2, 'month').toDate();
 
         Hairfie
             .listMostLikedSince(lastMonth, limit)
