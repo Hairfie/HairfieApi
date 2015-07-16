@@ -452,6 +452,8 @@ module.exports = function(Business) {
 
         var query = params.q || '';
 
+        console.log("algoliaParams", algoliaParams);
+
         return AlgoliaSearchEngine.search('business', query, algoliaParams)
             .nodeify(callback);
     }

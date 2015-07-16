@@ -94,7 +94,7 @@ module.exports = function (Booking) {
             .then(function (booking) {
                 if (!booking) return cb({statusCode: 404});
                 var businessId = booking.businessId;
-                var isManager = user ? user.isManagerOfBusiness(businessId) : true;
+                var isManager = user.admin ? user.isManagerOfBusiness(businessId) : true;
                 return [
                     isManager,
                     booking
@@ -139,7 +139,7 @@ module.exports = function (Booking) {
             .then(function (booking) {
                 if (!booking) return cb({statusCode: 404});
                 var businessId = booking.businessId;
-                var isManager = user ? user.isManagerOfBusiness(businessId) : true;
+                var isManager = user.admin ? true : user.isManagerOfBusiness(businessId);
                 return [
                     isManager,
                     booking

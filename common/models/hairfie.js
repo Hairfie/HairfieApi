@@ -53,13 +53,15 @@ module.exports = function (Hairfie) {
             return businessMember && businessMember.toRemoteShortObject(context);
         });
 
+        var business = Q.ninvoke(this.business).then(function (business) {
+            return business ? business.toRemoteShortObject(context) : null;
+        });
+
         return _.assign(this.toRemoteShortObject(context), {
             author          : Q.ninvoke(this.author).then(function (author) {
                 return author ? author.toRemoteShortObject(context) : null;
             }),
-            business        : Q.ninvoke(this.business).then(function (business) {
-                return business ? business.toRemoteShortObject(context) : null;
-            }),
+            business        : business,
             hairdresser     : businessMember, // NOTE: BC
             businessMember  : businessMember,
             numLikes        : this.getNumLikes(),
