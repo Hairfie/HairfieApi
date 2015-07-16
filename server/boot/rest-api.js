@@ -53,6 +53,8 @@ module.exports = function mountRestApi(server) {
                 request: ctx.req
             });
 
+        ctx.res.type('application/json');
+
         processResult(Model, context, ctx.result)
             .then(
                 function (result) { ctx.result = result; next(); },
