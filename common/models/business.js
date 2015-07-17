@@ -222,8 +222,9 @@ module.exports = function(Business) {
                     bestDiscount       : this.bestDiscount,
                     createdAt          : this.createdAt,
                     _tags              : tags.map(function (t) { return t.name && t.name.fr; }),
-                    categories         : categories,
+                    categories         : _.map(categories, 'name'),
                     averagePrice       : this.averagePrice,
+                    isClaimed          : this.isClaimed(),
                     updatedAt          : this.updatedAt
                 }
             }.bind(this));
