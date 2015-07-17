@@ -1,6 +1,6 @@
 "use strict";
 
-var Algolia = require('algolia-search');
+var algoliasearch = require('algoliasearch');
 var Q = require('q');
 var _ = require('lodash');
 
@@ -32,7 +32,7 @@ module.exports = function (AlgoliaSearchEngine) {
 
     function getClient() {
         if (!client) {
-            client = new Algolia(settings().applicationId, settings().apiKey);
+            client = algoliasearch(settings().applicationId, settings().apiKey);
         }
 
         return client;
@@ -69,7 +69,7 @@ module.exports = function (AlgoliaSearchEngine) {
 
     AlgoliaSearchEngine.search = function (indexName, query, params) {
         return runAlgolia('search', function (resolver) {
-            indexByName(indexName).search(query, resolver, params);
+            indexByName(indexName).search(query, params, resolver);
         });
     };
 
@@ -90,7 +90,7 @@ module.exports = function (AlgoliaSearchEngine) {
                 var loop = function (skip) {
                     onProgress({total: total, done: skip});
 
-                    return Q.ninvoke(Model, 'find', {limit: chunkSize, skip: skip})
+                    return Q.ninvoke(Model, 'find', {limit: chunkSize, skip: skip, order: 'updatedAt DESC'})
                         .then(function (models) {
                             return Q.all(_.map(models, modelSearchDocument))
                                 .then(function (docs) {
