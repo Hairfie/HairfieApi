@@ -55,7 +55,7 @@ module.exports = function(User) {
     User.prototype.toRemoteShortObject = function (context) {
         var Hairfie             = User.app.models.Hairfie,
             BusinessReview      = User.app.models.BusinessReview,
-            picture             = this.pictures && this.picture.toRemoteShortObject(context),
+            picture             = this.picture && this.picture.toRemoteShortObject(context),
             numHairfies         = Promise.ninvoke(Hairfie, 'count', {authorId: this.id}),
             numBusinessReviews  = Promise.ninvoke(BusinessReview, 'count', {authorId: this.id});
 

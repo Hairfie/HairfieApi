@@ -1,6 +1,7 @@
 'use strict';
 
 var Q = require('q');
+var Promise = require('../../common/utils/Promise');
 var _ = require('lodash');
 var Hooks = require('./hooks');
 
@@ -157,18 +158,21 @@ module.exports = function (Hairfie) {
         });
     };
 
-    Hairfie.hide = function (req, next) {
-        if (!req.user) return next({statusCode: 401});
+    Hairfie.hide = function (req, user, next) {
+        if (!user) return next({statusCode: 401});
 
-        Hairfie.findById(req.params.hairfieId, function (error, hairfie) {
-            if (error) return next({statusCode: 500});
-            if (!hairfie) return next({statusCode: 404});
-            if (hairfie.authorId.toString() != req.user.id.toString()) return next({statusCode: 403});
-            hairfie.updateAttributes({hidden: true}, function(error, hairfie) {
-                if (error) return next({statusCode: 500});
-                return next();
+        return Promise.ninvoke(Hairfie, 'findById', req.params.hairfieId)
+            .then(function(hairfie) {
+                console.log("here", hairfie);
+                if (!hairfie) return next({statusCode: 404});
+
+                var isAllowed = user.admin ? true : (hairfie.authorId.toString() != req.user.id.toString());
+                if (!isAllowed) return next({statusCode: 403});
+
+                hairfie.hidden = true;
+
+                return Promise.npost(hairfie, 'save');
             })
-        });
     };
 
     Hairfie.share = function (req, next) {
@@ -422,7 +426,8 @@ module.exports = function (Hairfie) {
     Hairfie.remoteMethod('hide', {
         description: 'Delete the hairfie',
         accepts: [
-            {arg: 'req', type: 'object', 'http': {source: 'req'}}
+            {arg: 'req', type: 'object', 'http': {source: 'req'}},
+            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
         ],
         http: { path: '/:hairfieId', verb: 'DELETE' }
     });
