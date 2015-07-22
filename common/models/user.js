@@ -294,8 +294,6 @@ module.exports = function(User) {
         collection.aggregate(pipe, function (error, results) {
             if (error) return cb(error);
 
-            console.log('results', results);
-
             var ids = results.map(function (r) { return r._id});
             User.findByIds(ids, cb);
         });
