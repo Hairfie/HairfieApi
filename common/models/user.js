@@ -439,4 +439,12 @@ module.exports = function(User) {
         returns: {arg: 'businesses', root: true},
         http: { path: '/:userId/managed-businesses', verb: 'GET' }
     });
+    User.remoteMethod('reset', {
+        description: 'Reset resetPasswordRequest',
+        accepts: [
+            {arg: 'email', type: 'string', required: true, description: 'Email'}
+        ],
+        returns: {root: true},
+        http: { path: '/', verb: 'POST' }
+    });
 }

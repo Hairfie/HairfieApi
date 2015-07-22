@@ -119,8 +119,6 @@ module.exports = function (Booking) {
     };
 
     Booking.cancel = function(req) {
-        if (!user) return cb({statusCode: 401, message: 'You must be logged in to confirm a booking'});
-
         return Promise.ninvoke(Booking, 'findById', req.params.bookingId)
             .then(function (booking) {
                 if (!booking) return next({statusCode: 404});
@@ -129,7 +127,21 @@ module.exports = function (Booking) {
                 booking.status = Booking.STATUS_CANCELLED;
 
                 return Promise.npost(booking, 'save');
-            });
+            })
+            .then(function(booking) {
+                Booking.app.models.email.notifyAll('Réservation annulée', {
+                    'ID'              : booking.id,
+                    'Salon'           : booking.business.name,
+                    'Tel du salon'    : booking.business.phoneNumber,
+                    'Date & Heure de la demande' : moment(booking.timeslot).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
+                    'Client'          : booking.firstName + ' ' + booking.lastName,
+                    'Genre'           : booking.gender,
+                    'Email du client' : booking.email,
+                    'Tel du client'   : booking.phoneNumber,
+                    'Prestation'      : booking.comment
+                });
+                return booking;
+            })
     };
 
     Booking.honored = function(req, user, cb) {
@@ -221,6 +233,7 @@ module.exports = function (Booking) {
         accepts: [
             {arg: 'req', type: 'object', 'http': {source: 'req'}}
         ],
+        returns: {arg: 'result', root: true},
         http: { path: '/:bookingId', verb: 'DELETE' }
     });
 };
