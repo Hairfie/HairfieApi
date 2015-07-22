@@ -215,4 +215,12 @@ module.exports = function (Booking) {
         returns: {arg: 'result', root: true},
         http: { path: '/:bookingId/honored', verb: 'POST' }
     });
+
+    Booking.remoteMethod('cancel', {
+        description: 'Cancel the booking',
+        accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}}
+        ],
+        http: { path: '/:bookingId', verb: 'DELETE' }
+    });
 };
