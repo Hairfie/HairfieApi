@@ -73,6 +73,10 @@
     },
     "userCheckCode": {
         "type": "string"
+    },
+    "newsletter": {
+      "type": "boolean",
+      "default": true
     }
   },
   "validations": [],

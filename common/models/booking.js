@@ -62,6 +62,7 @@ module.exports = function (Booking) {
             status          : this.status ? this.status : Booking.STATUS_WAITING,
             userCheck       : this.userCheck,
             userCheckCode   : this.userCheckCode,
+            newsletter      : this.newsletter,
             createdAt       : this.createdAt,
             updatedAt       : this.updatedAt
         };
