@@ -25,9 +25,11 @@ module.exports = function (Station) {
                     return business.gps;
                 });
         }
+        console.log("location", location);
 
         return q(location)
         .then(function(location) {
+            console.log("location", location);
             return Promise.ninvoke(Station, 'mongoNearby', GeoPoint(location), maxDistance)
         })
         .then(function(result) {
@@ -50,7 +52,7 @@ module.exports = function (Station) {
     Station.remoteMethod('nearby', {
         description: 'Returns the stats for a specific business',
         accepts: [
-            {arg: 'location', type: 'string', description: 'geo location:{lng: ,lat:}.'},
+            {arg: 'location', type: 'object', description: 'geo location:{lng: ,lat:}.'},
             {arg: 'maxDistance', type: 'number', description: 'distance in meter'},
             {arg: 'businessId', type: 'string', description: 'businessId'}
         ],
