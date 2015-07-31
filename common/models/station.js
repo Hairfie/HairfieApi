@@ -25,11 +25,9 @@ module.exports = function (Station) {
                     return business.gps;
                 });
         }
-        console.log("location", location);
 
         return q(location)
         .then(function(location) {
-            console.log("location", location);
             return Promise.ninvoke(Station, 'mongoNearby', GeoPoint(location), maxDistance)
         })
         .then(function(result) {

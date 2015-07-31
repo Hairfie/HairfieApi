@@ -311,7 +311,7 @@ module.exports = function(User) {
         next();
     });
 
-    User.beforeRemote('findById', loggedInAsSubjectUser);
+    //User.beforeRemote('findById', loggedInAsSubjectUser);
     User.beforeRemote('*.updateAttributes', loggedInAsSubjectUser);
 
     User.beforeRemote([
