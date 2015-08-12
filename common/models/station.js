@@ -48,7 +48,7 @@ module.exports = function (Station) {
     }
 
     Station.remoteMethod('nearby', {
-        description: 'Returns the stats for a specific business',
+        description: 'Returns the nearby stations',
         accepts: [
             {arg: 'location', type: 'object', description: 'geo location:{lng: ,lat:}.'},
             {arg: 'maxDistance', type: 'number', description: 'distance in meter'},
