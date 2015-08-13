@@ -42,34 +42,37 @@ module.exports = function (Booking) {
         var dateTime = this.dateTime || this.timeslot;
 
         return {
-            id              : this.id,
-            href            : Booking.app.urlGenerator.api('bookings/'+this.id),
-            business        : Promise.ninvoke(this.business).then(function (business) {
+            id                  : this.id,
+            href                : Booking.app.urlGenerator.api('bookings/'+this.id),
+            business            : Promise.ninvoke(this.business).then(function (business) {
                 return business ? business.toRemoteShortObject(context) : null;
             }),
-            confirmed       : this.confirmed,
-            firstName       : this.firstName,
-            lastName        : this.lastName,
-            gender          : this.gender,
-            email           : this.email,
-            phoneNumber     : this.phoneNumber,
-            comment         : this.comment,
-            dateTime        : dateTime,
-            displayDateTime : moment(dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
-            timeslot        : dateTime,
-            displayTimeslot : moment(dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
-            discount        : this.discount,
-            status          : this.status ? this.status : Booking.STATUS_WAITING,
-            userCheck       : this.userCheck,
-            userCheckCode   : this.userCheckCode,
-            newsletter      : this.newsletter,
-            createdAt       : this.createdAt,
-            updatedAt       : this.updatedAt
+            confirmed           : this.confirmed,
+            firstName           : this.firstName,
+            lastName            : this.lastName,
+            gender              : this.gender,
+            email               : this.email,
+            phoneNumber         : this.phoneNumber,
+            comment             : this.comment,
+            dateTime            : dateTime,
+            displayDateTime     : moment(dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
+            timeslot            : dateTime,
+            displayTimeslot     : moment(dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
+            discount            : this.discount,
+            status              : this.status ? this.status : Booking.STATUS_WAITING,
+            userCheck           : this.userCheck,
+            userCheckCode       : this.userCheckCode,
+            confirmationSentAt  : this.confirmationSentAt,
+            newsletter          : this.newsletter,
+            createdAt           : this.createdAt,
+            updatedAt           : this.updatedAt
         };
     };
 
     Booking.userCheck = function(bookingId, userCheckCode, cb) {
         if (!userCheckCode) return cb({statusCode: 401});
+
+        var Email = Booking.app.models.email;
 
         return Promise.ninvoke(Booking, 'findById', bookingId)
             .then(function (booking) {
@@ -79,6 +82,10 @@ module.exports = function (Booking) {
 
                 booking.userCheck = true;
                 booking.status = Booking.STATUS_REQUEST;
+
+                booking.business(function (err, business) {
+                    Email.confirmBookingRequest(booking, business);
+                });
 
                 return Promise.npost(booking, 'save');
             });
@@ -105,17 +112,23 @@ module.exports = function (Booking) {
                 if (!isManager) return cb({statusCode: 403, message: 'You must be a manager of this business to confirm a booking'});
                 booking.confirmed = true;
                 booking.status = Booking.STATUS_CONFIRMED;
+                booking.confirmationSentAt = new Date();
 
                 return Promise.npost(booking, 'save');
             })
             .then(function (booking) {
-
-                // notify client of the booking confirmation
-                var Email = Booking.app.models.email;
-                booking.business(function (err, business) {
-                    Email.notifyBookingConfirmed(booking, business);
-                });
-
+                console.log("booking", booking);
+                if(!booking.confirmationSentAt) {
+                    // notify client of the booking confirmation
+                    var Email = Booking.app.models.email;
+                    console.log("email sent");
+                    booking.business(function (err, business) {
+                        Email.notifyBookingConfirmed(booking, business);
+                        booking.confirmationSentAt = new Date();
+                        booking.save();
+                    });
+                }
+                return booking;
             });
     };
 
@@ -153,6 +166,7 @@ module.exports = function (Booking) {
                 if (!booking) return cb({statusCode: 404});
                 var businessId = booking.businessId;
                 var isManager = user.admin ? true : user.isManagerOfBusiness(businessId);
+
                 return [
                     isManager,
                     booking
@@ -175,12 +189,12 @@ module.exports = function (Booking) {
     };
 
     Booking.afterCreate = function (next) {
-        var Email = Booking.app.models.email;
+        //var Email = Booking.app.models.email;
         var booking = this;
 
         Promise.npost(this, 'business')
             .then(function (business) {
-                Email.confirmBookingRequest(booking, business);
+                //Email.confirmBookingRequest(booking, business);
 
                 return Booking.app.models.email.notifyAll('Demande de réservation', {
                     'ID'              : booking.id,

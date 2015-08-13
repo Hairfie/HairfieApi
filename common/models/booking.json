@@ -77,6 +77,10 @@
     "newsletter": {
       "type": "boolean",
       "default": true
+    },
+    "emailSentAt": {
+        "type": "Date",
+        "default": null
     }
   },
   "validations": [],
