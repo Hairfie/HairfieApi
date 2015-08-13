@@ -8,6 +8,7 @@ module.exports = {
     webUrl: process.env.WEB_URL,
     cdnUrl: process.env.CDN_URL,
     restApiRoot: '/api',
+    legacyExplorer: false,
     locales: commaSeparated(process.env.LOCALES),
     salesEventEmail: process.env.SALES_EVENT_EMAIL,
     eventStreamEmail: process.env.EVENT_STREAM_EMAIL,
