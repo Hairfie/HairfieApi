@@ -14,6 +14,9 @@
       "type": "string",
       "required": true
     },
+    "lines": {
+      "type": "array"
+    },
     "type": {
       "type": "string",
       "required": true
