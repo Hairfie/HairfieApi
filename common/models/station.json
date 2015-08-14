@@ -14,6 +14,9 @@
       "type": "string",
       "required": true
     },
+    "line": {
+      "type": "object"
+    },
     "type": {
       "type": "string",
       "required": true
