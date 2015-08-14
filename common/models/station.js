@@ -12,6 +12,22 @@ module.exports = function (Station) {
     Hooks.generateId(Station);
     Hooks.updateTimestamps(Station);
 
+    Station.prototype.toRemoteObject =
+    Station.prototype.toShortRemoteObject = function (context) {
+
+        return {
+            ratpId: this.ratpId,
+            gps: this.gps,
+            name: this.name,
+            lines: this.lines,
+            type: this.type,
+            source: this.source,
+            city: this.city,
+            id: this.id,
+            createdAt: this.createdAt,
+            updatedAt: this.updatedAt
+            };
+    };
 
     Station.nearby = function (location, maxDistance, businessId, cb) {
         var Business = Station.app.models.Business;
