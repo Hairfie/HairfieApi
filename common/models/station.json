@@ -14,8 +14,8 @@
       "type": "string",
       "required": true
     },
-    "line": {
-      "type": "object"
+    "lines": {
+      "type": "array"
     },
     "type": {
       "type": "string",
