@@ -16,17 +16,14 @@ module.exports = function (Station) {
     Station.prototype.toShortRemoteObject = function (context) {
 
         return {
-            ratpId: this.ratpId,
             gps: this.gps,
             name: this.name,
             lines: this.lines,
             type: this.type,
             source: this.source,
             city: this.city,
-            id: this.id,
-            createdAt: this.createdAt,
-            updatedAt: this.updatedAt
-            };
+            id: this.id
+        };
     };
 
     Station.nearby = function (location, maxDistance, businessId, cb) {

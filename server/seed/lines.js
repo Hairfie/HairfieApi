@@ -33,7 +33,7 @@ function parseCSV(file, callback) {
         .fromStream(stream, {delimiter : '#'})
         .on('data', function(data){
             var matches = data[1].match(/(^\S+)(.+)/);
-            var name = matches[2].replace('(', '').replace(')', '');
+            var name = matches[2].replace('(', '').replace(')', '').trim();
             var line = {
                 ratpId: data[0],
                 number: matches[1],
@@ -49,9 +49,8 @@ function parseCSV(file, callback) {
 
 function insertLines(linesDefinition) {
     var funcs = _.map(linesDefinition, function (lineDefinition) {
-        return {func: insertLine, arg: lineDefinition};
+        return {func: saveLines, arg: lineDefinition};
     });
-
     var result = q(funcs[0].func(funcs[0].arg));
     funcs.forEach(function (f) {
         result = result.then(f.func(f.arg));
@@ -59,16 +58,17 @@ function insertLines(linesDefinition) {
     return result;
 }
 
-function insertLine(lineDefinition) {
+function saveLines(lineDefinition) {
     var ratpId = lineDefinition[0].ratpId;
     _.map(lineDefinition, function (obj) {
         delete obj.ratpId;
     });
-
-    return q.ninvoke(Station, 'find', {where: {ratpId: ratpId}})
-        .then(function (stations) {
-            return q.all(stations.map(function (station) {
+    console.log("before find", lineDefinition);
+    console.log("before find", ratpId);
+    return q.ninvoke(Station, 'findOne', {where: {ratpId: ratpId}})
+        .then(function (station) {
+                console.log("before ninvoke", station);
                 return q.ninvoke(station, 'updateAttributes', {lines: lineDefinition});
-            }));
+            });
         });
 }
