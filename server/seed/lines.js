@@ -52,7 +52,7 @@ function insertLines(linesDefinition) {
         return {func: saveLines, arg: lineDefinition};
     });
     var result = q(funcs[0].func(funcs[0].arg));
-    funcs.slice(0, 10).forEach(function (f) {
+    funcs.forEach(function (f) {
         result = result.then(f.func(f.arg));
     });
     return result;
