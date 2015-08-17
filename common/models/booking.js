@@ -185,6 +185,8 @@ module.exports = function (Booking) {
                     }),
                     Promise.npost(booking, 'save')
                 ]);
+            }).spread(function (businessReviewRequest, booking) {
+                return booking;
             });
     };
 
