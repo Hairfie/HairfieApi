@@ -11,11 +11,19 @@ var Hooks = require('./hooks');
 module.exports = function (Station) {
     Hooks.generateId(Station);
     Hooks.updateTimestamps(Station);
+    Station.observe('before save', function (ctx, next) {
+        if (ctx.instance && ctx.instance.gps) {
+            ctx.instance.loc = [ctx.instance.gps.lng, ctx.instance.gps.lat];
+        }
+
+        next();
+    });
 
     Station.prototype.toRemoteObject =
     Station.prototype.toShortRemoteObject = function (context) {
 
         return {
+            loc: this.loc,
             gps: this.gps,
             name: this.name,
             lines: this.lines,
@@ -50,9 +58,7 @@ module.exports = function (Station) {
 
     Station.mongoNearby = function(location, maxDistance, callback) {
         var collection = Station.dataSource.connector.collection(Station.definition.name);
-
-        var where = {gps: {$near: location, $maxDistance: maxDistance/111120}};
-
+        var where = {loc: {$near: location, $maxDistance: maxDistance/111120}};
         collection.find(where).toArray(function (error, stations) {
             if (error) return callback(error);
 

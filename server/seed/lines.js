@@ -52,7 +52,7 @@ function insertLines(linesDefinition) {
         return {func: saveLines, arg: lineDefinition};
     });
     var result = q(funcs[0].func(funcs[0].arg));
-    funcs.forEach(function (f) {
+    funcs.slice(0, 10).forEach(function (f) {
         result = result.then(f.func(f.arg));
     });
     return result;
@@ -63,12 +63,9 @@ function saveLines(lineDefinition) {
     _.map(lineDefinition, function (obj) {
         delete obj.ratpId;
     });
-    console.log("before find", lineDefinition);
-    console.log("before find", ratpId);
     return q.ninvoke(Station, 'findOne', {where: {ratpId: ratpId}})
         .then(function (station) {
-                console.log("before ninvoke", station);
-                return q.ninvoke(station, 'updateAttributes', {lines: lineDefinition});
+                station.lines = lineDefinition;
+                return q.ninvoke(station, 'save');
             });
-        });
 }

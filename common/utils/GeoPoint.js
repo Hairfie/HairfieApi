@@ -3,12 +3,12 @@
 module.exports = require('loopback-datasource-juggler/lib/geo');
 
 module.exports.GeoPoint.prototype.asLatLngString = function () {
-    return this.lat + ',' + this.lng;
+    return this.lng + ',' + this.lat;
 };
 
 module.exports.GeoPoint.prototype.streetViewPic = function(app) {
     return app.generateUrl('streetView', {
-        latitude: this.lat,
-        longitude: this.lng
+        longitude: this.lng,
+        latitude: this.lat
     });
 };
