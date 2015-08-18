@@ -23,7 +23,6 @@ module.exports = function (Station) {
     Station.prototype.toShortRemoteObject = function (context) {
 
         return {
-            loc: this.loc,
             gps: this.gps,
             name: this.name,
             lines: this.lines,
