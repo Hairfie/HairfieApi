@@ -8,7 +8,7 @@ module.exports.GeoPoint.prototype.asLatLngString = function () {
 
 module.exports.GeoPoint.prototype.streetViewPic = function(app) {
     return app.generateUrl('streetView', {
-        longitude: this.lat,
-        latitude: this.lng
+        latitude: this.lat,
+        longitude: this.lng
     });
 };
