@@ -14,6 +14,8 @@ var loopbackPassport = require('loopback-component-passport');
 var PassportConfigurator = loopbackPassport.PassportConfigurator;
 var passportConfigurator = new PassportConfigurator(app);
 
+var Promise = require('../common/utils/Promise');
+
 // redirect to the website
 app.get('/', function (req, res) {
     res.redirect(app.get('webUrl'));
@@ -131,7 +133,11 @@ app.use('/*/auth/facebook/token',
         req.user.createAccessToken({ttl: 1209600}, function (error, token) {
             if (error) return res.status(500);
 
-            res.send(token);
+            return Promise(token.toRemoteObject())
+                .then(Promise.resolveDeep)
+                .then(function(fullToken) {
+                    return res.send(fullToken);
+                });
         });
     }
 );

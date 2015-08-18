@@ -10,9 +10,15 @@
       "type": "geopoint",
       "required": true
     },
+    "loc": {
+      "type": "array"
+    },
     "name": {
       "type": "string",
       "required": true
+    },
+    "lines": {
+      "type": "array"
     },
     "type": {
       "type": "string",

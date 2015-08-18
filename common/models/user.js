@@ -55,7 +55,7 @@ module.exports = function(User) {
     User.prototype.toRemoteShortObject = function (context) {
         var Hairfie             = User.app.models.Hairfie,
             BusinessReview      = User.app.models.BusinessReview,
-            picture             = this.pictures && this.picture.toRemoteShortObject(context),
+            picture             = this.picture && this.picture.toRemoteShortObject(context),
             numHairfies         = Promise.ninvoke(Hairfie, 'count', {authorId: this.id}),
             numBusinessReviews  = Promise.ninvoke(BusinessReview, 'count', {authorId: this.id});
 
@@ -294,8 +294,6 @@ module.exports = function(User) {
         collection.aggregate(pipe, function (error, results) {
             if (error) return cb(error);
 
-            console.log('results', results);
-
             var ids = results.map(function (r) { return r._id});
             User.findByIds(ids, cb);
         });
@@ -313,7 +311,7 @@ module.exports = function(User) {
         next();
     });
 
-    User.beforeRemote('findById', loggedInAsSubjectUser);
+    //User.beforeRemote('findById', loggedInAsSubjectUser);
     User.beforeRemote('*.updateAttributes', loggedInAsSubjectUser);
 
     User.beforeRemote([
@@ -440,5 +438,13 @@ module.exports = function(User) {
         ],
         returns: {arg: 'businesses', root: true},
         http: { path: '/:userId/managed-businesses', verb: 'GET' }
+    });
+    User.remoteMethod('reset', {
+        description: 'Reset resetPasswordRequest',
+        accepts: [
+            {arg: 'email', type: 'string', required: true, description: 'Email'}
+        ],
+        returns: {root: true},
+        http: { path: '/', verb: 'POST' }
     });
 }

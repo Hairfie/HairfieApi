@@ -198,9 +198,10 @@ module.exports = function(Business) {
                 Q.ninvoke(BusinessReview, 'getBusinessRating', this.id),
                 Q.ninvoke(Hairfie, 'count', {businessId: this.id}),
                 this.getTags(),
-                this.getCategories()
+                this.getCategories(),
+                this.isClaimed()
             ])
-            .spread(function (rating, numHairfies, tags, categories) {
+            .spread(function (rating, numHairfies, tags, categories, isClaimed) {
                 return {
                     id                 : this.id,
                     objectID           : this.id.toString(),
@@ -224,7 +225,7 @@ module.exports = function(Business) {
                     _tags              : tags.map(function (t) { return t.name && t.name.fr; }),
                     categories         : _.map(categories, 'name'),
                     averagePrice       : this.averagePrice,
-                    isClaimed          : this.isClaimed(),
+                    isClaimed          : isClaimed,
                     updatedAt          : this.updatedAt
                 }
             }.bind(this));

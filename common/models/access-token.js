@@ -15,7 +15,6 @@ module.exports = function (AccessToken) {
     AccessToken.prototype.toRemoteShortObject = function (context) {
         var User = AccessToken.app.models.user;
 
-
         return Q.ninvoke(User, 'findById', this.userId)
             .then(function (user) {
                 return {

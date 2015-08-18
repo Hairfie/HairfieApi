@@ -22,7 +22,8 @@ module.exports = {
                     attributesForFaceting: [
                         'genders',
                         'categories',
-                        '_tags'
+                        '_tags',
+                        'isClaimed'
                     ],
                     attributesToIndex: [
                         'name',
@@ -30,7 +31,8 @@ module.exports = {
                         'address.city',
                         '_tags',
                         'address.streetName',
-                        'address.zipCode'
+                        'address.zipCode',
+                        'isClaimed'
                     ],
                     customRanking: [
                         'desc(numHairfies)',

@@ -185,10 +185,10 @@ module.exports = function (Email) {
 
         email.send(function (error) {
             if (error) {
-                debug('Failed to send email', error);
+                console.log('Failed to send email', error);
                 deferred.reject(error);
             } else {
-                debug('Email successfully sent');
+                console.log('Email successfully sent');
                 deferred.resolve();
             }
         });
