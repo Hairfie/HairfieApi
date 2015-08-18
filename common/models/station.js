@@ -57,7 +57,7 @@ module.exports = function (Station) {
 
     Station.mongoNearby = function(location, maxDistance, callback) {
         var collection = Station.dataSource.connector.collection(Station.definition.name);
-        var where = {loc: {$near: location, $maxDistance: maxDistance/111120}};
+        var where = {loc: {$near: {lng: location.lng, lat: location.lat }, $maxDistance: maxDistance/111120}};
         collection.find(where).toArray(function (error, stations) {
             if (error) return callback(error);
 
