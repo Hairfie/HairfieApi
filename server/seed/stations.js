@@ -33,8 +33,8 @@ function parseCSV(file, callback) {
             var obj = {
                 ratpId: data[0],
                 gps: {
-                    lat: Number(data[2]),
-                    lng: Number(data[1])
+                    lng: Number(data[1]),
+                    lat: Number(data[2])
                 },
                 name: data[3],
                 city: data[4],
@@ -59,8 +59,8 @@ function saveStation(stationDefinition) {
     return q.ninvoke(Station, 'findOrCreate', {where: {ratpId: stationDefinition.ratpId}}, {
         ratpId: stationDefinition.ratpId,
         gps: {
-            lat: stationDefinition.gps.lat,
-            lng: stationDefinition.gps.lng
+            lng: stationDefinition.gps.lng,
+            lat: stationDefinition.gps.lat
         },
         name: stationDefinition.name,
         city: stationDefinition.city,

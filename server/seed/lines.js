@@ -63,12 +63,9 @@ function saveLines(lineDefinition) {
     _.map(lineDefinition, function (obj) {
         delete obj.ratpId;
     });
-    console.log("before find", lineDefinition);
-    console.log("before find", ratpId);
     return q.ninvoke(Station, 'findOne', {where: {ratpId: ratpId}})
         .then(function (station) {
-                console.log("before ninvoke", station);
-                return q.ninvoke(station, 'updateAttributes', {lines: lineDefinition});
+                station.lines = lineDefinition;
+                return q.ninvoke(station, 'save');
             });
-        });
 }
