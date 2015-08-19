@@ -438,11 +438,9 @@ module.exports = function (Hairfie) {
             .spread(function (result, hairfies) {
                 return {
                     toRemoteObject: function (context) {
-                        return (
-                            _.map(hairfies, function (hairfie) {
-                                return hairfie.toRemoteObject(context);
-                            )
-                        };
+                        return _.map(hairfies, function (hairfie) {
+                            return hairfie.toRemoteObject(context);
+                        });
                     }
                 };
             });
