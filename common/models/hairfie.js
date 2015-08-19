@@ -418,14 +418,8 @@ module.exports = function (Hairfie) {
         var params = {};
         params.page = Math.max(1, req.query.page || 1) - 1;
         params.hitsPerPage = Math.max(1, Math.min(20, req.query.pageSize || 10));
-        params.tagFilters = '(';
-
-        _.map(req.query.tags, function(tag, i){
-            if (i == req.query.tags.length - 1)
-                return params.tagFilters += tag;
-            return params.tagFilters += tag + ', ';
-        });
-        params.tagFilters += ')';
+        params.tagFilters = '(' + req.query.tags.join(', ') + ')';
+        console.log(params.tagFilters);
 
         return Hairfie.app.models.AlgoliaSearchEngine
             .search('hairfie', req.query.q || '', params)
