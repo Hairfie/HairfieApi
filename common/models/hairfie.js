@@ -405,9 +405,42 @@ module.exports = function (Hairfie) {
                                 return hairfie.toRemoteObject(context);
                             }),
                             numHits     : result.nbHits,
-                            categories  : (result.facets || {}).categories || {},
-                            tags        : (result.facets || {})._tags || {},
-                            price       : (result.facets_stats || {})['price.amount']
+                            tags        : (result.facets || {})._tags || {}
+                        };
+                    }
+                };
+            });
+    };
+
+    Hairfie.similarHairfies = function(req,next) {
+        var params = {};
+        params.page = Math.max(1, req.query.page || 1) - 1;
+        params.hitsPerPage = Math.max(1, Math.min(20, req.query.pageSize || 10));
+        params.tagFilters = '(';
+
+        _.map(req.query.tags, function(tag, i){
+            if (i == req.query.tags.length - 1)
+                return params.tagFilters += tag;
+            return params.tagFilters += tag + ', ';
+        });
+        params.tagFilters += ')';
+
+        return Hairfie.app.models.AlgoliaSearchEngine
+            .search('hairfie', req.query.q || '', params)
+            .then(function (result) {
+                return [
+                    result,
+                    Q.ninvoke(Hairfie, 'findByIds', _.pluck(result.hits, 'objectID'))
+                ];
+            })
+            .spread(function (result, hairfies) {
+                return {
+                    toRemoteObject: function (context) {
+                        return {
+                            hits        : _.map(hairfies, function (hairfie) {
+                                return hairfie.toRemoteObject(context);
+                            }),
+                            numHits     : result.nbHits
                         };
                     }
                 };
@@ -439,6 +472,15 @@ module.exports = function (Hairfie) {
         ],
         returns: {root: true},
         http: {path: '/search', verb: 'GET'}
+    });
+
+    Hairfie.remoteMethod('similarHairfies', {
+        description: 'Search Similar Hairfies',
+        accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}}
+        ],
+        returns: {root: true},
+        http: {path: '/similar-hairfies', verb: 'GET'}
     });
 };
 

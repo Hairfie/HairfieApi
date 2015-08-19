@@ -9,7 +9,8 @@
       "create",
       "share",
       "hide",
-      "search"
+      "search",
+      "similarHairfies"
     ],
     "mongodb": {
       "collection": "hairfies"
