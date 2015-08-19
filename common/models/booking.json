@@ -6,6 +6,7 @@
       "find",
       "findById",
       "create",
+      "updateAttributes",
       "confirm",
       "userCheck",
       "honored",
