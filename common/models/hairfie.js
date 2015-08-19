@@ -419,7 +419,6 @@ module.exports = function (Hairfie) {
         params.page = Math.max(1, req.query.page || 1) - 1;
         params.hitsPerPage = Math.max(1, Math.min(20, req.query.pageSize || 10));
         params.tagFilters = '(' + req.query.tags.join(', ') + ')';
-        console.log(params.tagFilters);
 
         return Hairfie.app.models.AlgoliaSearchEngine
             .search('hairfie', req.query.q || '', params)
