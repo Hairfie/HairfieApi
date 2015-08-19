@@ -439,10 +439,9 @@ module.exports = function (Hairfie) {
                 return {
                     toRemoteObject: function (context) {
                         return {
-                            hits        : _.map(hairfies, function (hairfie) {
+                            _.map(hairfies, function (hairfie) {
                                 return hairfie.toRemoteObject(context);
-                            }),
-                            numHits     : result.nbHits
+                            })
                         };
                     }
                 };
