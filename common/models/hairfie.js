@@ -405,7 +405,9 @@ module.exports = function (Hairfie) {
                                 return hairfie.toRemoteObject(context);
                             }),
                             numHits     : result.nbHits,
-                            tags        : (result.facets || {})._tags || {}
+                            categories  : (result.facets || {}).categories || {},
+                            tags        : (result.facets || {})._tags || {},
+                            price       : (result.facets_stats || {})['price.amount']
                         };
                     }
                 };
