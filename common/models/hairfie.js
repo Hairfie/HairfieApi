@@ -414,11 +414,15 @@ module.exports = function (Hairfie) {
             });
     };
 
-    Hairfie.similarHairfies = function(req,next) {
+    Hairfie.similarHairfies = function(req, next) {
+        if (_.isUndefined(req.query.q) && _.isUndefined(req.query.tags)) {
+            return next();
+        }
         var params = {};
         params.page = Math.max(1, req.query.page || 1) - 1;
         params.hitsPerPage = Math.max(1, Math.min(20, req.query.pageSize || 10));
-        params.tagFilters = '(' + req.query.tags.join(', ') + ')';
+        if (req.query.tags)
+            params.tagFilters = '(' + req.query.tags.join(', ') + ')';
 
         return Hairfie.app.models.AlgoliaSearchEngine
             .search('hairfie', req.query.q || '', params)
@@ -437,6 +441,7 @@ module.exports = function (Hairfie) {
                     }
                 };
             });
+        next();
     };
 
     Hairfie.remoteMethod('share', {
