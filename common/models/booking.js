@@ -5,6 +5,7 @@ var moment = require('moment-timezone');
 var Hooks = require('./hooks');
 var phone = require('phone');
 var semver = require('semver');
+var Control = require('../utils/AccessControl');
 
 module.exports = function (Booking) {
     Hooks.generateId(Booking);
@@ -189,6 +190,15 @@ module.exports = function (Booking) {
                 return booking;
             });
     };
+
+
+    Booking.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, unused, next) {
+        if(ctx.req.user.admin) {
+            next();
+        } else {
+            next({statusCode: 403})
+        }
+    }));
 
     Booking.afterCreate = function (next) {
         //var Email = Booking.app.models.email;
