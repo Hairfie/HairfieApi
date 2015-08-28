@@ -9,6 +9,10 @@ var Hooks = require('./hooks');
 var phone = require('node-phonenumber')
 var phoneUtil = phone.PhoneNumberUtil.getInstance();
 
+var moment = require('moment');
+require('moment/locale/fr');
+moment.locale('fr');
+
 module.exports = function(Business) {
     Hooks.generateId(Business);
     Hooks.updateTimestamps(Business);
@@ -94,6 +98,7 @@ module.exports = function(Business) {
             bestDiscount: this.bestDiscount,
             averagePrice: this.averagePrice,
             pictures    : pictures,
+            isBookable  : this.isBookable(),
             thumbnail   : pictures[0] // BC mobile
         };
     };
@@ -747,6 +752,11 @@ module.exports = function(Business) {
             });
     };
 
+    Business.timeslots = function (businessId, from, until) {
+        var interval = 1; //1 Hour between each timeslot
+        var reservable = 48; //Numbers minimum hours before the first battlements bookable
+    };
+
     Business.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, unused, next) {
         ctx.req.user.isManagerOfBusiness(ctx.instance.id)
             .then(function (isManager) {
@@ -806,6 +816,17 @@ module.exports = function(Business) {
         ],
         returns: {arg: 'businesses', root: true},
         http: { verb: 'GET', path: '/:businessId/tags' }
+    });
+
+    Business.remoteMethod('timeslots', {
+        description: 'Get timeslots from timetable',
+        accepts: [
+            {arg: 'businessId', type: 'string', description: 'ID of the reference business'},
+            {arg: 'from', type: 'string', description: 'start date'},
+            {arg: 'until', type: 'string', description: 'end date'}
+        ],
+        returns: {arg: 'businesses', root: true},
+        http: { verb: 'GET', path: '/:businessId/timeslots' }
     });
 
     Business.remoteMethod('getFacebookPage', {
