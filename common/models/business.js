@@ -758,7 +758,10 @@ module.exports = function(Business) {
 
         return Q.ninvoke(Business, 'findById', businessId)
             .then(function (business) {
-                return {timetable: business.timetable, exept: business.exept};
+                var timeslots = {};
+                for (i = 0; moment(from) <= moment(from).add(i, 'd').valueOf() && moment(until) >= moment(from).add(i, 'd').valueOf(); i++) {
+                    timeslots = _.assign(timeslots, {moment(from).format('LL'): business.timetable.FRI});
+                }
             })
         next();
     };
