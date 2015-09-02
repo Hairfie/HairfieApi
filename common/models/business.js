@@ -755,6 +755,12 @@ module.exports = function(Business) {
     Business.timeslots = function (businessId, from, until) {
         var interval = 1; //1 Hour between each timeslot
         var reservable = 48; //Numbers minimum hours before the first battlements bookable
+
+        return Q.ninvoke(Business, 'findById', businessId)
+            .then(function (business) {
+                return {timetable: business.timetable, exept: business.exept};
+            })
+        next();
     };
 
     Business.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, unused, next) {
@@ -825,7 +831,7 @@ module.exports = function(Business) {
             {arg: 'from', type: 'string', description: 'start date'},
             {arg: 'until', type: 'string', description: 'end date'}
         ],
-        returns: {arg: 'businesses', root: true},
+        returns: {arg: 'timeslots', root: true},
         http: { verb: 'GET', path: '/:businessId/timeslots' }
     });
 
