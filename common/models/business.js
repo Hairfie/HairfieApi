@@ -779,7 +779,7 @@ module.exports = function(Business) {
 
     Business.timeslots = function (businessId, from, until) {
         var interval = 60; //60 Minutes between each timeslot
-        var delay = 48; //Numbers minimum hours before the first battlements bookable
+        var delay = 58; //Numbers minimum hours before the first battlements bookable
 
         return Q.ninvoke(Business, 'findById', businessId)
             .then(function (business) {
@@ -788,11 +788,16 @@ module.exports = function(Business) {
                 var date;
                 var i;
                 for (i = 0; moment(from) <= moment(from).add(i, 'd') && moment(until) >= moment(from).add(i, 'd'); i++) {
-                    day = moment(from).add(i, 'd').days();
-                    day = days[day];
-                    day = business.timetable[day];
                     date = moment(from).add(i, 'd').format("YYYY-MM-DD");
-                    console.log(day, delay);
+                    if (!(business.exept && business.exept[date])) {
+                        day = moment(from).add(i, 'd').days();
+                        day = days[day];
+                        day = business.timetable[day];
+                    }
+                    else {
+                        day = business.exept[date];
+                    }
+
                     if (delay <= 0) {
                         timeslots[date] = parseDay(day, interval);
                     }
@@ -804,10 +809,6 @@ module.exports = function(Business) {
                         delay -= 24;
                     }
                 }
-                _.forEach(business.exept, function(n, key) {
-                  if(moment(from) <= moment(key) && moment(key) <= moment(until))
-                    timeslots[moment(key).format("YYYY-MM-DD")] = n;
-                });
                 return timeslots;
             })
         next();
