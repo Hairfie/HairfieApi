@@ -13,6 +13,16 @@ var moment = require('moment');
 require('moment/locale/fr');
 moment.locale('fr');
 
+var days = {
+    0: "SUN",
+    1: "MON",
+    2: "TUE",
+    3: "WED",
+    4: "THU",
+    5: "FRI",
+    6: "SAT"
+};
+
 module.exports = function(Business) {
     Hooks.generateId(Business);
     Hooks.updateTimestamps(Business);
@@ -759,9 +769,21 @@ module.exports = function(Business) {
         return Q.ninvoke(Business, 'findById', businessId)
             .then(function (business) {
                 var timeslots = {};
+                var day;
+                var date;
+                var i;
                 for (i = 0; moment(from) <= moment(from).add(i, 'd').valueOf() && moment(until) >= moment(from).add(i, 'd').valueOf(); i++) {
-                    timeslots = _.assign(timeslots, {moment(from).format('LL'): business.timetable.FRI});
+                    day = moment(from).add(i, 'd').days();
+                    day = days[day];
+                    day = business.timetable[day];
+                    date = moment(from).add(i, 'd').format('LL');
+                    timeslots[date] = day;
                 }
+                _.forEach(business.exept, function(n, key) {
+                  if(moment(from) <= moment(key) && moment(key) <= moment(until))
+                    timeslots[moment(key).format('LL')] = n;
+                });
+                return timeslots;
             })
         next();
     };
