@@ -762,9 +762,24 @@ module.exports = function(Business) {
             });
     };
 
+    function parseDay(day, interval, delay) {
+        var newBattlements = [];
+        _.map(day, function(battlements) {
+            var i;
+            for (i = 0; moment(battlements.endTime, "HH:mm") >= moment(battlements.startTime, "HH:mm").add((i + 1) * interval, "m"); i++) {
+                if (!(delay && delay > moment(battlements.startTime, "HH:mm").add(i * interval, "m").hours()))
+                    newBattlements.push({
+                        startTime: moment(battlements.startTime, "HH:mm").add(i * interval, "m").format("HH:mm"),
+                        endTime: moment(battlements.startTime, "HH:mm").add((i + 1) * interval, "m").format("HH:mm")
+                    });
+            }
+        });
+        return newBattlements;
+    }
+
     Business.timeslots = function (businessId, from, until) {
-        var interval = 1; //1 Hour between each timeslot
-        var reservable = 48; //Numbers minimum hours before the first battlements bookable
+        var interval = 60; //60 Minutes between each timeslot
+        var delay = 48; //Numbers minimum hours before the first battlements bookable
 
         return Q.ninvoke(Business, 'findById', businessId)
             .then(function (business) {
@@ -772,16 +787,26 @@ module.exports = function(Business) {
                 var day;
                 var date;
                 var i;
-                for (i = 0; moment(from) <= moment(from).add(i, 'd').valueOf() && moment(until) >= moment(from).add(i, 'd').valueOf(); i++) {
+                for (i = 0; moment(from) <= moment(from).add(i, 'd') && moment(until) >= moment(from).add(i, 'd'); i++) {
                     day = moment(from).add(i, 'd').days();
                     day = days[day];
                     day = business.timetable[day];
-                    date = moment(from).add(i, 'd').format('LL');
-                    timeslots[date] = day;
+                    date = moment(from).add(i, 'd').format("YYYY-MM-DD");
+                    console.log(day, delay);
+                    if (delay <= 0) {
+                        timeslots[date] = parseDay(day, interval);
+                    }
+                    else if (delay < 24 && !(_.isEmpty(day))) {
+                        timeslots[date] = parseDay(day, interval, delay);
+                        delay = 0;
+                    }
+                    else if (!_.isEmpty(day)) {
+                        delay -= 24;
+                    }
                 }
                 _.forEach(business.exept, function(n, key) {
                   if(moment(from) <= moment(key) && moment(key) <= moment(until))
-                    timeslots[moment(key).format('LL')] = n;
+                    timeslots[moment(key).format("YYYY-MM-DD")] = n;
                 });
                 return timeslots;
             })
