@@ -771,7 +771,7 @@ module.exports = function(Business) {
                     newBattlements.push({
                         startTime: moment(battlements.startTime, "HH:mm").add(i * interval, "m").format("HH:mm"),
                         endTime: moment(battlements.startTime, "HH:mm").add((i + 1) * interval, "m").format("HH:mm"),
-                        discount: battlements.discount || null
+                        discount: battlements.discount || undefined
                     });
             }
         });
