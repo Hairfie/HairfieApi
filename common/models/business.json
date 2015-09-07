@@ -114,6 +114,9 @@
         "type": "boolean",
         "default": true
     },
+    "expetions": {
+        "type": "object"
+    },
     "displayPhoneNumber": {
         "type": "boolean",
         "default": false
