@@ -114,7 +114,7 @@
         "type": "boolean",
         "default": true
     },
-    "expetions": {
+    "exceptions": {
         "type": "object"
     },
     "displayPhoneNumber": {

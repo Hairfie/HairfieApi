@@ -764,14 +764,14 @@ module.exports = function(Business) {
 
     function parseDay(day, interval, delay) {
         var newBattlements = [];
-        _.map(day, function(battlements) {
+        _.map(day, function(timeslots) {
             var i;
-            for (i = 0; moment(battlements.endTime, "HH:mm") >= moment(battlements.startTime, "HH:mm").add((i + 1) * interval, "m"); i++) {
-                if (!(delay && delay > moment(battlements.startTime, "HH:mm").add(i * interval, "m").hours()))
+            for (i = 0; moment(timeslots.endTime, "HH:mm") >= moment(timeslots.startTime, "HH:mm").add((i + 1) * interval, "m"); i++) {
+                if (!(delay && delay > moment(timeslots.startTime, "HH:mm").add(i * interval, "m").hours()))
                     newBattlements.push({
-                        startTime: moment(battlements.startTime, "HH:mm").add(i * interval, "m").format("HH:mm"),
-                        endTime: moment(battlements.startTime, "HH:mm").add((i + 1) * interval, "m").format("HH:mm"),
-                        discount: battlements.discount || undefined
+                        startTime: moment(timeslots.startTime, "HH:mm").add(i * interval, "m").format("HH:mm"),
+                        endTime: moment(timeslots.startTime, "HH:mm").add((i + 1) * interval, "m").format("HH:mm"),
+                        discount: timeslots.discount
                     });
             }
         });
@@ -780,7 +780,7 @@ module.exports = function(Business) {
 
     Business.timeslots = function (businessId, from, until) {
         var interval = 60; //60 Minutes between each timeslot
-        var delay = 24; //Numbers minimum hours before the first battlements bookable
+        var delay = 24; //Numbers minimum hours before the first timeslots bookable
 
         return Q.ninvoke(Business, 'findById', businessId)
             .then(function (business) {
@@ -790,13 +790,13 @@ module.exports = function(Business) {
                 var i;
                 for (i = 0; moment(from) <= moment(from).add(i, 'd') && moment(until) >= moment(from).add(i, 'd'); i++) {
                     date = moment(from).add(i, 'd').format("YYYY-MM-DD");
-                    if (!(business.exeptions && business.exeptions[date])) {
+                    if (!(business.exceptions && business.exceptions[date])) {
                         day = moment(from).add(i, 'd').days();
                         day = days[day];
                         day = business.timetable[day];
                     }
                     else {
-                        day = business.exeptions[date];
+                        day = business.exceptions[date];
                     }
 
                     if (delay <= 0) {
