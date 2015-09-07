@@ -770,7 +770,8 @@ module.exports = function(Business) {
                 if (!(delay && delay > moment(battlements.startTime, "HH:mm").add(i * interval, "m").hours()))
                     newBattlements.push({
                         startTime: moment(battlements.startTime, "HH:mm").add(i * interval, "m").format("HH:mm"),
-                        endTime: moment(battlements.startTime, "HH:mm").add((i + 1) * interval, "m").format("HH:mm")
+                        endTime: moment(battlements.startTime, "HH:mm").add((i + 1) * interval, "m").format("HH:mm"),
+                        discount: battlements.discount || null
                     });
             }
         });
@@ -789,13 +790,13 @@ module.exports = function(Business) {
                 var i;
                 for (i = 0; moment(from) <= moment(from).add(i, 'd') && moment(until) >= moment(from).add(i, 'd'); i++) {
                     date = moment(from).add(i, 'd').format("YYYY-MM-DD");
-                    if (!(business.exept && business.exept[date])) {
+                    if (!(business.exeptions && business.exeptions[date])) {
                         day = moment(from).add(i, 'd').days();
                         day = days[day];
                         day = business.timetable[day];
                     }
                     else {
-                        day = business.exept[date];
+                        day = business.exeptions[date];
                     }
 
                     if (delay <= 0) {
