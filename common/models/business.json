@@ -15,7 +15,8 @@
       "deleteFacebookPage",
       "getCustomers",
       "claim",
-      "tags"
+      "tags",
+      "timeslots"
     ],
     "mongodb": {
       "collection": "businesses"
@@ -112,6 +113,9 @@
     "bookable": {
         "type": "boolean",
         "default": true
+    },
+    "exceptions": {
+        "type": "object"
     },
     "displayPhoneNumber": {
         "type": "boolean",
