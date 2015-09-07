@@ -779,7 +779,7 @@ module.exports = function(Business) {
 
     Business.timeslots = function (businessId, from, until) {
         var interval = 60; //60 Minutes between each timeslot
-        var delay = 58; //Numbers minimum hours before the first battlements bookable
+        var delay = 24; //Numbers minimum hours before the first battlements bookable
 
         return Q.ninvoke(Business, 'findById', businessId)
             .then(function (business) {
