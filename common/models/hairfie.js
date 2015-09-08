@@ -414,6 +414,36 @@ module.exports = function (Hairfie) {
             });
     };
 
+    Hairfie.similarHairfies = function(req, next) {
+        if (_.isUndefined(req.query.q) && _.isUndefined(req.query.tags)) {
+            return next();
+        }
+        var params = {};
+        params.page = Math.max(1, req.query.page || 1) - 1;
+        params.hitsPerPage = Math.max(1, Math.min(20, req.query.pageSize || 10));
+        if (req.query.tags)
+            params.tagFilters = '(' + req.query.tags.join(', ') + ')';
+
+        return Hairfie.app.models.AlgoliaSearchEngine
+            .search('hairfie', req.query.q || '', params)
+            .then(function (result) {
+                return [
+                    result,
+                    Q.ninvoke(Hairfie, 'findByIds', _.pluck(result.hits, 'objectID'))
+                ];
+            })
+            .spread(function (result, hairfies) {
+                return {
+                    toRemoteObject: function (context) {
+                        return _.map(hairfies, function (hairfie) {
+                            return hairfie.toRemoteObject(context);
+                        });
+                    }
+                };
+            });
+        next();
+    };
+
     Hairfie.remoteMethod('share', {
         description: 'Shares a hairfie on social networks',
         accepts: [
@@ -439,6 +469,15 @@ module.exports = function (Hairfie) {
         ],
         returns: {root: true},
         http: {path: '/search', verb: 'GET'}
+    });
+
+    Hairfie.remoteMethod('similarHairfies', {
+        description: 'Search Similar Hairfies',
+        accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}}
+        ],
+        returns: {root: true},
+        http: {path: '/similar-hairfies', verb: 'GET'}
     });
 };
 
