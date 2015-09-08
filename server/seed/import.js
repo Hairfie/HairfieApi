@@ -18,7 +18,7 @@ module.exports = function(app, cb) {
 
     var SearchEngine = app.models.SearchEngine;
 
-    console.log('Start rebuilding index');
+    console.log('Start rebuilding index', app.models);
     SearchEngine
         .rebuildIndex()
         .then(function () {
@@ -37,7 +37,8 @@ module.exports = function(app, cb) {
                         phone_numbers: d.phone_pj,
                         diane_data: d.diane_data,
                         pj_data: d.pages_jaunes,
-                        timetables: parseTimetables(d.timetables_pj)
+                        timetables: parseTimetables(d.timetables_pj),
+                        exept: parseTimetables(d.exept_pj)
                     };
                     //console.log(business);
                     Business.create(business, callback);

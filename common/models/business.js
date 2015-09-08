@@ -9,6 +9,20 @@ var Hooks = require('./hooks');
 var phone = require('node-phonenumber')
 var phoneUtil = phone.PhoneNumberUtil.getInstance();
 
+var moment = require('moment');
+require('moment/locale/fr');
+moment.locale('fr');
+
+var days = {
+    0: "SUN",
+    1: "MON",
+    2: "TUE",
+    3: "WED",
+    4: "THU",
+    5: "FRI",
+    6: "SAT"
+};
+
 module.exports = function(Business) {
     Hooks.generateId(Business);
     Hooks.updateTimestamps(Business);
@@ -94,6 +108,7 @@ module.exports = function(Business) {
             bestDiscount: this.bestDiscount,
             averagePrice: this.averagePrice,
             pictures    : pictures,
+            isBookable  : this.isBookable(),
             thumbnail   : pictures[0] // BC mobile
         };
     };
@@ -747,6 +762,59 @@ module.exports = function(Business) {
             });
     };
 
+    function parseDay(day, interval, delay) {
+        var newBattlements = [];
+        _.map(day, function(timeslots) {
+            var i;
+            for (i = 0; moment(timeslots.endTime, "HH:mm") >= moment(timeslots.startTime, "HH:mm").add((i + 1) * interval, "m"); i++) {
+                if (!(delay && delay > moment(timeslots.startTime, "HH:mm").add(i * interval, "m").hours()))
+                    newBattlements.push({
+                        startTime: moment(timeslots.startTime, "HH:mm").add(i * interval, "m").format("HH:mm"),
+                        endTime: moment(timeslots.startTime, "HH:mm").add((i + 1) * interval, "m").format("HH:mm"),
+                        discount: timeslots.discount || ""
+                    });
+            }
+        });
+        return newBattlements;
+    }
+
+    Business.timeslots = function (businessId, from, until) {
+        var interval = 60; //60 Minutes between each timeslot
+        var delay = 24; //Numbers minimum hours before the first timeslots bookable
+
+        return Q.ninvoke(Business, 'findById', businessId)
+            .then(function (business) {
+                var timeslots = {};
+                var day;
+                var date;
+                var i;
+                for (i = 0; moment(from) <= moment(from).add(i, 'd') && moment(until) >= moment(from).add(i, 'd'); i++) {
+                    date = moment(from).add(i, 'd').format("YYYY-MM-DD");
+                    if (!(business.exceptions && business.exceptions[date])) {
+                        day = moment(from).add(i, 'd').days();
+                        day = days[day];
+                        day = business.timetable[day];
+                    }
+                    else {
+                        day = business.exceptions[date];
+                    }
+
+                    if (delay <= 0) {
+                        timeslots[date] = parseDay(day, interval);
+                    }
+                    else if (delay < 24 && !(_.isEmpty(day))) {
+                        timeslots[date] = parseDay(day, interval, delay);
+                        delay = 0;
+                    }
+                    else if (!_.isEmpty(day)) {
+                        delay -= 24;
+                    }
+                }
+                return timeslots;
+            })
+        next();
+    };
+
     Business.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, unused, next) {
         ctx.req.user.isManagerOfBusiness(ctx.instance.id)
             .then(function (isManager) {
@@ -806,6 +874,17 @@ module.exports = function(Business) {
         ],
         returns: {arg: 'businesses', root: true},
         http: { verb: 'GET', path: '/:businessId/tags' }
+    });
+
+    Business.remoteMethod('timeslots', {
+        description: 'Get timeslots from timetable',
+        accepts: [
+            {arg: 'businessId', type: 'string', description: 'ID of the reference business'},
+            {arg: 'from', type: 'string', description: 'start date'},
+            {arg: 'until', type: 'string', description: 'end date'}
+        ],
+        returns: {arg: 'timeslots', root: true},
+        http: { verb: 'GET', path: '/:businessId/timeslots' }
     });
 
     Business.remoteMethod('getFacebookPage', {
