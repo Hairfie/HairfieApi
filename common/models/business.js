@@ -778,9 +778,15 @@ module.exports = function(Business) {
         return newBattlements;
     }
 
-    Business.timeslots = function (businessId, from, until) {
+    Business.timeslots = function (businessId, from, until, next) {
         var interval = 60; //60 Minutes between each timeslot
         var delay = 24; //Numbers minimum hours before the first timeslots bookable
+
+        if (moment(from) > moment(until))
+            next({statusCode: 400, message: 'from must to be before until (time)'});
+
+        if (moment(from) < moment())
+            from = moment().format("YYYY-MM-DD");
 
         return Q.ninvoke(Business, 'findById', businessId)
             .then(function (business) {
