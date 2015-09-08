@@ -238,6 +238,7 @@ module.exports = function (Hairfie) {
 
     // set user id from access token
     Hairfie.beforeRemote('create', function (ctx, unused, next) {
+        console.log("here, create", ctx.req.accessToken);
         ctx.req.body.authorId = ctx.req.accessToken.userId;
 
         // keep backward compatibility (hairdressers -> business members)
