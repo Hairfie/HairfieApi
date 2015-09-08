@@ -473,7 +473,7 @@ module.exports = function(Business) {
                             }),
                             facets: result.facets,
                             nbHits : result.nbHits,
-                            page : result.page,
+                            page : result.page + 1,
                             nbPages : result.nbPages,
                             hitsPerPage : result.hitsPerPage
                         }
