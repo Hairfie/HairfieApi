@@ -35,6 +35,8 @@ if (!passportConfig) {
 //    model: app.models.AccessToken
 //}));
 app.use(function (req, res, next) {
+    console.log("here, app.use", req.accessToken);
+
     // temporary replace token middleware
     if (req.accessToken) return next();
 
