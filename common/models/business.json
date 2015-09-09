@@ -27,6 +27,12 @@
       "type": "string",
       "id": true
     },
+    "friendlyId": {
+      "type": "string",
+      "id": true,
+      "index": "true",
+      "unique": true
+    },
     "name": {
       "type": "string",
       "required": true,

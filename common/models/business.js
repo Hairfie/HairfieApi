@@ -27,6 +27,15 @@ module.exports = function(Business) {
     Hooks.generateId(Business);
     Hooks.updateTimestamps(Business);
     Hooks.updateSearchIndex(Business, {index: 'business'});
+
+    Business.observe('before save', function updateFriendlyId(ctx, next) {
+        if(ctx.instance && !ctx.instance.friendlyId) {
+            ctx.instance.friendlyId = Math.floor(Math.random()*90000) + 10000;
+        }
+
+        next();
+    });
+
     Hooks.hasImages(Business, {
         pictures: {
             container: 'businesses',
@@ -220,6 +229,7 @@ module.exports = function(Business) {
                 return {
                     id                 : this.id,
                     objectID           : this.id.toString(),
+                    friendlyId         : this.friendlyId,
                     name               : this.name,
                     phoneNumber        : this.phoneNumber,
                     address            : this.address,
