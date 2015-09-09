@@ -163,7 +163,6 @@ module.exports = function (Hairfie) {
 
         return Promise.ninvoke(Hairfie, 'findById', req.params.hairfieId)
             .then(function(hairfie) {
-                console.log("here", hairfie);
                 if (!hairfie) return next({statusCode: 404});
 
                 var isAllowed = user.admin ? true : (hairfie.authorId.toString() != req.user.id.toString());
@@ -238,12 +237,9 @@ module.exports = function (Hairfie) {
 
     // set user id from access token
     Hairfie.beforeRemote('create', function (ctx, unused, next) {
-        console.log("here, create", ctx.req.body);
-        ctx.req.body.authorId = ctx.req.accessToken.userId;
+        if (!ctx.req.accessToken) return next({statusCode: 401});
 
-        // keep backward compatibility (hairdressers -> business members)
-        if (!ctx.req.body.businessMemberId) ctx.req.body.businessMemberId = ctx.req.body.hairdresserId;
-        delete ctx.req.body.hairdresserId;
+        ctx.req.body.authorId = ctx.req.accessToken.userId;
 
         next();
     });

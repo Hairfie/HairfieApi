@@ -40,9 +40,7 @@ app.use(function (req, res, next) {
 
     app.models.accessToken.findForRequest(req, {}, function(err, token) {
         req.accessToken = token || null;
-
         if (req.accessToken) {
-            console.log("here, req.accessToken", req.accessToken);
             app.models.user.findById(req.accessToken.userId, function (error, user) {
                 if (error) return next({statusCode: 500, message: 'Error retrieving user'});
                 if (!user) return next({statusCode: 500, message: 'Access token\'s user not found'});
