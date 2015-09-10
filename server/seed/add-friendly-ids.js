@@ -4,7 +4,7 @@ var _ = require('lodash');
 var Q = require('q');
 
 var friendlyIds = require(process.argv[2]);
-var app = require('../../..');
+var app = require('../..');
 
 Q()
     .then(migrateBusinesses)
