@@ -36,6 +36,8 @@ module.exports = function(Business) {
         next();
     });
 
+    Business.validatesUniquenessOf('friendlyId');
+
     Hooks.hasImages(Business, {
         pictures: {
             container: 'businesses',
