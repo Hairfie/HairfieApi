@@ -16,6 +16,9 @@
             "type": "object",
             "required": true
         },
+        "title": {
+            "type": "object"
+        },
         "description": {
             "type": "object"
         },
