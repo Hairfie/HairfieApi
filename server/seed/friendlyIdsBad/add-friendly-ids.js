@@ -3,7 +3,7 @@
 var _ = require('lodash');
 var Q = require('q');
 
-var friendlyIds = require(process.argv[2]);
+var friendlyIds = require('./friendlyIds.json');
 
 var app = require('../..');
 
