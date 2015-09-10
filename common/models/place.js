@@ -37,6 +37,7 @@ module.exports = function(Place) {
             id          : this.id,
             href        : Place.app.urlGenerator.api('places/'+this.id),
             name        : context.localized(this.name),
+            title       : context.localized(this.title),
             description : context.localized(this.description),
             picture     : this.picture && this.picture.toRemoteObject(context),
             location    : this.location,
