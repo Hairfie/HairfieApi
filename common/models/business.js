@@ -30,10 +30,14 @@ module.exports = function(Business) {
 
     Business.observe('before save', function updateFriendlyId(ctx, next) {
         if(ctx.instance && !ctx.instance.friendlyId) {
-            ctx.instance.friendlyId = Math.floor(Math.random()*90000) + 10000;
+            Business.findOne({order: 'friendlyId DESC', limit: 1}, function(err, b) {
+                ctx.instance.friendlyId = b.friendlyId + 1;
+                next();
+            })
+        } else {
+            next();
         }
 
-        next();
     });
 
     Business.validatesUniquenessOf('friendlyId');
