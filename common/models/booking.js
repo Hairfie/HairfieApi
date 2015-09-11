@@ -113,7 +113,6 @@ module.exports = function (Booking) {
                 if (!isManager) return cb({statusCode: 403, message: 'You must be a manager of this business to confirm a booking'});
                 booking.confirmed = true;
                 booking.status = Booking.STATUS_CONFIRMED;
-                booking.confirmationSentAt = new Date();
 
                 return Promise.npost(booking, 'save');
             })

@@ -115,6 +115,7 @@ module.exports = function(Business) {
 
         return {
             id          : this.id,
+            friendlyId  : this.friendlyId,
             href        : Business.app.urlGenerator.api('businesses/'+this.id),
             name        : this.name,
             slug        : this.slug(),
