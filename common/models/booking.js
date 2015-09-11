@@ -121,7 +121,7 @@ module.exports = function (Booking) {
                 if(!booking.confirmationSentAt) {
                     // notify client of the booking confirmation
                     var Email = Booking.app.models.email;
-                    console.log("email sent");
+
                     booking.business(function (err, business) {
                         Email.notifyBookingConfirmed(booking, business);
                         booking.confirmationSentAt = new Date();
@@ -147,12 +147,13 @@ module.exports = function (Booking) {
                     'ID'              : booking.id,
                     'Salon'           : booking.business.name,
                     'Tel du salon'    : booking.business.phoneNumber,
-                    'Date & Heure de la demande' : moment(booking.timeslot).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
+                    'Date & Heure de la demande' : moment(booking.dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
                     'Client'          : booking.firstName + ' ' + booking.lastName,
                     'Genre'           : booking.gender,
                     'Email du client' : booking.email,
                     'Tel du client'   : booking.phoneNumber,
-                    'Prestation'      : booking.comment
+                    'Prestation'      : booking.comment,
+                    'Promo'           : booking.discount
                 });
                 return booking;
             })
@@ -211,7 +212,7 @@ module.exports = function (Booking) {
                     'ID'              : booking.id,
                     'Salon'           : business.name,
                     'Tel du salon'    : business.phoneNumber,
-                    'Date & Heure de la demande' : moment(booking.timeslot).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
+                    'Date & Heure de la demande' : moment(booking.dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
                     'Client'          : booking.firstName + ' ' + booking.lastName,
                     'Genre'           : booking.gender,
                     'Email du client' : booking.email,
