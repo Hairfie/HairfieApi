@@ -34,6 +34,13 @@ module.exports = function(Category) {
                     {genders: {inq: _.map(genders, function (g) { return (g || '').toLowerCase(); })}}
                 ]
             }
-        });
+        })
+        .then(function(categories) {
+            return _.map(categories, function(cat) {
+                cat.name = cat.name.fr;
+                cat.description = cat.description.fr;
+                return cat;
+            })
+        })
     };
 };

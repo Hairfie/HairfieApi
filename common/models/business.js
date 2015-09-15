@@ -249,6 +249,7 @@ module.exports = function(Business) {
                     timetable          : this.timetable,
                     numHairfies        : numHairfies,
                     numReviews         : rating.numReviews,
+                    numPictures        : this.pictures.length,
                     rating             : rating.rating,
                     crossSell          : true,
                     isBookable         : this.isBookable(),
