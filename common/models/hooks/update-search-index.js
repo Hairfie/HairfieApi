@@ -31,6 +31,7 @@ module.exports = function (Model, options) {
                 else return instance.toSearchDocument();
             })
             .then(function (doc) {
+                console.log("doc to save", doc);
                 return Engine.saveDocument(options.index, doc);
             })
             .fail(function (error) {
@@ -46,6 +47,7 @@ module.exports = function (Model, options) {
         var Engine = Model.app.models.AlgoliaSearchEngine;
         var id = tryGetId(ctx.where);
         if (id) {
+            console.log("deleteFromEngine");
             Engine.deleteDocument(options.index, id).fail(console.log);
         }
 
@@ -55,6 +57,7 @@ module.exports = function (Model, options) {
     Model.prototype.deleteFromEngine = function() {
         var Engine = Model.app.models.AlgoliaSearchEngine;
         if (this.id) {
+            console.log("deleteFromEngine");
             Engine.deleteDocument(options.index, this.id).fail(console.log);
         }
     }

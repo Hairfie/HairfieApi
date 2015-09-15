@@ -37,9 +37,13 @@ module.exports = function(Category) {
         })
         .then(function(categories) {
             return _.map(categories, function(cat) {
-                cat.name = cat.name.fr;
-                cat.description = cat.description.fr;
-                return cat;
+                if(_.isString(cat.name)) {
+                    return cat;
+                } else {
+                    cat.name = cat.name.fr;
+                    cat.description = cat.description.fr;
+                    return cat;
+                }
             })
         })
     };
