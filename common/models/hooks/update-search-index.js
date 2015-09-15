@@ -42,6 +42,7 @@ module.exports = function (Model, options) {
 
     // remove search document where record is deleted
     Model.observe('before delete', function (ctx, next) {
+        console.log("before delete !");
         var Engine = Model.app.models.AlgoliaSearchEngine;
         var id = tryGetId(ctx.where);
         if (id) {
@@ -50,6 +51,13 @@ module.exports = function (Model, options) {
 
         next(); // fire and forget
     });
+
+    Model.prototype.deleteFromEngine = function() {
+        var Engine = Model.app.models.AlgoliaSearchEngine;
+        if (this.id) {
+            Engine.deleteDocument(options.index, this.id).fail(console.log);
+        }
+    }
 };
 
 function tryGetId(where) {

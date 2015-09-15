@@ -158,8 +158,9 @@ module.exports = function (Hairfie) {
         });
     };
 
-    Hairfie.hide = function (req, user, next) {
+    Hairfie.delete = function (req, user, next) {
         if (!user) return next({statusCode: 401});
+        var Engine = Hairfie.app.models.AlgoliaSearchEngine;
 
         return Promise.ninvoke(Hairfie, 'findById', req.params.hairfieId)
             .then(function(hairfie) {
@@ -171,6 +172,11 @@ module.exports = function (Hairfie) {
                 hairfie.hidden = true;
 
                 return Promise.npost(hairfie, 'save');
+            })
+            .then(function(hairfie) {
+                hairfie.deleteFromEngine();
+
+                return;
             })
     };
 
@@ -450,7 +456,7 @@ module.exports = function (Hairfie) {
         http: { path: '/:hairfieId/share', verb: 'POST' }
     });
 
-    Hairfie.remoteMethod('hide', {
+    Hairfie.remoteMethod('delete', {
         description: 'Delete the hairfie',
         accepts: [
             {arg: 'req', type: 'object', 'http': {source: 'req'}},
