@@ -137,14 +137,14 @@ module.exports = function (Email) {
             templateVars: {
                 booking    : booking,
                 business   : business,
-                timeslot   : timeslot
+                timeslot   : dateTime
             }
         });
     };
 
     Email.notifyBookingConfirmed = function (booking, business) {
         var locale = 'fr'; //booking.locale || 'fr';
-        var timeslot = moment(booking.timeslot).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm");
+        var dateTime = moment(booking.dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm");
 
         return send({
             to: booking.email,
@@ -155,7 +155,7 @@ module.exports = function (Email) {
                 business: business,
                 businessUrl: Email.app.urlGenerator.business(business),
                 address: business.address || {},
-                timeslot: timeslot
+                timeslot: dateTime
             }
         });
     };
