@@ -37,7 +37,8 @@ module.exports = {
                     customRanking: [
                         'desc(numHairfies)',
                         'desc(rating)',
-                        'desc(numReviews)'
+                        'desc(numReviews)',
+                        'desc(numPictures)'
                     ]
                 }
             },
