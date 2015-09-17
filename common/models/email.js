@@ -128,7 +128,7 @@ module.exports = function (Email) {
 
     Email.confirmBookingRequest = function (booking, business) {
         var locale = booking.locale || 'fr';
-        var timeslot = moment(booking.timeslot).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm");
+        var dateTime = moment(booking.dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm");
 
         return send({
             to: booking.email,
