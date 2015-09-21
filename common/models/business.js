@@ -459,9 +459,15 @@ module.exports = function(Business) {
         if(params.facetFilters) {
             _.forEach(params.facetFilters, function(filters, facetFilter) {
                 filters = _.isArray(filters) ? filters : [filters];
-                facetFiltersArr.push(_.map(_.toArray(filters), function(filter) {
+                var filterToPush = _.map(_.toArray(filters), function(filter) {
                     return facetFilter + ':' + filter;
-                }).join(','));
+                }).join(',');
+
+                if (facetFilter == 'categories') {
+                    facetFiltersArr.push('(' + filterToPush + ')');
+                } else {
+                    facetFiltersArr.push(filterToPush)
+                }
             });
         }
 
