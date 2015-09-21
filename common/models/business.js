@@ -58,7 +58,8 @@ module.exports = function(Business) {
 
         return Q.ninvoke(BusinessReview, 'getBusinessRating', this.id)
             .then((function (rating) {
-                var activeHairdressers = Q
+                var activeHairdressers = 
+                Q
                     .npost(this, 'getVisibleActiveMembers')
                     .then(function (members) {
                         return Q.all(members.map(function (member) {
@@ -501,7 +502,6 @@ module.exports = function(Business) {
 
     function processAlgoliaForSearch(result) {
         var ids = result.hits.map(function (hit) { return hit.id; });
-
         return Q.denodeify(Business.findByIds.bind(Business))(ids)
             .then(function(businesses) {
                 return {
