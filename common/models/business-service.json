@@ -30,8 +30,11 @@
       },
       "required": true
     },
-    "gender": {
-      "type": "string"
+    "isManPrice": {
+      "type": "boolean"
+    },
+    "isWomanPrice": {
+      "type": "boolean"
     },
     "durationMinutes": {
       "type": "number",
