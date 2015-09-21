@@ -30,6 +30,9 @@
       },
       "required": true
     },
+    "gender": {
+      "type": "string"
+    },
     "durationMinutes": {
       "type": "number",
       "required": true
