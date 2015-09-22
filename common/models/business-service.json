@@ -30,11 +30,13 @@
       },
       "required": true
     },
-    "isManPrice": {
-      "type": "boolean"
+    "isManClassicPrice": {
+      "type": "boolean",
+      "default": false
     },
-    "isWomanPrice": {
-      "type": "boolean"
+    "isWomanClassicPrice": {
+      "type": "boolean",
+      "default": false
     },
     "durationMinutes": {
       "type": "number",
