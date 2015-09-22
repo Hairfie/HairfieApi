@@ -818,14 +818,15 @@ module.exports = function(Business) {
                 var day;
                 var date;
                 var i;
+
                 for (i = 0; moment(from) <= moment(from).add(i, 'd') && moment(until) >= moment(from).add(i, 'd'); i++) {
                     date = moment(from).add(i, 'd').format("YYYY-MM-DD");
+
                     if (!(business.exceptions && business.exceptions[date])) {
                         day = moment(from).add(i, 'd').days();
                         day = days[day];
-                        day = business.timetable[day];
-                    }
-                    else {
+                        day = business.timetable && business.timetable[day];
+                    } else {
                         day = business.exceptions[date];
                     }
 
