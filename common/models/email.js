@@ -137,7 +137,7 @@ module.exports = function (Email) {
             templateVars: {
                 booking    : booking,
                 business   : business,
-                timeslot   : dateTime
+                dateTime   : dateTime
             }
         });
     };
@@ -155,7 +155,7 @@ module.exports = function (Email) {
                 business: business,
                 businessUrl: Email.app.urlGenerator.business(business),
                 address: business.address || {},
-                timeslot: dateTime
+                dateTime: dateTime
             }
         });
     };
