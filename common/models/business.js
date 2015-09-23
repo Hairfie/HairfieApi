@@ -91,6 +91,7 @@ module.exports = function(Business) {
                     landingPageUrl     : Business.app.urlGenerator.business(this, context),
                     facebookPage       : this.facebookPage && this.getFacebookPageObject().toRemoteShortObject(context),
                     addedCategories    : this.addedCategories,
+                    labels             : this.labels,
                     createdAt          : this.createdAt,
                     updatedAt          : this.updatedAt
                 });
