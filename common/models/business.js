@@ -58,7 +58,7 @@ module.exports = function(Business) {
 
         return Q.ninvoke(BusinessReview, 'getBusinessRating', this.id)
             .then((function (rating) {
-                var activeHairdressers = 
+                var activeHairdressers =
                 Q
                     .npost(this, 'getVisibleActiveMembers')
                     .then(function (members) {
@@ -90,6 +90,7 @@ module.exports = function(Business) {
                     activeHairdressers : activeHairdressers,
                     landingPageUrl     : Business.app.urlGenerator.business(this, context),
                     facebookPage       : this.facebookPage && this.getFacebookPageObject().toRemoteShortObject(context),
+                    addedCategories    : this.addedCategories,
                     createdAt          : this.createdAt,
                     updatedAt          : this.updatedAt
                 });
