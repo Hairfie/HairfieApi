@@ -285,9 +285,10 @@ module.exports = function(Business) {
     };
 
     Business.prototype.getCategories = function () {
-        var b = this;
         return b.getTags().then(function (tags) {
-            return Business.app.models.Category.listForTagsAndGenders(tags, b.getGenders());
+            return Business.app.models.Category.listForTagsAndGenders(tags, b.getGenders()).then(function(categories) {
+                return categories.concat(this.addedCategories);
+            });
         });
     };
 
