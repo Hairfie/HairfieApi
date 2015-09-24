@@ -1,0 +1,27 @@
+{
+  "name": "Subscriber",
+  "plural": "Subscribers",
+  "options": {
+    "sharedMethodNames": [
+      "find"
+    ],
+    "mongodb": {
+      "collection": "subscribers"
+    }
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "id": true
+    },
+    "email": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+  },
+  "acls": [],
+  "methods": []
+}
