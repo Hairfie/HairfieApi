@@ -428,8 +428,21 @@ module.exports = function (Hairfie) {
         var params = {};
         params.page = Math.max(1, req.query.page || 1) - 1;
         params.hitsPerPage = Math.max(1, Math.min(20, req.query.pageSize || 10));
+
+        var forcedTags = ['Homme', 'Femme'];
+
+        var OR = [];
+        var AND = [];
+
+        _.forEach(req.query.tags, function(tag) {
+            if (_.isEmpty(_.intersection([tag], forcedTags)))
+                OR.push(tag);
+            else
+                AND.push(tag);
+        });
+
         if (req.query.tags)
-            params.tagFilters = '(' + req.query.tags.join(', ') + ')';
+            params.tagFilters = '(' + OR.join(', ') + ')' + (_.isEmpty(AND) ? '' : ', ') + AND.join(', ');
 
         return Hairfie.app.models.AlgoliaSearchEngine
             .search('hairfie', req.query.q || '', params)
