@@ -288,10 +288,12 @@ module.exports = function(Business) {
         var b = this;
 
         return b.getTags().then(function (tags) {
-            return Business.app.models.Category.listForTagsAndGenders(tags, b.getGenders()).then(function(categories) {
-                return Business.app.models.Category.getByIds(b.addedCategories).then(function(addedCategories) {
-                    return _.union(categories, addedCategories);
-                });
+            return Q.all([
+                Business.app.models.Category.listForTagsAndGenders(tags, b.getGenders()),
+                Business.app.models.Category.getByIds(b.addedCategories)
+            ])
+            .spread(function(categories, addedCategories) {
+                return _.union(categories, addedCategories);
             });
         });
     };
