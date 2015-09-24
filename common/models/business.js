@@ -58,7 +58,7 @@ module.exports = function(Business) {
 
         return Q.ninvoke(BusinessReview, 'getBusinessRating', this.id)
             .then((function (rating) {
-                var activeHairdressers = 
+                var activeHairdressers =
                 Q
                     .npost(this, 'getVisibleActiveMembers')
                     .then(function (members) {
@@ -90,6 +90,8 @@ module.exports = function(Business) {
                     activeHairdressers : activeHairdressers,
                     landingPageUrl     : Business.app.urlGenerator.business(this, context),
                     facebookPage       : this.facebookPage && this.getFacebookPageObject().toRemoteShortObject(context),
+                    addedCategories    : this.addedCategories,
+                    labels             : this.labels,
                     createdAt          : this.createdAt,
                     updatedAt          : this.updatedAt
                 });
@@ -284,8 +286,15 @@ module.exports = function(Business) {
 
     Business.prototype.getCategories = function () {
         var b = this;
+
         return b.getTags().then(function (tags) {
-            return Business.app.models.Category.listForTagsAndGenders(tags, b.getGenders());
+            return Q.all([
+                Business.app.models.Category.listForTagsAndGenders(tags, b.getGenders()),
+                Business.app.models.Category.getByIds(b.addedCategories)
+            ])
+            .spread(function(categories, addedCategories) {
+                return _.union(categories, addedCategories);
+            });
         });
     };
 

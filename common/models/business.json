@@ -59,6 +59,9 @@
     "addedCategories": {
       "type": "array"
     },
+    "labels": {
+      "type": "array"
+    },
     "timetable": {
       "type": "object"
     },

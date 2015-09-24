@@ -47,4 +47,19 @@ module.exports = function(Category) {
             })
         })
     };
+
+    Category.getByIds = function (categoriesId) {
+        return Q.ninvoke(Category, 'findByIds', categoriesId)
+        .then(function(categories) {
+            return _.map(categories, function(cat) {
+                if(_.isString(cat.name)) {
+                    return cat;
+                } else {
+                    cat.name = cat.name.fr;
+                    cat.description = cat.description.fr;
+                    return cat;
+                }
+            })
+        })
+    };
 };
