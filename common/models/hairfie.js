@@ -379,10 +379,12 @@ module.exports = function (Hairfie) {
             params.facetFilters.push('categories:'+category);
         });
 
-        // filter by categories
-        _.map(asArray(req.query.tags), function (tag) {
-            params.facetFilters.push('_tags:'+tag);
-        });
+        // filter by tags
+        params.facetFilters.push(
+            _.map(asArray(req.query.tags), function (tag) {
+                return '_tags:' + tag ;
+            })
+        );
 
         // filter by price
         if (req.query.priceMin) {
@@ -391,6 +393,8 @@ module.exports = function (Hairfie) {
         if (req.query.priceMax) {
             params.numericFilters.push('price.amount <= '+req.query.priceMax);
         }
+
+        console.log("algolia params", params);
 
         return Hairfie.app.models.AlgoliaSearchEngine
             .search('hairfie', req.query.q || '', params)
