@@ -206,12 +206,13 @@ module.exports = function (Booking) {
 
         Promise.npost(this, 'business')
             .then(function (business) {
-                //Email.confirmBookingRequest(booking, business);
+                var url = Booking.app.urlGenerator.business(business, context);
 
                 return Booking.app.models.email.notifyAll('Demande de réservation', {
-                    'ID'              : booking.id,
+                    'Booking ID'      : booking.id,
                     'Salon'           : business.name,
                     'Tel du salon'    : business.phoneNumber,
+                    'URL du salon'    : url,
                     'Date & Heure de la demande' : moment(booking.dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
                     'Client'          : booking.firstName + ' ' + booking.lastName,
                     'Genre'           : booking.gender,
