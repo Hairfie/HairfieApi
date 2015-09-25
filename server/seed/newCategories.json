@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Femme",
+        "label": "Femme !!!",
+        "tagNames": ["Femme"],
+        "position": 1
+    },
+    {
+        "name": "Barbier",
+        "label": "Les Barbiers",
+        "tagNames": ["Barbe", "Moustache"],
+        "position": 2
+    }
+]
