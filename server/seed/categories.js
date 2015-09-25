@@ -28,6 +28,8 @@ function saveCategory(categoryDefinition, position) {
             return q.ninvoke(Category, 'create', {
                 name        : categoryDefinition.name,
                 description : categoryDefinition.description,
+                label       : new String(),
+                slug        : new String(),
                 tags        : lodash.map(tags, 'id'),
                 picture     : categoryDefinition.pictureName,
                 position    : position

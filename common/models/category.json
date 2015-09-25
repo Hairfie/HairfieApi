@@ -25,6 +25,12 @@
     "description": {
       "type": "string"
     },
+    "label": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
     "tags": {
       "type": [
         "string"
@@ -34,8 +40,7 @@
     "genders": {
       "type": [
         "string"
-      ],
-      "required": true
+      ]
     },
     "picture": {
       "type": "Image"
