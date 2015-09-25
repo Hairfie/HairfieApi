@@ -3,7 +3,8 @@
   "plural": "Subscribers",
   "options": {
     "sharedMethodNames": [
-      "find"
+      "findById",
+      "create"
     ],
     "mongodb": {
       "collection": "subscribers"

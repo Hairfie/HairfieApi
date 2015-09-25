@@ -15,7 +15,7 @@ module.exports = function (Subscriber) {
     Subscriber.prototype.toShortRemoteObject = function (context) {
 
         return {
-            id                  : this.id,
+            id                   : this.id,
             email                : this.email
         };
     };

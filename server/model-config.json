@@ -185,5 +185,9 @@
   "TextMessage": {
     "dataSource": "twilio",
     "public": false
+  },
+  "Subscriber": {
+    "dataSource": "hairfieMongo",
+    "public": true
   }
 }
