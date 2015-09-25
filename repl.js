@@ -14,6 +14,8 @@ var Business = app.models.Business;
 var BusinessMember = app.models.BusinessMember;
 var Booking = app.models.Booking;
 var AlgoliaSearchEngine = app.models.AlgoliaSearchEngine;
+var Mailchimp = app.models.Mailchimp;
+
 
 var cloudinary = require('cloudinary');
 cloudinary.config({cloudName: process.env.CLOUDINARY_CLOUD_NAME,apiKey: process.env.CLOUDINARY_API_KEY,apiSecret: process.env.CLOUDINARY_API_SECRET});
@@ -34,9 +36,11 @@ replServer.context.Hairfie = Hairfie;
 replServer.context.Business = Business;
 replServer.context.BusinessMember = BusinessMember;
 replServer.context.Booking = Booking;
+replServer.context.Mailchimp = Mailchimp;
 replServer.context.AlgoliaSearchEngine = AlgoliaSearchEngine;
 
 replServer.context.cloudinary = cloudinary;
+
 
 
 replServer.context.find = find;

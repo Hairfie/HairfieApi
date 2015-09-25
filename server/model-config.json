@@ -189,5 +189,8 @@
   "Subscriber": {
     "dataSource": "hairfieMongo",
     "public": true
+  },
+  "Mailchimp": {
+    "dataSource": "mailchimp"
   }
 }
