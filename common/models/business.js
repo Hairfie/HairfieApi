@@ -400,8 +400,6 @@ module.exports = function(Business) {
      * - limit
      */
     Business.search = function(req) {
-        console.log(req.query);
-
         var params = {};
 
         params.maxDistance  = req.query.radius || 10000,
