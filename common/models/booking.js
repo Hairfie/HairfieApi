@@ -33,7 +33,7 @@ module.exports = function (Booking) {
     Booking.observe('after save', function (ctx, next) {
         if (ctx.instance && ctx.instance.userCheckCode && !ctx.instance.userCheck && ctx.instance.status == Booking.STATUS_NOT_CONFIRMED) {
             var TextMessage     = Booking.app.models.TextMessage;
-            TextMessage.send(ctx.instance.phoneNumber, "Utilisez " + ctx.instance.userCheckCode + " pour valider votre réservation sur Hairfie. Une question ? Envoyez nous un email à l'adresse hello@hairfie.com ou au +33185089169");
+            TextMessage.send(ctx.instance.phoneNumber, "Utilisez " + ctx.instance.userCheckCode + " pour valider votre reservation sur Hairfie. Une question ? Envoyez nous un email a l'adresse hello@hairfie.com ou au +33185089169");
         }
         next();
     });
@@ -206,7 +206,7 @@ module.exports = function (Booking) {
 
         Promise.npost(this, 'business')
             .then(function (business) {
-                var url = Booking.app.urlGenerator.business(business, context);
+                var url = Booking.app.urlGenerator.business(business);
 
                 return Booking.app.models.email.notifyAll('Demande de réservation', {
                     'Booking ID'      : booking.id,
