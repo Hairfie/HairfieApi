@@ -191,6 +191,7 @@
     "public": true
   },
   "Mailchimp": {
-    "dataSource": "mailchimp"
+    "dataSource": "mailchimp",
+    "public": false
   }
 }
