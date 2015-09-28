@@ -51,8 +51,11 @@ module.exports = function(Category) {
     };
 
     Category.getByIds = function (categoriesId) {
+        if(!categoriesId) return [];
+
         return Q.ninvoke(Category, 'findByIds', categoriesId)
         .then(function(categories) {
+            if(!categories) return [];
             return _.map(categories, function(cat) {
                 if(_.isString(cat.name)) {
                     return cat;
