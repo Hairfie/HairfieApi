@@ -34,7 +34,7 @@ function saveCategory(categoryDefinition, position) {
             return q.ninvoke(Category, 'findOrCreate', {where: { name: categoryDefinition.name }}, {
                 name        : categoryDefinition.name,
                 label       : categoryDefinition.label,
-                slug        : getSlug(categoryDefinition.label),
+                slug        : getSlug(categoryDefinition.name),
                 tags        : _.map(tags, 'id') || [],
                 position    : categoryDefinition.position
             })
@@ -44,7 +44,6 @@ function saveCategory(categoryDefinition, position) {
                 cat.label = categoryDefinition.label;
                 cat.tags = _.map(tags, 'id') || [];
                 cat.position = categoryDefinition.position;
-                cat.slug = getSlug(categoryDefinition.label);
 
                 return q.ninvoke(cat, 'save');
             })
