@@ -299,6 +299,29 @@ module.exports = function(User) {
         });
     };
 
+    User.prototype.toMailchimp = function () {
+        var BusinessMember = User.app.models.BusinessMember;
+
+        return Q.all([
+            this,
+            Q.ninvoke(BusinessMember, 'find', {where: {userId: this.id, active: true}})
+        ])
+        .spread(function(user, businessMembers) {
+            var pro = businessMembers.length > 0 ? "YES" : "NO";
+            var newsletter = user.newsletter ? "YES" : "NO";
+            return {
+                email: {email: user.email},
+                merge_vars: {
+                    fname: user.firstName,
+                    lname: user.lastName,
+                    registered: "YES",
+                    pro: pro,
+                    newsletter: newsletter
+                }
+            }
+        });
+    }
+
     function loggedInAsSubjectUser(ctx, _, next) {
         var user = ctx.req.user;
         if (!user) return next({statusCode: 401});

@@ -11,7 +11,8 @@ var commands = [
     'save-all-businesses',
     'build-search-index',
     'configure-algolia',
-    'send-business-review-requests'
+    'send-business-review-requests',
+    'update-mailchimp'
 ];
 
 commands.forEach(function (command) {

@@ -19,4 +19,13 @@ module.exports = function (Subscriber) {
             email                : this.email
         };
     };
+
+    Subscriber.prototype.toMailchimp = function () {
+        return {
+            email: {email: this.email},
+            merge_vars: {
+                newsletter: "YES"
+            }
+        }
+    }
 };
