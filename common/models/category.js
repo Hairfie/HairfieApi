@@ -19,7 +19,6 @@ module.exports = function(Category) {
             id          : this.id,
             href        : Category.app.urlGenerator.api('categories/'+this.id),
             name        : context.localized(this.name),
-            description : context.localized(this.description),
             label       : this.label,
             slug        : this.slug,
             tags        : this.tags,
