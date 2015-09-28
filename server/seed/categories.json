@@ -1,74 +1,74 @@
 [
     {
-        "name": "Homme",
-        "description": "Coiffeurs Homme",
-        "tagNames": ["Homme"],
-        "pictureName": "homme.jpg"
-    },
-    {
         "name": "Femme",
-        "description": "Coiffeurs Femme",
+        "label": "Femme",
         "tagNames": ["Femme"],
-        "pictureName": "femme.jpg"
-    },
-    {
-        "name": "Lissage",
-        "description": "Défrisage",
-        "tagNames": ["Lissage", "Lissage brésilien"],
-        "pictureName": "default.jpg"
-    },
-    {
-        "name": "Barbier",
-        "description": "Barbier",
-        "tagNames": ["Barbe", "Moustache"],
-        "pictureName": "barbier.jpg"
-    },
-    {
-        "name": "Balayage",
-        "description": "Coiffeurs Enfant",
-        "tagNames": ["Mèches", "Tie & Dye", "Bronde"],
-        "pictureName": "balayage.jpg"
-    },
-    {
-        "name": "Mariage",
-        "description": "Mariage",
-        "tagNames": ["Mariage"],
-        "pictureName": "mariage.jpg"
+        "position": 0
     },
     {
         "name": "Coloration",
-        "description": "Coloration",
+        "label": "Coloration",
         "tagNames": ["Couleur"],
-        "pictureName": "coloration.jpg"
+        "position": 1
+    },
+    {
+        "name": "Balayage",
+        "label": "Balayage (Tie & Dye)",
+        "tagNames": ["Tie & Dye", "Bronde"],
+        "position": 2
+    },
+    {
+        "name": "Lissage",
+        "label": "Lissage",
+        "tagNames": ["Lissage", "Lissage brésilien"],
+        "position": 3
+    },
+    {
+        "name": "Homme",
+        "label": "Homme",
+        "tagNames": ["Homme"],
+        "position": 4
+    },
+    {
+        "name": "Barbier",
+        "label": "Barbier",
+        "tagNames": ["Barbe", "Moustache"],
+        "position": 5
+    },
+    {
+        "name": "Ethnique",
+        "label": "Ethnique",
+        "tagNames": ["Crépus", "Lissage brésilien"],
+        "position": 6
+    },
+    {
+        "name": "Extensions",
+        "label": "Extensions",
+        "tagNames": ["Tissage"],
+        "position": 7
+    },
+    {
+        "name": "Mariage",
+        "label": "Mariage",
+        "tagNames": ["Mariage"],
+        "position": 8
+    },
+    {
+        "name": "Coiffure",
+        "label": "Coiffure",
+        "tagNames": ["Mèches", "Carré", "Chignon", "Tresse", "Frange"],
+        "position": 9
     },
     {
         "name": "Brushing",
-        "description": "Brushing",
+        "label": "Brushing",
         "tagNames": ["Brushing"],
-        "pictureName": "brushing.jpg"
-    },
-    {
-        "name": "Styling",
-        "description": "Coiffures",
-        "tagNames": ["Mèches", "Carré", "Chignon", "Tresse", "Frange"],
-        "pictureName": "default.jpg"
-    },
-    {
-        "name": "Afro",
-        "description": "Coiffeurs Afro",
-        "tagNames": ["Crépus", "Lissage brésilien"],
-        "pictureName": "default.jpg"
-    },
-    {
-        "name": "Tissage",
-        "description": "Tissage",
-        "tagNames": ["Tissage"],
-        "pictureName": "default.jpg"
+        "position": 10
     },
     {
         "name": "Enfant",
-        "description": "Coiffeurs Enfant",
+        "label": "Enfant",
         "tagNames": ["Enfant"],
-        "pictureName": "default.jpg"
+        "position": 11
     }
 ]
