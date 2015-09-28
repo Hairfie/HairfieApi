@@ -22,9 +22,6 @@
       "type": "string",
       "required": true
     },
-    "description": {
-      "type": "string"
-    },
     "label": {
       "type": "string"
     },

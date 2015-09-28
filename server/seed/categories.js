@@ -21,7 +21,7 @@ function saveCategories(categoriesDefinitions) {
     return q.all(categoriesDefinitions.map(saveCategory));
 }
 
-function saveCategory(categoryDefinition) {
+function saveCategory(categoryDefinition, position) {
     return q.ninvoke(Tag, 'find', {where: {"name.fr": {inq: categoryDefinition.tagNames}}})
         .then(function(tags) {
             console.log(tags.length + " tags trouvés avec la requête " + categoryDefinition.tagNames);
@@ -32,7 +32,7 @@ function saveCategory(categoryDefinition) {
                 slug        : new String(),
                 tags        : lodash.map(tags, 'id'),
                 picture     : categoryDefinition.pictureName,
-                position    : categoryDefinition.position
+                position    : position
             });
         });
 }
