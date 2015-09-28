@@ -226,6 +226,24 @@ module.exports = function (Booking) {
         next();
     };
 
+    Booking.prototype.toMailchimp = function () {
+        var registered = this.userId ? "YES" : "NO";
+        var newsletter = this.newsletter ? "YES" : "NO";
+        var lastBooking = moment(this.dateTime).format("DD/MM/YYYY");
+
+        return {
+            email: {email: this.email},
+            merge_vars: {
+                fname: this.firstName,
+                lname: this.lastName,
+                gender: this.gender,
+                booking: lastBooking,
+                registered: registered,
+                newsletter: newsletter
+            }
+        }
+    }
+
     Booking.remoteMethod('userCheck', {
         description: 'Verify the number',
         accepts: [

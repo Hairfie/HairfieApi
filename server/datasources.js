@@ -136,5 +136,12 @@ module.exports = {
         twilioAccountSID: process.env.TWILIO_ACCOUNT_SID,
         twilioAuthToken: process.env.TWILIO_AUTH_TOKEN,
         twilioNumber: process.env.TWILIO_NUMBER
+    },
+    mailchimp: {
+        name: 'mailchimp',
+        connector: 'memory',
+        apiKey: process.env.MAILCHIMP_API_KEY,
+        datacenter: process.env.MAILCHIMP_DATACENTER,
+        listId: process.env.MAILCHIMP_LIST_ID
     }
 };

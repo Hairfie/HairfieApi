@@ -36,6 +36,7 @@
     "loopback-connector-postgresql": "^2.3.0",
     "loopback-connector-rest": "^1.10.0",
     "loopback-datasource-juggler": "^2.36.0",
+    "mailchimp-lite": "^1.0.6",
     "moment": "^2.10.6",
     "moment-timezone": "^0.4.0",
     "morgan": "^1.6.1",
