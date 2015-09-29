@@ -35,7 +35,7 @@ module.exports = function (Mailchimp) {
                 batch: mcUsers
             })
         })
-        .then((response) => { 
+        .then(function(response) { 
             console.log("##### updateAllUser #####");
             console.log("add_count :", response.add_count);
             console.log("update_count :", response.update_count);
@@ -43,7 +43,7 @@ module.exports = function (Mailchimp) {
 
             return;
         })
-        .catch((error) => {
+        .catch(function(error) {
             console.log(error); // Mailchimp Error: 401
             console.log(error.response);
         });
@@ -70,7 +70,7 @@ module.exports = function (Mailchimp) {
                 batch: mcBookings
             })
         })
-        .then((response) => { 
+        .then(function(response) { 
             console.log("##### updateAllBooking #####");
             console.log("add_count :", response.add_count);
             console.log("update_count :", response.update_count);
@@ -78,7 +78,7 @@ module.exports = function (Mailchimp) {
 
             return;
         })
-        .catch((error) => {
+        .catch(function(error) {
             console.log(error); // Mailchimp Error: 401
             console.log(error.response);
         });
@@ -105,7 +105,7 @@ module.exports = function (Mailchimp) {
                 batch: mcSubscribers
             })
         })
-        .then((response) => { 
+        .then(function(response) { 
             console.log("##### updateAllSubscriber #####");
             console.log("add_count :", response.add_count);
             console.log("update_count :", response.update_count);
@@ -113,7 +113,7 @@ module.exports = function (Mailchimp) {
 
             return;
         })
-        .catch((error) => {
+        .catch(function(error) {
             console.log(error); // Mailchimp Error: 401
             console.log(error.response);
         });
@@ -140,7 +140,7 @@ module.exports = function (Mailchimp) {
             console.log("success", response);
             return response;
         })
-        .catch((error) => {
+        .catch(function(error) {
             console.log(error); // Mailchimp Error: 401
             console.log(error.response);
         });
