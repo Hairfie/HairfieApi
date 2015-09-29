@@ -8,19 +8,19 @@
     {
         "name": "Coloration",
         "label": "Coloration",
-        "tagNames": ["Couleur"],
+        "tagNames": ["Coloration", "Generik", "Mèches", "Hair contouring"],
         "position": 1
     },
     {
         "name": "Balayage",
         "label": "Balayage (Tie & Dye)",
-        "tagNames": ["Tie & Dye", "Bronde"],
+        "tagNames": ["Tie & Dye", "Bronde", "Balayage", "Mèches"],
         "position": 2
     },
     {
         "name": "Lissage",
         "label": "Lissage",
-        "tagNames": ["Lissage", "Lissage brésilien"],
+        "tagNames": ["Lissage", "Lissage brésilien", "Afro", "Crépus", "Lissage japonais", "Brushing"],
         "position": 3
     },
     {
@@ -38,31 +38,31 @@
     {
         "name": "Ethnique",
         "label": "Ethnique",
-        "tagNames": ["Crépus", "Lissage brésilien"],
+        "tagNames": ["Crépus", "Lissage brésilien", "Lissage japonais", "Afro", "Asiatique", "Métisse", "Tissage"],
         "position": 6
     },
     {
         "name": "Extensions",
         "label": "Extensions",
-        "tagNames": ["Tissage"],
+        "tagNames": ["Tissage", "Extensions"],
         "position": 7
     },
     {
         "name": "Mariage",
         "label": "Mariage",
-        "tagNames": ["Mariage"],
+        "tagNames": ["Mariage", "Chignon"],
         "position": 8
     },
     {
-        "name": "Coiffure",
-        "label": "Coiffure",
-        "tagNames": ["Mèches", "Carré", "Chignon", "Tresse", "Frange"],
+        "name": "Coiffures",
+        "label": "Coiffures",
+        "tagNames": ["Mèches", "Carré", "Chignon", "Tresse", "Frange", "Queue de cheval", "Pixie", "Rétro", "Décalé", "Tendance", "Coiffage", "Beach Waves"],
         "position": 9
     },
     {
-        "name": "Brushing",
-        "label": "Brushing",
-        "tagNames": ["Brushing"],
+        "name": "Boucles",
+        "label": "Boucles",
+        "tagNames": ["Brushing", "Curl", "Permanente", "Bouclés", "Beach Waves"],
         "position": 10
     },
     {
