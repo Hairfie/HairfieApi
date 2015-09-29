@@ -1,10 +1,13 @@
 'use strict';
 
 var app = require('../..');
+var _ = require('lodash');
 var q = require('q');
 var lodash = require('lodash');
 var Category = app.models.Category;
 var Tag = app.models.Tag;
+var getSlug = require('speakingurl');
+
 var categoriesDefinitions = require('./categories.json');
 
 saveCategories(categoriesDefinitions)
@@ -17,6 +20,7 @@ saveCategories(categoriesDefinitions)
         process.exit(1);
     });
 
+
 function saveCategories(categoriesDefinitions) {
     return q.all(categoriesDefinitions.map(saveCategory));
 }
@@ -25,12 +29,23 @@ function saveCategory(categoryDefinition, position) {
     return q.ninvoke(Tag, 'find', {where: {"name.fr": {inq: categoryDefinition.tagNames}}})
         .then(function(tags) {
             console.log(tags.length + " tags trouvés avec la requête " + categoryDefinition.tagNames);
-            return q.ninvoke(Category, 'create', {
+            console.log(categoryDefinition);
+
+            return q.ninvoke(Category, 'findOrCreate', {where: { name: categoryDefinition.name }}, {
                 name        : categoryDefinition.name,
-                description : categoryDefinition.description,
-                tags        : lodash.map(tags, 'id'),
-                picture     : categoryDefinition.pictureName,
-                position    : position
-            });
+                label       : categoryDefinition.label,
+                slug        : getSlug(categoryDefinition.name),
+                tags        : _.map(tags, 'id') || [],
+                position    : categoryDefinition.position
+            })
+            .then(function (cat) {
+                cat = _.isArray(cat) ? cat[0] : cat;
+
+                cat.label = categoryDefinition.label;
+                cat.tags = _.map(tags, 'id') || [];
+                cat.position = categoryDefinition.position;
+
+                return q.ninvoke(cat, 'save');
+            })
         });
 }

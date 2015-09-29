@@ -260,6 +260,8 @@ module.exports = function(Business) {
                     createdAt          : this.createdAt,
                     _tags              : tags.map(function (t) { return t.name && t.name.fr; }),
                     categories         : _.map(categories, 'name'),
+                    categoryIds        : _.map(categories, 'id'),
+                    categorySlugs      : _.map(categories, 'slug'),
                     averagePrice       : this.averagePrice,
                     isClaimed          : isClaimed,
                     updatedAt          : this.updatedAt
