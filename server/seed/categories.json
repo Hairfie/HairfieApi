@@ -13,14 +13,14 @@
     },
     {
         "name": "Balayage",
-        "label": "Balayage (Tie & Dye)",
+        "label": "Balayage (Tie&Dye)",
         "tagNames": ["Tie & Dye", "Bronde", "Balayage", "Mèches"],
         "position": 2
     },
     {
         "name": "Lissage",
         "label": "Lissage",
-        "tagNames": ["Lissage", "Lissage brésilien", "Afro", "Crépus", "Lissage japonais", "Brushing"],
+        "tagNames": ["Lissage", "Lissage brésilien", "Afro", "Crépus", "Lissage japonais"],
         "position": 3
     },
     {
@@ -56,13 +56,13 @@
     {
         "name": "Coiffures",
         "label": "Coiffures",
-        "tagNames": ["Mèches", "Carré", "Chignon", "Tresse", "Frange", "Queue de cheval", "Pixie", "Rétro", "Décalé", "Tendance", "Coiffage", "Beach Waves"],
+        "tagNames": ["Mèches", "Carré", "Chignon", "Tresse", "Frange", "Queue de cheval", "Pixie", "Rétro", "Décalé", "Tendance", "Coiffage", "Beach Waves", "Brushing"],
         "position": 9
     },
     {
         "name": "Boucles",
         "label": "Boucles",
-        "tagNames": ["Brushing", "Curl", "Permanente", "Bouclés", "Beach Waves"],
+        "tagNames": ["Curl", "Permanente", "Bouclés", "Beach Waves"],
         "position": 10
     },
     {
