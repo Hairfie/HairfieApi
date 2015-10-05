@@ -3,6 +3,7 @@
 var Promise = require('../../common/utils/Promise');
 var _ = require('lodash');
 var Hooks = require('./hooks');
+var q = require('q');
 
 module.exports = function (BusinessReview) {
     Hooks.generateId(BusinessReview);
@@ -20,14 +21,16 @@ module.exports = function (BusinessReview) {
 
     BusinessReview.prototype.toRemoteObject = function (context) {
         var criteria = this.criteria || {};
+        var Booking = BusinessReview.app.models.Booking;
 
         return Promise.ninvoke(this, 'author')
             .then(function (author) {
                 return {
                     id          : this.id,
-                    href        : BusinessReview.app.urlGenerator.api('businessReview/'+this.id),
+                    href        : BusinessReview.app.urlGenerator.api('businessReviews/'+this.id),
                     firstName   : author ? author.firstName : this.firstName,
                     lastName    : author ? author.lastName : this.lastName,
+                    verified    : BusinessReview.veriryReview(this.id),
                     rating      : this.rating,
                     criteria    : this.criteria || {},
                     comment     : this.comment,
@@ -55,6 +58,18 @@ module.exports = function (BusinessReview) {
             if (value < 0 || value > 100) onError();
         });
     }, {message: 'valid'});
+
+    BusinessReview.veriryReview = function(reviewId) {
+        var Booking = BusinessReview.app.models.Booking;
+
+        return q.ninvoke(BusinessReview, 'findById', reviewId)
+            .then(function(review) {
+                return q.ninvoke(Booking, 'find', {where: {businessId: review.businessId, email: review.email}})
+                    .then(function (res) {
+                        return !(_.isEmpty(res));
+                    });
+            });
+    };
 
     BusinessReview.beforeValidate = function (next) {
         var sum = 0, count = 0;
