@@ -9,6 +9,16 @@ module.exports = function (BusinessReview) {
     Hooks.generateId(BusinessReview);
     Hooks.updateTimestamps(BusinessReview);
 
+    BusinessReview.observe('before save', function linkWithUserEmail(ctx, next) {
+        if(ctx.instance && !ctx.instance.authorId) {
+            var User = BusinessReview.app.models.User;
+            User.findOne({email: ctx.email}, function(err, b) {
+                ctx.instance.authorId = b.id;
+            });
+        }
+        next();
+    });
+
     var criterionKeys = [
         'welcome',
         'treatment',
@@ -30,7 +40,7 @@ module.exports = function (BusinessReview) {
                     href        : BusinessReview.app.urlGenerator.api('businessReviews/'+this.id),
                     firstName   : author ? author.firstName : this.firstName,
                     lastName    : author ? author.lastName : this.lastName,
-                    verified    : BusinessReview.veriryReview(this.id),
+                    verified    : BusinessReview.verifyReview(this.id),
                     rating      : this.rating,
                     criteria    : this.criteria || {},
                     comment     : this.comment,
@@ -59,7 +69,7 @@ module.exports = function (BusinessReview) {
         });
     }, {message: 'valid'});
 
-    BusinessReview.veriryReview = function(reviewId) {
+    BusinessReview.verifyReview = function(reviewId) {
         var Booking = BusinessReview.app.models.Booking;
 
         return q.ninvoke(BusinessReview, 'findById', reviewId)
