@@ -71,13 +71,28 @@ module.exports = function (BusinessReview) {
 
     BusinessReview.verifyReview = function(reviewId) {
         var Booking = BusinessReview.app.models.Booking;
+        var Hairfie = BusinessReview.app.models.Hairfie;
 
         return q.ninvoke(BusinessReview, 'findById', reviewId)
             .then(function(review) {
-                return q.ninvoke(Booking, 'find', {where: {businessId: review.businessId, email: review.email}})
+                var booking = q.ninvoke(Booking, 'find', {where: {businessId: review.businessId, email: review.email}})
                     .then(function (res) {
                         return !(_.isEmpty(res));
                     });
+
+                if (booking) {
+                    return true;
+                }
+
+                var hairfie = q.ninvoke(Hairfie, 'find', {where: {businessId: review.businessId}, authorId: review.authorId})
+                    .then(function (res) {
+                        return !(_.isEmpty(res));
+                    });
+
+                if (hairfie) {
+                    return true;
+                }
+                return false;
             });
     };
 
