@@ -139,34 +139,36 @@ module.exports = function (BusinessReview) {
 
     BusinessReview.beforeRemote('create', function (ctx, _, next) {
         if (!ctx.req.body.requestId) {
-            if (!ctx.req.user) return next({statusCode: 401});
+            if (ctx.req.user) {
+                ctx.req.body.authorId = ctx.req.user.id;
+                ctx.req.body.firstName = ctx.req.user.firstName;
+                ctx.req.body.lastName = ctx.req.user.lastName;
+                ctx.req.body.email = ctx.req.user.email;
+                ctx.req.body.phoneNumber = ctx.req.user.phoneNumber;
+            }
 
             // fill values with user's ones
-            ctx.req.body.authorId = ctx.req.user.id;
-            ctx.req.body.firstName = ctx.req.user.firstName;
-            ctx.req.body.lastName = ctx.req.user.lastName;
-            ctx.req.body.email = ctx.req.user.email;
-            ctx.req.body.phoneNumber = ctx.req.user.phoneNumber;
-
             // only verified reviews can be associated to hairfies
             delete ctx.req.body.hairfieId;
 
             next();
         }
+        else {
+            var BusinessReviewRequest = BusinessReview.app.models.BusinessReviewRequest;
 
-        var BusinessReviewRequest = BusinessReview.app.models.BusinessReviewRequest;
+            BusinessReviewRequest.findById(ctx.req.body.requestId, function (error, request) {
+                if (error) return next(error);
+                if (!request) return next({statusCode: 400, message: 'Review request not found'});
+                if (!request.canWrite()) return next({statusCode: 400, message: 'Cannnot write with this review request'});
 
-        BusinessReviewRequest.findById(ctx.req.body.requestId, function (error, request) {
-            if (error) return next(error);
-            if (!request) return next({statusCode: 400, message: 'Review request not found'});
-            if (!request.canWrite()) return next({statusCode: 400, message: 'Cannnot write with this review request'});
+                ctx.req.body.businessId = request.businessId;
+                ctx.req.body.hairfieId = request.hairfieId;
+                ctx.req.body.email = request.email;
 
-            ctx.req.body.businessId = request.businessId;
-            ctx.req.body.hairfieId = request.hairfieId;
-            ctx.req.body.email = request.email;
-
-            next();
-        });
+                next();
+            });
+        }
+        next();
     });
 
     BusinessReview.getBusinessRating = function (businessId, callback) {
