@@ -71,20 +71,6 @@ module.exports = function (BusinessReview) {
         });
     }, {message: 'valid'});
 
-    BusinessReview.beforeValidate = function (next) {
-        var sum = 0, count = 0;
-        _.forIn(this.criteria || {}, function (value) {
-            count++;
-            sum += value;
-        });
-
-        // ok, we don't change rating valu eif there is no criteria cause it
-        // may be an old fashioned review (bare rating)
-        if (count > 0) this.rating = Math.ceil(sum / count);
-
-        next();
-    };
-
     BusinessReview.verifyReview = function(reviewId) {
         var Booking = BusinessReview.app.models.Booking;
         var Hairfie = BusinessReview.app.models.Hairfie;
@@ -110,6 +96,20 @@ module.exports = function (BusinessReview) {
                 }
                 return false;
             });
+    };
+
+    BusinessReview.beforeValidate = function (next) {
+        var sum = 0, count = 0;
+        _.forIn(this.criteria || {}, function (value) {
+            count++;
+            sum += value;
+        });
+
+        // ok, we don't change rating valu eif there is no criteria cause it
+        // may be an old fashioned review (bare rating)
+        if (count > 0) this.rating = Math.ceil(sum / count);
+
+        next();
     };
 
     BusinessReview.afterCreate = function (next) {
