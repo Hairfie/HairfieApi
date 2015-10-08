@@ -6,7 +6,7 @@ var Hooks = require('./hooks');
 var phone = require('phone');
 var semver = require('semver');
 var Control = require('../utils/AccessControl');
-var Q = require('Q');
+var Q = require('q');
 
 module.exports = function (Subscriber) {
     Hooks.generateId(Subscriber);
