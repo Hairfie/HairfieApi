@@ -43,7 +43,7 @@ UrlGenerator.prototype.watermark = function (picture) {
 };
 
 UrlGenerator.prototype.businessReviewRequest = function (businessReviewRequest) {
-    return this.generate('businessReviewRequest', {businessReviewRequestId: businessReviewRequest.id});
+    return this.generate('businessReviewRequest', {requestId: businessReviewRequest.id, businessId: businessReviewRequest.businessId});
 };
 
 UrlGenerator.prototype.acceptBusinessMemberClaim = function (businessMemberClaim) {

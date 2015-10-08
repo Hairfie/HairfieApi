@@ -9,7 +9,7 @@ module.exports = function (BusinessReview) {
     Hooks.generateId(BusinessReview);
     Hooks.updateTimestamps(BusinessReview);
 
-    BusinessReview.observe('before save', function linkWithUserEmail(ctx, next) {
+    BusinessReview.observe('before save', function (ctx, next) {
         if (ctx.instance) {
             if(!ctx.instance.authorId) {
                 var User = BusinessReview.app.models.User;
@@ -17,6 +17,45 @@ module.exports = function (BusinessReview) {
                     ctx.instance.authorId = b.id;
                 });
             }
+            var sum = 0, count = 0;
+            _.forIn(ctx.instance.criteria || {}, function (value) {
+                count++;
+                sum += value;
+            });
+
+            // ok, we don't change rating valu eif there is no criteria cause it
+            // may be an old fashioned review (bare rating)
+            if (count > 0) ctx.instance.rating = Math.ceil(sum / count);
+        }
+        next();
+    });
+
+    BusinessReview.observe('after save', function (ctx, next) {
+        if (ctx.instance) {
+            console.log("BusinessReview has been created");
+            var businessReview = ctx.instance;
+            Promise.npost(businessReview, 'business')
+                .then(function (business) {
+                    return BusinessReview.app.models.email.notifyAll('Un avis a été déposé', {
+                        'ID'              : businessReview.id,
+                        'Salon'           : business.name,
+                        'Nom'             : businessReview.firstName + ' ' + businessReview.lastName,
+                        'Email'           : businessReview.email,
+                        'Note globale'    : businessReview.rating,
+                        'Commentaire'     : businessReview.comment
+                    });
+                })
+                .fail(console.log);
+
+            // update review request with reviewId so we know it's used
+            businessReview.request(function (error, request) {
+                if (request) {
+                    request.reviewId = businessReview.id;
+                    request.save();
+                }
+
+                next();
+            });
         }
         next();
     });
@@ -42,7 +81,7 @@ module.exports = function (BusinessReview) {
                     href        : BusinessReview.app.urlGenerator.api('businessReviews/'+this.id),
                     firstName   : author ? author.firstName : this.firstName,
                     lastName    : author ? author.lastName : this.lastName,
-                    verified    : BusinessReview.verifyReview(this.id),
+                    verified    : this.reviewId ? true : false,
                     rating      : this.rating,
                     criteria    : this.criteria || {},
                     comment     : this.comment,
@@ -70,74 +109,6 @@ module.exports = function (BusinessReview) {
             if (value < 0 || value > 100) onError();
         });
     }, {message: 'valid'});
-
-    BusinessReview.verifyReview = function(reviewId) {
-        var Booking = BusinessReview.app.models.Booking;
-        var Hairfie = BusinessReview.app.models.Hairfie;
-
-        return q.ninvoke(BusinessReview, 'findById', reviewId)
-            .then(function(review) {
-                var booking = q.ninvoke(Booking, 'find', {where: {businessId: review.businessId, email: review.email}})
-                    .then(function (res) {
-                        return !(_.isEmpty(res));
-                    });
-
-                if (booking) {
-                    return true;
-                }
-
-                var hairfie = q.ninvoke(Hairfie, 'find', {where: {businessId: review.businessId}, authorId: review.authorId})
-                    .then(function (res) {
-                        return !(_.isEmpty(res));
-                    });
-
-                if (hairfie) {
-                    return true;
-                }
-                return false;
-            });
-    };
-
-    BusinessReview.beforeValidate = function (next) {
-        var sum = 0, count = 0;
-        _.forIn(this.criteria || {}, function (value) {
-            count++;
-            sum += value;
-        });
-
-        // ok, we don't change rating valu eif there is no criteria cause it
-        // may be an old fashioned review (bare rating)
-        if (count > 0) this.rating = Math.ceil(sum / count);
-
-        next();
-    };
-
-    BusinessReview.afterCreate = function (next) {
-        console.log("BusinessReview has been created");
-        var businessReview = this;
-        Promise.npost(this, 'business')
-            .then(function (business) {
-                return BusinessReview.app.models.email.notifyAll('Un avis a été déposé', {
-                    'ID'              : businessReview.id,
-                    'Salon'           : business.name,
-                    'Nom'             : businessReview.firstName + ' ' + businessReview.lastName,
-                    'Email'           : businessReview.email,
-                    'Note globale'    : businessReview.rating,
-                    'Commentaire'     : businessReview.comment
-                });
-            })
-            .fail(console.log);
-
-        // update review request with reviewId so we know it's used
-        this.request(function (error, request) {
-            if (request) {
-                request.reviewId = this.id;
-                request.save();
-            }
-
-            next();
-        }.bind(this));
-    };
 
     BusinessReview.beforeRemote('create', function (ctx, _, next) {
         if (!ctx.req.body.requestId) {

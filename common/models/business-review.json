@@ -56,9 +56,6 @@
     },
     "comment": {
       "type": "string"
-    },
-    "verified": {
-      "type": "bool"
     }
   },
   "validations": [],
