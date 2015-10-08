@@ -170,7 +170,6 @@ module.exports = function (BusinessReview) {
                 next();
             });
         }
-        next();
     });
 
     BusinessReview.getBusinessRating = function (businessId, callback) {
