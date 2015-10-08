@@ -81,7 +81,7 @@ module.exports = function (BusinessReview) {
                     href        : BusinessReview.app.urlGenerator.api('businessReviews/'+this.id),
                     firstName   : author ? author.firstName : this.firstName,
                     lastName    : author ? author.lastName : this.lastName,
-                    verified    : this.reviewId ? true : false,
+                    verified    : this.requestId ? true : false,
                     rating      : this.rating,
                     criteria    : this.criteria || {},
                     comment     : this.comment,
