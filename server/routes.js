@@ -14,7 +14,7 @@ module.exports = {
     },
     businessReviewRequest: {
         app: 'website',
-        path: '/write-business-review/:businessReviewRequestId'
+        path: '/write-business-review/:requestId'
     },
     pictureDownload: {
         app: 'cdn',
