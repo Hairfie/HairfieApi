@@ -14,7 +14,7 @@ module.exports = {
     },
     businessReviewRequest: {
         app: 'website',
-        path: '/deposer-un-avis/?businessId=:businessId&business=:requestId'
+        path: '/write-business-review/:businessReviewRequestId'
     },
     pictureDownload: {
         app: 'cdn',
