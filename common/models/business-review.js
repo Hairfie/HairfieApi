@@ -10,15 +10,7 @@ module.exports = function (BusinessReview) {
     Hooks.updateTimestamps(BusinessReview);
 
     BusinessReview.observe('before save', function (ctx, next) {
-        var getInstance = q(null);
         if (ctx.instance) {
-            if (ctx.instance.authorId) {
-                getInstance = q(ctx.instance.authorId);
-            }
-            else {
-                getInstance = q.ninvoke(BusinessReview.app.models.user, 'findOne', {where: {email: ctx.instance.email}});
-            }
-
             var sum = 0, count = 0;
             _.forIn(ctx.instance.criteria || {}, function (value) {
                 count++;
@@ -29,16 +21,27 @@ module.exports = function (BusinessReview) {
             // may be an old fashioned review (bare rating)
             if (count > 0) ctx.instance.rating = Math.ceil(sum / count);
 
-            getInstance
-                .then(function (b) {
-                    console.log(b);
-                    if (b) {
-                        ctx.instance.authorId = b.id;
+            var getauthorId = q(null);
+            if (ctx.instance.authorId) {
+                getauthorId = q(ctx.instance.authorId);
+            }
+            else {
+                getauthorId = q.ninvoke(BusinessReview.app.models.user, 'findOne', {where: {email: ctx.instance.email}})
+                    .then(function(author) {
+                        return author ? author.id : null;
+                    });
+            }
+
+            getauthorId
+                .then(function (id) {
+                    if (id) {
+                        ctx.instance.authorId = id;
                     }
+                    next();
                 });
-            console.log(ctx.instance.authorId);
+        } else {
+            next();
         }
-        next();
     });
 
     BusinessReview.observe('after save', function (ctx, next) {
