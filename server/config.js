@@ -13,6 +13,7 @@ module.exports = {
     salesEventEmail: process.env.SALES_EVENT_EMAIL,
     eventStreamEmail: process.env.EVENT_STREAM_EMAIL,
     emailFrom: process.env.EMAIL_FROM,
+    emailPrefix: process.env.EMAIL_PRIX || '',
     emailBcc: process.env.EMAIL_BCC,
     adminIds: commaSeparated(process.env.ADMIN_IDS),
     googleApiKey: process.env.GOOGLE_API_KEY,
