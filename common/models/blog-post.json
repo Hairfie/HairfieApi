@@ -1,0 +1,14 @@
+{
+    "name": "BlogPost",
+    "plural": "BlogPosts",
+  "options": {
+    "sharedMethodNames": [
+      "posts"
+    ]
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
+}
