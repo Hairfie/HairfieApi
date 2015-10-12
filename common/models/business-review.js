@@ -13,8 +13,10 @@ module.exports = function (BusinessReview) {
         if (ctx.instance) {
             if(!ctx.instance.authorId) {
                 var User = BusinessReview.app.models.User;
-                User.findOne({email: ctx.email}, function(err, b) {
-                    ctx.instance.authorId = b.id;
+                User.findOne({where: {email: ctx.instance.email}}, function(err, b) {
+                    if (b) {
+                        ctx.instance.authorId = b.id;
+                    }
                 });
             }
             var sum = 0, count = 0;
