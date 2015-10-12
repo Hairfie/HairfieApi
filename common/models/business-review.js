@@ -10,13 +10,15 @@ module.exports = function (BusinessReview) {
     Hooks.updateTimestamps(BusinessReview);
 
     BusinessReview.observe('before save', function (ctx, next) {
+        var getInstance = q(null);
         if (ctx.instance) {
-            if(!ctx.instance.authorId) {
-                var User = BusinessReview.app.models.User;
-                User.findOne({email: ctx.email}, function(err, b) {
-                    ctx.instance.authorId = b.id;
-                });
+            if (ctx.instance.authorId) {
+                getInstance = q(ctx.instance.authorId);
             }
+            else {
+                getInstance = q.ninvoke(BusinessReview.app.models.user, 'findOne', {where: {email: ctx.instance.email}});
+            }
+
             var sum = 0, count = 0;
             _.forIn(ctx.instance.criteria || {}, function (value) {
                 count++;
@@ -26,6 +28,15 @@ module.exports = function (BusinessReview) {
             // ok, we don't change rating valu eif there is no criteria cause it
             // may be an old fashioned review (bare rating)
             if (count > 0) ctx.instance.rating = Math.ceil(sum / count);
+
+            getInstance
+                .then(function (b) {
+                    console.log(b);
+                    if (b) {
+                        ctx.instance.authorId = b.id;
+                    }
+                });
+            console.log(ctx.instance.authorId);
         }
         next();
     });
