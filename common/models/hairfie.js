@@ -165,8 +165,7 @@ module.exports = function (Hairfie) {
         return Promise.ninvoke(Hairfie, 'findById', req.params.hairfieId)
             .then(function(hairfie) {
                 if (!hairfie) return next({statusCode: 404});
-
-                var isAllowed = user.admin ? true : (hairfie.authorId.toString() != req.user.id.toString());
+                var isAllowed = user.admin ? true : ((hairfie.authorId.toString() == req.user.id.toString()) || user.isManagerOfBusiness(hairfie.businessId));
                 if (!isAllowed) return next({statusCode: 403});
 
                 hairfie.hidden = true;
