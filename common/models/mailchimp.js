@@ -119,10 +119,48 @@ module.exports = function (Mailchimp) {
         });
     }
 
+    Mailchimp.updateAllHairfies = function() {
+        var listId  = Mailchimp.dataSource.settings.listId;
+        var Hairfie = Mailchimp.app.models.Hairfie;
+
+        return Q.ninvoke(Hairfie, 'find', {customerEmail: {neq: null}})
+        .then(function(hairfies) {
+            return Q.all(_.map(hairfies, function(hairfie) {
+                return hairfie.toMailchimp();
+            }))
+        })
+        .then(function(mcHairfies) {
+            console.log("##### Hairfies in progress #####");
+            console.log(mcHairfies[0]);
+            return client.v2.post('/lists/batch-subscribe', {
+                id: listId,
+                update_existing: true,
+                double_optin: false,
+                replace_interests: false,
+                batch: mcHairfies
+            })
+        })
+        .then(function(response) { 
+            console.log("##### updateAllBooking #####");
+            console.log("add_count :", response.add_count);
+            console.log("update_count :", response.update_count);
+            console.log("error_count :", response.error_count);
+
+            return;
+        })
+        .catch(function(error) {
+            console.log(error); // Mailchimp Error: 401
+            console.log(error.response);
+        });
+    }
+
     Mailchimp.updateEverything = function() {
         return Mailchimp.updateAllSubscriber()
         .then(function() {
             return Mailchimp.updateAllBooking();
+        })
+        .then(function() {
+            return Mailchimp.updateAllHairfies();
         })
         .then(function() {
             return Mailchimp.updateAllUser();

@@ -17,7 +17,7 @@ module.exports = function (Email) {
         var links = links || {};
 
         var env = Email.app.get('env');
-        var envLabel = (env.toLowerCase() !== 'production') ? '[' + env + ']' : '';
+        var envLabel = Email.app.get("emailPrefix");
 
         var recipient = Email.app.get("salesEventEmail");
 
@@ -43,7 +43,7 @@ module.exports = function (Email) {
         var links = links || {};
 
         var env = Email.app.get('env');
-        var envLabel = (env.toLowerCase() !== 'production') ? '[' + env + ']' : '';
+        var envLabel = Email.app.get("emailPrefix");
 
         var recipient = Email.app.get("eventStreamEmail");
 

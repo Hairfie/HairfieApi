@@ -143,5 +143,10 @@ module.exports = {
         apiKey: process.env.MAILCHIMP_API_KEY,
         datacenter: process.env.MAILCHIMP_DATACENTER,
         listId: process.env.MAILCHIMP_LIST_ID
+    },
+    wordpress: {
+        name: 'mailchimp',
+        connector: 'memory',
+        endpoint: 'http://blog.hairfie.com/wp-json'
     }
 };

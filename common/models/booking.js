@@ -219,7 +219,8 @@ module.exports = function (Booking) {
                     'Genre'           : booking.gender,
                     'Email du client' : booking.email,
                     'Tel du client'   : booking.phoneNumber,
-                    'Prestation'      : booking.comment
+                    'Prestation'      : booking.comment,
+                    'Promo'           : booking.discount + ' %'
                 });
             })
             .fail(console.log);
