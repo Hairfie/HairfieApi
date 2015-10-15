@@ -464,6 +464,12 @@ module.exports = function (Hairfie) {
         next();
     };
 
+    Hairfie.prototype.toMailchimp = function () {
+        return {
+            email: {email: this.customerEmail}
+        }
+    }
+
     Hairfie.remoteMethod('share', {
         description: 'Shares a hairfie on social networks',
         accepts: [
