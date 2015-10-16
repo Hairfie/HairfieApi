@@ -187,9 +187,10 @@ module.exports = function (Hairfie) {
                 if (!hairfie) return next({statusCode: 404});
                 var isAllowed = user.admin ? true : ((hairfie.authorId.toString() == req.user.id.toString()) || user.isManagerOfBusiness(hairfie.businessId));
                 if (!isAllowed) return next({statusCode: 403});
-                return Q.ninvoke(Hairfie, 'updateAttributes', req.body.hairfie);
+                return Q.ninvoke(hairfie, 'updateAttributes', req.body.hairfie);
             })
-            .then(function() {
+            .then(function(hairfie) {
+                return hairfie;
                 next();
             });
     };
@@ -508,6 +509,7 @@ module.exports = function (Hairfie) {
             {arg: 'req', type: 'object', 'http': {source: 'req'}},
             {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
         ],
+        returns: {root: true},
         http: { path: '/:hairfieId', verb: 'PUT' }
     });
 
