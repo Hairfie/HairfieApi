@@ -117,6 +117,7 @@ module.exports = function(Place) {
             // 2. Try to create a place using geocoder
             geocode(address, 'fr')
                 .then(function (results) {
+                    console.log("geocode result :", results);
                     if (0 == results.lenth) return cb(null, []);
 
                     var result = results[0]; // take first result
