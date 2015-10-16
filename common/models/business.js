@@ -272,6 +272,7 @@ module.exports = function(Business) {
                     categorySlugs      : _.map(categories, 'slug'),
                     averagePrice       : this.averagePrice,
                     isClaimed          : isClaimed,
+                    accountType        : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
                     updatedAt          : this.updatedAt
                 }
             }.bind(this));
