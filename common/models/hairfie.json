@@ -6,6 +6,7 @@
     "sharedMethodNames": [
       "find",
       "findById",
+      "updateHairfie",
       "create",
       "share",
       "delete",
