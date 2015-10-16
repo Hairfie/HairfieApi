@@ -42,6 +42,13 @@ module.exports = function(Business) {
 
     Business.validatesUniquenessOf('friendlyId');
 
+    Business.ACCOUNT_FREE = 'FREE';
+    Business.ACCOUNT_BASIC = 'BASIC';
+    Business.ACCOUNT_PREMIUM = 'PREMIUM';
+
+    Business.validatesInclusionOf('accountType', {in: [Business.ACCOUNT_FREE, Business.ACCOUNT_BASIC, Business.ACCOUNT_PREMIUM]});
+
+
     Hooks.hasImages(Business, {
         pictures: {
             container: 'businesses',
@@ -92,6 +99,7 @@ module.exports = function(Business) {
                     facebookPage       : this.facebookPage && this.getFacebookPageObject().toRemoteShortObject(context),
                     addedCategories    : this.addedCategories,
                     labels             : this.labels,
+                    accountType        : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
                     createdAt          : this.createdAt,
                     updatedAt          : this.updatedAt
                 });
