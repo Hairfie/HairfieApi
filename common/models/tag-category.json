@@ -2,9 +2,6 @@
   "name": "TagCategory",
   "plural": "TagCategories",
   "options": {
-    "sharedMethodNames": [
-      "find"
-    ],
     "mongodb": {
       "collection": "tagCategories"
     }

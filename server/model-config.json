@@ -148,7 +148,7 @@
   },
   "TagCategory": {
     "dataSource": "hairfieMongo",
-    "public": true
+    "public": false
   },
   "Tag": {
     "dataSource": "hairfieMongo",
