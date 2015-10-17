@@ -179,6 +179,22 @@ module.exports = function (Hairfie) {
             })
     };
 
+    Hairfie.updateHairfie = function (req, user, next) {
+        if (!user) return next({statusCode: 401});
+        var Engine = Hairfie.app.models.AlgoliaSearchEngine;
+        return Promise.ninvoke(Hairfie, 'findById', req.params.hairfieId)
+            .then(function(hairfie) {
+                if (!hairfie) return next({statusCode: 404});
+                var isAllowed = user.admin ? true : ((hairfie.authorId.toString() == req.user.id.toString()) || user.isManagerOfBusiness(hairfie.businessId));
+                if (!isAllowed) return next({statusCode: 403});
+                return Q.ninvoke(hairfie, 'updateAttributes', req.body.hairfie);
+            })
+            .then(function(hairfie) {
+                return hairfie;
+                next();
+            });
+    };
+
     Hairfie.share = function (req, next) {
         var HairfieShare = Hairfie.app.models.HairfieShare;
 
@@ -485,6 +501,16 @@ module.exports = function (Hairfie) {
             {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
         ],
         http: { path: '/:hairfieId', verb: 'DELETE' }
+    });
+
+    Hairfie.remoteMethod('updateHairfie', {
+        description: 'Update the hairfie',
+        accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}},
+            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
+        ],
+        returns: {root: true},
+        http: { path: '/:hairfieId', verb: 'PUT' }
     });
 
     Hairfie.remoteMethod('search', {
