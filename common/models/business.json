@@ -132,6 +132,14 @@
     "displayPhoneNumber": {
         "type": "boolean",
         "default": false
+    },
+    "contactEmail": {
+      "type": "string"
+    },
+    "accountType": {
+      "type": "string",
+      "required": true,
+      "default": "FREE"
     }
   },
   "validations": [],
