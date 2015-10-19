@@ -72,6 +72,7 @@ module.exports = function (Hairfie) {
             }),
             displayBusiness : this.displayBusiness(),
             hidden          : this.hidden,
+            customerEmail   : this.customerEmail,
             createdAt       : this.createdAt,
             updatedAt       : this.updatedAt
         });
