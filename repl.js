@@ -15,6 +15,26 @@ var BusinessMember = app.models.BusinessMember;
 var Booking = app.models.Booking;
 var AlgoliaSearchEngine = app.models.AlgoliaSearchEngine;
 var Mailchimp = app.models.Mailchimp;
+var Email = app.models.Email;
+
+
+var UrlGenerator = require('./common/utils/UrlGenerator');
+
+
+var urlGenerator = new UrlGenerator({
+    defaultApp  : 'api',
+    baseUrl     : {
+        'api'       : app.get('url'),
+        'website'   : app.get('webUrl'),
+        'cdn'       : app.get('cdnUrl') || app.get('url')
+    },
+    routes      : require('./server/routes.js')
+});
+
+app.urlGenerator = urlGenerator;
+app.generateUrl = function (name, params) {
+    return urlGenerator.generate(name, params);
+};
 
 
 var cloudinary = require('cloudinary');
@@ -38,6 +58,8 @@ replServer.context.BusinessMember = BusinessMember;
 replServer.context.Booking = Booking;
 replServer.context.Mailchimp = Mailchimp;
 replServer.context.AlgoliaSearchEngine = AlgoliaSearchEngine;
+replServer.context.Email = Email;
+
 
 replServer.context.cloudinary = cloudinary;
 
