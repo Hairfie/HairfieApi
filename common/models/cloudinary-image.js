@@ -29,7 +29,7 @@ module.exports = function (CloudinaryImage) {
     };
 
     CloudinaryImage.getTransformations = function (container) {
-        return 'hairfies' === container ? ['watermark'] : [];
+        return 'hairfies' === container ? [{width: 600, height: 600, crop: "fill", gravity: 'face'}, 'watermark'] : [];
     };
 
     CloudinaryImage.getPublicId = function (container, id) {
