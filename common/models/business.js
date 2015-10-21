@@ -558,7 +558,7 @@ module.exports = function(Business) {
 
     Business.similar = function (businessId, limit, callback) {
         var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
-        var maxDistance = 5000,
+        var maxDistance = 3000,
             limit       = Math.min(limit || 10, 100);
 
         return Q.denodeify(Business.findById.bind(Business))(businessId)
