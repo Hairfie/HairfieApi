@@ -396,11 +396,27 @@ module.exports = function (Hairfie) {
         });
 
         // filter by tags
-        params.facetFilters.push(
-            _.map(asArray(req.query.tags), function (tag) {
-                return '_tags:' + tag ;
-            })
-        );
+        var forcedTags = ['Homme', 'Femme'];
+
+        var OR = [];
+        var AND = [];
+
+        _.forEach(req.query.tags, function(tag) {
+            if (_.isEmpty(_.intersection([tag], forcedTags)))
+                OR.push(tag);
+            else
+                AND.push(tag);
+        });
+
+        if (req.query.tags) {
+            if (OR.length > 0) {
+                params.tagFilters = '(' + OR.join(', ') + ')' + (_.isEmpty(AND) ? '' : ', ') + AND.join(', ');
+            }
+            else {
+                params.tagFilters = AND.join(', ');
+            }
+        }
+
 
         // filter by price
         if (req.query.priceMin) {
@@ -457,8 +473,14 @@ module.exports = function (Hairfie) {
                 AND.push(tag);
         });
 
-        if (req.query.tags)
-            params.tagFilters = '(' + OR.join(', ') + ')' + (_.isEmpty(AND) ? '' : ', ') + AND.join(', ');
+        if (req.query.tags) {
+            if (OR.length > 0) {
+                params.tagFilters = '(' + OR.join(', ') + ')' + (_.isEmpty(AND) ? '' : ', ') + AND.join(', ');
+            }
+            else {
+                params.tagFilters = AND.join(', ');
+            }
+        }
 
         return Hairfie.app.models.AlgoliaSearchEngine
             .search('hairfie', req.query.q || '', params)
