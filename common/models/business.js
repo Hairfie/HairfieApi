@@ -558,7 +558,7 @@ module.exports = function(Business) {
 
     Business.similar = function (businessId, limit, callback) {
         var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
-        var maxDistance = 5000,
+        var maxDistance = 3000,
             limit       = Math.min(limit || 10, 100);
 
         return Q.denodeify(Business.findById.bind(Business))(businessId)
@@ -575,13 +575,13 @@ module.exports = function(Business) {
                 };
 
                 return Q.all([
-                    AlgoliaSearchEngine.search('business', '', _.assign({}, params, {facetFilters: 'accountType:PREMIUM'})),
-                    AlgoliaSearchEngine.search('business', '', _.assign({}, params, {facetFilters: 'accountType:BASIC'})),
+                    AlgoliaSearchEngine.search('business', '', _.assign({}, params, {hitsPerPage: 1, facetFilters: 'accountType:PREMIUM'})),
+                    AlgoliaSearchEngine.search('business', '', _.assign({}, params, {facetFilters: '(accountType:PREMIUM,accountType:BASIC)'})),
                     AlgoliaSearchEngine.search('business', '', params)
                     ])
                     .spread(function(premium, basic, free) {
                         var results = {
-                            hits: _.uniq(premium['hits'].concat(basic['hits']).concat(free['hits'])).slice(0, 3)
+                            hits: _.uniq(premium['hits'].concat(basic['hits']).concat(free['hits'])).slice(0, limit)
                         };
                         return results;
                     });
