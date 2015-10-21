@@ -3,7 +3,7 @@ var q = require('q');
 var Business = app.models.Business;
 var lodash = require('lodash');
 
-findBusiness(24800)
+findBusiness()
     .then(function (results) {
         console.log('Successfull.');
         process.exit(0);
@@ -20,6 +20,7 @@ function findBusiness(skip) {
             console.log("Found : ", (businesses.length + skip));
             return q.all(businesses.map(updateBusiness))
                 .then(function() {
+                    if (businesses.length < 100) return;
                     return findBusiness(skip + 100);
                 });
         });
