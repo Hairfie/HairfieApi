@@ -574,7 +574,17 @@ module.exports = function(Business) {
                     aroundRadius: maxDistance
                 };
 
-                return AlgoliaSearchEngine.search('business', '', params);
+                return Q.all([
+                    AlgoliaSearchEngine.search('business', '', _.assign({}, params, {facetFilters: 'accountType:PREMIUM'})),
+                    AlgoliaSearchEngine.search('business', '', _.assign({}, params, {facetFilters: 'accountType:BASIC'})),
+                    AlgoliaSearchEngine.search('business', '', params)
+                    ])
+                    .spread(function(premium, basic, free) {
+                        var results = {
+                            hits: _.uniq(premium['hits'].concat(basic['hits']).concat(free['hits'])).slice(0, 3)
+                        };
+                        return results;
+                    });
             })
             .then(function(result) {
                 result.hits = _.filter(result.hits, function(business) { return business.id != businessId });
