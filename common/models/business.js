@@ -558,7 +558,7 @@ module.exports = function(Business) {
 
     Business.similar = function (businessId, limit, callback) {
         var AlgoliaSearchEngine = Business.app.models.AlgoliaSearchEngine;
-        var maxDistance = 3000,
+        var maxDistance = 2000,
             limit       = Math.min(limit || 10, 100);
 
         return Q.denodeify(Business.findById.bind(Business))(businessId)
@@ -580,15 +580,12 @@ module.exports = function(Business) {
                     AlgoliaSearchEngine.search('business', '', params)
                     ])
                     .spread(function(premium, basic, free) {
+                        var hits = _.uniq(premium['hits'].concat(basic['hits']).concat(free['hits']));
                         var results = {
-                            hits: _.uniq(premium['hits'].concat(basic['hits']).concat(free['hits'])).slice(0, limit)
+                            hits: _.filter(hits, function(business) { return business.id != businessId }).slice(0, limit)
                         };
                         return results;
                     });
-            })
-            .then(function(result) {
-                result.hits = _.filter(result.hits, function(business) { return business.id != businessId });
-                return result;
             })
             .then(processAlgoliaForNearby)
             .nodeify(callback);
