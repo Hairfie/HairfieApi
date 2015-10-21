@@ -9,17 +9,19 @@ findBusiness()
         process.exit(0);
     })
     .catch(function (error) {
-        console.log('Failed to seed tags:', error);
+        console.log('Failed:', error);
         process.exit(1);
     });
 
 function findBusiness(skip) {
     skip = skip || 0;
-    return q.ninvoke(Business, 'find', {limit: 100, skip: skip})
+
+    return q.ninvoke(Business, 'find', {limit: 100, skip: skip, order: 'updatedAt ASC'})
         .then(function(businesses) {
             console.log("Found : ", (businesses.length + skip));
             return q.all(businesses.map(updateBusiness))
                 .then(function() {
+                    console.log("updatedAt : ", businesses[0].updatedAt);
                     if (businesses.length < 100) return;
                     return findBusiness(skip + 100);
                 });
