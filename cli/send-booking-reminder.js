@@ -1,6 +1,7 @@
 'use strict';
 
 var Promise = require('../common/utils/Promise');
+var Q = require('q');
 
 var moment = require('moment');
 moment.locale('fr');
@@ -28,7 +29,19 @@ module.exports = function (program, app) {
             }
 
             console.log(times);
-            Promise.ninvoke(Booking, 'find', {where: { and: [ { dateTime: { gte: times.start } }, { dateTime: { lte: times.end } } ]}})
+            Promise.ninvoke(Booking, 'find', { where:
+                    {
+                        and: [
+                            { dateTime: { gte: times.start } },
+                            { dateTime: { lte: times.end } }
+                        ],
+                        or: [
+                            { emailReminderSentAt: null },
+                            { textMessageReminderSentAt: null }
+                        ],
+                        status: 'CONFIRMED'
+                    }
+                })
                 .then(function (bookings) {
                     console.log("reminder to send", bookings.length);
                     return Promise.all(bookings.map(sendBookingReminder.bind(null, app)));
@@ -40,17 +53,27 @@ module.exports = function (program, app) {
 function sendBookingReminder(app, booking) {
     var Business = app.models.Business;
     var Email = app.models.Email;
+    var TextMessage = app.models.TextMessage
 
-    console.log('Sending booking '+booking.id+' to '+booking.email);
+    console.log(booking.id);
 
     return Promise.ninvoke(Business, 'findOne', {where: {id: booking.businessId}})
         .then(function (business) {
             if (!business) throw new Error("Business not found");
 
-            return Email.reminderBooking(booking, business);
+            console.log(booking.phoneNumber);
+            return Q.all([
+                booking.emailReminderSentAt ? '' : Email.reminderBooking(booking, business),
+                booking.textMessageReminderSentAt ? '' : TextMessage.send(booking.phoneNumber, "RDV le " + booking.dateTime + ' à ' + business.name)
+            ]);
         })
         .then(function () {
-            booking.emailSentAt = new Date();
+            if (!booking.emailReminderSentAt) {
+                booking.emailReminderSentAt = new Date();
+            }
+            if (!booking.textMessageReminderSentAt) {
+               booking.textMessageReminderSentAt = new Date();
+            }
 
             return Promise.npost(booking, 'save');
         })
