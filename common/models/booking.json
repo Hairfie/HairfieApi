@@ -79,15 +79,7 @@
       "type": "boolean",
       "default": true
     },
-    "emailReminderSentAt": {
-        "type": "Date",
-        "default": null
-    },
-    "textMessageReminderSentAt": {
-        "type": "Date",
-        "default": null
-    },
-    "confirmationSentAt": {
+    "emailSentAt": {
         "type": "Date",
         "default": null
     }
