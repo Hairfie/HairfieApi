@@ -35,7 +35,7 @@ function sendBusinessReviewRequest(app, brr) {
         .then(function (business) {
             if (!business) throw new Error("Business not found");
 
-            return email.send("Vous avez bien réserver le salon: " + business.name + ' à ' + booking.dateTime);
+            return Email.requestBusinessReview(business, brr);
         })
         .then(function () {
             brr.emailSentAt = new Date();
