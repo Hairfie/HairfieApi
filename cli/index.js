@@ -13,8 +13,7 @@ var commands = [
     'configure-algolia',
     'send-business-review-requests',
     'update-mailchimp',
-    'add-tag',
-    'send-booking-reminder'
+    'add-tag'
 ];
 
 commands.forEach(function (command) {
