@@ -149,7 +149,7 @@ module.exports = function (Email) {
         return send({
             to: booking.email,
             locale: locale,
-            template: 'confirmBookingRequest',
+            template: 'reminderBooking',
             templateVars: {
                 booking    : booking,
                 business   : business,
