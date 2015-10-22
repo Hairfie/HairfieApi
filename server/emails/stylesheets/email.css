@@ -202,7 +202,7 @@
     @tip Set the styling for your email's preheader links. Choose a color that helps them stand out from your text.
     */
     #templatePreheader .mcnTextContent a,#templatePreheader .mcnTextContent p a{
-        /*@editable*/color:#656565;
+        /*@editable*/color:#FE5B5F;
         /*@editable*/font-weight:normal;
         /*@editable*/text-decoration:underline;
     }
@@ -270,9 +270,9 @@
     @tip Set the styling for your email's upper column links. Choose a color that helps them stand out from your text.
     */
     #templateUpperColumns .columnContainer .mcnTextContent a,#templateUpperColumns .columnContainer .mcnTextContent p a{
-        /*@editable*/color:#2BAADF;
+        /*@editable*/color:#FE5B5F;
         /*@editable*/font-weight:normal;
-        /*@editable*/text-decoration:none;
+        /*@editable*/text-decoration:underline;
     }
     /*
     @tab Body
@@ -304,9 +304,9 @@
     @tip Set the styling for your email's body links. Choose a color that helps them stand out from your text.
     */
     #templateBody .mcnTextContent a,#templateBody .mcnTextContent p a{
-        /*@editable*/color:#000000;
+        /*@editable*/color:#FE5B5F;
         /*@editable*/font-weight:normal;
-        /*@editable*/text-decoration:none;
+        /*@editable*/text-decoration:underline;
     }
     /*
     @tab Lower Columns
@@ -340,7 +340,7 @@
     #templateLowerColumns .columnContainer .mcnTextContent a,#templateLowerColumns .columnContainer .mcnTextContent p a{
         /*@editable*/color:#2BAADF;
         /*@editable*/font-weight:normal;
-        /*@editable*/text-decoration:none;
+        /*@editable*/text-decoration:underline;
     }
     /*
     @tab Footer
@@ -601,4 +601,10 @@
         /*@editable*/line-height:22px !important;
     }
 
+}
+
+a {
+        /*@editable*/color:#656565;
+        /*@editable*/font-weight:normal;
+        /*@editable*/text-decoration:underline;
 }
