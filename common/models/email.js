@@ -142,6 +142,22 @@ module.exports = function (Email) {
         });
     };
 
+    Email.reminderBooking = function (booking, business) {
+        var locale = 'fr'; //booking.locale || 'fr';
+        var dateTime = moment(booking.dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm");
+
+        return send({
+            to: booking.email,
+            locale: locale,
+            template: 'reminderBooking',
+            templateVars: {
+                booking    : booking,
+                business   : business,
+                dateTime   : dateTime
+            }
+        });
+    };
+
     Email.notifyBookingConfirmed = function (booking, business) {
         var locale = 'fr'; //booking.locale || 'fr';
         var dateTime = moment(booking.dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm");
