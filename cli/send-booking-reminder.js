@@ -35,9 +35,15 @@ module.exports = function (program, app) {
                             { dateTime: { gte: times.start } },
                             { dateTime: { lte: times.end } }
                         ],
-                        or: [
-                            { emailReminderSentAt: null },
-                            { textMessageReminderSentAt: null }
+                        or: [{
+                            or: [
+                                { emailReminderSentAt: null },
+                                { emailReminderSentAt: { exists: false } }
+                            ]},
+                            { or: [
+                                { textMessageReminderSentAt: null },
+                                { textMessageReminderSentAt: { exists: false } }
+                            ]}
                         ],
                         status: 'CONFIRMED'
                     }
@@ -61,7 +67,6 @@ function sendBookingReminder(app, booking) {
         .then(function (business) {
             if (!business) throw new Error("Business not found");
 
-            console.log(booking.phoneNumber);
             return Q.all([
                 booking.emailReminderSentAt ? '' : Email.reminderBooking(booking, business),
                 booking.textMessageReminderSentAt ? '' : TextMessage.send(booking.phoneNumber, "RDV le " + booking.dateTime + ' à ' + business.name)
