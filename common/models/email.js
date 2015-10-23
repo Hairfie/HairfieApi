@@ -16,9 +16,6 @@ module.exports = function (Email) {
     Email.notifySales = function (channel, data, links) {
         var links = links || {};
 
-        var env = Email.app.get('env');
-        var envLabel = Email.app.get("emailPrefix");
-
         var recipient = Email.app.get("salesEventEmail");
 
         if (!recipient) {
@@ -31,7 +28,6 @@ module.exports = function (Email) {
             locale: 'en',
             template: 'notifySales',
             templateVars: {
-                env     : envLabel,
                 channel : channel,
                 data    : data,
                 links   : links
@@ -129,11 +125,29 @@ module.exports = function (Email) {
     Email.confirmBookingRequest = function (booking, business) {
         var locale = booking.locale || 'fr';
         var dateTime = moment(booking.dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm");
+        var url = Email.app.urlGenerator;
 
         return send({
             to: booking.email,
             locale: locale,
             template: 'confirmBookingRequest',
+            templateVars: {
+                booking    : booking,
+                business   : business,
+                dateTime   : dateTime,
+                bookingUrl : url.bookingConfirmation(booking)
+            }
+        });
+    };
+
+    Email.reminderBooking = function (booking, business) {
+        var locale = 'fr'; //booking.locale || 'fr';
+        var dateTime = moment(booking.dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm");
+
+        return send({
+            to: booking.email,
+            locale: locale,
+            template: 'reminderBooking',
             templateVars: {
                 booking    : booking,
                 business   : business,
@@ -199,7 +213,10 @@ module.exports = function (Email) {
     function getSubject(template, templateVars, locale) {
         var config = require(path.resolve(__dirname, '../../server/emails/'+template+'.json'));
 
-        return ejs.compile(config.subject[locale])(templateVars);
+        var envLabel = Email.app.get("emailPrefix");
+        if(envLabel) envLabel += ' ';
+
+        return envLabel + ejs.compile(config.subject[locale])(templateVars);
     }
 
     function getHtmlBody(template, templateVars, locale, layout) {
