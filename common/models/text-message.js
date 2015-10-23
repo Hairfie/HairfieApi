@@ -11,7 +11,7 @@ module.exports = function (TextMessage) {
     });
 
     TextMessage.send = function (toNumber, body) {
-        var envLabel = TextMessage.app.get("emailPrefix");
+        var envLabel = TextMessage.app.get("emailPrefix").replace('[', '').replace(']', '').trim();
         console.log("envLabel", envLabel);
 
         return client.sendMessage({
