@@ -61,15 +61,17 @@ function sendBookingReminder(app, booking) {
     var Email = app.models.Email;
     var TextMessage = app.models.TextMessage
 
-    console.log(booking.id);
-
     return Promise.ninvoke(Business, 'findOne', {where: {id: booking.businessId}})
         .then(function (business) {
             if (!business) throw new Error("Business not found");
+            var tomorrow = moment() > moment().hours(12).startOf('hours') ? 'demain ' : '';
+            var hours = moment(booking.dateTime).format("HH:mm");
 
             return Q.all([
                 booking.emailReminderSentAt ? '' : Email.reminderBooking(booking, business),
-                booking.textMessageReminderSentAt ? '' : TextMessage.send(booking.phoneNumber, "RDV le " + booking.dateTime + ' à ' + business.name)
+                booking.textMessageReminderSentAt ? '' : TextMessage.send(booking.phoneNumber,
+                    "Rappel : " + business.name + ' ' + business.phoneNumber + " vous attend " + tomorrow + "à " + hours + ". Merci.\nHairfie"
+                    )
             ]);
         })
         .then(function () {
