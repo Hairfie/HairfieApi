@@ -11,16 +11,13 @@ module.exports = function (TextMessage) {
     });
 
     TextMessage.send = function (toNumber, body) {
-        var env = TextMessage.app.get('env');
-
-        var envLabel = (env.toLowerCase() !== 'production') ? '[' + env + '] ' : ' ';
-        console.log("env", env);
+        var envLabel = TextMessage.app.get("emailPrefix");
         console.log("envLabel", envLabel);
 
         return client.sendMessage({
             to: toNumber,
-            from: "RDV Hairfie",
-            body: envLabel + body
+            from: envLabel || "RDV Hairfie",
+            body: body
         }).then(function(responseData) {
             console.log('Successfully send message', responseData);
             return responseData;
@@ -28,6 +25,5 @@ module.exports = function (TextMessage) {
             console.log("error", error);
             return error;
         });
-
     };
 };
