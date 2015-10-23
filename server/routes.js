@@ -35,5 +35,9 @@ module.exports = {
     },
     refuseBusinessMemberClaim: {
         path: '/v1.1/businessMemberClaims/:id/refuse'
+    },
+    bookingConfirmation: {
+        app: 'website',
+        path: '/reservation/:id'
     }
 };

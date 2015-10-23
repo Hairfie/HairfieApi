@@ -129,6 +129,7 @@ module.exports = function (Email) {
     Email.confirmBookingRequest = function (booking, business) {
         var locale = booking.locale || 'fr';
         var dateTime = moment(booking.dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm");
+        var url = Email.app.urlGenerator;
 
         return send({
             to: booking.email,
@@ -137,7 +138,8 @@ module.exports = function (Email) {
             templateVars: {
                 booking    : booking,
                 business   : business,
-                dateTime   : dateTime
+                dateTime   : dateTime,
+                writeBookingUrl : url.bookingConfirmation(booking)
             }
         });
     };

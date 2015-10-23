@@ -34,6 +34,10 @@ UrlGenerator.prototype.business = function (business, context) {
     return this.generate('business', {id: business.id, slug: business.slug()}, context);
 };
 
+UrlGenerator.prototype.bookingConfirmation = function (booking) {
+    return this.generate('bookingConfirmation', {id: booking.id});
+};
+
 UrlGenerator.prototype.resetPassword = function (user, token) {
     return this.generate('resetPassword', {userId: user.id, token: token.id});
 };
