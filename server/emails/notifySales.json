@@ -1,5 +1,5 @@
 {
     "subject": {
-        "en": "<%= env %> New \"<%= channel %>\" event"
+        "en": "New \"<%= channel %>\" event"
     }
 }

@@ -16,9 +16,6 @@ module.exports = function (Email) {
     Email.notifySales = function (channel, data, links) {
         var links = links || {};
 
-        var env = Email.app.get('env');
-        var envLabel = Email.app.get("emailPrefix");
-
         var recipient = Email.app.get("salesEventEmail");
 
         if (!recipient) {
@@ -31,7 +28,6 @@ module.exports = function (Email) {
             locale: 'en',
             template: 'notifySales',
             templateVars: {
-                env     : envLabel,
                 channel : channel,
                 data    : data,
                 links   : links
@@ -218,6 +214,7 @@ module.exports = function (Email) {
         var config = require(path.resolve(__dirname, '../../server/emails/'+template+'.json'));
 
         var envLabel = Email.app.get("emailPrefix");
+        if(envLabel) envLabel += ' ';
 
         return envLabel + ejs.compile(config.subject[locale])(templateVars);
     }
