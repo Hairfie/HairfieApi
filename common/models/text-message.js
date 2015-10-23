@@ -19,7 +19,7 @@ module.exports = function (TextMessage) {
 
         return client.sendMessage({
             to: toNumber,
-            from: TextMessage.dataSource.settings.twilioNumber || "+1 415-599-2671",
+            from: "RDV Hairfie"/*TextMessage.dataSource.settings.twilioNumber || "+1 415-599-2671"*/,
             body: envLabel + body
         }).then(function(responseData) {
             console.log('Successfully send message', responseData);
