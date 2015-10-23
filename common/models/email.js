@@ -139,7 +139,7 @@ module.exports = function (Email) {
                 booking    : booking,
                 business   : business,
                 dateTime   : dateTime,
-                writeBookingUrl : url.bookingConfirmation(booking)
+                bookingUrl : url.bookingConfirmation(booking)
             }
         });
     };
@@ -217,7 +217,9 @@ module.exports = function (Email) {
     function getSubject(template, templateVars, locale) {
         var config = require(path.resolve(__dirname, '../../server/emails/'+template+'.json'));
 
-        return ejs.compile(config.subject[locale])(templateVars);
+        var envLabel = Email.app.get("emailPrefix");
+
+        return envLabel + ejs.compile(config.subject[locale])(templateVars);
     }
 
     function getHtmlBody(template, templateVars, locale, layout) {
