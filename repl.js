@@ -16,6 +16,7 @@ var Booking = app.models.Booking;
 var AlgoliaSearchEngine = app.models.AlgoliaSearchEngine;
 var Mailchimp = app.models.Mailchimp;
 var Email = app.models.Email;
+var TextMessage = app.models.TextMessage;
 
 
 var UrlGenerator = require('./common/utils/UrlGenerator');
@@ -59,6 +60,7 @@ replServer.context.Booking = Booking;
 replServer.context.Mailchimp = Mailchimp;
 replServer.context.AlgoliaSearchEngine = AlgoliaSearchEngine;
 replServer.context.Email = Email;
+replServer.context.TextMessage = TextMessage;
 
 
 replServer.context.cloudinary = cloudinary;

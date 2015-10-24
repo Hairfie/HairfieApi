@@ -59,13 +59,13 @@ module.exports = function (program, app) {
 function sendBookingReminder(app, booking) {
     var Business = app.models.Business;
     var Email = app.models.Email;
-    var TextMessage = app.models.TextMessage
+    var TextMessage = app.models.TextMessage;
 
     return Promise.ninvoke(Business, 'findOne', {where: {id: booking.businessId}})
         .then(function (business) {
             if (!business) throw new Error("Business not found");
             var tomorrow = moment() > moment().hours(12).startOf('hours') ? 'demain ' : '';
-            var hours = moment(booking.dateTime).format("HH:mm");
+            var hours = moment(booking.dateTime).tz('Europe/Paris').format("HH:mm");
 
             return Q.all([
                 booking.emailReminderSentAt ? '' : Email.reminderBooking(booking, business),
