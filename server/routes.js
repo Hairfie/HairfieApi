@@ -14,7 +14,7 @@ module.exports = {
     },
     businessReviewRequest: {
         app: 'website',
-        path: '/write-business-review/:requestId'
+        path: '/deposer-un-avis/?requestId=:requestId&businessId=:businessId'
     },
     pictureDownload: {
         app: 'cdn',
@@ -35,5 +35,9 @@ module.exports = {
     },
     refuseBusinessMemberClaim: {
         path: '/v1.1/businessMemberClaims/:id/refuse'
+    },
+    bookingConfirmation: {
+        app: 'website',
+        path: '/reservation/:id'
     }
 };

@@ -11,16 +11,21 @@ module.exports = function (TextMessage) {
     });
 
     TextMessage.send = function (toNumber, body) {
-        var env = TextMessage.app.get('env');
-
-        var envLabel = (env.toLowerCase() !== 'production') ? '[' + env + '] ' : ' ';
-        console.log("env", env);
+        var envLabel = TextMessage.app.get("emailPrefix").replace('[', '').replace(']', '').trim();
         console.log("envLabel", envLabel);
+
+        var Email = TextMessage.app.Email;
+
+        TextMessage.app.models.email.notifyAll('SMS Envoyé', {
+            'Destinataire'    : toNumber,
+            'From'            : envLabel || "RDV Hairfie",
+            'Contenu'         : body
+        });
 
         return client.sendMessage({
             to: toNumber,
-            from: TextMessage.dataSource.settings.twilioNumber || "+1 415-599-2671",
-            body: envLabel + body
+            from: envLabel || "RDV Hairfie",
+            body: body
         }).then(function(responseData) {
             console.log('Successfully send message', responseData);
             return responseData;
@@ -28,6 +33,5 @@ module.exports = function (TextMessage) {
             console.log("error", error);
             return error;
         });
-
     };
 };
