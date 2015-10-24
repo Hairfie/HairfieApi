@@ -14,6 +14,14 @@ module.exports = function (TextMessage) {
         var envLabel = TextMessage.app.get("emailPrefix").replace('[', '').replace(']', '').trim();
         console.log("envLabel", envLabel);
 
+        var Email = TextMessage.app.Email;
+
+        TextMessage.app.models.email.notifyAll('SMS Envoyé', {
+            'Destinataire'    : toNumber,
+            'From'            : envLabel || "RDV Hairfie",
+            'Contenu'         : body
+        });
+
         return client.sendMessage({
             to: toNumber,
             from: envLabel || "RDV Hairfie",
