@@ -48,6 +48,7 @@ module.exports = function (BusinessReview) {
         if (ctx.instance) {
             console.log("BusinessReview has been created");
             var businessReview = ctx.instance;
+
             Promise.npost(businessReview, 'business')
             .then(function (business) {
                 return BusinessReview.app.models.email.notifyAll('Un avis a été déposé', {
@@ -86,7 +87,6 @@ module.exports = function (BusinessReview) {
 
     BusinessReview.prototype.toRemoteObject = function (context) {
         var criteria = this.criteria || {};
-        var Booking = BusinessReview.app.models.Booking;
 
         return Promise.ninvoke(this, 'author')
             .then(function (author) {
@@ -163,7 +163,7 @@ module.exports = function (BusinessReview) {
         var collection = BusinessReview.dataSource.connector.collection(BusinessReview.definition.name);
 
         var pipe = [
-            {$match: {businessId: businessId}},
+            {$match: {businessId: businessId, hidden: {$ne: true}}},
             {$group: {_id: null, numReviews: {$sum: 1}, rating: {$avg: "$rating"}}}
         ];
 
