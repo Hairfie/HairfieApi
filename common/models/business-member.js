@@ -46,6 +46,7 @@ module.exports = function (BusinessMember) {
             userId      : this.userId,
             user        : RemoteObject.related(this, 'user', context),
             active      : this.active,
+            isOwner     : this.isOwner,
             numHairfies : Promise.npost(this, 'getNumHairfies')
         };
     };
