@@ -11,11 +11,15 @@ module.exports = function (BlogPost) {
     });
 
     BlogPost.posts = function (limit, next) {
-        var limit = limit || 3;
+        var limit = limit || 4;
 
         return wp.posts().perPage(limit)
         .then(function(data) {
-            return data;
+            var cleanData = _.map(_.chunk(data, 3)[0], function(post) {
+                delete post.content;
+                return post;
+            })
+            return cleanData;
         })
         .catch(function( err ) {
            console.log("error", err);
