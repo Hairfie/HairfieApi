@@ -57,7 +57,7 @@
       "type": "boolean",
       "default": true
     },
-    "isManager": {
+    "isOwner": {
       "type": "boolean",
       "default": false
     }
