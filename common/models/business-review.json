@@ -5,10 +5,18 @@
     "sharedMethodNames": [
       "create",
       "find",
-      "findById"
+      "findById",
+      "delete"
     ],
     "mongodb": {
       "collection": "businessReviews"
+    }
+  },
+  "scope": {
+    "where": {
+      "hidden": {
+        "neq": true
+      }
     }
   },
   "properties": {
@@ -59,6 +67,10 @@
     },
     "comment": {
       "type": "string"
+    },
+    "hidden": {
+      "type": "boolean",
+      "default": false
     }
   },
   "validations": [],
