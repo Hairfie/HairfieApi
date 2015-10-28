@@ -50,32 +50,39 @@ module.exports = function (Hairfie) {
     }, {message: 'all exist'});
 
     Hairfie.prototype.toRemoteObject = function (context) {
-        var businessMember = Q.npost(this, 'businessMember').then(function (businessMember) {
-            return businessMember && businessMember.toRemoteShortObject(context);
-        });
-
-        var business = Q.ninvoke(this.business).then(function (business) {
-            return business ? business.toRemoteShortObject(context) : null;
-        });
-
-        return _.assign(this.toRemoteShortObject(context), {
-            author          : Q.ninvoke(this.author).then(function (author) {
-                return author ? author.toRemoteShortObject(context) : null;
+        return Q.all([
+            Q.ninvoke(this.business).then(function (business) {
+                return business ? business.toRemoteShortObject(context) : null;
             }),
-            business        : business,
-            hairdresser     : businessMember, // NOTE: BC
-            businessMember  : businessMember,
-            numLikes        : this.getNumLikes(),
-            selfMade        : !!this.selfMade,
-            tags            : this.getTags().then(function (tags) {
+            this.getTags()
+            .then(function (tags) {
                 return tags ? tags.map(function (tag) { return tag.toRemoteShortObject(context) }) : null;
-            }),
-            displayBusiness : this.displayBusiness(),
-            hidden          : this.hidden,
-            customerEmail   : this.customerEmail,
-            createdAt       : this.createdAt,
-            updatedAt       : this.updatedAt
-        });
+            })
+        ]).spread(function(business, tags) {
+            var businessMember = Q.npost(this, 'businessMember').then(function (businessMember) {
+                return businessMember && businessMember.toRemoteShortObject(context);
+            });
+
+            return _.assign(this.toRemoteShortObject(context), {
+                author          : Q.ninvoke(this.author).then(function (author) {
+                    return author ? author.toRemoteShortObject(context) : null;
+                }),
+                business        : business,
+                hairdresser     : businessMember, // NOTE: BC
+                businessMember  : businessMember,
+                numLikes        : this.getNumLikes(),
+                selfMade        : !!this.selfMade,
+                tags            : tags,
+                isBeforeAfter   : _.some(tags, function (tag) {
+                    return tag.name == "Avant / Après";
+                }),
+                displayBusiness : this.displayBusiness(),
+                hidden          : this.hidden,
+                customerEmail   : this.customerEmail,
+                createdAt       : this.createdAt,
+                updatedAt       : this.updatedAt
+            });
+        }.bind(this))
     };
 
     Hairfie.prototype.toRemoteShortObject = function (context) {
