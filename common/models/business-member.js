@@ -33,21 +33,22 @@ module.exports = function (BusinessMember) {
 
     BusinessMember.prototype.toRemoteShortObject = function (context) {
         return {
-            id          : this.id,
-            businessId  : this.businessId,
-            href        : BusinessMember.app.urlGenerator.api('businessMembers/'+this.id),
-            gender      : this.gender,
-            firstName   : this.firstName,
-            lastName    : this.lastName,
-            email       : this.email,
-            phoneNumber : this.phoneNumber,
-            picture     : this.picture && this.picture.toRemoteShortObject(context),
-            hidden      : this.hidden,
-            userId      : this.userId,
-            user        : RemoteObject.related(this, 'user', context),
-            active      : this.active,
-            isOwner     : this.isOwner,
-            numHairfies : Promise.npost(this, 'getNumHairfies')
+            id              : this.id,
+            businessId      : this.businessId,
+            href            : BusinessMember.app.urlGenerator.api('businessMembers/'+this.id),
+            gender          : this.gender,
+            firstName       : this.firstName,
+            lastName        : this.lastName,
+            email           : this.email,
+            phoneNumber     : this.phoneNumber,
+            picture         : this.picture && this.picture.toRemoteShortObject(context),
+            hidden          : this.hidden,
+            userId          : this.userId,
+            user            : RemoteObject.related(this, 'user', context),
+            active          : this.active,
+            isOwner         : this.isOwner,
+            willBeNotified  : this.willBeNotified,
+            numHairfies     : Promise.npost(this, 'getNumHairfies')
         };
     };
 

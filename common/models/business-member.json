@@ -60,6 +60,10 @@
     "isOwner": {
       "type": "boolean",
       "default": false
+    },
+    "willBeNotified": {
+      "type": "boolean",
+      "default": false
     }
   },
   "validations": [],
