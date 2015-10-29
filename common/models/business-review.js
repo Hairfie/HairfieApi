@@ -45,7 +45,6 @@ module.exports = function (BusinessReview) {
 
     BusinessReview.observe('after save', function (ctx, next) {
         if (ctx.instance) {
-            console.log("BusinessReview has been created");
             var businessReview = ctx.instance;
 
             Promise.npost(businessReview, 'business')
