@@ -24,7 +24,8 @@
     },
     "gender": {
       "type": "string",
-      "required": true
+      "required": true,
+      "default": "FEMALE"
     },
     "locale": {
       "type": "string"
