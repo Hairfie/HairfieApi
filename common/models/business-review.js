@@ -48,20 +48,18 @@ module.exports = function (BusinessReview) {
             console.log("BusinessReview has been created");
             var businessReview = ctx.instance;
 
-            if(ctx.instance.isNewRecord()) {
-                Promise.npost(businessReview, 'business')
-                .then(function (business) {
-                    return BusinessReview.app.models.email.notifyAll('Un avis a été déposé', {
-                        'ID'              : businessReview.id,
-                        'Salon'           : business.name,
-                        'Nom'             : businessReview.firstName + ' ' + businessReview.lastName,
-                        'Email'           : businessReview.email,
-                        'Note globale'    : businessReview.rating,
-                        'Commentaire'     : businessReview.comment
-                    });
-                })
-                .fail(console.log);
-            }
+            Promise.npost(businessReview, 'business')
+            .then(function (business) {
+                return BusinessReview.app.models.email.notifyAll('Un avis a été déposé', {
+                    'ID'              : businessReview.id,
+                    'Salon'           : business.name,
+                    'Nom'             : businessReview.firstName + ' ' + businessReview.lastName,
+                    'Email'           : businessReview.email,
+                    'Note globale'    : businessReview.rating,
+                    'Commentaire'     : businessReview.comment
+                });
+            })
+            .fail(console.log);
 
             // update review request with reviewId so we know it's used
             businessReview.request(function (error, request) {
