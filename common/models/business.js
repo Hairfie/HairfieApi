@@ -13,6 +13,8 @@ var moment = require('moment');
 require('moment/locale/fr');
 moment.locale('fr');
 
+var publicHolidays = require("../utils/PublicHolidays.js");
+
 var days = {
     0: "SUN",
     1: "MON",
@@ -849,12 +851,16 @@ module.exports = function(Business) {
                 for (i = 0; moment(from) <= moment(from).add(i, 'd') && moment(until) >= moment(from).add(i, 'd'); i++) {
                     date = moment(from).add(i, 'd').format("YYYY-MM-DD");
 
-                    if (!(business.exceptions && business.exceptions[date])) {
+                    if (business.exceptions && business.exceptions[date]) {
+                        day = business.exceptions[date];
+                    }
+                    else if (_.indexOf(publicHolidays, date) >= 0) {
+                        day = [];
+                    }
+                    else {
                         day = moment(from).add(i, 'd').days();
                         day = days[day];
                         day = business.timetable && business.timetable[day];
-                    } else {
-                        day = business.exceptions[date];
                     }
 
                     if (delay <= 0) {
