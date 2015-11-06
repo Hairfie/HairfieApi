@@ -55,6 +55,7 @@ module.exports = function (CloudinaryImage) {
             image_metadata  : true,
             faces           : true,
             phash           : true,
+            angle           : "exif" //preserve image orientation
         };
 
         cloudinary.uploader.upload(url, function (result) {

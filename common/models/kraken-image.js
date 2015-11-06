@@ -38,7 +38,8 @@ module.exports = function (KrakenImage) {
                 bucket  : KrakenImage.dataSource.settings.awsS3Bucket,
                 region  : KrakenImage.dataSource.settings.awsS3Region,
                 path    : key
-            }
+            },
+            preserve_meta: ["orientation"] //preserve image orientation
         };
 
         kraken.url(options, function (data) {
