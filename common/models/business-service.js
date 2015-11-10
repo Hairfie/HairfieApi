@@ -17,7 +17,8 @@ module.exports = function (BusinessService) {
             businessId      : this.businessId,
             label           : this.label,
             price           : this.price,
-            durationMinutes : this.durationMinutes
+            durationMinutes : this.durationMinutes,
+            position        : this.position || null
         };
     };
 
