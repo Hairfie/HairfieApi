@@ -45,6 +45,9 @@
     "label": {
       "type": "string",
       "required": true
+    },
+    "position": {
+      "type": "number"
     }
   },
   "validations": [],
