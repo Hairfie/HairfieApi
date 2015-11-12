@@ -832,7 +832,7 @@ module.exports = function(Business) {
     }
 
     Business.timeslots = function (businessId, from, until, next) {
-        var interval = 60; //60 Minutes between each timeslot
+        var interval = 30; //60 Minutes between each timeslot
         var delay = 24; //Numbers minimum hours before the first timeslots bookable
 
         if (moment(from) > moment(until))
