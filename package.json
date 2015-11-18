@@ -13,6 +13,7 @@
     "algoliasearch": "^3.7.5",
     "async": "^1.4.2",
     "aws-sdk": "^2.1.45",
+    "babel-runtime": "^6.1.18",
     "cloudinary": "^1.2.4",
     "commander": "^2.8.1",
     "compression": "^1.5.2",
