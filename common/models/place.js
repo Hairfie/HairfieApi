@@ -41,7 +41,7 @@ module.exports = function(Place) {
             description : context.localized(this.description),
             picture     : this.picture && this.picture.toRemoteObject(context),
             location    : this.location,
-            bounds      : lodash.intersection(this.googleTypes, ["route"]) ? null : this.bounds,
+            bounds      : lodash.isEmpty(lodash.intersection(this.googleTypes, ["route"])) ? this.bounds : null,
             parent      : this.parent(context)
         };
     };
