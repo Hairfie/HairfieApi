@@ -42,7 +42,10 @@ module.exports = function (AlgoliaSearchEngine) {
         var deferred = Q.defer();
 
         action(function (error, content) {
-            if (error) deferred.reject('Failed to '+desc+': '+content.message);
+            if (error) {
+                if (content && content.message)
+                    deferred.reject('Failed to '+desc+': '+content.message);
+            }
             else deferred.resolve(content);
         });
 
