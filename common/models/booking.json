@@ -46,6 +46,12 @@
       "type": "string",
       "required": true
     },
+    "hairLength": {
+      "type": "string"
+    },
+    "service": {
+      "type": "string"
+    },
     "comment": {
       "type": "string"
     },

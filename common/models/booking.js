@@ -54,6 +54,8 @@ module.exports = function (Booking) {
             gender              : this.gender,
             email               : this.email,
             phoneNumber         : this.phoneNumber,
+            hairLength          : this.hairLength || "",
+            service             : this.service || "",
             comment             : this.comment,
             dateTime            : dateTime,
             displayDateTime     : moment(dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
