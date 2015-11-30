@@ -870,7 +870,7 @@ module.exports = function(Business) {
                         timeslots[date] = parseDay(day, interval, delay);
                         delay = 0;
                     }
-                    else if (!_.isEmpty(day)) {
+                    else {
                         delay -= 24;
                     }
                 }
