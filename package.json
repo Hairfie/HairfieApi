@@ -14,7 +14,7 @@
     "algoliasearch": "^3.7.5",
     "async": "^1.4.2",
     "aws-sdk": "^2.1.45",
-    "babel-runtime": "^6.1.18",
+    "babel-runtime": "6.2.0",
     "cloudinary": "^1.2.4",
     "commander": "^2.8.1",
     "compression": "^1.5.2",
@@ -30,11 +30,12 @@
     "html-to-text": "^1.3.1",
     "http-rewrite-middleware": "^0.1.6",
     "juice": "^1.3.4",
+    "kerberos": "0.0.17",
     "kraken": "^0.2.1",
     "locale": "0.0.20",
     "lodash": "^3.10.1",
     "loopback": "^2.20.0",
-    "loopback-boot": "~2.11.0",
+    "loopback-boot": "~2.14.2",
     "loopback-component-passport": "^1.5.0",
     "loopback-component-storage": "^1.5.1",
     "loopback-connector-mongodb": "^1.13.0",
@@ -48,12 +49,12 @@
     "newrelic": "^1.21.2",
     "node-phonenumber": "^0.2.2",
     "otaat-repl": "^1.0.2",
-    "passport": "^0.2.2",
+    "passport": "^0.3.2",
     "passport-facebook-token": "^2.3.0",
     "phone": "^1.0.4",
     "q": "^1.4.1",
     "semver": "^5.0.1",
-    "speakingurl": "^5.0.1",
+    "speakingurl": "^7.0.0",
     "superagent": "^1.3.0",
     "twilio": "^2.3.0",
     "uid2": "0.0.3",
@@ -67,6 +68,6 @@
     "supertest": "^1.0.1"
   },
   "optionalDependencies": {
-    "loopback-explorer": "^1.8.0"
+    "loopback-component-explorer": "^2.0.2"
   }
 }
