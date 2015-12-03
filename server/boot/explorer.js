@@ -1,10 +1,10 @@
 module.exports = function mountLoopBackExplorer(server) {
   var explorer;
   try {
-    explorer = require('loopback-explorer');
+    explorer = require('loopback-component-explorer');
   } catch(err) {
     console.log(
-      'Run `npm install loopback-explorer` to enable the LoopBack explorer'
+      'Run `npm install loopback-component-explorer` to enable the LoopBack explorer'
     );
     return;
   }

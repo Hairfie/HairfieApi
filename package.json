@@ -65,7 +65,9 @@
   "devDependencies": {
     "chai": "^3.2.0",
     "mocha": "^2.2.5",
-    "supertest": "^1.0.1",
+    "supertest": "^1.0.1"
+  },
+  "optionalDependencies": {
     "loopback-component-explorer": "^2.0.2"
   }
 }
