@@ -68,6 +68,6 @@
     "supertest": "^1.0.1"
   },
   "optionalDependencies": {
-    "loopback-component-explorer": "^2.0.2"
+    "loopback-explorer": "^1.8.0"
   }
 }
