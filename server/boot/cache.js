@@ -20,4 +20,20 @@ module.exports = function (app) {
     app.get('/*/blogPosts', client.route({ expire: 10000, type: "application/json" }), function (req, res, next) {
         next();
     });
+
+    app.get('/*/tops/hairfies', client.route({ expire: 10000, type: "application/json" }), function (req, res, next) {
+        next();
+    });
+
+    app.get('/*/tops/deals', client.route({ expire: 10000, type: "application/json" }), function (req, res, next) {
+        next();
+    });
+
+    app.get('/*/tags', client.route({ expire: 10000, type: "application/json" }), function (req, res, next) {
+        next();
+    });
+
+    app.get('/*/categories', client.route({ expire: 3600, type: "application/json" }), function (req, res, next) {
+        next();
+    });
 };
