@@ -40,14 +40,14 @@ function saveCategory(categoryDefinition, position) {
             tags        : _.map(tags, 'id') || [],
             position    : categoryDefinition.position
         })
-    })
-    .then(function (cat) {
-        cat = _.isArray(cat) ? cat[0] : cat;
+        .then(function (cat) {
+            cat = _.isArray(cat) ? cat[0] : cat;
 
-        cat.label = categoryDefinition.label;
-        cat.tags = _.map(tags, 'id') || [];
-        cat.position = categoryDefinition.position;
+            cat.label = categoryDefinition.label;
+            cat.tags = _.map(tags, 'id') || [];
+            cat.position = categoryDefinition.position;
 
-        return q.ninvoke(cat, 'save')
+            return q.ninvoke(cat, 'save')
+        })
     })
 }
