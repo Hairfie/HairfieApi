@@ -18,7 +18,11 @@ module.exports = {
     adminIds: commaSeparated(process.env.ADMIN_IDS),
     googleApiKey: process.env.GOOGLE_API_KEY,
     iosAppUrl: process.env.IOS_APP_URL,
-    facebookAppAccessToken: process.env.FACEBOOK_APP_ACCESS_TOKEN
+    facebookAppAccessToken: process.env.FACEBOOK_APP_ACCESS_TOKEN,
+    redisHost: process.env.REDIS_HOST,
+    redisPort: process.env.REDIS_PORT,
+    redisPassword: process.env.REDIS_PASSWORD,
+    redisPrefix: process.env.REDIS_PREFIX
 };
 
 function commaSeparated(s) {
