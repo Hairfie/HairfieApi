@@ -33,6 +33,7 @@ function saveCategory(categoryDefinition, position) {
         console.log(tags.length + " tags trouvés avec la requête " + categoryDefinition.tagNames);
         console.log(categoryDefinition);
 
+        console.log("tags : ", tags);
         return q.ninvoke(Category, 'findOrCreate', {where: { name: categoryDefinition.name }}, {
             name        : categoryDefinition.name,
             label       : categoryDefinition.label,
