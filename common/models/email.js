@@ -9,6 +9,7 @@ var fs = require('fs');
 var debug = require('debug')('Model:Email');
 var htmlToText = require('html-to-text');
 var moment = require('moment-timezone');
+var HairLength = require('../../contants/HairLength');
 
 module.exports = function (Email) {
     var locales = ['en', 'fr'];
@@ -135,7 +136,8 @@ module.exports = function (Email) {
                 booking    : booking,
                 business   : business,
                 dateTime   : dateTime,
-                bookingUrl : url.bookingConfirmation(booking)
+                bookingUrl : url.bookingConfirmation(booking),
+                hairLength : HairLength[booking.hairLength]
             }
         });
     };
