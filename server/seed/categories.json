@@ -70,5 +70,11 @@
         "label": "Enfant",
         "tagNames": ["Enfant"],
         "position": 11
+    },
+    {
+        "name": "Soin",
+        "label": "Soin",
+        "tagNames": ["Soin"],
+        "position": 12
     }
 ]

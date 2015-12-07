@@ -26,26 +26,28 @@ function saveCategories(categoriesDefinitions) {
 }
 
 function saveCategory(categoryDefinition, position) {
-    return q.ninvoke(Tag, 'find', {where: {"name.fr": {inq: categoryDefinition.tagNames}}})
-        .then(function(tags) {
-            console.log(tags.length + " tags trouvés avec la requête " + categoryDefinition.tagNames);
-            console.log(categoryDefinition);
+    return q.all(categoryDefinition.tagNames.map(function(tag) {
+        return q.ninvoke(Tag, 'find', {})
+    }))
+    .then(function(tags) {
+        console.log(tags.length + " tags trouvés avec la requête " + categoryDefinition.tagNames);
+        console.log(categoryDefinition);
 
-            return q.ninvoke(Category, 'findOrCreate', {where: { name: categoryDefinition.name }}, {
-                name        : categoryDefinition.name,
-                label       : categoryDefinition.label,
-                slug        : getSlug(categoryDefinition.name),
-                tags        : _.map(tags, 'id') || [],
-                position    : categoryDefinition.position
-            })
-            .then(function (cat) {
-                cat = _.isArray(cat) ? cat[0] : cat;
+        return q.ninvoke(Category, 'findOrCreate', {where: { name: categoryDefinition.name }}, {
+            name        : categoryDefinition.name,
+            label       : categoryDefinition.label,
+            slug        : getSlug(categoryDefinition.name),
+            tags        : _.map(tags, 'id') || [],
+            position    : categoryDefinition.position
+        })
+    })
+    .then(function (cat) {
+        cat = _.isArray(cat) ? cat[0] : cat;
 
-                cat.label = categoryDefinition.label;
-                cat.tags = _.map(tags, 'id') || [];
-                cat.position = categoryDefinition.position;
+        cat.label = categoryDefinition.label;
+        cat.tags = _.map(tags, 'id') || [];
+        cat.position = categoryDefinition.position;
 
-                return q.ninvoke(cat, 'save');
-            })
-        });
+        return q.ninvoke(cat, 'save')
+    })
 }
