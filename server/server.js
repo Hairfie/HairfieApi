@@ -1,5 +1,11 @@
 if (process.env.NEW_RELIC_LICENSE_KEY) {
-    //require('newrelic');
+    try {
+        require('newrelic');
+    }
+    catch (e) {
+        console.log('NEWRELIC Error')
+        console.log(e)
+    }
 }
 
 // require utils

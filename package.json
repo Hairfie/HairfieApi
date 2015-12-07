@@ -46,7 +46,7 @@
     "moment": "^2.10.6",
     "moment-timezone": "^0.4.0",
     "morgan": "^1.6.1",
-    "newrelic": "^1.21.2",
+    "newrelic": "^1.24.0",
     "node-phonenumber": "^0.2.2",
     "otaat-repl": "^1.0.2",
     "passport": "^0.3.2",
