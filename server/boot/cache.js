@@ -1,12 +1,5 @@
 'use strict';
 
-var cache = require('express-redis-cache')({
-    host: "aws-eu-west-1-portal.2.dblayer.com", 
-    port: 10052, 
-    auth_pass: "HCFXKTBYCYQSPDVD",
-    prefix: "staging"
-});
-
 var cache = require('express-redis-cache');
 
 module.exports = function (app) {
@@ -36,4 +29,8 @@ module.exports = function (app) {
     app.get('/*/categories', client.route({ expire: 3600, type: "application/json" }), function (req, res, next) {
         next();
     });
+
+    app.get('/*/hairfies/similar-hairfies', client.route({ expire: 100000, type: "application/json" }), function (req, res, next) {
+        next();
+    })
 };
