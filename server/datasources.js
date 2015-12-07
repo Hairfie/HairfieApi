@@ -7,6 +7,7 @@ module.exports = {
         debug: false,
         hostname: process.env.MONGO_HOST,
         port: process.env.MONGO_PORT,
+        //url: process.env.MONGO_URL,
         user: process.env.MONGO_USER,
         password: process.env.MONGO_PASS,
         database: process.env.MONGO_DB
