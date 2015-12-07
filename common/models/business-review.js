@@ -9,43 +9,42 @@ module.exports = function (BusinessReview) {
     Hooks.generateId(BusinessReview);
     Hooks.updateTimestamps(BusinessReview);
 
-    BusinessReview.observe('before save', function (ctx, next) {
-        if (ctx.instance) {
-            var sum = 0, count = 0;
-            _.forIn(ctx.instance.criteria || {}, function (value) {
-                count++;
-                sum += value;
-            });
-
-            // ok, we don't change rating valu eif there is no criteria cause it
-            // may be an old fashioned review (bare rating)
-            if (count > 0) ctx.instance.rating = Math.ceil(sum / count);
-
-            var getauthorId = q(null);
-            if (ctx.instance.authorId) {
-                getauthorId = q(ctx.instance.authorId);
-            } else {
-                getauthorId = q.ninvoke(BusinessReview.app.models.user, 'findOne', {where: {email: ctx.instance.email}})
-                .then(function(author) {
-                    return author ? author.id : null;
-                });
-            }
-
-            getauthorId
-                .then(function (id) {
-                    if (id) {
-                        ctx.instance.authorId = id;
-                    }
-                    next();
-                });
-        } else {
-            next();
-        }
-    });
-
     BusinessReview.observe('after save', function (ctx, next) {
         if (ctx.instance) {
             var businessReview = ctx.instance;
+
+            q.ninvoke(BusinessReview, 'findById', businessReview.id)
+                .then(function (review) {
+                    var sum = 0, count = 0;
+                    _.forIn(ctx.instance.criteria || {}, function (value) {
+                        count++;
+                        sum += value;
+                    });
+
+                    // ok, we don't change rating valu eif there is no criteria cause it
+                    // may be an old fashioned review (bare rating)
+                    if (count > 0) review = Math.ceil(sum / count);
+
+                    var getauthorId = q(null);
+                    if (ctx.instance.authorId) {
+                        getauthorId = q(ctx.instance.authorId);
+                    } else {
+                        getauthorId = q.ninvoke(BusinessReview.app.models.user, 'findOne', {where: {email: ctx.instance.email}})
+                        .then(function(author) {
+                            return author ? author.id : null;
+                        });
+                    }
+
+                    getauthorId
+                        .then(function (id) {
+                            if (id) {
+                                review.authorId = id;
+                            }
+                            next();
+                        });
+
+                    return Promise.npost(review, 'save');
+                })
 
             Promise.npost(businessReview, 'business')
             .then(function (business) {
