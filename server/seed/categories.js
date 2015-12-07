@@ -26,9 +26,7 @@ function saveCategories(categoriesDefinitions) {
 }
 
 function saveCategory(categoryDefinition, position) {
-    return q.all(categoryDefinition.tagNames.map(function(tag) {
-        return q.ninvoke(Tag, 'find', {where: {"name.fr": tag}})
-    }))
+return q.ninvoke(Tag, 'find', {where: {"name.fr": {inq: categoryDefinition.tagNames}}})
     .then(function(tags) {
         console.log(tags.length + " tags trouvés avec la requête " + categoryDefinition.tagNames);
         console.log(categoryDefinition);
