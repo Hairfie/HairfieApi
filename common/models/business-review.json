@@ -59,8 +59,7 @@
       "type": "string"
     },
     "rating": {
-      "type": "number",
-      "required": true
+      "type": "number"
     },
     "criteria": {
       "type": "object"
