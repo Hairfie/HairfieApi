@@ -58,6 +58,19 @@ module.exports = function(Business) {
         }
     });
 
+    function saveRating(id) {
+        var BusinessReview = Business.app.models.BusinessReview;
+        next();
+        Q.all([
+            Q.ninvoke(Business, 'findById', id),
+            Q.ninvoke(BusinessReview, 'getBusinessRating', id)
+        ])
+        .spread(function (business, rating) {
+            business.rating = rating.rating;
+            return Q.ninvoke(business, 'save');
+        })
+    }
+
     Business.prototype.toRemoteObject = function (context) {
         var Hairfie        = Business.app.models.Hairfie,
             Hairdresser    = Business.app.models.Hairdresser,
@@ -91,7 +104,7 @@ module.exports = function(Business) {
                     timetable          : this.timetable,
                     numHairfies        : Q.ninvoke(Hairfie, 'count', {businessId: this.id}),
                     numReviews         : rating.numReviews,
-                    rating             : rating.rating,
+                    rating             : this.rating,
                     crossSell          : true,
                     isBookable         : this.isBookable(),
                     displayPhoneNumber : this.displayPhoneNumber,
@@ -238,14 +251,15 @@ module.exports = function(Business) {
         var BusinessReview = Business.app.models.BusinessReview,
             Hairfie        = Business.app.models.Hairfie;
 
+            saveRating(this.id);
+
         return Q.all([
-                Q.ninvoke(BusinessReview, 'getBusinessRating', this.id),
                 Q.ninvoke(Hairfie, 'count', {businessId: this.id}),
                 this.getTags(),
                 this.getCategories(),
                 this.isClaimed()
             ])
-            .spread(function (rating, numHairfies, tags, categories, isClaimed) {
+            .spread(function (numHairfies, tags, categories, isClaimed) {
                 return {
                     id                 : this.id,
                     objectID           : this.id.toString(),
@@ -263,7 +277,7 @@ module.exports = function(Business) {
                     numHairfies        : numHairfies,
                     numReviews         : rating.numReviews,
                     numPictures        : this.pictures.length,
-                    rating             : rating.rating,
+                    rating             : this.rating,
                     crossSell          : true,
                     isBookable         : this.isBookable(),
                     bestDiscount       : this.bestDiscount,
