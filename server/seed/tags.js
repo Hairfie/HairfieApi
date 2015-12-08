@@ -19,10 +19,10 @@ function saveCategories(categoriesValues) {
 }
 
 function saveCategory(categoryValues, position) {
-    return q.npost(TagCategory, 'create', [{
+    return q.ninvoke(TagCategory, 'findOrCreate', {where: {"name.fr": categoryValues.name.fr} }, {
             name    : categoryValues.name,
             position: position
-        }])
+        })
         .then(function (category) {
             return saveTags(category, categoryValues.tags);
         });
@@ -33,9 +33,9 @@ function saveTags(category, tagsValues) {
 }
 
 function saveTag(category, tagValues, position) {
-    return q.npost(Tag, 'create', [{
+    return q.ninvoke(Tag, 'findOrCreate', {where: {"name.fr": tagValues.name.fr} }, {
         categoryId  : category.id,
         name        : tagValues.name,
         position    : position
-    }]);
+    });
 }
