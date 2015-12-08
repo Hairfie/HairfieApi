@@ -1,5 +1,11 @@
 if (process.env.NEW_RELIC_LICENSE_KEY) {
-    //require('newrelic');
+    try {
+        require('newrelic');
+    }
+    catch (e) {
+        console.log('NEWRELIC Error')
+        console.log(e)
+    }
 }
 
 // require utils
@@ -75,11 +81,11 @@ app.use(corsMiddleware);
 
 // setup rewriting rules for backward compatibility
 
-app.post('/api/hairdressers', function (req, res, next) {
+app.post('/*/hairdressers', function (req, res, next) {
     req.body.hidden = false;
     next();
 });
-app.get('/api/hairfies', function (req, res, next) {
+app.get('/*/hairfies', function (req, res, next) {
     // rewrite businessId filter
     var hairdresserId = req.query && req.query.filter && req.query.filter.where && req.query.filter.where.hairdresserId;
     if (hairdresserId) {
