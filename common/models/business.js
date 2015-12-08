@@ -58,19 +58,6 @@ module.exports = function(Business) {
         }
     });
 
-    function saveRating(id) {
-        var BusinessReview = Business.app.models.BusinessReview;
-        next();
-        Q.all([
-            Q.ninvoke(Business, 'findById', id),
-            Q.ninvoke(BusinessReview, 'getBusinessRating', id)
-        ])
-        .spread(function (business, rating) {
-            business.rating = rating.rating;
-            return Q.ninvoke(business, 'save');
-        })
-    }
-
     Business.prototype.toRemoteObject = function (context) {
         var Hairfie        = Business.app.models.Hairfie,
             Hairdresser    = Business.app.models.Hairdresser,
@@ -78,48 +65,48 @@ module.exports = function(Business) {
             BusinessMember = Business.app.models.BusinessMember,
             User           = Business.app.models.User;
 
-        return Q.ninvoke(BusinessReview, 'getBusinessRating', this.id)
-            .then((function (rating) {
-                var activeHairdressers =
-                Q
-                    .npost(this, 'getVisibleActiveMembers')
-                    .then(function (members) {
-                        return Q.all(members.map(function (member) {
-                                return member.toRemoteShortObject(context);
-                        }));
-                    });
+        if (!this.rating) {
+            Q.ninvoke(Business, 'getRating', this.id);
+        }
 
-                var owner = Q.npost(this, 'owner').then(function (user) {
-                    return user && user.toRemoteShortObject(context);
-                });
+        var activeHairdressers =
+        Q
+            .npost(this, 'getVisibleActiveMembers')
+            .then(function (members) {
+                return Q.all(members.map(function (member) {
+                        return member.toRemoteShortObject(context);
+                }));
+            });
 
-                return _.assign(this.toRemoteShortObject(context), {
-                    kind               : this.kind ? this.kind : 'SALON',
-                    gps                : this.gps,
-                    men                : false != this.men,
-                    women              : false != this.women,
-                    children           : false != this.children,
-                    owner              : owner,
-                    description        : this.description,
-                    timetable          : this.timetable,
-                    numHairfies        : Q.ninvoke(Hairfie, 'count', {businessId: this.id}),
-                    numReviews         : rating.numReviews,
-                    rating             : this.rating,
-                    crossSell          : true,
-                    isBookable         : this.isBookable(),
-                    displayPhoneNumber : this.displayPhoneNumber,
-                    services           : this.getServices(),
-                    activeHairdressers : activeHairdressers,
-                    landingPageUrl     : Business.app.urlGenerator.business(this, context),
-                    facebookPage       : this.facebookPage && this.getFacebookPageObject().toRemoteShortObject(context),
-                    addedCategories    : this.addedCategories,
-                    labels             : this.labels,
-                    accountType        : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
-                    createdAt          : this.createdAt,
-                    updatedAt          : this.updatedAt
-                });
+        var owner = Q.npost(this, 'owner').then(function (user) {
+            return user && user.toRemoteShortObject(context);
+        });
 
-            }).bind(this));
+        return _.assign(this.toRemoteShortObject(context), {
+            kind               : this.kind ? this.kind : 'SALON',
+            gps                : this.gps,
+            men                : false != this.men,
+            women              : false != this.women,
+            children           : false != this.children,
+            owner              : owner,
+            description        : this.description,
+            timetable          : this.timetable,
+            numHairfies        : Q.ninvoke(Hairfie, 'count', {businessId: this.id}),
+            numReviews         : this.numReviews || 0,
+            rating             : this.rating || null ,
+            crossSell          : true,
+            isBookable         : this.isBookable(),
+            displayPhoneNumber : this.displayPhoneNumber,
+            services           : this.getServices(),
+            activeHairdressers : activeHairdressers,
+            landingPageUrl     : Business.app.urlGenerator.business(this, context),
+            facebookPage       : this.facebookPage && this.getFacebookPageObject().toRemoteShortObject(context),
+            addedCategories    : this.addedCategories,
+            labels             : this.labels,
+            accountType        : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
+            createdAt          : this.createdAt,
+            updatedAt          : this.updatedAt
+        });
     };
 
     Business.prototype.toRemoteShortObject = function (context) {
@@ -251,8 +238,9 @@ module.exports = function(Business) {
         var BusinessReview = Business.app.models.BusinessReview,
             Hairfie        = Business.app.models.Hairfie;
 
-            saveRating(this.id);
-
+        if (!this.rating) {
+            q.ninvoke(Business, 'getRating', this.id);
+        }
         return Q.all([
                 Q.ninvoke(Hairfie, 'count', {businessId: this.id}),
                 this.getTags(),
@@ -275,9 +263,9 @@ module.exports = function(Business) {
                     _geoloc            : {lat: this.gps.lat, lng: this.gps.lng},
                     timetable          : this.timetable,
                     numHairfies        : numHairfies,
-                    numReviews         : rating.numReviews,
+                    numReviews         : this.numReviews || 0,
                     numPictures        : this.pictures.length,
-                    rating             : this.rating,
+                    rating             : this.rating || null,
                     crossSell          : true,
                     isBookable         : this.isBookable(),
                     bestDiscount       : this.bestDiscount,
@@ -424,6 +412,19 @@ module.exports = function(Business) {
      * - page
      * - limit
      */
+
+    Business.getRating = function(businessId) {
+        Q.all([
+            Q.ninvoke(BusinessReview.app.models.Business, 'findById', businessId),
+            Q.ninvoke(BusinessReview, 'getBusinessRating', businessId)
+        ])
+        .spread(function (business, rating) {
+            business.rating = rating.rating;
+            business.numReviews = rating.numReviews;
+            return Q.ninvoke(business, 'save');
+        })
+    }
+
     Business.search = function(req) {
         var params = {};
 

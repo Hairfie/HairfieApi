@@ -142,8 +142,10 @@
       "default": "FREE"
     },
     "rating": {
-      "type": "number",
-      "required": true
+      "type": "number"
+    },
+    "numReviews" : {
+      "type": "number"
     }
   },
   "validations": [],
