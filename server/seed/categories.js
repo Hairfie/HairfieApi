@@ -27,11 +27,13 @@ function saveCategories(categoriesDefinitions) {
 
 function saveCategory(categoryDefinition, position) {
     return q.all(categoryDefinition.tagNames.map(function(tag) {
-        return q.ninvoke(Tag, 'find', {where: {"name.fr": tag}})
+        return q.ninvoke(Tag, 'findOne', {where: {"name.fr": tag}})
     }))
     .then(function(tags) {
         console.log(tags.length + " tags trouvés avec la requête " + categoryDefinition.tagNames);
         console.log(categoryDefinition);
+
+        tags = _.compact(tags);
 
         return q.ninvoke(Category, 'findOrCreate', {where: { name: categoryDefinition.name }}, {
             name        : categoryDefinition.name,
