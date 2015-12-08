@@ -11,9 +11,7 @@ module.exports = function (BusinessReview) {
 
     BusinessReview.observe('after save', function (ctx, next) {
         if (ctx.instance) {
-            var businessReview = ctx.instance;
-
-            q.ninvoke(BusinessReview, 'findById', businessReview.id)
+            q.ninvoke(BusinessReview, 'findById', ctx.instance.id)
                 .then(function (review) {
                     var sum = 0, count = 0;
                     _.forIn(ctx.instance.criteria || {}, function (value) {
@@ -23,7 +21,7 @@ module.exports = function (BusinessReview) {
 
                     // ok, we don't change rating valu eif there is no criteria cause it
                     // may be an old fashioned review (bare rating)
-                    if (count > 0) review = Math.ceil(sum / count);
+                    if (count > 0) review.rating = Math.ceil(sum / count);
 
                     var getauthorId = q(null);
                     if (ctx.instance.authorId) {
@@ -43,34 +41,39 @@ module.exports = function (BusinessReview) {
                             next();
                         });
 
-                    return Promise.npost(review, 'save');
+                    return Promise.npost(review, 'save')
+                        .then(function (business) {
+                            return BusinessReview.app.models.email.notifyAll('Un avis a été déposé', {
+                                'ID'              : ctx.instance.id,
+                                'Salon'           : business.name,
+                                'Nom'             : ctx.instance.firstName + ' ' + ctx.instance.lastName,
+                                'Email'           : ctx.instance.email,
+                                'Note globale'    : ctx.instance.rating,
+                                'Commentaire'     : ctx.instance.comment
+                            });
+                        })
+                        .fail(function(error) {
+                            console.log(error);
+                            return next();
+                        });
                 })
+                .then(function () {
+                    // update review request with reviewId so we know it's used
+                    ctx.instance.request(function (error, request) {
+                    if (request) {
+                        request.reviewId = ctx.instance.id;
+                        request.save();
+                    }
 
-            Promise.npost(businessReview, 'business')
-            .then(function (business) {
-                return BusinessReview.app.models.email.notifyAll('Un avis a été déposé', {
-                    'ID'              : businessReview.id,
-                    'Salon'           : business.name,
-                    'Nom'             : businessReview.firstName + ' ' + businessReview.lastName,
-                    'Email'           : businessReview.email,
-                    'Note globale'    : businessReview.rating,
-                    'Commentaire'     : businessReview.comment
+                    next();
+
+                    })
                 });
-            })
-            .fail(console.log);
-
-            // update review request with reviewId so we know it's used
-            businessReview.request(function (error, request) {
-                if (request) {
-                    request.reviewId = businessReview.id;
-                    request.save();
-                }
-
+            }
+            else {
                 next();
-            });
-        }
-        next();
-    });
+            }
+        });
 
     var criterionKeys = [
         'welcome',
