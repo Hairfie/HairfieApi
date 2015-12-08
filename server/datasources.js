@@ -4,7 +4,7 @@ module.exports = {
     hairfieMongo: {
         name: 'hairfieMongo',
         connector: 'mongodb',
-        debug: false,
+        debug: true,
         hostname: process.env.MONGO_HOST,
         port: process.env.MONGO_PORT,
         //url: process.env.MONGO_URL,

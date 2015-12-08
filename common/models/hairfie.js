@@ -370,15 +370,9 @@ module.exports = function (Hairfie) {
     };
 
     Hairfie.listMostLikedForBusiness = function (businessId, limit) {
-        var filter = {"businessId": businessId, order: 'createdAt DESC', limit: limit};
-        console.log("filter", filter);
-        return Q.ninvoke(Hairfie, 'find', filter)
-        .then(function(results, err) {
-            console.log("results", results);
-            console.log("err", err);
-            return results;
-        })
+        var filter = {where: {"businessId": businessId}, order: 'createdAt DESC', limit: limit};
 
+        return Q.ninvoke(Hairfie, 'find', filter);
     };
 
     /**
