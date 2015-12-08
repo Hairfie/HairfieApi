@@ -369,6 +369,18 @@ module.exports = function (Hairfie) {
         return deferred.promise;
     };
 
+    Hairfie.listMostLikedForBusiness = function (businessId, limit) {
+        var filter = {"businessId": businessId, order: 'createdAt DESC', limit: limit};
+        console.log("filter", filter);
+        return Q.ninvoke(Hairfie, 'find', filter)
+        .then(function(results, err) {
+            console.log("results", results);
+            console.log("err", err);
+            return results;
+        })
+
+    };
+
     /**
      * Query params:
      * - q

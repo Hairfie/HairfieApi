@@ -16,6 +16,14 @@ module.exports = function (Top) {
             .then(cb.bind(null, null), cb);
     };
 
+    Top.businessHairfies = function (businessId, limit, cb) {
+        var limit = Math.max(0, Math.min(20, limit || 10));
+        var Hairfie = Top.app.models.Hairfie;
+        Hairfie
+            .listMostLikedForBusiness(businessId, limit)
+            .then(cb.bind(null, null), cb);
+    };
+
     Top.deals = function (limit, cb) {
         var limit = Math.max(0, Math.min(20, limit || 10));
         var Business = Top.app.models.Business;
@@ -33,6 +41,17 @@ module.exports = function (Top) {
         returns: {arg: 'Hairfie', root: true},
         http: { verb: 'GET', path: '/hairfies' }
     });
+
+    Top.remoteMethod('businessHairfies', {
+        description: 'Returns the top hairfies of a business',
+        accepts: [
+            {arg: 'businessId', type: 'string', description: 'ID of the reference business'},
+            {arg: 'limit', type: 'number', description: 'Maximum number of hairfies to return (default 10)'}
+        ],
+        returns: {arg: 'Hairfie', root: true},
+        http: { verb: 'GET', path: '/hairfies/:businessId' }
+    });
+            
 
     Top.remoteMethod('deals', {
         description: 'Returns the top deals of the moment',

@@ -4,6 +4,7 @@
   "options": {
     "sharedMethodNames": [
       "hairfies",
+      "businessHairfies",
       "deals"
     ]
   },
