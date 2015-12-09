@@ -65,8 +65,9 @@ module.exports = function(Business) {
             BusinessMember = Business.app.models.BusinessMember,
             User           = Business.app.models.User;
 
+        var rating = null;
         if (!this.rating && this.numReviews != 0) {
-            var rating = Q.ninvoke(Business, 'getRating', this.id);
+            rating = Q.ninvoke(Business, 'getRating', this.id);
         }
 
         var activeHairdressers =
@@ -92,8 +93,8 @@ module.exports = function(Business) {
             description        : this.description,
             timetable          : this.timetable,
             numHairfies        : Q.ninvoke(Hairfie, 'count', {businessId: this.id}),
-            numReviews         : this.numReviews || rating.numReviews || 0,
-            rating             : this.rating || rating.rating || null,
+            numReviews         : this.numReviews || (rating && rating.numReviews) || 0,
+            rating             : this.rating || (rating && rating.rating) || null,
             crossSell          : true,
             isBookable         : this.isBookable(),
             displayPhoneNumber : this.displayPhoneNumber,
