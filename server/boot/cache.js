@@ -18,15 +18,24 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/*/blogPosts', client.route({ expire: 10000 }), function (req, res, next) {
+    app.get('/*/blogPosts', client.route({ expire: 3600 }), function (req, res, next) {
         next();
     });
 
-    app.get('/*/tops/hairfies', client.route({ expire: 10000 }), function (req, res, next) {
+    app.get('/*/tops/hairfies', client.route({ expire: 3600 }), function (req, res, next) {
         next();
     });
 
-    app.get('/*/tops/deals', client.route({ expire: 10000 }), function (req, res, next) {
+    app.get('/*/tops/deals', client.route({ expire: 3600 }), function (req, res, next) {
+        next();
+    });
+
+    app.get('/*/tops/hairfies/:businessId', function (req, res, next) {
+        res.express_redis_cache_name = 'top-hairfies-' + req.params.businessId;
+        next();
+    });
+
+    app.get('/*/tops/hairfies/:businessId', client.route({ expire: 60 }), function (req, res, next) {
         next();
     });
 
@@ -38,7 +47,7 @@ module.exports = function (app) {
         next();
     });
 
-    app.get('/*/hairfies/similar-hairfies', client.route({ expire: 100000 }), function (req, res, next) {
+    app.get('/*/hairfies/similar-hairfies', client.route({ expire: 3600 }), function (req, res, next) {
         next();
     });
 
@@ -47,7 +56,7 @@ module.exports = function (app) {
         next();
     });
 
-    app.get('/*/businesses/:buisnessId/similar', client.route({ expire: 100000 }), function (req, res, next) {
+    app.get('/*/businesses/:businessId/similar', client.route({ expire: 60 }), function (req, res, next) {
         next();
     });
 };

@@ -857,7 +857,6 @@ module.exports = function(Business) {
 
         return Q.ninvoke(Business, 'findById', businessId)
             .then(function (business) {
-                console.log("business", business);
                 var timeslots = {};
                 var day;
                 var date;
