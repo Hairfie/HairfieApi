@@ -238,9 +238,6 @@ module.exports = function(Business) {
         var BusinessReview = Business.app.models.BusinessReview,
             Hairfie        = Business.app.models.Hairfie;
 
-        if (!this.rating) {
-            q.ninvoke(Business, 'getRating', this.id);
-        }
         return Q.all([
                 Q.ninvoke(Hairfie, 'count', {businessId: this.id}),
                 this.getTags(),
