@@ -47,6 +47,10 @@ module.exports = function (app) {
         next();
     });
 
+    app.get('/*/stations', client.route({ expire: 3600 }), function (req, res, next) {
+        next();
+    });
+
     app.get('/*/hairfies/similar-hairfies', client.route({ expire: 3600 }), function (req, res, next) {
         next();
     });

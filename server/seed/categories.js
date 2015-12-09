@@ -30,10 +30,9 @@ function saveCategory(categoryDefinition, position) {
         return q.ninvoke(Tag, 'findOne', {where: {"name.fr": tag}})
     }))
     .then(function(tags) {
+        tags = _.compact(tags);
         console.log(tags.length + " tags trouvés avec la requête " + categoryDefinition.tagNames);
         console.log(categoryDefinition);
-
-        tags = _.compact(tags);
 
         return q.ninvoke(Category, 'findOrCreate', {where: { name: categoryDefinition.name }}, {
             name        : categoryDefinition.name,
@@ -50,6 +49,9 @@ function saveCategory(categoryDefinition, position) {
             cat.position = categoryDefinition.position;
 
             return q.ninvoke(cat, 'save')
+                .then(function() {
+                    return;
+                });
         })
     })
 }
