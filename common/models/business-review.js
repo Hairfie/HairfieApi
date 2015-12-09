@@ -60,6 +60,8 @@ module.exports = function (BusinessReview) {
             })
             .fail(console.log);
 
+            q.ninvoke(BusinessReview.app.models.Business, 'getRating', ctx.instance.businessId);
+
             // update review request with reviewId so we know it's used
             businessReview.request(function (error, request) {
                 if (request) {
@@ -192,6 +194,8 @@ module.exports = function (BusinessReview) {
                 if (!isAllowed) return next({statusCode: 403});
 
                 businessReview.hidden = true;
+
+                q.ninvoke(BusinessReview.app.models.Business, 'getRating', businessReview.businessId);
 
                 return Promise.npost(businessReview, 'save');
             })

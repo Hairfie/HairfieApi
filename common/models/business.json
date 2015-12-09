@@ -140,6 +140,12 @@
       "type": "string",
       "required": true,
       "default": "FREE"
+    },
+    "rating": {
+      "type": "number"
+    },
+    "numReviews" : {
+      "type": "number"
     }
   },
   "validations": [],
