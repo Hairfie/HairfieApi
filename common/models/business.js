@@ -65,8 +65,8 @@ module.exports = function(Business) {
             BusinessMember = Business.app.models.BusinessMember,
             User           = Business.app.models.User;
 
-        if (!this.rating) {
-            Q.ninvoke(Business, 'getRating', this.id);
+        if (!this.rating && this.numReviews != 0) {
+            var rating = Q.ninvoke(Business, 'getRating', this.id);
         }
 
         var activeHairdressers =
@@ -92,8 +92,8 @@ module.exports = function(Business) {
             description        : this.description,
             timetable          : this.timetable,
             numHairfies        : Q.ninvoke(Hairfie, 'count', {businessId: this.id}),
-            numReviews         : this.numReviews || 0,
-            rating             : this.rating || null ,
+            numReviews         : this.numReviews || rating.numReviews || 0,
+            rating             : this.rating || rating.rating || null,
             crossSell          : true,
             isBookable         : this.isBookable(),
             displayPhoneNumber : this.displayPhoneNumber,
@@ -411,14 +411,15 @@ module.exports = function(Business) {
      */
 
     Business.getRating = function(businessId) {
-        Q.all([
+        var BusinessReview = Business.app.models.BusinessReview;
+        return Q.all([
             Q.ninvoke(BusinessReview.app.models.Business, 'findById', businessId),
             Q.ninvoke(BusinessReview, 'getBusinessRating', businessId)
         ])
         .spread(function (business, rating) {
-            business.rating = rating.rating;
-            business.numReviews = rating.numReviews;
-            return Q.ninvoke(business, 'save');
+            business.rating = rating.rating || null;
+            business.numReviews = rating.numReviews || 0;
+            return Q.ninvoke(business, 'save')
         })
     }
 
