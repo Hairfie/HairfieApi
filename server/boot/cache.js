@@ -18,27 +18,27 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/*/blogPosts', client.route({ expire: 10000, type: "application/json" }), function (req, res, next) {
+    app.get('/*/blogPosts', client.route({ expire: 10000 }), function (req, res, next) {
         next();
     });
 
-    app.get('/*/tops/hairfies', client.route({ expire: 10000, type: "application/json" }), function (req, res, next) {
+    app.get('/*/tops/hairfies', client.route({ expire: 10000 }), function (req, res, next) {
         next();
     });
 
-    app.get('/*/tops/deals', client.route({ expire: 10000, type: "application/json" }), function (req, res, next) {
+    app.get('/*/tops/deals', client.route({ expire: 10000 }), function (req, res, next) {
         next();
     });
 
-    app.get('/*/tags', client.route({ expire: 10000, type: "application/json" }), function (req, res, next) {
+    app.get('/*/tags', client.route({ expire: 3600 }), function (req, res, next) {
         next();
     });
 
-    app.get('/*/categories', client.route({ expire: 3600, type: "application/json" }), function (req, res, next) {
+    app.get('/*/categories', client.route({ expire: 3600 }), function (req, res, next) {
         next();
     });
 
-    app.get('/*/hairfies/similar-hairfies', client.route({ expire: 100000, type: "application/json" }), function (req, res, next) {
+    app.get('/*/hairfies/similar-hairfies', client.route({ expire: 100000 }), function (req, res, next) {
         next();
     });
 
@@ -47,7 +47,7 @@ module.exports = function (app) {
         next();
     });
 
-    app.get('/*/businesses/:buisnessId/similar', client.route({ expire: 100000, type: "application/json" }), function (req, res, next) {
+    app.get('/*/businesses/:buisnessId/similar', client.route({ expire: 100000 }), function (req, res, next) {
         next();
     });
 };
