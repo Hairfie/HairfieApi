@@ -49,9 +49,9 @@ module.exports = function (Container) {
         }
 
         var url = Container.app.models.CloudinaryImage.getUrl(container, id, options);
-
         res.redirect(url, 301);
-        cb();
+
+        //cb();
     };
 
     Container.remoteMethod('upload', {
