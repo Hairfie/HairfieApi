@@ -126,6 +126,10 @@
         "type": "boolean",
         "default": true
     },
+    "topBusiness": {
+      "type": "boolean",
+      "default": false
+    },
     "exceptions": {
         "type": "object"
     },

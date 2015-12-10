@@ -28,8 +28,15 @@ module.exports = function (Top) {
         var limit = Math.max(0, Math.min(20, limit || 10));
         var Business = Top.app.models.Business;
 
-        Business.find({order: 'bestDiscount DESC', limit: limit}, function (error, businesses) {
-            cb(error, _.map(businesses, businessDeal));
+        Business.find({order: 'bestDiscount DESC', limit: limit, where: { topBusiness: true } }, function (error, businesses) {
+            if (businesses.length < limit) {
+                Business.find({order: 'bestDiscount DESC', limit: (limit - businesses.length), where: { topBusiness: { neq: true } } }, function (error, complete) {
+                    cb(error, _.map(businesses.concat(complete), businessDeal));
+                });
+            }
+            else {
+                cb(error, _.map(businesses, businessDeal));
+            }
         });
     };
 
@@ -51,7 +58,7 @@ module.exports = function (Top) {
         returns: {arg: 'Hairfie', root: true},
         http: { verb: 'GET', path: '/hairfies/:businessId' }
     });
-            
+
 
     Top.remoteMethod('deals', {
         description: 'Returns the top deals of the moment',
