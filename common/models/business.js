@@ -440,6 +440,13 @@ module.exports = function(Business) {
         params.withDiscount = req.query.withDiscount,
         params.q            = req.query.q || req.query.query;
 
+        if(req.query.price) {
+            params.price = {
+                min: req.query.price.min || null,
+                max: req.query.price.max || null
+            }
+        }
+
         return Q.ninvoke(Business, 'algoliaSearch', params)
             .then(processAlgoliaForSearch);
     }
@@ -513,7 +520,7 @@ module.exports = function(Business) {
         }
 
         if(params.price && params.price.max) {
-            numericFiltersArr.push('(averagePrice.men<' + price.max + ',averagePrice.women<' + params.price.max + ')');
+            numericFiltersArr.push('(averagePrice.men<' + params.price.max + ',averagePrice.women<' + params.price.max + ')');
         }
 
         if(params.withDiscount) {
