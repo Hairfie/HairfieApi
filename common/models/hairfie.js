@@ -187,6 +187,49 @@ module.exports = function (Hairfie) {
             })
     };
 
+    Hairfie.observe('after save', function (ctx, next) {
+        var Business = Hairfie.app.models.Business;
+        var BusinessMember = Hairfie.app.models.BusinessMember;
+
+        if (ctx.instance && ctx.instance.businessId) {
+            var hairfie = ctx.instance;
+
+            Q.all([
+                Q.ninvoke(Business, 'findOne', {where: {id: hairfie.businessId}}),
+                hairfie.getTags(),
+                getAveragePriceForTag(hairfie, 'Man'),
+                getAveragePriceForTag(hairfie, 'Woman'),
+                ctx.instance.businessMemberId ? Hairfie.count({businessMemberId: ctx.instance.businessMemberId}) : null
+
+            ]).spread(function (business, tags, menAveragePrice, womenAveragePrice, count) {
+                if (ctx.instance.businessMemberId) {
+                    Q.ninvoke(BusinessMember, 'findById', ctx.instance.businessMemberId)
+                        .then(function(bm) {
+                            bm.numHairfies = count;
+                            return q.ninvoke(bm, 'save');
+                        });
+
+                }
+                // update business with tags
+                business.hairfieTags = business.hairfieTags || {};
+                _.map(tags, function (tag) {
+                    business.hairfieTags[tag.id] = (business.hairfieTags[tag.id] || 0) + 1;
+                });
+
+                business.averagePrice = {
+                    men: menAveragePrice.amount,
+                    women: womenAveragePrice.amount
+                }
+
+                return Q.npost(business, 'save');
+            })
+            .then(function(business) {
+                next();
+            })
+        }
+        next();
+    });
+
     Hairfie.updateHairfie = function (req, user, next) {
         if (!user) return next({statusCode: 401});
         var Engine = Hairfie.app.models.AlgoliaSearchEngine;
@@ -374,6 +417,8 @@ module.exports = function (Hairfie) {
 
         return Q.ninvoke(Hairfie, 'find', filter);
     };
+
+
 
     /**
      * Query params:

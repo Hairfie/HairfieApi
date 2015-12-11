@@ -6,6 +6,7 @@ var validateExists = require('../utils/validator/exists');
 var Control = require('../utils/AccessControl');
 var Hooks = require('./hooks');
 var q = require('q');
+var _ = require('lodash');
 
 module.exports = function (BusinessMember) {
     Hooks.generateId(BusinessMember);
@@ -34,9 +35,10 @@ module.exports = function (BusinessMember) {
 
     BusinessMember.prototype.toRemoteShortObject = function (context) {
         var numHairfies = null;
-        if (!this.numHairfies) {
+        if (_.isUndefined(this.numHairfies)) {
             var numHairfies = Promise.npost(this, 'getNumHairfies')
                 .then(function(val) {
+                    console.log("doc to save : ", this);
                     this.numHairfies = val;
                     q.ninvoke(this, 'save');
                     return val;
