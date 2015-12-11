@@ -189,6 +189,7 @@ module.exports = function (Hairfie) {
 
     Hairfie.observe('after save', function (ctx, next) {
         var Business = Hairfie.app.models.Business;
+        var BusinessMember = Hairfie.app.models.BusinessMember;
 
         if (ctx.instance && ctx.instance.businessId) {
             var hairfie = ctx.instance;
@@ -197,9 +198,18 @@ module.exports = function (Hairfie) {
                 Q.ninvoke(Business, 'findOne', {where: {id: hairfie.businessId}}),
                 hairfie.getTags(),
                 getAveragePriceForTag(hairfie, 'Man'),
-                getAveragePriceForTag(hairfie, 'Woman')
+                getAveragePriceForTag(hairfie, 'Woman'),
+                ctx.instance.businessMemberId ? Q.ninvoke(BusinessMember, 'findById', ctx.instance.businessMemberId) : null
 
-            ]).spread(function (business, tags, menAveragePrice, womenAveragePrice) {
+            ]).spread(function (business, tags, menAveragePrice, womenAveragePrice, businessMember) {
+                if (ctx.instance.businessMemberId) {
+                    Promise.npost(businessMember, 'count')
+                        .then(function(bm) {
+                            bm.numHairfies = count;
+                            return q.ninvoke(bm, 'save');
+                        });
+
+                }
                 // update business with tags
                 business.hairfieTags = business.hairfieTags || {};
                 _.map(tags, function (tag) {

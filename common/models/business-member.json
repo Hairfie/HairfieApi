@@ -64,6 +64,9 @@
     "willBeNotified": {
       "type": "boolean",
       "default": false
+    },
+    "numHairfies": {
+      "type": "number"
     }
   },
   "validations": [],

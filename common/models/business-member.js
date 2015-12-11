@@ -5,6 +5,8 @@ var RemoteObject = require('../utils/RemoteObject');
 var validateExists = require('../utils/validator/exists');
 var Control = require('../utils/AccessControl');
 var Hooks = require('./hooks');
+var q = require('q');
+var _ = require('lodash');
 
 module.exports = function (BusinessMember) {
     Hooks.generateId(BusinessMember);
@@ -32,6 +34,20 @@ module.exports = function (BusinessMember) {
     };
 
     BusinessMember.prototype.toRemoteShortObject = function (context) {
+        var getNumHairfies = q(null);
+        if (_.isUndefined(this.numHairfies)) {
+            getNumHairfies = q.npost(this, 'getNumHairfies')
+                .then(function(val) {
+                    console.log("doc to save : ", this);
+                    this.numHairfies = val;
+                    q.ninvoke(this, 'save');
+                    return val;
+                }.bind(this));
+        }
+        else {
+            getNumHairfies = q(this.numHairfies);
+        }
+
         return {
             id              : this.id,
             businessId      : this.businessId,
@@ -48,7 +64,7 @@ module.exports = function (BusinessMember) {
             active          : this.active,
             isOwner         : this.isOwner,
             willBeNotified  : this.willBeNotified,
-            numHairfies     : Promise.npost(this, 'getNumHairfies')
+            numHairfies     : getNumHairfies || 0
         };
     };
 

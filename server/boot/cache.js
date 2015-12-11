@@ -8,7 +8,6 @@ module.exports = function (app) {
         port: app.get('redisPort'),
         auth_pass: app.get('redisPassword'),
         prefix: app.get('redisPrefix'),
-        type: 'application/json; charset=utf-8',
         expire: {
             200: 5000,
             404: 10,
