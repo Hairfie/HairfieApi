@@ -70,18 +70,21 @@ module.exports = function(Business) {
             rating = Q.ninvoke(Business, 'getRating', this.id);
         }
 
-        var activeHairdressers =
-        Q
-            .npost(this, 'getVisibleActiveMembers')
-            .then(function (members) {
-                return Q.all(members.map(function (member) {
-                        return member.toRemoteShortObject(context);
-                }));
-            });
+        if (context.isApiVersion('<1.2')) {
+            console.log("members ...");
+            var activeHairdressers =
+            Q
+                .npost(this, 'getVisibleActiveMembers')
+                .then(function (members) {
+                    return Q.all(members.map(function (member) {
+                            return member.toRemoteShortObject(context);
+                    }));
+                });
 
-        var owner = Q.npost(this, 'owner').then(function (user) {
-            return user && user.toRemoteShortObject(context);
-        });
+            var owner = Q.npost(this, 'owner').then(function (user) {
+                return user && user.toRemoteShortObject(context);
+            });
+        }
 
         return _.assign(this.toRemoteShortObject(context), {
             kind               : this.kind ? this.kind : 'SALON',
@@ -118,7 +121,7 @@ module.exports = function(Business) {
         var phoneNumberToDisplay = this.phoneNumber;
 
         if (context.isApiVersion('<1')) {
-            pictures.push(streetViewPicture);
+            if(pictures.length == 0) pictures.push(streetViewPicture);
         } else {
             if(phoneNumberToDisplay) {
                 phoneNumberToDisplay = phoneUtil.format(phoneUtil.parse(phoneNumberToDisplay,'FR'), phone.PhoneNumberFormat.INTERNATIONAL)
