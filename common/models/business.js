@@ -84,6 +84,8 @@ module.exports = function(Business) {
             var owner = Q.npost(this, 'owner').then(function (user) {
                 return user && user.toRemoteShortObject(context);
             });
+
+            var services = this.getServices();
         }
 
         return _.assign(this.toRemoteShortObject(context), {
@@ -101,8 +103,8 @@ module.exports = function(Business) {
             crossSell          : true,
             isBookable         : this.isBookable(),
             displayPhoneNumber : this.displayPhoneNumber,
-            services           : this.getServices(),
             activeHairdressers : activeHairdressers,
+            services           : services,
             landingPageUrl     : Business.app.urlGenerator.business(this, context),
             facebookPage       : this.facebookPage && this.getFacebookPageObject().toRemoteShortObject(context),
             addedCategories    : this.addedCategories,
