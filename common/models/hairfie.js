@@ -199,11 +199,11 @@ module.exports = function (Hairfie) {
                 hairfie.getTags(),
                 getAveragePriceForTag(hairfie, 'Man'),
                 getAveragePriceForTag(hairfie, 'Woman'),
-                ctx.instance.businessMemberId ? Hairfie.count({businessMemberId: ctx.instance.businessMemberId}) : null
+                ctx.instance.businessMemberId ? Q.ninvoke(BusinessMember, 'findById', ctx.instance.businessMemberId) : null
 
-            ]).spread(function (business, tags, menAveragePrice, womenAveragePrice, count) {
+            ]).spread(function (business, tags, menAveragePrice, womenAveragePrice, businessMember) {
                 if (ctx.instance.businessMemberId) {
-                    Q.ninvoke(BusinessMember, 'findById', ctx.instance.businessMemberId)
+                    Promise.npost(businessMember, 'count')
                         .then(function(bm) {
                             bm.numHairfies = count;
                             return q.ninvoke(bm, 'save');

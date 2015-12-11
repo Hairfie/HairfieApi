@@ -34,15 +34,18 @@ module.exports = function (BusinessMember) {
     };
 
     BusinessMember.prototype.toRemoteShortObject = function (context) {
-        var numHairfies = null;
+        var getNumHairfies = q(null);
         if (_.isUndefined(this.numHairfies)) {
-            var numHairfies = Promise.npost(this, 'getNumHairfies')
+            getNumHairfies = q.npost(this, 'getNumHairfies')
                 .then(function(val) {
                     console.log("doc to save : ", this);
                     this.numHairfies = val;
                     q.ninvoke(this, 'save');
                     return val;
                 }.bind(this));
+        }
+        else {
+            getNumHairfies = q(this.numHairfies);
         }
 
         return {
@@ -61,7 +64,7 @@ module.exports = function (BusinessMember) {
             active          : this.active,
             isOwner         : this.isOwner,
             willBeNotified  : this.willBeNotified,
-            numHairfies     : this.numHairfies || numHairfies || 0
+            numHairfies     : getNumHairfies || 0
         };
     };
 
