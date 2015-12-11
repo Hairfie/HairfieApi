@@ -53,6 +53,7 @@
     "passport": "^0.3.2",
     "passport-facebook-token": "^2.3.0",
     "phone": "^1.0.4",
+    "pm2": "^0.15.10",
     "q": "^1.4.1",
     "semver": "^5.0.1",
     "speakingurl": "^7.0.0",

@@ -71,6 +71,7 @@ module.exports = function (BusinessMember) {
     BusinessMember.prototype.getNumHairfies = function (cb) {
         if (!this.id) cb(null, 0);
         var Hairfie = BusinessMember.app.models.Hairfie;
+        console.log("getNumHairfies");
         Hairfie.count({businessMemberId: this.id}, cb);
     };
 
