@@ -70,10 +70,14 @@ module.exports = function(Business) {
             rating = Q.ninvoke(Business, 'getRating', this.id);
         }
 
+        var numHairfies = null;
         if (!this.numHairfies && this.numHairfies != 0) {
-
+            numHairfies = Q.ninvoke(Hairfie, 'count', {businessId: this.id})
+                .then(function (numHairfies) {
+                    this.numHairfies = numHairfies;
+                    Q.ninvoke(this, 'save');
+                });
         }
-
         if (context.isApiVersion('<1.2')) {
             console.log("members ...");
             var activeHairdressers =
