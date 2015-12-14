@@ -76,7 +76,8 @@ module.exports = function(Business) {
                 .then(function (numHairfies) {
                     this.numHairfies = numHairfies;
                     Q.ninvoke(this, 'save');
-                });
+                    return numHairfies;
+                }.bind(this));
         }
         if (context.isApiVersion('<1.2')) {
             console.log("members ...");
