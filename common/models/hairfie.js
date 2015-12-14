@@ -210,6 +210,13 @@ module.exports = function (Hairfie) {
                         });
 
                 }
+                if (ctx.instance.businessId) {
+                    Q.ninvoke(Hairfie, 'count', {businessId: this.id})
+                        .then(function (numHairfies) {
+                            business.numHairfies = numHairfies;
+                            Q.ninvoke(business, 'save');
+                        });
+                }
                 // update business with tags
                 business.hairfieTags = business.hairfieTags || {};
                 _.map(tags, function (tag) {

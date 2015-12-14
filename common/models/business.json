@@ -150,6 +150,9 @@
     },
     "numReviews" : {
       "type": "number"
+    },
+    "numHaifies" : {
+      "type": "number"
     }
   },
   "validations": [],

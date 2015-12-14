@@ -70,6 +70,15 @@ module.exports = function(Business) {
             rating = Q.ninvoke(Business, 'getRating', this.id);
         }
 
+        var numHairfies = null;
+        if (!this.numHairfies && this.numHairfies != 0) {
+            numHairfies = Q.ninvoke(Hairfie, 'count', {businessId: this.id})
+                .then(function (numHairfies) {
+                    this.numHairfies = numHairfies;
+                    Q.ninvoke(this, 'save');
+                    return numHairfies;
+                }.bind(this));
+        }
         if (context.isApiVersion('<1.2')) {
             console.log("members ...");
             var activeHairdressers =
@@ -97,7 +106,7 @@ module.exports = function(Business) {
             owner              : owner,
             description        : this.description,
             timetable          : this.timetable,
-            numHairfies        : Q.ninvoke(Hairfie, 'count', {businessId: this.id}),
+            numHairfies        : this.numHairfies || numHairfies || 0,
             numReviews         : this.numReviews || (rating && rating.numReviews) || 0,
             rating             : this.rating || (rating && rating.rating) || null,
             crossSell          : true,
