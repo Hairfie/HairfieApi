@@ -105,7 +105,7 @@ module.exports = function(Business) {
             owner              : owner,
             description        : this.description,
             timetable          : this.timetable,
-            numHairfies        : this.numHairfies || Q.ninvoke(Hairfie, 'count', {businessId: this.id}),
+            numHairfies        : this.numHairfies || numHairfies || 0,
             numReviews         : this.numReviews || (rating && rating.numReviews) || 0,
             rating             : this.rating || (rating && rating.rating) || null,
             crossSell          : true,
