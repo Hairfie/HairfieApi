@@ -38,6 +38,9 @@
       "required": true,
       "index": "true"
     },
+    "profilePicture": {
+      "type": "Image"
+    },
     "pictures": {
       "type": ["Image"]
     },
