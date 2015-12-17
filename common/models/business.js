@@ -125,13 +125,12 @@ module.exports = function(Business) {
     };
 
     Business.prototype.toRemoteShortObject = function (context) {
-        var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject(context);
-
         var pictures = (this.pictures || []).map(function (p) { return p.toRemoteObject(context); });
 
         var phoneNumberToDisplay = this.phoneNumber;
 
         if (context.isApiVersion('<1')) {
+            var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject(context);
             if(pictures.length == 0) pictures.push(streetViewPicture);
         } else {
             if(phoneNumberToDisplay) {
