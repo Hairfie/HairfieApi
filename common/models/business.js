@@ -151,6 +151,7 @@ module.exports = function(Business) {
             address     : this.address,
             bestDiscount: this.bestDiscount,
             averagePrice: this.averagePrice,
+            profilePicture: this.profilePicture || {},
             pictures    : pictures,
             isBookable  : this.isBookable(),
             thumbnail   : pictures[0] // BC mobile
