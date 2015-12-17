@@ -99,7 +99,8 @@ module.exports = {
             'business-members': process.env.CLOUDINARY_FOLDER_BUSINESS_MEMBERS,
             'users': process.env.CLOUDINARY_FOLDER_USERS,
             'categories': process.env.CLOUDINARY_FOLDER_CATEGORIES,
-            'places': process.env.CLOUDINARY_FOLDER_PLACES
+            'places': process.env.CLOUDINARY_FOLDER_PLACES,
+            'business-profiles': process.env.CLOUDINARY_FOLDER_BUSINESS_PROFILES
         }
     },
     amazonS3: {
@@ -115,6 +116,7 @@ module.exports = {
             'users': process.env.AMAZON_S3_BUCKET_USERS,
             'categories': process.env.AMAZON_S3_BUCKET_CATEGORIES,
             'places': process.env.AMAZON_S3_BUCKET_PLACES,
+            'business-profiles': process.env.AMAZON_S3_BUCKET_BUSINESS_PROFILES,
 
             'user-profile-pictures': process.env.AMAZON_S3_BUCKET_USER_PROFILE_PICTURES,
             'business-pictures': process.env.AMAZON_S3_BUCKET_BUSINESS_PICTURES,
