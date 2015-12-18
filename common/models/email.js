@@ -199,12 +199,16 @@ module.exports = function (Email) {
 
         var deferred = Q.defer();
 
+        console.log("NODE_TLS_REJECT_UNAUTHORIZED", process.env.NODE_TLS_REJECT_UNAUTHORIZED);
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
         email.send(function (error) {
             if (error) {
                 console.log('Failed to send email', error);
                 deferred.reject(error);
             } else {
                 console.log('Email successfully sent');
+                process.env.NODE_TLS_REJECT_UNAUTHORIZED = undefined;
                 deferred.resolve();
             }
         });
