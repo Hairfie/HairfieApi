@@ -97,6 +97,7 @@ module.exports = function (AlgoliaSearchEngine) {
                         .then(function (models) {
                             return Q.all(_.map(models, modelSearchDocument))
                                 .then(function (docs) {
+                                    console.log("first to be saved :", docs[0]);
                                     return runAlgolia('save documents', function (resolver) {
                                         index.saveObjects(docs, resolver);
                                     });

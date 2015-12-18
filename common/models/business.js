@@ -48,6 +48,17 @@ module.exports = function(Business) {
     Business.ACCOUNT_BASIC = 'BASIC';
     Business.ACCOUNT_PREMIUM = 'PREMIUM';
 
+    Business.ACCOUNT_TYPE_VALUE = function(accountType) {
+        switch(accountType) {
+            case Business.ACCOUNT_PREMIUM:
+                return 2;
+            case Business.ACCOUNT_BASIC:
+                return 1;
+            default:
+                return 0;
+        }
+    }
+
     Business.validatesInclusionOf('accountType', {in: [Business.ACCOUNT_FREE, Business.ACCOUNT_BASIC, Business.ACCOUNT_PREMIUM]});
 
 
@@ -289,6 +300,7 @@ module.exports = function(Business) {
                     averagePrice       : this.averagePrice,
                     isClaimed          : isClaimed,
                     accountType        : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
+                    accountTypeValue   : Business.ACCOUNT_TYPE_VALUE(this.accountType),
                     updatedAt          : this.updatedAt
                 }
             }.bind(this));
