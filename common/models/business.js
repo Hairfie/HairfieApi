@@ -125,13 +125,12 @@ module.exports = function(Business) {
     };
 
     Business.prototype.toRemoteShortObject = function (context) {
-        var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject(context);
-
         var pictures = (this.pictures || []).map(function (p) { return p.toRemoteObject(context); });
 
         var phoneNumberToDisplay = this.phoneNumber;
 
         if (context.isApiVersion('<1')) {
+            var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject(context);
             if(pictures.length == 0) pictures.push(streetViewPicture);
         } else {
             if(phoneNumberToDisplay) {
@@ -441,6 +440,21 @@ module.exports = function(Business) {
 
     Business.search = function(req) {
         var params = {};
+        console.log("skip", req.query.skip);
+        console.log("page", req.query.page);
+        console.log("limit", req.query.limit);
+
+        var limit = req.query.limit ? req.query.limit : 10;
+        var page = 1;
+
+        if(req.query.skip) {
+            page = Math.floor(req.query.skip/limit) + 1;
+        } else if(req.query.page) {
+            page = Math.max(req.query.page || 1);
+        }
+
+        //params.skip         = params.limit * (params.page - 1),
+
 
         params.maxDistance  = req.query.radius || 10000,
         params.location     = req.query.location ? GeoPoint(req.query.location) : null,
@@ -449,9 +463,8 @@ module.exports = function(Business) {
                                     southWest: GeoPoint(req.query.bounds.southWest)
                                 },
         params.facetFilters = req.query.facetFilters,
-        params.page         = Math.max(req.query.page || 1),
-        params.limit        = Math.min(req.query.limit || 10, 100),
-        params.skip         = params.limit * (params.page - 1),
+        params.page         = page,
+        params.limit        = Math.min(limit, 100),
         params.withDiscount = req.query.withDiscount,
         params.q            = req.query.q || req.query.query;
 
