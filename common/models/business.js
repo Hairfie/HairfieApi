@@ -150,7 +150,7 @@ module.exports = function(Business) {
             address     : this.address,
             bestDiscount: this.bestDiscount,
             averagePrice: this.averagePrice,
-            profilePicture: this.profilePicture || {},
+            profilePicture: this.profilePicture && this.profilePicture.toRemoteShortObject(context),
             pictures    : pictures,
             isBookable  : this.isBookable(),
             thumbnail   : pictures[0] // BC mobile
