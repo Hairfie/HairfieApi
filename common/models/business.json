@@ -125,6 +125,10 @@
         "women": "number"
       }
     },
+    "priceLevel": {
+      "type": "number",
+      "default": null
+    },
     "bookable": {
         "type": "boolean",
         "default": true

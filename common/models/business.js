@@ -161,6 +161,7 @@ module.exports = function(Business) {
             address     : this.address,
             bestDiscount: this.bestDiscount,
             averagePrice: this.averagePrice,
+            priceLevel  : this.priceLevel || null,
             profilePicture: this.profilePicture && this.profilePicture.toRemoteShortObject(context),
             pictures    : pictures,
             isBookable  : this.isBookable(),
