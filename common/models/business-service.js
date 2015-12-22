@@ -15,6 +15,7 @@ module.exports = function (BusinessService) {
                 return business ? business.toRemoteShortObject(context) : null;
             }),
             businessId      : this.businessId,
+            gender          : this.gender || "",
             label           : this.label,
             price           : this.price,
             durationMinutes : this.durationMinutes,
