@@ -527,7 +527,7 @@ module.exports = function(Business) {
         if (location) {
             algoliaParams.aroundLatLng = location.asLatLngString(),
             algoliaParams.aroundRadius = params.maxDistance,
-            //algoliaParams.aroundPrecision = 10
+            algoliaParams.aroundPrecision = 1000
         }
 
         if (bounds) {
