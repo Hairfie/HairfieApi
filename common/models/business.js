@@ -882,7 +882,9 @@ module.exports = function(Business) {
         _.map(day, function(timeslots) {
             var i;
             for (i = 0; moment(timeslots.endTime, "HH:mm") >= moment(timeslots.startTime, "HH:mm").add((i + 1) * interval, "m"); i++) {
-                if (!(delay && delay > moment(timeslots.startTime, "HH:mm").add(i * interval, "m").hours()))
+                var delta = moment(timeslots.startTime, "HH:mm").add(i * interval, "m").diff(moment(timeslots.startTime, "HH:mm"), 'hours');
+
+                if (!(delay && delay > delta))
                     newBattlements.push({
                         startTime: moment(timeslots.startTime, "HH:mm").add(i * interval, "m").format("HH:mm"),
                         endTime: moment(timeslots.startTime, "HH:mm").add((i + 1) * interval, "m").format("HH:mm"),
@@ -895,7 +897,7 @@ module.exports = function(Business) {
 
     Business.timeslots = function (businessId, from, until, next) {
         var interval = 30; //60 Minutes between each timeslot
-        var delay = 48; //Numbers minimum hours before the first timeslots bookable
+        var delay = 28; //Numbers minimum hours before the first timeslots bookable
 
         if (moment(from) > moment(until))
             next({statusCode: 400, message: 'from must to be before until (time)'});
