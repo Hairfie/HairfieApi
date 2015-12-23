@@ -39,11 +39,11 @@ module.exports = function (app) {
         next();
     });
 
-    app.get('/*/tags', client.route({ expire: 3600 }), function (req, res, next) {
+    app.get('/*/tags', client.route({ expire: 3600, type: 'application/json; charset=utf-8' }), function (req, res, next) {
         next();
     });
 
-    app.get('/*/categories', client.route({ expire: 3600 }), function (req, res, next) {
+    app.get('/*/categories', client.route({ expire: 3600, type: 'application/json; charset=utf-8'  }), function (req, res, next) {
         next();
     });
 
