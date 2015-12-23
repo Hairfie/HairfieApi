@@ -50,7 +50,9 @@ module.exports = function (BusinessService) {
             label           : this.label,
             price           : this.price,
             durationMinutes : this.durationMinutes,
-            position        : this.position || null
+            position        : this.position || null,
+            isManClassicPrice : this.isManClassicPrice || false,
+            isWomanClassicPrice : this.isWomanClassicPrice || false
         };
     };
 
