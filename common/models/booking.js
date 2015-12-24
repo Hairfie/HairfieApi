@@ -221,7 +221,8 @@ module.exports = function (Booking) {
                     'Genre'           : booking.gender,
                     'Email du client' : booking.email,
                     'Tel du client'   : booking.phoneNumber,
-                    'Prestation'      : booking.comment,
+                    'Longueur'        : booking.hairLength || "",
+                    'Service'         : booking.service || "",
                     'Promo'           : booking.discount + ' %'
                 });
             })
