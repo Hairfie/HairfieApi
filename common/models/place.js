@@ -33,6 +33,8 @@ module.exports = function(Place) {
 
     Place.prototype.toRemoteObject =
     Place.prototype.toRemoteShortObject = function (context) {
+        var isAPoint = !lodash.isEmpty(lodash.intersection(["route", "street_address", "premise", "point_of_interest"], this.googleTypes));
+
         return {
             id          : this.id,
             href        : Place.app.urlGenerator.api('places/'+this.id),
@@ -41,7 +43,7 @@ module.exports = function(Place) {
             description : context.localized(this.description),
             picture     : this.picture && this.picture.toRemoteObject(context),
             location    : this.location,
-            bounds      : lodash.isEmpty(lodash.intersection(this.googleTypes, ["route"])) ? this.bounds : null,
+            bounds      : isAPoint ? null : this.bounds,
             parent      : this.parent(context)
         };
     };
