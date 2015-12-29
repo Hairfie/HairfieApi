@@ -50,39 +50,81 @@ module.exports = function (Hairfie) {
     }, {message: 'all exist'});
 
     Hairfie.prototype.toRemoteObject = function (context) {
-        return Q.all([
-            Q.ninvoke(this.business).then(function (business) {
-                return business ? business.toRemoteShortObject(context) : null;
-            }),
-            this.getTags()
-            .then(function (tags) {
-                return tags ? tags.map(function (tag) { return tag.toRemoteShortObject(context) }) : null;
-            })
-        ]).spread(function(business, tags) {
-            var businessMember = Q.npost(this, 'businessMember').then(function (businessMember) {
-                return businessMember && businessMember.toRemoteShortObject(context);
-            });
+        if(context.isApiVersion('<1.3')) {
+            return Q.all([
+                Q.ninvoke(this.business).then(function (business) {
+                    return business ? business.toRemoteShortObject(context) : null;
+                }),
+                this.getTags()
+                .then(function (tags) {
+                    return tags ? tags.map(function (tag) { return tag.toRemoteShortObject(context) }) : null;
+                })
+            ]).spread(function(business, tags) {
+                var businessMember = Q.npost(this, 'businessMember').then(function (businessMember) {
+                    return businessMember && businessMember.toRemoteShortObject(context);
+                });
 
-            return _.assign(this.toRemoteShortObject(context), {
-                author          : Q.ninvoke(this.author).then(function (author) {
-                    return author ? author.toRemoteShortObject(context) : null;
-                }),
-                business        : business,
-                hairdresser     : businessMember, // NOTE: BC
-                businessMember  : businessMember,
-                numLikes        : this.getNumLikes(),
-                selfMade        : !!this.selfMade,
-                tags            : tags,
-                isBeforeAfter   : _.some(tags, function (tag) {
-                    return tag.name == "Avant / Après";
-                }),
-                displayBusiness : this.displayBusiness(),
-                hidden          : this.hidden,
-                customerEmail   : this.customerEmail,
-                createdAt       : this.createdAt,
-                updatedAt       : this.updatedAt
-            });
-        }.bind(this))
+                return _.assign(this.toRemoteShortObject(context), {
+                    author          : Q.ninvoke(this.author).then(function (author) {
+                        return author ? author.toRemoteShortObject(context) : null;
+                    }),
+                    business        : business,
+                    hairdresser     : businessMember, // NOTE: BC
+                    businessMember  : businessMember,
+                    numLikes        : this.getNumLikes(),
+                    selfMade        : !!this.selfMade,
+                    tags            : tags,
+                    isBeforeAfter   : _.some(tags, function (tag) {
+                        return tag.name == "Avant / Après";
+                    }),
+                    displayBusiness : this.displayBusiness(),
+                    hidden          : this.hidden,
+                    customerEmail   : this.customerEmail,
+                    createdAt       : this.createdAt,
+                    updatedAt       : this.updatedAt
+                });
+            }.bind(this))
+        } else {
+            return Q.all([
+                Q.ninvoke(this.business).then(function (business) {
+                        return business ? business.toRemoteShortObject(context) : null;
+                    }),
+                this.getTags()
+                    .then(function (tags) {
+                        return tags ? tags.map(function (tag) { return tag.toRemoteShortObject(context) }) : null;
+                    }),
+                Q.ninvoke(this.author).then(function (author) {
+                        return author ? author.toRemoteShortObject(context) : null;
+                    })
+            ]).spread(function(business, tags, author) {
+
+                var businessMember;
+                if (this.businessMemberId) { 
+                    businessMember = Q.npost(this, 'businessMember').then(function (businessMember) {
+                        return businessMember && businessMember.toRemoteShortObject(context);
+                    });
+                }
+
+
+                return _.assign(this.toRemoteShortObject(context), {
+                    author          : author,
+                    business        : business,
+                    hairdresser     : businessMember, // NOTE: BC
+                    businessMember  : businessMember,
+                    numLikes        : this.getNumLikes(),
+                    selfMade        : !!this.selfMade,
+                    tags            : tags,
+                    isBeforeAfter   : _.some(tags, function (tag) {
+                        return tag.name == "Avant / Après";
+                    }),
+                    displayBusiness : this.displayBusiness(),
+                    hidden          : this.hidden,
+                    customerEmail   : this.customerEmail,
+                    createdAt       : this.createdAt,
+                    updatedAt       : this.updatedAt
+                });
+            }.bind(this))
+        }
     };
 
     Hairfie.prototype.toRemoteShortObject = function (context) {
@@ -124,6 +166,7 @@ module.exports = function (Hairfie) {
                     _tags       : tags.map(function (t) { return t.name && t.name.fr; }),
                     categories  : categories.map(function (c) { return c.name; }),
                     lastLikeAt  : lastLike && lastLike.createdAt,
+                    hidden      : this.hidden,
                     createdAt   : this.createdAt
                 }
             }.bind(this));
@@ -442,7 +485,7 @@ module.exports = function (Hairfie) {
         params.page = Math.max(1, req.query.page || 1) - 1;
         params.facets = ['categories', 'price.amount', '_tags'],
         params.hitsPerPage = Math.max(1, Math.min(20, req.query.pageSize || 10));
-        params.facetFilters = [];
+        params.facetFilters = ['hidden:false'];
         params.numericFilters = [];
 
         // search location
