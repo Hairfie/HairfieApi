@@ -105,6 +105,12 @@ function log(message) {
     };
 }
 
+function count(collections) {
+    return function () {
+        console.log("Count :", collections.length);
+        return Q.resolve();
+    };
+}
 
 function save(model) {
     return Q.ninvoke(model, 'save', {validate: false});

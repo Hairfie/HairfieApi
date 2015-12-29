@@ -155,6 +155,8 @@ module.exports = function (Hairfie) {
                     objectID    : this.id,
                     price       : this.price,
                     numLikes    : numLikes,
+                    businessId  : this.businessId,
+                    businessMemberId : this.businessMemberId,
                     business    : business && {
                         name        : business.name,
                         address     : business.address,
@@ -482,9 +484,29 @@ module.exports = function (Hairfie) {
      */
     Hairfie.search = function (req) {
         var params = {};
-        params.page = Math.max(1, req.query.page || 1) - 1;
+
+        console.log("skip", req.query.skip);
+        console.log("page", req.query.page);
+        console.log("limit", req.query.limit);
+
+        var limit = 10;
+        var page = 1;
+
+        if(req.query.skip) {
+            page = Math.floor(req.query.skip/limit) + 1;
+        } else if(req.query.page) {
+            page = Math.max(req.query.page || 1);
+        }
+
+        if(req.query.limit) {
+            limit = req.query.limit
+        } else if(req.query.pageSize) {
+            limit = req.query.pageSize;
+        }
+
+        params.page = page - 1;
         params.facets = ['categories', 'price.amount', '_tags'],
-        params.hitsPerPage = Math.max(1, Math.min(20, req.query.pageSize || 10));
+        params.hitsPerPage = Math.min(20, limit);
         params.facetFilters = ['hidden:false'];
         params.numericFilters = [];
 
@@ -525,13 +547,20 @@ module.exports = function (Hairfie) {
             }
         }
 
-
         // filter by price
         if (req.query.priceMin) {
             params.numericFilters.push('price.amount >= '+req.query.priceMin);
         }
         if (req.query.priceMax) {
             params.numericFilters.push('price.amount <= '+req.query.priceMax);
+        }
+
+        if(req.query.businessId) {
+            params.facetFilters.push('businessId:'+req.query.businessId);
+        }
+
+        if(req.query.businessMemberId) {
+            params.facetFilters.push('businessMemberId:'+req.query.businessMemberId);
         }
 
         console.log("algolia params", params);
