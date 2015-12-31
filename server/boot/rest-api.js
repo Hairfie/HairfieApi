@@ -44,6 +44,12 @@ module.exports = function mountRestApi(server) {
                 case '1.2.1':
                     version = '1.2.1';
                     break;
+                case 'v1.2.2':
+                    version = '1.2.2';
+                    break;
+                case '1.2.2':
+                    version = '1.2.2';
+                    break;
             }
 
             if (version) {

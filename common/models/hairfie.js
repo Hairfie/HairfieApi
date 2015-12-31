@@ -68,6 +68,7 @@ module.exports = function (Hairfie) {
             ]).spread(function(business, tags, author, businessMember) {
 
                 return _.assign(this.toRemoteShortObject(context), {
+                    authorId        : this.authorId,
                     author          : author,
                     business        : business,
                     hairdresser     : businessMember, // NOTE: BC
@@ -94,15 +95,12 @@ module.exports = function (Hairfie) {
                     .then(function (tags) {
                         return tags ? tags.map(function (tag) { return tag.toRemoteShortObject(context) }) : null;
                     }),
-                Q.ninvoke(this.author).then(function (author) {
-                        return author ? author.toRemoteShortObject(context) : null;
-                    }),
                 this.getBusinessMember().then(function (businessMember) {
                         return businessMember ? businessMember.toRemoteShortObject(context) : null;
                     })
-            ]).spread(function(business, tags, author, businessMember) {
+            ]).spread(function(business, tags, businessMember) {
                 return _.assign(this.toRemoteShortObject(context), {
-                    author          : author,
+                    authorId        : this.authorId,
                     business        : business,
                     hairdresser     : businessMember, // NOTE: BC
                     businessMember  : businessMember,

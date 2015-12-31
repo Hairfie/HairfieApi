@@ -18,6 +18,8 @@ module.exports = function (app) {
         }
     });
 
+    app.cacheClient = client;
+
     app.get('/*/blogPosts', client.route({ expire: 3600 }), function (req, res, next) {
         next();
     });
@@ -61,6 +63,15 @@ module.exports = function (app) {
     });
 
     app.get('/*/businesses/:businessId/similar', client.route({ expire: 60 }), function (req, res, next) {
+        next();
+    });
+
+    app.get('/v1.2.2/hairfies/search', function (req, res, next) {
+        res.express_redis_cache_name = 'hairfies-search-' + JSON.stringify(req.params);
+        next();
+    });
+
+    app.get('/v1.2.2/hairfies/search', client.route({ expire: 60 }), function (req, res, next) {
         next();
     });
 };
