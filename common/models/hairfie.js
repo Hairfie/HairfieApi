@@ -50,28 +50,29 @@ module.exports = function (Hairfie) {
     }, {message: 'all exist'});
 
     Hairfie.prototype.toRemoteObject = function (context) {
-        if(context.isApiVersion('<1.3')) {
+        if (context.isApiVersion('<1.2.1')) {
             return Q.all([
                 Q.ninvoke(this.business).then(function (business) {
-                    return business ? business.toRemoteShortObject(context) : null;
-                }),
+                        return business ? business.toRemoteShortObject(context) : null;
+                    }),
                 this.getTags()
-                .then(function (tags) {
-                    return tags ? tags.map(function (tag) { return tag.toRemoteShortObject(context) }) : null;
-                })
-            ]).spread(function(business, tags) {
-                var businessMember = Q.npost(this, 'businessMember').then(function (businessMember) {
-                    return businessMember && businessMember.toRemoteShortObject(context);
-                });
-
-                return _.assign(this.toRemoteShortObject(context), {
-                    author          : Q.ninvoke(this.author).then(function (author) {
+                    .then(function (tags) {
+                        return tags ? tags.map(function (tag) { return tag.toRemoteShortObject(context) }) : null;
+                    }),
+                Q.ninvoke(this.author).then(function (author) {
                         return author ? author.toRemoteShortObject(context) : null;
                     }),
+                this.getBusinessMember().then(function (businessMember) {
+                        return businessMember ? businessMember.toRemoteShortObject(context) : null;
+                    })
+            ]).spread(function(business, tags, author, businessMember) {
+
+                return _.assign(this.toRemoteShortObject(context), {
+                    author          : author,
                     business        : business,
                     hairdresser     : businessMember, // NOTE: BC
                     businessMember  : businessMember,
-                    numLikes        : this.getNumLikes(),
+                    numLikes        : this.numLikes,
                     selfMade        : !!this.selfMade,
                     tags            : tags,
                     isBeforeAfter   : _.some(tags, function (tag) {
@@ -95,23 +96,17 @@ module.exports = function (Hairfie) {
                     }),
                 Q.ninvoke(this.author).then(function (author) {
                         return author ? author.toRemoteShortObject(context) : null;
+                    }),
+                this.getBusinessMember().then(function (businessMember) {
+                        return businessMember ? businessMember.toRemoteShortObject(context) : null;
                     })
-            ]).spread(function(business, tags, author) {
-
-                var businessMember;
-                if (this.businessMemberId) { 
-                    businessMember = Q.npost(this, 'businessMember').then(function (businessMember) {
-                        return businessMember && businessMember.toRemoteShortObject(context);
-                    });
-                }
-
-
+            ]).spread(function(business, tags, author, businessMember) {
                 return _.assign(this.toRemoteShortObject(context), {
                     author          : author,
                     business        : business,
                     hairdresser     : businessMember, // NOTE: BC
                     businessMember  : businessMember,
-                    numLikes        : this.getNumLikes(),
+                    numLikes        : this.numLikes,
                     selfMade        : !!this.selfMade,
                     tags            : tags,
                     isBeforeAfter   : _.some(tags, function (tag) {
@@ -211,6 +206,14 @@ module.exports = function (Hairfie) {
         });
     };
 
+    Hairfie.prototype.getBusinessMember = function() {
+        if (this.businessMemberId) { 
+            return Q.npost(this, 'businessMember');
+        } else {
+            return Q(null);
+        }
+    };
+
     Hairfie.delete = function (req, user, next) {
         if (!user) return next({statusCode: 401});
         var Engine = Hairfie.app.models.AlgoliaSearchEngine;
@@ -280,6 +283,23 @@ module.exports = function (Hairfie) {
             })
         }
         next();
+    });
+
+    Hairfie.observe('before save', function updateLikes(ctx, next) {
+        var hairfie = ctx.instance;
+
+        if(hairfie) {
+            hairfie.getNumLikes()
+                .then(function(numLikes) {
+                    console.log("numLikes : ", numLikes);
+                    hairfie.numLikes = numLikes;
+                    ctx.instance = hairfie;
+                    next();
+                })
+                .fail(next)
+        } else {
+            next();
+        }
     });
 
     Hairfie.updateHairfie = function (req, user, next) {

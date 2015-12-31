@@ -158,7 +158,7 @@
     "numReviews" : {
       "type": "number"
     },
-    "numHaifies" : {
+    "numHairfies" : {
       "type": "number"
     }
   },

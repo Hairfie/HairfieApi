@@ -68,6 +68,9 @@
     "hidden": {
       "type": "boolean",
       "default": false
+    },
+    "numLikes" : {
+      "type": "number"
     }
   },
   "validations": [],
