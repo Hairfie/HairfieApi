@@ -9,6 +9,7 @@
       "updateAttributes",
       "confirm",
       "userCheck",
+      "processing",
       "honored",
       "cancel"
     ],

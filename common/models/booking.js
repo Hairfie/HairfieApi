@@ -13,6 +13,7 @@ module.exports = function (Booking) {
 
     Booking.STATUS_NOT_CONFIRMED    = 'NOT_CONFIRMED';
     Booking.STATUS_REQUEST          = 'REQUEST';
+    Booking.STATUS_IN_PROCESS       = 'IN_PROCESS';
     Booking.STATUS_CONFIRMED        = 'CONFIRMED';
     Booking.STATUS_NOT_AVAILABLE    = 'NOT_AVAILABLE';  // Business not available
     Booking.STATUS_CANCELLED        = 'CANCELLED';      // Cancelled by user
@@ -136,20 +137,24 @@ module.exports = function (Booking) {
     };
 
     Booking.cancel = function(req) {
-        return Promise.ninvoke(Booking, 'findById', req.params.bookingId)
-            .then(function (booking) {
-                if (!booking) return next({statusCode: 404});
+        return Promise.all(
+                [
+                    Promise.ninvoke(Booking, 'findById', req.params.bookingId)
+                        .then(function (booking) {
+                            if (!booking) return next({statusCode: 404});
 
-                booking.cancelled = true;
-                booking.status = Booking.STATUS_CANCELLED;
+                            booking.cancelled = true;
+                            booking.status = Booking.STATUS_CANCELLED;
 
-                return Promise.npost(booking, 'save');
-            })
-            .then(function(booking) {
+                            return Promise.npost(booking, 'save');
+                        }),
+                    Promise.npost(this, 'business')
+                ])
+            .then(function(booking, business) {
                 Booking.app.models.email.notifyAll('Réservation annulée', {
                     'ID'              : booking.id,
-                    'Salon'           : booking.business.name,
-                    'Tel du salon'    : booking.business.phoneNumber,
+                    'Salon'           : business.name,
+                    'Tel du salon'    : business.phoneNumber,
                     'Date & Heure de la demande' : moment(booking.dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
                     'Client'          : booking.firstName + ' ' + booking.lastName,
                     'Genre'           : booking.gender,
@@ -194,6 +199,32 @@ module.exports = function (Booking) {
             });
     };
 
+    Booking.processing = function(req, user, cb) {
+        if (!user) return cb({statusCode: 401, message: 'You must be logged in to process a booking'});
+
+        return Promise.ninvoke(Booking, 'findById', req.params.bookingId)
+            .then(function (booking) {
+                if (!booking) return cb({statusCode: 404});
+                var businessId = booking.businessId;
+                var isManager = user.admin ? true : user.isManagerOfBusiness(businessId);
+
+                return [
+                    isManager,
+                    booking
+                ];
+            })
+            .spread(function(isManager, booking) {
+                if (!isManager) return cb({statusCode: 403, message: 'You must be a manager of this business to process a booking'});
+                booking.status = Booking.STATUS_IN_PROCESS;
+
+                return Promise.npost(booking, 'save');
+            })
+            .then(function (booking) {
+                console.log("booking", booking);
+
+                return booking;
+            });
+    };
 
     Booking.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, unused, next) {
         if(ctx.req.user.admin) {
@@ -277,6 +308,16 @@ module.exports = function (Booking) {
         ],
         returns: {arg: 'result', root: true},
         http: { path: '/:bookingId/honored', verb: 'POST' }
+    });
+
+    Booking.remoteMethod('processing', {
+        description: 'The booking is processed',
+        accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}},
+            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
+        ],
+        returns: {arg: 'result', root: true},
+        http: { path: '/:bookingId/processing', verb: 'POST' }
     });
 
     Booking.remoteMethod('cancel', {
