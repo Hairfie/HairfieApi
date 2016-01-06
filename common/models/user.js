@@ -17,11 +17,6 @@ module.exports = function(User) {
         }
     });
 
-    User.observe('save', function (ctx, next) {
-        if (ctx.instance && !ctx.instance.locale) ctx.instance.locale = User.app.get('locales')[0];
-        next();
-    });
-
     User.GENDER_MALE = 'MALE';
     User.GENDER_FEMALE = 'FEMALE';
 
@@ -371,6 +366,8 @@ module.exports = function(User) {
         } else if (ctx.data.email !== undefined){
             ctx.data.email = ctx.data.email.toLowerCase();
         }
+        if (ctx.instance && !ctx.instance.locale) ctx.instance.locale = User.app.get('locales')[0];
+
         next();
     });
 

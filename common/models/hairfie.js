@@ -79,7 +79,7 @@ module.exports = function (Hairfie) {
                     isBeforeAfter   : _.some(tags, function (tag) {
                         return tag.name == "Avant / Après";
                     }),
-                    displayBusiness : this.displayBusiness(),
+                    displayBusiness : businessMember ? true : false,
                     hidden          : this.hidden,
                     customerEmail   : this.customerEmail,
                     createdAt       : this.createdAt,
@@ -110,7 +110,7 @@ module.exports = function (Hairfie) {
                     isBeforeAfter   : _.some(tags, function (tag) {
                         return tag.name == "Avant / Après";
                     }),
-                    displayBusiness : this.displayBusiness(),
+                    displayBusiness : businessMember ? true : false,
                     hidden          : this.hidden,
                     customerEmail   : this.customerEmail,
                     createdAt       : this.createdAt,
@@ -145,36 +145,27 @@ module.exports = function (Hairfie) {
             ])
             .spread(function (business, tags, categories, numLikes, lastLike) {
                 return {
-                    objectID    : this.id,
-                    price       : this.price,
-                    numLikes    : numLikes,
-                    businessId  : this.businessId,
+                    objectID         : this.id,
+                    price            : this.price,
+                    numLikes         : numLikes,
+                    businessId       : this.businessId,
                     businessMemberId : this.businessMemberId,
-                    business    : business && {
-                        name        : business.name,
-                        address     : business.address,
+                    authorId         : this.authorId,
+                    business         : business && {
+                        name     : business.name,
+                        address  : business.address,
                     },
-                    _geoloc     : business && {
-                        lat : business.gps.lat,
-                        lng : business.gps.lng
+                    _geoloc          : business && {
+                        lat     : business.gps.lat,
+                        lng     : business.gps.lng
                     },
-                    _tags       : tags.map(function (t) { return t.name && t.name.fr; }),
-                    categories  : categories.map(function (c) { return c.name; }),
-                    lastLikeAt  : lastLike && lastLike.createdAt,
-                    hidden      : this.hidden,
-                    createdAt   : this.createdAt
+                    _tags            : tags.map(function (t) { return t.name && t.name.fr; }),
+                    categories       : categories.map(function (c) { return c.name; }),
+                    lastLikeAt       : lastLike && lastLike.createdAt,
+                    hidden           : this.hidden,
+                    createdAt        : this.createdAt
                 }
             }.bind(this));
-    };
-
-    Hairfie.prototype.displayBusiness = function(authorId) {
-        if (!this.businessId) return Q(false);
-
-        var businessId = this.businessId;
-        return Q.npost(this, 'author')
-            .then(function (user) {
-                return !!user && user.isManagerOfBusiness(businessId);
-            });
     };
 
     Hairfie.prototype.getBusiness = function () {
@@ -212,6 +203,12 @@ module.exports = function (Hairfie) {
         }
     };
 
+    Hairfie.prototype.getAuthor = function() {
+        var User = Hairfie.app.models.User;
+
+        return Q.ninvoke(User, 'findById', this.authorId);
+    };
+
     Hairfie.delete = function (req, user, next) {
         if (!user) return next({statusCode: 401});
         var Engine = Hairfie.app.models.AlgoliaSearchEngine;
@@ -246,8 +243,7 @@ module.exports = function (Hairfie) {
                 getAveragePriceForTag(hairfie, 'Man'),
                 getAveragePriceForTag(hairfie, 'Woman'),
                 ctx.instance.businessMemberId ? Q.ninvoke(BusinessMember, 'findById', ctx.instance.businessMemberId) : null
-
-            ]).spread(function (business, tags, menAveragePrice, womenAveragePrice, businessMember) {
+            ]).spread(function (business, tags, menAveragePrice, womenAveragePrice, businessMember, author) {
                 if (ctx.instance.businessMemberId) {
                     Promise.npost(businessMember, 'count')
                         .then(function(bm) {
@@ -263,6 +259,7 @@ module.exports = function (Hairfie) {
                             Q.ninvoke(business, 'save');
                         });
                 }
+
                 // update business with tags
                 business.hairfieTags = business.hairfieTags || {};
                 _.map(tags, function (tag) {
@@ -279,8 +276,24 @@ module.exports = function (Hairfie) {
             .then(function(business) {
                 next();
             })
+        } else {
+            next();
         }
-        next();
+    });
+
+    Hairfie.observe('after save', function updateNumHairfies(ctx, next) {
+        Q.ninvoke(this, 'author')
+            .then(function(author) {
+                Q.ninvoke(Hairfie, 'count', {authorId: this.authorId})
+                    .then(function (numHairfies) {
+                        author.numHairfies = numHairfies;
+                        console.log("update author %s with %s hairfies", author.id, numHairfies)
+                        Q.ninvoke(author, 'save');
+                    })
+                    .then(function() {
+                        next();
+                    })
+            });
     });
 
     Hairfie.observe('before save', function updateLikes(ctx, next) {

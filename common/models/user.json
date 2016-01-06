@@ -45,6 +45,12 @@
     },
     "admin": {
       "type": "boolean"
+    },
+    "numHairfies" : {
+      "type": "number"
+    },
+    "numReviews" : {
+      "type": "number"
     }
   },
   "validations": [],
