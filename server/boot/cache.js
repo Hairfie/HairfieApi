@@ -41,17 +41,12 @@ module.exports = function (app) {
         next();
     });
 
-    app.get('/v0/tags', function (req, res, next) {
-        res.setHeader('Last-Modified', (new Date()).toUTCString());  
+    app.get('/v0/tags', client.route({ expire: 3600*24, type: 'application/json; charset=utf-8' }), function (req, res, next) {
+        res.use_express_redis_cache = false;
         next();
     });
 
     app.get('/*/tags', client.route({ expire: 3600*24, type: 'application/json; charset=utf-8' }), function (req, res, next) {
-        next();
-    });
-
-    app.get('/v0/categories', function (req, res, next) {
-        res.use_express_redis_cache = false;
         next();
     });
 
