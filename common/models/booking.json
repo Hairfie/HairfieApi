@@ -11,10 +11,18 @@
       "userCheck",
       "processing",
       "honored",
-      "cancel"
+      "cancel",
+      "delete"
     ],
     "mongodb": {
       "collection": "bookings"
+    }
+  },
+  "scope": {
+    "where": {
+      "hidden": {
+        "neq": true
+      }
     }
   },
   "properties": {
@@ -54,6 +62,9 @@
       "type": "string"
     },
     "comment": {
+      "type": "string"
+    },
+    "adminNote": {
       "type": "string"
     },
     "dateTime": {
@@ -97,6 +108,10 @@
     "confirmationSentAt": {
         "type": "Date",
         "default": null
+    },
+    "hidden": {
+      "type": "boolean",
+      "default": false
     }
   },
   "validations": [],

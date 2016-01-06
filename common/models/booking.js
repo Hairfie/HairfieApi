@@ -58,6 +58,7 @@ module.exports = function (Booking) {
             hairLength          : this.hairLength || "",
             service             : this.service || "",
             comment             : this.comment,
+            adminNote           : this.adminNote,
             dateTime            : dateTime,
             displayDateTime     : moment(dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
             timeslot            : dateTime,
@@ -121,7 +122,6 @@ module.exports = function (Booking) {
                 return Promise.npost(booking, 'save');
             })
             .then(function (booking) {
-                console.log("booking", booking);
                 if(!booking.confirmationSentAt) {
                     // notify client of the booking confirmation
                     var Email = Booking.app.models.email;
@@ -136,21 +136,20 @@ module.exports = function (Booking) {
             });
     };
 
-    Booking.cancel = function(req) {
-        return Promise.all(
-                [
-                    Promise.ninvoke(Booking, 'findById', req.params.bookingId)
-                        .then(function (booking) {
-                            if (!booking) return next({statusCode: 404});
+    Booking.cancel = function(req, cb) {
+        return Promise.ninvoke(Booking, 'findById', req.params.bookingId)
+                .then(function (booking) {
+                    if (!booking) return cb({statusCode: 404});
 
-                            booking.cancelled = true;
-                            booking.status = Booking.STATUS_CANCELLED;
+                    booking.cancelled = true;
+                    booking.status = Booking.STATUS_CANCELLED;
 
-                            return Promise.npost(booking, 'save');
-                        }),
-                    Promise.npost(this, 'business')
-                ])
-            .then(function(booking, business) {
+                    return Promise.npost(booking, 'save');
+                })
+            .then(function(booking) {
+                return [Promise.npost(booking, 'business'), booking];
+            })
+            .spread(function(business, booking) {
                 Booking.app.models.email.notifyAll('Réservation annulée', {
                     'ID'              : booking.id,
                     'Salon'           : business.name,
@@ -164,6 +163,23 @@ module.exports = function (Booking) {
                     'Promo'           : booking.discount
                 });
                 return booking;
+            })
+    };
+
+    Booking.delete = function (req, user, cb) {
+        if (!user) return cb({statusCode: 401});
+
+        return Promise.ninvoke(Booking, 'findById', req.params.bookingId)
+            .then(function (booking) {
+                if (!booking) return cb({statusCode: 404});
+
+                var isAllowed = user.admin;
+
+                if (!isAllowed) return cb({statusCode: 403});
+
+                booking.hidden = true;
+
+                return Promise.npost(booking, 'save');
             })
     };
 
@@ -220,7 +236,6 @@ module.exports = function (Booking) {
                 return Promise.npost(booking, 'save');
             })
             .then(function (booking) {
-                console.log("booking", booking);
 
                 return booking;
             });
@@ -324,6 +339,16 @@ module.exports = function (Booking) {
         description: 'Cancel the booking',
         accepts: [
             {arg: 'req', type: 'object', 'http': {source: 'req'}}
+        ],
+        returns: {arg: 'result', root: true},
+        http: { path: '/:bookingId/cancel', verb: 'POST' }
+    });
+
+    Booking.remoteMethod('delete', {
+        description: 'Delete the booking',
+        accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}},
+            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
         ],
         returns: {arg: 'result', root: true},
         http: { path: '/:bookingId', verb: 'DELETE' }
