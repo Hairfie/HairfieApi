@@ -50,9 +50,7 @@ module.exports = function(User) {
     User.prototype.toRemoteShortObject = function (context) {
         var Hairfie             = User.app.models.Hairfie,
             BusinessReview      = User.app.models.BusinessReview,
-            picture             = this.picture && this.picture.toRemoteShortObject(context),
-            numHairfies         = Promise.ninvoke(Hairfie, 'count', {authorId: this.id}),
-            numBusinessReviews  = Promise.ninvoke(BusinessReview, 'count', {authorId: this.id});
+            picture             = this.picture && this.picture.toRemoteShortObject(context);
 
         if (!picture && this.facebookId) {
             // fallback to facebook picture
@@ -66,8 +64,8 @@ module.exports = function(User) {
             firstName           : this.firstName,
             lastName            : this.lastName,
             picture             : picture,
-            numHairfies         : numHairfies,
-            numBusinessReviews  : numBusinessReviews
+            numHairfies         : this.numHairfies,
+            numBusinessReviews  : this.numBusinessReviews
         };
     };
 

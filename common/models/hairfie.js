@@ -233,9 +233,9 @@ module.exports = function (Hairfie) {
     Hairfie.observe('after save', function (ctx, next) {
         var Business = Hairfie.app.models.Business;
         var BusinessMember = Hairfie.app.models.BusinessMember;
+        var hairfie = ctx.instance;
 
-        if (ctx.instance && ctx.instance.businessId) {
-            var hairfie = ctx.instance;
+        if (hairfie && ctx.instance.businessId) {
 
             Q.all([
                 Q.ninvoke(Business, 'findOne', {where: {id: hairfie.businessId}}),
@@ -273,27 +273,26 @@ module.exports = function (Hairfie) {
 
                 return Q.npost(business, 'save');
             })
-            .then(function(business) {
-                next();
-            })
-        } else {
-            next();
         }
+
+        next();
+
     });
 
     Hairfie.observe('after save', function updateNumHairfies(ctx, next) {
-        Q.ninvoke(this, 'author')
-            .then(function(author) {
-                Q.ninvoke(Hairfie, 'count', {authorId: this.authorId})
-                    .then(function (numHairfies) {
-                        author.numHairfies = numHairfies;
-                        console.log("update author %s with %s hairfies", author.id, numHairfies)
-                        Q.ninvoke(author, 'save');
-                    })
-                    .then(function() {
-                        next();
-                    })
-            });
+        var hairfie = ctx.instance;
+        if(hairfie) {
+            Q.ninvoke(hairfie, 'author')
+                .then(function(author) {
+                    Q.ninvoke(Hairfie, 'count', {authorId: hairfie.authorId})
+                        .then(function (numHairfies) {
+                            author.numHairfies = numHairfies;
+                            console.log("update author %s with %s hairfies", author.id, numHairfies)
+                            Q.ninvoke(author, 'save');
+                        })
+                });
+        }
+        next();
     });
 
     Hairfie.observe('before save', function updateLikes(ctx, next) {
@@ -302,7 +301,6 @@ module.exports = function (Hairfie) {
         if(hairfie) {
             hairfie.getNumLikes()
                 .then(function(numLikes) {
-                    console.log("numLikes : ", numLikes);
                     hairfie.numLikes = numLikes;
                     ctx.instance = hairfie;
                     next();

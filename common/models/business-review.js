@@ -47,18 +47,20 @@ module.exports = function (BusinessReview) {
         if (ctx.instance) {
             var businessReview = ctx.instance;
 
-            Promise.npost(businessReview, 'business')
-            .then(function (business) {
-                return BusinessReview.app.models.email.notifyAll('Un avis a été déposé', {
-                    'ID'              : businessReview.id,
-                    'Salon'           : business.name,
-                    'Nom'             : businessReview.firstName + ' ' + businessReview.lastName,
-                    'Email'           : businessReview.email,
-                    'Note globale'    : businessReview.rating,
-                    'Commentaire'     : businessReview.comment
-                });
-            })
-            .fail(console.log);
+            if(ctx.instance.isNewRecord()) {
+                Promise.npost(businessReview, 'business')
+                .then(function (business) {
+                    return BusinessReview.app.models.email.notifyAll('Un avis a été déposé', {
+                        'ID'              : businessReview.id,
+                        'Salon'           : business.name,
+                        'Nom'             : businessReview.firstName + ' ' + businessReview.lastName,
+                        'Email'           : businessReview.email,
+                        'Note globale'    : businessReview.rating,
+                        'Commentaire'     : businessReview.comment
+                    });
+                })
+                .fail(console.log);
+            }
 
             q.ninvoke(BusinessReview.app.models.Business, 'getRating', ctx.instance.businessId);
 
@@ -71,6 +73,24 @@ module.exports = function (BusinessReview) {
 
                 next();
             });
+        } else {
+            next();
+        }
+    });
+
+    BusinessReview.observe('after save', function updateNumReviews(ctx, next) {
+        var businessReview = ctx.instance;
+        if(businessReview && businessReview.authorId) {
+
+            Promise.ninvoke(businessReview, 'author')
+                .then(function(author) {
+                    Promise.ninvoke(BusinessReview, 'count', {authorId: businessReview.authorId})
+                        .then(function (numReviews) {
+                            author.numReviews = numReviews;
+                            console.log("update author %s with %s numReviews", author.id, numReviews)
+                            Promise.ninvoke(author, 'save');
+                        })
+                });
         }
         next();
     });
