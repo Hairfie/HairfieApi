@@ -42,10 +42,7 @@ module.exports = function (app) {
     });
 
     app.get('/v0/tags', function (req, res, next) {
-        res.use_express_redis_cache = false;
-        res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-        res.header("Pragma", "no-cache");
-        res.header("Expires", 0);
+        res.setHeader('Last-Modified', (new Date()).toUTCString());  
         next();
     });
 
