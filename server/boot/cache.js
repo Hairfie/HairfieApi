@@ -1,6 +1,7 @@
 'use strict';
 
 var cache = require('express-redis-cache');
+var _ = require('lodash');
 
 module.exports = function (app) {
     var client = cache({
@@ -8,6 +9,7 @@ module.exports = function (app) {
         port: app.get('redisPort'),
         auth_pass: app.get('redisPassword'),
         prefix: app.get('redisPrefix'),
+        type: 'application/json',
         expire: {
             200: 5000,
             404: 10,
@@ -41,18 +43,24 @@ module.exports = function (app) {
         next();
     });
 
-    app.get('/v0/tags', client.route({ expire: 3600*24, type: 'application/json; charset=utf-8' }), function (req, res, next) {
-        res.use_express_redis_cache = false;
+    app.get('/v0/tags', client.route({ expire: 3600*24 }), function (req, res, next) {
+        req.header('Content-Type', 'application/json; charset=utf-8');
         next();
     });
 
-    app.get('/*/tags', client.route({ expire: 3600*24, type: 'application/json; charset=utf-8' }), function (req, res, next) {
+    app.get('/*/tags', client.route({ expire: 3600*24 }), function (req, res, next) {
         next();
     });
 
-    app.get('/*/categories', client.route({ expire: 3600*24, type: 'application/json; charset=utf-8'  }), function (req, res, next) {
+    app.get('/v0/categories', client.route({ expire: 3600*24  }), function (req, res, next) {
+        //req.header('Content-Type', 'application/json; charset=utf-8');
         next();
     });
+
+    app.get('/*/categories', client.route({ expire: 3600*24 }), function (req, res, next) {
+        next();
+    });
+
 
     app.get('/*/stations', client.route({ expire: 3600*24 }), function (req, res, next) {
         next();

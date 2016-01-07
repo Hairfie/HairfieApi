@@ -469,7 +469,6 @@ module.exports = function(Business) {
 
         //params.skip         = params.limit * (params.page - 1),
 
-
         params.maxDistance  = req.query.radius || 10000,
         params.location     = req.query.location ? GeoPoint(req.query.location) : null,
         params.bounds       = !req.query.bounds ? undefined : {
