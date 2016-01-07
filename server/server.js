@@ -77,6 +77,14 @@ function corsMiddleware(req, res, next) {
 
 app.use(corsMiddleware);
 
+app.use('/v0/*',
+    function (req, res, next) {
+        res.header("Expires", "-1");
+        res.header("Cache-Control", "must-revalidate, private");
+        next();
+    }
+);
+
 // -- Add your pre-processing middleware here --
 
 // setup rewriting rules for backward compatibility
@@ -85,6 +93,7 @@ app.post('/*/hairdressers', function (req, res, next) {
     req.body.hidden = false;
     next();
 });
+
 app.get('/*/hairfies', function (req, res, next) {
     // rewrite businessId filter
     var hairdresserId = req.query && req.query.filter && req.query.filter.where && req.query.filter.where.hairdresserId;
