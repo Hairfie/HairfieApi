@@ -45,8 +45,6 @@ module.exports = function (app) {
 
     app.get('/v0/tags', client.route({ expire: 3600*24 }), function (req, res, next) {
         req.header('Content-Type', 'application/json; charset=utf-8');
-        res.header("Expires", "-1");
-        res.header("Cache-Control", "must-revalidate, private");
         next();
     });
 
@@ -56,8 +54,6 @@ module.exports = function (app) {
 
     app.get('/v0/categories', client.route({ expire: 3600*24  }), function (req, res, next) {
         req.header('Content-Type', 'application/json; charset=utf-8');
-        res.header("Expires", "-1");
-        res.header("Cache-Control", "must-revalidate, private");
         next();
     });
 

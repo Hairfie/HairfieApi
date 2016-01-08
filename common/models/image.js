@@ -28,6 +28,7 @@ module.exports = function (Image) {
             container   : this.container,
             url         : this.getUrl(),
             secureUrl   : this.getSecureUrl(),
+            thumbUrl    : this.getThumbUrl(),
             cloudinary  : {
                 cloudName       : CloudinaryImage.getCloudName(),
                 publicId        : CloudinaryImage.getPublicId(this.container, this.id),
@@ -43,6 +44,10 @@ module.exports = function (Image) {
 
     Image.prototype.getSecureUrl = function (image) {
         return Image.app.models.CloudinaryImage.getUrl(this.container, this.id, {secure: true});
+    };
+
+    Image.prototype.getThumbUrl = function (image) {
+        return Image.app.models.CloudinaryImage.getThumbUrl(this.container, this.id);
     };
 
     Image.upload = function (req, res) {

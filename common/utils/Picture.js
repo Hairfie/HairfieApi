@@ -43,7 +43,6 @@ Picture.fromRemoteObject = function (obj, app) {
 
 Picture.prototype.toRemoteObject = function () {
     var obj = {url: this.url()};
-
     if (this.values.name) {
         obj.name = this.values.name;
         obj.container = this.values.container;

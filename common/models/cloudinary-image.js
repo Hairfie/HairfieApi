@@ -28,8 +28,13 @@ module.exports = function (CloudinaryImage) {
         return 'facebook' === container ? 'facebook' : 'upload';
     };
 
-    CloudinaryImage.getTransformations = function (container) {
-        return 'hairfies' === container ? [{width: 600, height: 600, crop: "fill", gravity: 'face'}, 'watermark'] : [];
+    CloudinaryImage.getTransformations = function (container, thumb) {
+        if(thumb) {
+            return 'hairfies' === container ? [{width: 200, height: 200, crop: "fill", gravity: 'face'}, 'watermark'] : [{width: 200, height: 200, crop: "fill"}];
+        } else {
+            return 'hairfies' === container ? [{width: 600, height: 600, crop: "fill", gravity: 'face'}, 'watermark'] : [];
+        }
+        
     };
 
     CloudinaryImage.getPublicId = function (container, id) {
@@ -44,6 +49,13 @@ module.exports = function (CloudinaryImage) {
         return cloudinary.url(CloudinaryImage.getPublicId(container, id), _.assign({}, options, {
             type            : CloudinaryImage.getType(container),
             transformation  : CloudinaryImage.getTransformations(container)
+        }));
+    };
+
+    CloudinaryImage.getThumbUrl = function (container, id, options) {
+        return cloudinary.url(CloudinaryImage.getPublicId(container, id), _.assign({}, options, {
+            type            : CloudinaryImage.getType(container),
+            transformation  : CloudinaryImage.getTransformations(container, true)
         }));
     };
 

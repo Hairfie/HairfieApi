@@ -77,13 +77,13 @@ function corsMiddleware(req, res, next) {
 
 app.use(corsMiddleware);
 
-app.use('/v0/*',
-    function (req, res, next) {
-        res.header("Expires", "-1");
-        res.header("Cache-Control", "must-revalidate, private");
-        next();
-    }
-);
+// app.use('/v0/*',
+//     function (req, res, next) {
+//         res.header("Expires", "-1");
+//         res.header("Cache-Control", "must-revalidate, private");
+//         next();
+//     }
+// );
 
 // -- Add your pre-processing middleware here --
 
