@@ -149,8 +149,6 @@ module.exports = function(Business) {
             }
         }
 
-
-
         return {
             id          : this.id,
             friendlyId  : this.friendlyId,
