@@ -32,7 +32,7 @@ module.exports = function (Booking) {
     });
 
     Booking.observe('after save', function (ctx, next) {
-        if (ctx.instance && ctx.instance.userCheckCode && !ctx.instance.userCheck && ctx.instance.status == Booking.STATUS_NOT_CONFIRMED) {
+        if (ctx.instance && ctx.instance.userCheckCode && !ctx.instance.userCheck && ctx.instance.status == Booking.STATUS_NOT_CONFIRMED && !ctx.instance.hidden) {
             var TextMessage     = Booking.app.models.TextMessage;
             TextMessage.send(ctx.instance.phoneNumber, "Utilisez " + ctx.instance.userCheckCode + " pour valider votre reservation sur Hairfie. Une question ? Envoyez nous un email a l'adresse hello@hairfie.com ou au +33185089169");
         }
