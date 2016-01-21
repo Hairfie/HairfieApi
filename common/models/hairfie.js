@@ -253,7 +253,7 @@ module.exports = function (Hairfie) {
 
                 }
                 if (ctx.instance.businessId) {
-                    Q.ninvoke(Hairfie, 'count', {businessId: hairfie.id})
+                    Q.ninvoke(Hairfie, 'count', {businessId: hairfie.businessId})
                         .then(function (numHairfies) {
                             business.numHairfies = numHairfies;
                             Q.ninvoke(business, 'save');
