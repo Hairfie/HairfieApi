@@ -47,7 +47,7 @@ module.exports = function (BusinessReview) {
         if (ctx.instance) {
             var businessReview = ctx.instance;
 
-            if(ctx.instance.isNewRecord()) {
+            if(ctx.isNewInstance) {
                 Promise.npost(businessReview, 'business')
                 .then(function (business) {
                     return BusinessReview.app.models.email.notifyAll('Un avis a été déposé', {
@@ -79,6 +79,7 @@ module.exports = function (BusinessReview) {
     });
 
     BusinessReview.observe('after save', function updateNumReviews(ctx, next) {
+        console.log("TEST 2");
         var businessReview = ctx.instance;
         if(businessReview && businessReview.authorId) {
 
