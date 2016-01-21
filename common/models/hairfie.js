@@ -236,7 +236,6 @@ module.exports = function (Hairfie) {
         var hairfie = ctx.instance;
 
         if (hairfie && ctx.instance.businessId) {
-
             Q.all([
                 Q.ninvoke(Business, 'findOne', {where: {id: hairfie.businessId}}),
                 hairfie.getTags(),
@@ -244,6 +243,7 @@ module.exports = function (Hairfie) {
                 getAveragePriceForTag(hairfie, 'Woman'),
                 ctx.instance.businessMemberId ? Q.ninvoke(BusinessMember, 'findById', ctx.instance.businessMemberId) : null
             ]).spread(function (business, tags, menAveragePrice, womenAveragePrice, businessMember, author) {
+
                 if (ctx.instance.businessMemberId) {
                     Promise.npost(businessMember, 'count')
                         .then(function(bm) {
@@ -253,7 +253,7 @@ module.exports = function (Hairfie) {
 
                 }
                 if (ctx.instance.businessId) {
-                    Q.ninvoke(Hairfie, 'count', {businessId: this.id})
+                    Q.ninvoke(Hairfie, 'count', {businessId: hairfie.id})
                         .then(function (numHairfies) {
                             business.numHairfies = numHairfies;
                             Q.ninvoke(business, 'save');
@@ -266,12 +266,16 @@ module.exports = function (Hairfie) {
                     business.hairfieTags[tag.id] = (business.hairfieTags[tag.id] || 0) + 1;
                 });
 
-                business.averagePrice = {
+                var averagePrice = {
                     men: menAveragePrice.amount,
                     women: womenAveragePrice.amount
                 }
+                business.averagePrice = averagePrice;
 
                 return Q.npost(business, 'save');
+            })
+            .fail(function(error) {
+                console.log("error", error);
             })
         }
 
@@ -366,7 +370,7 @@ module.exports = function (Hairfie) {
     Hairfie.getBusinessAveragePriceForTag = function (businessId, tagId, callback) {
         var collection = Hairfie.dataSource.connector.collection(Hairfie.definition.name);
         var pipe = [
-            {$match: {businessId: businessId, tags: tagId}},
+            {$match: {businessId: businessId, tags: tagId, hidden: false}},
             {$group: {_id: null, numHairfies: {$sum: 1}, amount: {$avg: "$price.amount"}}}
         ];
 
