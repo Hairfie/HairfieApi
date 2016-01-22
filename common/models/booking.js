@@ -26,7 +26,11 @@ module.exports = function (Booking) {
 
         if (ctx.instance && ctx.instance.status == Booking.STATUS_NOT_CONFIRMED) {
             if (!ctx.instance.userCheckCode) ctx.instance.userCheckCode = Math.floor(Math.random()*9000) + 1000;
-            ctx.instance.phoneNumber = phone(ctx.instance.phoneNumber, 'FR')[0];
+            var phonenumber = phone(ctx.instance.phoneNumber, 'FR')[0];
+            if(!phonenumber) {
+                phonenumber = phone(ctx.instance.phoneNumber)[0];
+            }
+            ctx.instance.phoneNumber = phonenumber;
         }
         next();
     });
