@@ -244,35 +244,43 @@ module.exports = function (Hairfie) {
                 ctx.instance.businessMemberId ? Q.ninvoke(BusinessMember, 'findById', ctx.instance.businessMemberId) : null
             ]).spread(function (business, tags, menAveragePrice, womenAveragePrice, businessMember, author) {
 
-                if (ctx.instance.businessMemberId) {
+                if (businessMember) {
                     Promise.npost(businessMember, 'count')
                         .then(function(bm) {
                             bm.numHairfies = count;
                             return q.ninvoke(bm, 'save');
                         });
-
-                }
-                if (ctx.instance.businessId) {
-                    Q.ninvoke(Hairfie, 'count', {businessId: hairfie.businessId})
-                        .then(function (numHairfies) {
-                            business.numHairfies = numHairfies;
-                            Q.ninvoke(business, 'save');
-                        });
                 }
 
-                // update business with tags
-                business.hairfieTags = business.hairfieTags || {};
-                _.map(tags, function (tag) {
-                    business.hairfieTags[tag.id] = (business.hairfieTags[tag.id] || 0) + 1;
-                });
+                if (business) {
+                    business.hairfieTags = business.hairfieTags || {};
+                    _.map(tags, function (tag) {
+                        business.hairfieTags[tag.id] = (business.hairfieTags[tag.id] || 0) + 1;
+                    });
+                    console.log("hairfieTags", _.keys(business.hairfieTags));
+                    console.log("business.getGenders()", business.getGenders());
 
-                var averagePrice = {
-                    men: menAveragePrice.amount,
-                    women: womenAveragePrice.amount
+                    Q.all([
+                        Q.ninvoke(Hairfie, 'count', {businessId: hairfie.businessId}),
+                        Hairfie.app.models.Category.listForTagsAndGenders(_.keys(business.hairfieTags), business.getGenders())
+                    ])
+                    .spread(function (numHairfies, hairfiesCategories) {
+                        console.log("numHairfies", numHairfies);
+                        console.log("hairfiesCategories", hairfiesCategories);
+                        business.numHairfies = numHairfies;
+                        business.hairfiesCategories = _.map(hairfiesCategories, 'id');
+                        var averagePrice = {
+                            men: menAveragePrice.amount,
+                            women: womenAveragePrice.amount
+                        }
+                        business.averagePrice = averagePrice;
+
+                        return Q.ninvoke(business, 'save');
+                    })
+                    .fail(function(error) {
+                        console.log("business not updated ", error);
+                    })
                 }
-                business.averagePrice = averagePrice;
-
-                return Q.npost(business, 'save');
             })
             .fail(function(error) {
                 console.log("error", error);

@@ -128,6 +128,8 @@ module.exports = function(Business) {
             landingPageUrl     : Business.app.urlGenerator.business(this, context),
             facebookPage       : this.facebookPage && this.getFacebookPageObject().toRemoteShortObject(context),
             addedCategories    : this.addedCategories,
+            hairfiesCategories : this.hairfiesCategories,
+            categories         : this.categories,
             labels             : this.labels,
             accountType        : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
             createdAt          : this.createdAt,
@@ -333,15 +335,10 @@ module.exports = function(Business) {
     Business.prototype.getCategories = function () {
         var b = this;
 
-        return b.getTags().then(function (tags) {
-            return Q.all([
-                Business.app.models.Category.listForTagsAndGenders(tags, b.getGenders()),
-                Business.app.models.Category.getByIds(b.addedCategories)
-            ])
-            .spread(function(categories, addedCategories) {
-                return _.union(categories, addedCategories);
+        return Business.app.models.Category.listForTagsAndGenders(b.getGenders())
+            .then(function(genderCategories) {
+                return _.union(b.categories, genderCategories)
             });
-        });
     };
 
     Business.prototype.getGenders = function () {
@@ -388,6 +385,18 @@ module.exports = function(Business) {
             }
         }
 
+        next();
+    });
+
+    Business.observe('before save', function updateCategories(ctx, next) {
+        var business = ctx.instance;
+        if (business && business.addedCategories && !_.isEmpty(business.addedCategories)) {
+            business.categories = business.addedCategories;
+            ctx.instance = business;
+        } else if (business && business.hairfiesCategories && !_.isEmpty(business.hairfiesCategories)) {
+            business.categories = business.hairfiesCategories;
+            ctx.instance = business;
+        }
         next();
     });
 
@@ -523,6 +532,7 @@ module.exports = function(Business) {
 
         var numericFiltersArr = [];
         var facetFiltersArr = [];
+        var optionalFacetFilterArr = [];
 
         var location    = params.location ? GeoPoint(params.location) : null,
             bounds      = !params.bounds ? undefined : {
@@ -553,8 +563,8 @@ module.exports = function(Business) {
                     return facetFilter + ':' + filter;
                 }).join(',');
 
-                if (facetFilter == 'categories') {
-                    facetFiltersArr.push('(' + filterToPush + ')');
+                if (facetFilter == 'categories' || facetFilter == 'categorySlugs') {
+                    optionalFacetFilterArr.push('(' + filterToPush + ')');
                 } else {
                     facetFiltersArr.push(filterToPush)
                 }
@@ -581,16 +591,21 @@ module.exports = function(Business) {
             algoliaParams.facetFilters = facetFiltersArr.join(',');
         }
 
+        if(optionalFacetFilterArr.length > 0) {
+            algoliaParams.optionalFacetFilters = optionalFacetFilterArr.join(',');
+        }
+
         var query = params.q || '';
 
         console.log("algoliaParams", algoliaParams);
 
         return AlgoliaSearchEngine.search('business', query, algoliaParams)
-            .nodeify(callback);
+            .nodeify(callback, algoliaParams);
     }
 
-    function processAlgoliaForSearch(result) {
+    function processAlgoliaForSearch(result, algoliaParams) {
         var ids = result.hits.map(function (hit) { return hit.id; });
+        console.log("params in result ?", algoliaParams);
         return Q.denodeify(Business.findByIds.bind(Business))(ids)
             .then(function(businesses) {
                 return {

@@ -59,7 +59,13 @@
     "phoneNumber": {
       "type": "string"
     },
+    "categories": {
+      "type": "array"
+    },
     "addedCategories": {
+      "type": "array"
+    },
+    "hairfiesCategories": {
       "type": "array"
     },
     "labels": {

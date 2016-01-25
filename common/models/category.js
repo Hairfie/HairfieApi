@@ -28,16 +28,17 @@ module.exports = function(Category) {
     };
 
     Category.listForTagsAndGenders = function (tags, genders) {
+        var tagIds = _.union(_.pluck(tags, 'id'), tags);
         return Q.ninvoke(Category, 'find', {
             where: {
                 or: [
-                    {tags: {inq: _.pluck(tags, 'id')}},
+                    {tags: {inq: tagIds}},
                     {genders: {inq: _.map(genders, function (g) { return (g || '').toLowerCase(); })}}
                 ]
             }
         })
         .then(function(categories) {
-            return _.map(categories, function(cat) {
+            var result = _.map(categories, function(cat) {
                 if(_.isString(cat.name)) {
                     return cat;
                 } else {
@@ -45,7 +46,28 @@ module.exports = function(Category) {
                     cat.description = cat.description.fr;
                     return cat;
                 }
-            })
+            });
+            return result;
+        })
+    };
+
+    Category.listGenders = function (genders) {
+        return Q.ninvoke(Category, 'find', {
+            where: {
+                genders: {inq: _.map(genders, function (g) { return (g || '').toLowerCase(); })}
+            }
+        })
+        .then(function(categories) {
+            var result = _.map(categories, function(cat) {
+                if(_.isString(cat.name)) {
+                    return cat;
+                } else {
+                    cat.name = cat.name.fr;
+                    cat.description = cat.description.fr;
+                    return cat;
+                }
+            });
+            return result;
         })
     };
 
