@@ -272,6 +272,13 @@ module.exports = function(Business) {
                 this.isClaimed()
             ])
             .spread(function (numHairfies, tags, categories, isClaimed) {
+                var relevanceScore = 0.4 * Business.ACCOUNT_TYPE_VALUE(this.accountType) / 2
+                    + 0.2 * (this.rating || 0) / 100
+                    + 0.2 * (this.numHairfies || 0) / 250
+                    + 0.2 * (this.numReviews || 0) / 50;
+
+                console.log("relevanceScore for %s : %s", this.name, relevanceScore);
+
                 return {
                     id                 : this.id,
                     objectID           : this.id.toString(),
@@ -310,6 +317,7 @@ module.exports = function(Business) {
                     isClaimed          : isClaimed,
                     accountType        : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
                     accountTypeValue   : Business.ACCOUNT_TYPE_VALUE(this.accountType),
+                    relevanceScore     : relevanceScore,
                     updatedAt          : this.updatedAt
                 }
             }.bind(this));
