@@ -16,6 +16,7 @@ module.exports = function (BusinessLead) {
             name            : this.name,
             kind            : this.kind,
             email           : this.email,
+            zipCode         : this.zipCode,
             phoneNumber     : this.phoneNumber
         }
     }
@@ -27,6 +28,7 @@ module.exports = function (BusinessLead) {
             'name'            : businessLead.name,
             'kind'            : businessLead.kind,
             'email'           : businessLead.email,
+            'zipCode'         : businessLead.zipCode,
             'phoneNumber'     : businessLead.phoneNumber
         });
 
