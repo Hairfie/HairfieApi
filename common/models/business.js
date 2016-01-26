@@ -163,7 +163,7 @@ module.exports = function(Business) {
             bestDiscount: this.bestDiscount,
             averagePrice: this.averagePrice,
             priceLevel  : this.priceLevel || null,
-            rating             : this.rating || (rating && rating.rating) || null,
+            rating      : this.rating || (rating && rating.rating) || null,
             profilePicture: this.profilePicture && this.profilePicture.toRemoteShortObject(context),
             pictures    : pictures,
             isBookable  : this.isBookable(),
