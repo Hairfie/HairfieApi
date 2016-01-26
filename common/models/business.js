@@ -279,6 +279,8 @@ module.exports = function(Business) {
                     + 0.2 * (this.numHairfies || 0) / 250
                     + 0.2 * (this.numReviews || 0) / 50;
 
+                if(this.forcedRelevanceScore) relevanceScore = this.forcedRelevanceScore;
+
                 console.log("relevanceScore for %s : %s", this.name, relevanceScore);
                 console.log("categories", categories);
 
@@ -320,7 +322,7 @@ module.exports = function(Business) {
                     isClaimed          : isClaimed,
                     accountType        : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
                     accountTypeValue   : Business.ACCOUNT_TYPE_VALUE(this.accountType),
-                    relevanceScore     : this.forcedRelevanceScore || relevanceScore,
+                    relevanceScore     : relevanceScore,
                     updatedAt          : this.updatedAt
                 }
             }.bind(this));
