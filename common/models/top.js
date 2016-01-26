@@ -33,8 +33,7 @@ module.exports = function (Top) {
                 Business.find({order: 'bestDiscount DESC', limit: (limit - businesses.length), where: { topBusiness: { neq: true } } }, function (error, complete) {
                     cb(error, _.map(businesses.concat(complete), businessDeal));
                 });
-            }
-            else {
+            } else {
                 cb(error, _.map(businesses, businessDeal));
             }
         });

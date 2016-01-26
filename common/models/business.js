@@ -78,11 +78,6 @@ module.exports = function(Business) {
             BusinessMember = Business.app.models.BusinessMember,
             User           = Business.app.models.User;
 
-        var rating = null;
-        if (!this.rating && this.numReviews != 0) {
-            rating = Q.ninvoke(Business, 'getRating', this.id);
-        }
-
         var numHairfies = null;
         if (!this.numHairfies && this.numHairfies != 0) {
             numHairfies = Q.ninvoke(Hairfie, 'count', {businessId: this.id})
@@ -149,6 +144,11 @@ module.exports = function(Business) {
             if(phoneNumberToDisplay) {
                 phoneNumberToDisplay = phoneUtil.format(phoneUtil.parse(phoneNumberToDisplay,'FR'), phone.PhoneNumberFormat.INTERNATIONAL)
             }
+        }
+
+        var rating = null;
+        if (!this.rating && this.numReviews != 0) {
+            rating = Q.ninvoke(Business, 'getRating', this.id);
         }
 
         return {
