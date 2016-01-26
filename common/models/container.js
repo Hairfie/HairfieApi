@@ -20,6 +20,7 @@ module.exports = function (Container) {
 
         Image.upload(req, res)
             .then(function (files) {
+
                 return {
                     toRemoteObject: function (context) {
                         var obj = _.mapValues(files, function (f) { return f.toRemoteObject(context); });
