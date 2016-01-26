@@ -31,9 +31,11 @@ module.exports = function(Business) {
     Hooks.updateSearchIndex(Business, {index: 'business'});
 
     Business.observe('before save', function updateFriendlyId(ctx, next) {
+        console.log("updateFriendlyId", ctx.instance);
+
         if(ctx.instance && !ctx.instance.friendlyId) {
             Business.findOne({order: 'friendlyId DESC', limit: 1}, function(err, b) {
-                ctx.instance.friendlyId = b.friendlyId + 1;
+                ctx.instance.friendlyId = +b.friendlyId+1;
                 next();
             })
         } else {
@@ -396,14 +398,20 @@ module.exports = function(Business) {
         next();
     });
 
-    Business.observe('before save', function updateCategories(ctx, next) {
-        var business = ctx.instance;
+    function updateCategories(business) {
         if (business && business.addedCategories && !_.isEmpty(business.addedCategories)) {
             business.categories = business.addedCategories;
-            ctx.instance = business;
         } else if (business && business.hairfiesCategories && !_.isEmpty(business.hairfiesCategories)) {
             business.categories = business.hairfiesCategories;
-            ctx.instance = business;
+        }
+        return business;
+    }
+
+    Business.observe('before save', function(ctx, next) {
+        if(ctx.instance) {
+            ctx.instance = updateCategories(ctx.instance);
+        } else if (ctx.data) {
+            ctx.currentInstance = updateCategories(ctx.data);
         }
         next();
     });
