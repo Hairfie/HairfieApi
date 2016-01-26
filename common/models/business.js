@@ -280,6 +280,7 @@ module.exports = function(Business) {
                     + 0.2 * (this.numReviews || 0) / 50;
 
                 console.log("relevanceScore for %s : %s", this.name, relevanceScore);
+                console.log("categories", categories);
 
                 return {
                     id                 : this.id,
@@ -345,9 +346,12 @@ module.exports = function(Business) {
     Business.prototype.getCategories = function () {
         var b = this;
 
-        return Business.app.models.Category.listForTagsAndGenders(b.getGenders())
-            .then(function(genderCategories) {
-                return _.union(b.categories, genderCategories)
+        return Q.all([
+                Business.app.models.Category.listGenders(b.getGenders()),
+                Business.app.models.Category.getByIds(b.categories)
+            ])
+            .spread(function(genderCategories, categories) {
+                return _.unionBy(genderCategories, categories, 'slug');
             });
     };
 

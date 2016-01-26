@@ -26,6 +26,12 @@
     },
     "phoneNumber": {
       "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "zipCode": {
+      "type": "string"
     }
   },
   "validations": [],

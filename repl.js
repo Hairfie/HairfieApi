@@ -20,9 +20,7 @@ var Mailchimp = app.models.Mailchimp;
 var Email = app.models.Email;
 var TextMessage = app.models.TextMessage;
 
-
 var UrlGenerator = require('./common/utils/UrlGenerator');
-
 
 var urlGenerator = new UrlGenerator({
     defaultApp  : 'api',
@@ -39,10 +37,8 @@ app.generateUrl = function (name, params) {
     return urlGenerator.generate(name, params);
 };
 
-
 var cloudinary = require('cloudinary');
 cloudinary.config({cloudName: process.env.CLOUDINARY_CLOUD_NAME,apiKey: process.env.CLOUDINARY_API_KEY,apiSecret: process.env.CLOUDINARY_API_SECRET});
-
 
 // open the repl session
 var replServer = require('repl').start({
@@ -66,10 +62,7 @@ replServer.context.AlgoliaSearchEngine = AlgoliaSearchEngine;
 replServer.context.Email = Email;
 replServer.context.TextMessage = TextMessage;
 
-
 replServer.context.cloudinary = cloudinary;
-
-
 
 replServer.context.find = find;
 replServer.context.findOne = findOne;
