@@ -320,7 +320,7 @@ module.exports = function(Business) {
                     isClaimed          : isClaimed,
                     accountType        : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
                     accountTypeValue   : Business.ACCOUNT_TYPE_VALUE(this.accountType),
-                    relevanceScore     : relevanceScore,
+                    relevanceScore     : this.forcedRelevanceScore || relevanceScore,
                     updatedAt          : this.updatedAt
                 }
             }.bind(this));
@@ -351,7 +351,7 @@ module.exports = function(Business) {
                 Business.app.models.Category.getByIds(b.categories)
             ])
             .spread(function(genderCategories, categories) {
-                return _.unionBy(genderCategories, categories, 'slug');
+                return _.uniq(_.union(genderCategories, categories), 'slug');
             });
     };
 
@@ -384,7 +384,7 @@ module.exports = function(Business) {
 
     function bestDiscountOfTimetable(timetable) {
         var timeWindows = _.flatten(_.values(timetable)),
-            discounts   = _.reject(_.map(_.pluck(timeWindows, 'discount'), Number), _.isNaN);
+            discounts   = _.reject(_.map(_.map(timeWindows, 'discount'), Number), _.isNaN);
 
         return _.max(_.flatten([discounts, [0]]));
     }
@@ -453,7 +453,7 @@ module.exports = function(Business) {
             return Q.ninvoke(Business, 'mongoNearby', params.location, params.clientTypes, params.skip, params.limit)
                 .then(function(result) {
                     // Fix me by instantiating business from JSON
-                    return Q.ninvoke(Business, 'findByIds', _.pluck(result, '_id'));
+                    return Q.ninvoke(Business, 'findByIds', _.map(result, '_id'));
                 });
         }
     }

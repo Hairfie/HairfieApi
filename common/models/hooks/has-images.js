@@ -52,7 +52,7 @@ function bindImage(Image, def, model, prop, strict) {
     var deferred = Q.defer();
     Image.findByIds(ids, function (error, images) {
         if (error) return deferred.reject(error);
-        if (def.container) images = _.where(images, {container: def.container});
+        if (def.container) images = _.filter(images, {container: def.container});
         model[prop] = def.multi ? images : _.first(images);
         deferred.resolve(null);
     });

@@ -57,11 +57,11 @@ module.exports = function (Image) {
         return AmazonS3Image.uploadFromRequest(req, res)
             .then(function (files) {
                 var pairs    = _.pairs(files);
-                var promises = _.map(_.pluck(pairs, 1), processAmazonS3Image);
+                var promises = _.map(_.map(pairs, 1), processAmazonS3Image);
 
                 return Q.all(promises).then(function (images) {
                     // rebuild field-to-image map
-                    return _.zipObject(_.pluck(pairs, 0), images);
+                    return _.zipObject(_.map(pairs, 0), images);
                 });
             });
     };

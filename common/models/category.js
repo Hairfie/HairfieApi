@@ -28,7 +28,7 @@ module.exports = function(Category) {
     };
 
     Category.listForTagsAndGenders = function (tags, genders) {
-        var tagIds = _.union(_.pluck(tags, 'id'), tags);
+        var tagIds = _.union(_.map(tags, 'id'), tags);
         return Q.ninvoke(Category, 'find', {
             where: {
                 or: [

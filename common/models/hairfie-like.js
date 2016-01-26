@@ -28,7 +28,7 @@ module.exports = function (HairfieLike) {
             updateHairfies([ctx.instance.hairfieId]);
         } else {
             HairfieLike.find({where: ctx.where, limit: 100}, function (error, likes) {
-                updateHairfies(_.pluck(likes, 'hairfieId'));
+                updateHairfies(_.map(likes, 'hairfieId'));
             });
         }
     }

@@ -77,10 +77,10 @@ module.exports = function (BusinessService) {
                 ])
                 .spread(function(business, services) {
                     if (!_.isEmpty(_.where(services, {isWomanClassicPrice: true }))) {
-                        business.priceLevel = calcPriceLevel(_.pluck(_.where(services, {isWomanClassicPrice: true }), 'price.amount'), priceTableWoman);
+                        business.priceLevel = calcPriceLevel(_.map(_.where(services, {isWomanClassicPrice: true }), 'price.amount'), priceTableWoman);
                     }
                     else if (!_.isEmpty(_.where(services, {isManClassicPrice: true }))) {
-                        business.priceLevel = calcPriceLevel(_.pluck(_.where(services, {isManClassicPrice: true }), 'price.amount'), priceTableMan);
+                        business.priceLevel = calcPriceLevel(_.map(_.where(services, {isManClassicPrice: true }), 'price.amount'), priceTableMan);
                     }
                     else {
                         business.priceLevel = null;

@@ -2,7 +2,7 @@
 
 var Q = require('q');
 var Promise = require('../../common/utils/Promise');
-var _ = require('lodash');
+var _ = require('lodash'); 
 var Hooks = require('./hooks');
 
 module.exports = function (Hairfie) {
@@ -257,16 +257,13 @@ module.exports = function (Hairfie) {
                     _.map(tags, function (tag) {
                         business.hairfieTags[tag.id] = (business.hairfieTags[tag.id] || 0) + 1;
                     });
-                    console.log("hairfieTags", _.keys(business.hairfieTags));
-                    console.log("business.getGenders()", business.getGenders());
 
                     Q.all([
                         Q.ninvoke(Hairfie, 'count', {businessId: hairfie.businessId}),
                         Hairfie.app.models.Category.listForTagsAndGenders(_.keys(business.hairfieTags), business.getGenders())
                     ])
                     .spread(function (numHairfies, hairfiesCategories) {
-                        console.log("numHairfies", numHairfies);
-                        console.log("hairfiesCategories", hairfiesCategories);
+
                         business.numHairfies = numHairfies;
                         business.hairfiesCategories = _.map(hairfiesCategories, 'id');
                         var averagePrice = {
@@ -495,8 +492,7 @@ module.exports = function (Hairfie) {
 
         collection.aggregate(pipe, function (error, result) {
             if (error) return deferred.reject(error);
-
-            Hairfie.findByIds(_.pluck(result, '_id'), function (error, hairfies) {
+            Hairfie.findByIds(_.map(result, '_id'), function (error, hairfies) {
                 if (error) deferred.reject(error);
                 else deferred.resolve(hairfies);
             });
@@ -611,7 +607,7 @@ module.exports = function (Hairfie) {
             .then(function (result) {
                 return [
                     result,
-                    Q.ninvoke(Hairfie, 'findByIds', _.pluck(result.hits, 'objectID'))
+                    Q.ninvoke(Hairfie, 'findByIds', _.map(result.hits, 'objectID'))
                 ];
             })
             .spread(function (result, hairfies) {
@@ -665,7 +661,7 @@ module.exports = function (Hairfie) {
             .then(function (result) {
                 return [
                     result,
-                    Q.ninvoke(Hairfie, 'findByIds', _.pluck(result.hits, 'objectID'))
+                    Q.ninvoke(Hairfie, 'findByIds', _.map(result.hits, 'objectID'))
                 ];
             })
             .spread(function (result, hairfies) {

@@ -1,7 +1,7 @@
 'use strict';
 
 var cache = require('express-redis-cache');
-var _ = require('lodash');
+var _ = require('lodash'); require('lodash-migrate');
 
 module.exports = function (app) {
     var client = cache({
