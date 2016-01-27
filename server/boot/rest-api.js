@@ -11,7 +11,6 @@ module.exports = function mountRestApi(server) {
         var restApiRoot = server.get('restApiRoot');
 
         server.use('/:apiVersion', function (req, res, next) {
-
             var version;
             switch (req.params.apiVersion) {
                 case 'v0':
@@ -71,7 +70,9 @@ module.exports = function mountRestApi(server) {
     var remotes = server.remotes();
 
     remotes.after('**', function (ctx, next, method) {
-        if (!ctx.result) next();
+        if (!ctx.result) return next();
+        if (ctx.res.statusCode == 204) return next();
+
         var Model   = method.ctor,
             context = new Context({
                 request: ctx.req

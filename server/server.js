@@ -40,24 +40,28 @@ if (!passportConfig) {
 //app.use(loopback.token({
 //    model: app.models.AccessToken
 //}));
+
 app.use(function (req, res, next) {
     // temporary replace token middleware
     if (req.accessToken) return next();
 
     app.models.accessToken.findForRequest(req, {}, function(err, token) {
         req.accessToken = token || null;
+
         if (req.accessToken) {
             app.models.user.findById(req.accessToken.userId, function (error, user) {
-                if (error) return next({statusCode: 500, message: 'Error retrieving user'});
-                if (!user) return next({statusCode: 500, message: 'Access token\'s user not found'});
+                if (error) return next({statusCode: 500, message: 'Error retrieving user'})
+                if(!user) return next({statusCode: 500, message: 'Access token\'s user not found'});
+                
                 req.user = user;
-                next();
+                next();          
             });
         } else {
             next();
         }
     });
 });
+
 app.use(loopback.compress());
 app.use(loopback.urlencoded({extended: true}));
 app.use(loopback.json());
@@ -136,17 +140,18 @@ for (var s in passportConfig) {
     c.profileToUser = app.models.User.profileToUser;
     passportConfigurator.configureProvider(s, c);
 }
-
+console.log("passportConfig['facebook-token-link'].scope", passportConfig['facebook-token-link'].scope);
 app.use('/*/auth/facebook/token',
     passport.authenticate('facebook-token-auth', {
         scope: passportConfig['facebook-token-auth'].scope
     }),
     function (req, res) {
         if (!req.user) return res.status(401);
-
+        console.log("passport authenticate");
         req.user.createAccessToken({ttl: 1209600}, function (error, token) {
             if (error) return res.status(500);
-
+            console.log("passport authenticate", token);
+            console.log("passport authenticate error", error)
             return Promise(token.toRemoteObject())
                 .then(Promise.resolveDeep)
                 .then(function(fullToken) {

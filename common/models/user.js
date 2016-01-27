@@ -138,6 +138,7 @@ module.exports = function(User) {
     };
 
     User.profileToUser = function(provider, profile) {
+        console.log("profile", profile);
         // Let's create a user for that
         var email = profile.emails && profile.emails[0] && profile.emails[0].value;
         if (!email) {
@@ -317,6 +318,7 @@ module.exports = function(User) {
 
     function loggedInAsSubjectUser(ctx, _, next) {
         var user = ctx.req.user;
+        console.log("loggedInAsSubjectUser", user);
         if (!user) return next({statusCode: 401});
         if (user.id.toString() != ctx.req.params.id.toString()) return next({statusCode: 403});
         next();

@@ -586,7 +586,7 @@ module.exports = function(Business) {
                 }).join(',');
 
                 if (facetFilter == 'categories' || facetFilter == 'categorySlugs') {
-                    optionalFacetFilterArr.push('(' + filterToPush + ')');
+                    facetFiltersArr.push('(' + filterToPush + ')');
                 } else {
                     facetFiltersArr.push(filterToPush)
                 }
