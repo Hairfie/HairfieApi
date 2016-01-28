@@ -126,7 +126,6 @@ module.exports = function(Business) {
             hairfiesCategories : this.hairfiesCategories,
             categories         : this.categories,
             labels             : this.labels,
-            accountType        : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
             createdAt          : this.createdAt,
             updatedAt          : this.updatedAt
         });
@@ -167,6 +166,7 @@ module.exports = function(Business) {
             profilePicture: this.profilePicture && this.profilePicture.toRemoteShortObject(context),
             pictures    : pictures,
             isBookable  : this.isBookable(),
+            accountType : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
             thumbnail   : pictures[0] // BC mobile
         };
     };
