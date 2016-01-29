@@ -562,26 +562,30 @@ module.exports = function (Hairfie) {
             params.facetFilters.push('categories:'+category);
         });
 
-        // filter by tags
-        var forcedTags = ['Homme', 'Femme'];
+        // // filter by tags
+        // var forcedTags = ['Homme', 'Femme'];
 
-        var OR = [];
-        var AND = [];
+        // var OR = [];
+        // var AND = [];
 
-        _.forEach(req.query.tags, function(tag) {
-            if (_.isEmpty(_.intersection([tag], forcedTags)))
-                OR.push(tag);
-            else
-                AND.push(tag);
-        });
+        // _.forEach(req.query.tags, function(tag) {
+        //     if (_.isEmpty(_.intersection([tag], forcedTags)))
+        //         OR.push(tag);
+        //     else
+        //         AND.push(tag);
+        // });
+
+        // if (req.query.tags) {
+        //     if (OR.length > 0) {
+        //         params.tagFilters = '(' + OR.join(', ') + ')' + (_.isEmpty(AND) ? '' : ', ') + AND.join(', ');
+        //     }
+        //     else {
+        //         params.tagFilters = AND.join(', ');
+        //     }
+        // }
 
         if (req.query.tags) {
-            if (OR.length > 0) {
-                params.tagFilters = '(' + OR.join(', ') + ')' + (_.isEmpty(AND) ? '' : ', ') + AND.join(', ');
-            }
-            else {
-                params.tagFilters = AND.join(', ');
-            }
+            params.tagFilters = req.query.tags.join(', ');
         }
 
         // filter by price
