@@ -75,7 +75,7 @@ module.exports = function (app) {
             next();
         });
 
-        app.get('/*/businesses/:businessId/similar', client.route({ expire: 60 }), function (req, res, next) {
+        app.get('/*/businesses/:businessId/similar', client.route({ expire: 600 }), function (req, res, next) {
             next();
         });
 
