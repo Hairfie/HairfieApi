@@ -79,10 +79,10 @@ module.exports = function (app) {
             next();
         });
 
-        // app.get('/v1.2.2/hairfies/search', function (req, res, next) {
-        //     res.express_redis_cache_name = 'hairfies-search-' + JSON.stringify(req.params);
-        //     next();
-        // });
+        app.get('/v1.2.3/hairfies/search', function (req, res, next) {
+            //res.express_redis_cache_name = 'hairfies-search-' + JSON.stringify(req.params);
+            next();
+        });
 
         app.get('/v1.2.2/hairfies/search', client.route({ expire: 60 }), function (req, res, next) {
             next();
