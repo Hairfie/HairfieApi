@@ -22,6 +22,7 @@ module.exports = function (Business) {
         })
         .then(function(yelpBusiness) {
             console.log("Found YELP ID", yelpBusiness.id);
+            console.log("Hairfie Name : %s  and Id :", business.name, business.id);
 
             var yelpObject = {};
             yelpObject.id = yelpBusiness.id;

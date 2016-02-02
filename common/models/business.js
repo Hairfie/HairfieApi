@@ -174,6 +174,7 @@ module.exports = function(Business) {
         var phoneNumber = phoneUtil.format(phoneUtil.parse(business.phoneNumber,'FR'), nodePhone.PhoneNumberFormat.E164);
 
         if(phoneNumber) {
+            business.oldPhoneNumber = business.phoneNumber;
             business.phoneNumber = phoneNumber;
         }
 
@@ -313,6 +314,7 @@ module.exports = function(Business) {
                     accountType        : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
                     accountTypeValue   : Business.ACCOUNT_TYPE_VALUE(this.accountType),
                     relevanceScore     : relevanceScore,
+                    yelpObject         : this.yelpObject,
                     updatedAt          : this.updatedAt
                 }
             }.bind(this));
