@@ -147,8 +147,16 @@ module.exports = {
         listId: process.env.MAILCHIMP_LIST_ID
     },
     wordpress: {
-        name: 'mailchimp',
+        name: 'wordpress',
         connector: 'memory',
         endpoint: 'http://blog.hairfie.com/wp-json'
-    }
+    },
+    yelp: {
+        name: 'yelp',
+        connector: 'memory',
+        consumer_key: process.env.YELP_CONSUMER_KEY,
+        consumer_secret: process.env.YELP_CONSUMER_SECRET,
+        token: process.env.YELP_TOKEN,
+        token_secret: process.env.YELP_TOKEN_SECRET
+    },
 };

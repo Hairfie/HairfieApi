@@ -166,6 +166,12 @@
     },
     "numHairfies" : {
       "type": "number"
+    },
+    "yelpId": {
+      "type": "string"
+    },
+    "yelpObject": {
+      "type": "object"
     }
   },
   "validations": [],
