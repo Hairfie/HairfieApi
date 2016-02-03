@@ -15,7 +15,7 @@ module.exports = function (program, app) {
         .action(function () {
 
         var onProgress = onProgress || _.noop;
-        var chunkSize = 100;
+        var chunkSize = 50;
 
         return Promise.ninvoke(Business, 'count')
             .then(function (total) {
