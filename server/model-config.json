@@ -197,5 +197,9 @@
   "BlogPost": {
     "dataSource": "wordpress",
     "public": true
+  },
+  "Yelp": {
+    "dataSource": "yelp",
+    "public": false
   }
 }

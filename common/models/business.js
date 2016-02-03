@@ -6,45 +6,34 @@ var GeoPoint = require('loopback-datasource-juggler/lib/geo').GeoPoint;
 var getSlug = require('speakingurl');
 var Control = require('../utils/AccessControl');
 var Hooks = require('./hooks');
-var phone = require('node-phonenumber')
-var phoneUtil = phone.PhoneNumberUtil.getInstance();
+var BusinessUtils = require('./business-utils');
+var nodePhone = require('node-phonenumber')
+var phoneUtil = nodePhone.PhoneNumberUtil.getInstance();
 
 var moment = require('moment');
 require('moment/locale/fr');
 moment.locale('fr');
 
-var publicHolidays = require("../utils/PublicHolidays.js");
+var days = require("../utils/days.js");
 
-var days = {
-    0: "SUN",
-    1: "MON",
-    2: "TUE",
-    3: "WED",
-    4: "THU",
-    5: "FRI",
-    6: "SAT"
-};
 
 module.exports = function(Business) {
     Hooks.generateId(Business);
     Hooks.updateTimestamps(Business);
     Hooks.updateSearchIndex(Business, {index: 'business'});
 
-    Business.observe('before save', function updateFriendlyId(ctx, next) {
-        console.log("updateFriendlyId", ctx.instance);
-
-        if(ctx.instance && !ctx.instance.friendlyId) {
-            Business.findOne({order: 'friendlyId DESC', limit: 1}, function(err, b) {
-                ctx.instance.friendlyId = +b.friendlyId+1;
-                next();
-            })
-        } else {
-            next();
+    Hooks.hasImages(Business, {
+        pictures: {
+            container: 'businesses',
+            multi: true
         }
-
     });
 
     Business.validatesUniquenessOf('friendlyId');
+
+    BusinessUtils.facebookPage(Business);
+    BusinessUtils.yelp(Business);
+    BusinessUtils.timeslots(Business);
 
     Business.ACCOUNT_FREE = 'FREE';
     Business.ACCOUNT_BASIC = 'BASIC';
@@ -63,13 +52,6 @@ module.exports = function(Business) {
 
     Business.validatesInclusionOf('accountType', {in: [Business.ACCOUNT_FREE, Business.ACCOUNT_BASIC, Business.ACCOUNT_PREMIUM]});
 
-
-    Hooks.hasImages(Business, {
-        pictures: {
-            container: 'businesses',
-            multi: true
-        }
-    });
 
     Business.prototype.toRemoteObject = function (context) {
         var Hairfie        = Business.app.models.Hairfie,
@@ -134,15 +116,9 @@ module.exports = function(Business) {
     Business.prototype.toRemoteShortObject = function (context) {
         var pictures = (this.pictures || []).map(function (p) { return p.toRemoteObject(context); });
 
-        var phoneNumberToDisplay = this.phoneNumber;
-
         if (context.isApiVersion('<1')) {
             var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject(context);
             if(pictures.length == 0) pictures.push(streetViewPicture);
-        } else {
-            if(phoneNumberToDisplay) {
-                phoneNumberToDisplay = phoneUtil.format(phoneUtil.parse(phoneNumberToDisplay,'FR'), phone.PhoneNumberFormat.INTERNATIONAL)
-            }
         }
 
         var rating = null;
@@ -156,7 +132,7 @@ module.exports = function(Business) {
             href        : Business.app.urlGenerator.api('businesses/'+this.id),
             name        : this.name,
             slug        : this.slug(),
-            phoneNumber : phoneNumberToDisplay,
+            phoneNumber : this.getPhoneNumber(),
             address     : this.address,
             bestDiscount: this.bestDiscount,
             averagePrice: this.averagePrice,
@@ -171,33 +147,48 @@ module.exports = function(Business) {
         };
     };
 
-    Business.prototype.getFacebookPageObject = function () {
-        var User = Business.app.models.user;
 
-        var facebookPage = this.facebookPage || {};
+    Business.observe('before save', function updateFriendlyId(ctx, next) {
+        if(ctx.instance && !ctx.instance.friendlyId) {
+            Business.findOne({order: 'friendlyId DESC', limit: 1}, function(err, b) {
+                ctx.instance.friendlyId = +b.friendlyId+1;
+                next();
+            })
+        } else {
+            next();
+        }
+    });
 
-        return {
-            toRemoteObject: function (context) {
-                return {
-                    name        : facebookPage.name,
-                    user        : Q.ninvoke(User, 'findById', facebookPage.userId).then(function (user) {
-                        return user && user.toRemoteShortObject(context);
-                    }),
-                    createdAt   : facebookPage.createdAt
-                };
-            },
-            toRemoteShortObject: function (context) {
-                return {
-                    name        : facebookPage.name
-                };
-            }
-        };
-    };
 
     Business.prototype.slug = function () {
         return getSlug(this.name);
     };
 
+    Business.prototype.getPhoneNumber = function() {
+        if(!this.phoneNumber) return;
+
+        return phoneUtil.format(phoneUtil.parse(this.phoneNumber,'FR'), nodePhone.PhoneNumberFormat.INTERNATIONAL)
+    };
+
+    function cleanPhoneNumber(business) {
+        var phoneNumber = phoneUtil.format(phoneUtil.parse(business.phoneNumber,'FR'), nodePhone.PhoneNumberFormat.E164);
+
+        if(phoneNumber) {
+            business.oldPhoneNumber = business.phoneNumber;
+            business.phoneNumber = phoneNumber;
+        }
+
+        return business;
+    }
+
+    Business.observe('before save', function(ctx, next) {
+        if(ctx.instance) {
+            ctx.instance = cleanPhoneNumber(ctx.instance);
+        } else if (ctx.data) {
+            ctx.currentInstance = cleanPhoneNumber(ctx.data);
+        }
+        next();
+    });
 
     Business.prototype.isBookable = function() {
         return _.isBoolean(this.bookable) ?  this.bookable : true;
@@ -282,7 +273,7 @@ module.exports = function(Business) {
                 if(this.forcedRelevanceScore) relevanceScore = this.forcedRelevanceScore;
 
                 console.log("relevanceScore for %s : %s", this.name, relevanceScore);
-                console.log("categories", categories);
+                //console.log("categories", categories);
 
                 return {
                     id                 : this.id,
@@ -323,6 +314,7 @@ module.exports = function(Business) {
                     accountType        : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
                     accountTypeValue   : Business.ACCOUNT_TYPE_VALUE(this.accountType),
                     relevanceScore     : relevanceScore,
+                    yelpObject         : this.yelpObject,
                     updatedAt          : this.updatedAt
                 }
             }.bind(this));
@@ -697,78 +689,6 @@ module.exports = function(Business) {
             .nodeify(callback);
     };
 
-    Business.getFacebookPage = function (businessId, user, cb) {
-        if (!user) return cb({statusCode: 401});
-
-        user.isManagerOfBusiness(businessId)
-            .then(function (isManager) {
-                if (!isManager) return cb({statusCode: 403});
-
-                return Q.ninvoke(Business, 'findById', businessId);
-            })
-            .then(function (business) {
-                if (!business || !business.facebookPage) return cb({statusCode: 404});
-
-                cb(null, business.getFacebookPageObject(context));
-            })
-            .fail(cb);
-    };
-
-    Business.saveFacebookPage = function (businessId, data, user, cb) {
-        if (!user) return cb({statusCode: 401});
-
-        user.isManagerOfBusiness(businessId)
-            .then(function (isManager) {
-                if (!isManager) return cb({statusCode: 403});
-
-                return Q.ninvoke(Business, 'findById', businessId);
-            })
-            .then(function (business) {
-                if (!business) return cb({statusCode: 404});
-
-                var fb = Business.app.fbGraph;
-
-                fb.get(data.id+'?access_token='+data.access_token, function (error, response) {
-                    if (error) return cb({statusCode: 500});
-                    if (!response.can_post) return cb({statusCode: 400, message: 'Cannot post'});
-
-                    var facebookPage = business.facebookPage || {};
-                    facebookPage.userId = user.id;
-                    facebookPage.facebookId = data.id;
-                    facebookPage.name = response.name;
-                    facebookPage.accessToken = data.access_token;
-                    facebookPage.graphData = response;
-                    facebookPage.createdAt = facebookPage.createdAt || new Date();
-                    facebookPage.updatedAt = new Date();
-
-                    business.facebookPage = facebookPage;
-
-                    business.save({}, function (error) {
-                        if (error) return cb({statusCode: 500});
-                        cb(null, business.getFacebookPageObject(context));
-                    });
-                });
-            })
-            .fail(cb);
-    };
-    Business.deleteFacebookPage = function (businessId, user, cb) {
-        if (!user) return cb({statusCode: 401});
-
-        user.isManagerOfBusiness(businessId)
-            .then(function (isManager) {
-                if (!isManager) return cb({statusCode: 403});
-
-                return Q.ninvoke(Business, 'findById', businessId);
-            })
-            .then(function (business) {
-                if (!business) return cb({statusCode: 404});
-
-                business.facebookPage = null;
-                return Q.ninvoke(business, 'save');
-            })
-            .then(cb.bind(null, null), cb);
-    };
-
     Business.prototype.getCustomersObject = function () {
         var User = Business.app.models.user,
             Hairfie = Business.app.models.Hairfie;
@@ -919,72 +839,6 @@ module.exports = function(Business) {
             });
     };
 
-    function parseDay(day, interval, delay) {
-        var newBattlements = [];
-        _.map(day, function(timeslots) {
-            var i;
-            for (i = 0; moment(timeslots.endTime, "HH:mm") >= moment(timeslots.startTime, "HH:mm").add((i + 1) * interval, "m"); i++) {
-                var delta = moment(timeslots.startTime, "HH:mm").add(i * interval, "m").diff(moment(timeslots.startTime, "HH:mm"), 'hours');
-
-                if (!(delay && delay > delta))
-                    newBattlements.push({
-                        startTime: moment(timeslots.startTime, "HH:mm").add(i * interval, "m").format("HH:mm"),
-                        endTime: moment(timeslots.startTime, "HH:mm").add((i + 1) * interval, "m").format("HH:mm"),
-                        discount: timeslots.discount || ""
-                    });
-            }
-        });
-        return newBattlements;
-    }
-
-    Business.timeslots = function (businessId, from, until, next) {
-        var interval = 30; //60 Minutes between each timeslot
-        var delay = 28; //Numbers minimum hours before the first timeslots bookable
-
-        if (moment(from) > moment(until))
-            next({statusCode: 400, message: 'from must to be before until (time)'});
-
-        if (moment(from) < moment())
-            from = moment().format("YYYY-MM-DD");
-
-        return Q.ninvoke(Business, 'findById', businessId)
-            .then(function (business) {
-                var timeslots = {};
-                var day;
-                var date;
-                var i;
-
-                for (i = 0; moment(from) <= moment(from).add(i, 'd') && moment(until) >= moment(from).add(i, 'd'); i++) {
-                    date = moment(from).add(i, 'd').format("YYYY-MM-DD");
-
-                    if (business.exceptions && business.exceptions[date]) {
-                        day = business.exceptions[date];
-                    }
-                    else if (_.indexOf(publicHolidays, date) >= 0) {
-                        day = [];
-                    }
-                    else {
-                        day = moment(from).add(i, 'd').days();
-                        day = days[day];
-                        day = business.timetable && business.timetable[day];
-                    }
-
-                    if (delay <= 0) {
-                        timeslots[date] = parseDay(day, interval);
-                    }
-                    else if (delay < 24 && !(_.isEmpty(day))) {
-                        timeslots[date] = parseDay(day, interval, delay);
-                        delay = 0;
-                    }
-                    else {
-                        delay -= 24;
-                    }
-                }
-                return timeslots;
-            })
-        next();
-    };
-
     Business.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, unused, next) {
         ctx.req.user.isManagerOfBusiness(ctx.instance.id)
             .then(function (isManager) {
@@ -1044,47 +898,6 @@ module.exports = function(Business) {
         ],
         returns: {arg: 'businesses', root: true},
         http: { verb: 'GET', path: '/:businessId/tags' }
-    });
-
-    Business.remoteMethod('timeslots', {
-        description: 'Get timeslots from timetable',
-        accepts: [
-            {arg: 'businessId', type: 'string', description: 'ID of the reference business'},
-            {arg: 'from', type: 'string', description: 'start date'},
-            {arg: 'until', type: 'string', description: 'end date'}
-        ],
-        returns: {arg: 'timeslots', root: true},
-        http: { verb: 'GET', path: '/:businessId/timeslots' }
-    });
-
-    Business.remoteMethod('getFacebookPage', {
-        description: 'Returns the facebook page of the business',
-        accepts: [
-            {arg: 'businessId', type: 'string', description: 'Identifier of the business'},
-            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
-        ],
-        returns: {arg: 'facebookPage', root: true},
-        http: {verb: 'GET', path: '/:businessId/facebook-page'}
-    });
-
-    Business.remoteMethod('saveFacebookPage', {
-        description: 'Saves the facebook page of the business',
-        accepts: [
-            {arg: 'businessId', type: 'string', description: 'Identifier of the business'},
-            {arg: 'data', type: 'object', http: {source: 'body'}},
-            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
-        ],
-        returns: {arg: 'facebookPage', root: true},
-        http: {verb: 'PUT', path: '/:businessId/facebook-page'}
-    });
-
-    Business.remoteMethod('deleteFacebookPage', {
-        description: 'Deletes the facebook page of the business',
-        accepts: [
-            {arg: 'businessId', type: 'string', description: 'Identifier of the business'},
-            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
-        ],
-        http: {verb: 'DELETE', path: '/:businessId/facebook-page'}
     });
 
     Business.remoteMethod('getCustomers', {

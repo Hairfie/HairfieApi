@@ -140,7 +140,7 @@ for (var s in passportConfig) {
     c.profileToUser = app.models.User.profileToUser;
     passportConfigurator.configureProvider(s, c);
 }
-console.log("passportConfig['facebook-token-link'].scope", passportConfig['facebook-token-link'].scope);
+
 app.use('/*/auth/facebook/token',
     passport.authenticate('facebook-token-auth', {
         scope: passportConfig['facebook-token-auth'].scope

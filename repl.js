@@ -17,6 +17,7 @@ var BusinessService = app.models.BusinessService;
 var Booking = app.models.Booking;
 var AlgoliaSearchEngine = app.models.AlgoliaSearchEngine;
 var Mailchimp = app.models.Mailchimp;
+var Yelp = app.models.Yelp;
 var Email = app.models.Email;
 var TextMessage = app.models.TextMessage;
 
@@ -58,6 +59,7 @@ replServer.context.BusinessReview = BusinessReview;
 replServer.context.BusinessService = BusinessService;
 replServer.context.Booking = Booking;
 replServer.context.Mailchimp = Mailchimp;
+replServer.context.Yelp = Yelp;
 replServer.context.AlgoliaSearchEngine = AlgoliaSearchEngine;
 replServer.context.Email = Email;
 replServer.context.TextMessage = TextMessage;
