@@ -4,7 +4,7 @@
   "main": "server/server.js",
   "engines": {
     "node": "5.3.x",
-    "npm": "3.5.x"
+    "npm": "3.5.3"
   },
   "scripts": {
     "dev": "nodemon server/server.js"

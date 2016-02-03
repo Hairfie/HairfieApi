@@ -22,7 +22,7 @@ module.exports = function (program, app) {
                 var loop = function (skip) {
                     onProgress({total: total, done: skip});
 
-                    return Promise.ninvoke(Business, 'find', {limit: chunkSize, skip: skip, order: 'updatedAt DESC'})
+                    return Promise.ninvoke(Business, 'find', {limit: chunkSize, skip: skip, order: 'updatedAt ASC'})
                         .then(function (businesses) {
                             return Promise.all(_.map(businesses, function(business) {
                                 return business.getYelpObject();
