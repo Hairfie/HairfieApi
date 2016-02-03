@@ -73,6 +73,15 @@ module.exports = function (Business) {
             console.log("ERROR IN YELP", error);
         })
     };
+
+    // Business.observe('after save', function(ctx, next) {
+    //     if(ctx.instance) {
+    //         ctx.instance = cleanPhoneNumber(ctx.instance);
+    //     } else if (ctx.data) {
+    //         ctx.currentInstance = cleanPhoneNumber(ctx.data);
+    //     }
+    //     next();
+    // });
 };
         // .then(function(found, yelpId) {
         //     if(!found) throw new Error("Multiple or not found, skipping");

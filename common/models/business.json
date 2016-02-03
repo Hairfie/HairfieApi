@@ -175,6 +175,10 @@
     },
     "yelpObject": {
       "type": "object"
+    },
+    "displayYelp": {
+      "type": "boolean",
+      "default": true
     }
   },
   "validations": [],

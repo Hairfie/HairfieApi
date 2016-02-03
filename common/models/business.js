@@ -143,6 +143,9 @@ module.exports = function(Business) {
             pictures    : pictures,
             isBookable  : this.isBookable(),
             accountType : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
+            yelpObject  : this.yelpObject,
+            yelpId      : this.yelpId || (this.yelpObject && this.yelpObject.id) || null,
+            displayYelp : this.displayYelp ? this.displayYelp : false,
             thumbnail   : pictures[0] // BC mobile
         };
     };
@@ -184,7 +187,7 @@ module.exports = function(Business) {
     Business.observe('before save', function(ctx, next) {
         if(ctx.instance) {
             ctx.instance = cleanPhoneNumber(ctx.instance);
-        } else if (ctx.data) {
+        } else if (ctx.data && !_.isUndefined(ctx.data.phoneNumber)) {
             ctx.currentInstance = cleanPhoneNumber(ctx.data);
         }
         next();
@@ -408,7 +411,7 @@ module.exports = function(Business) {
     Business.observe('before save', function(ctx, next) {
         if(ctx.instance) {
             ctx.instance = updateCategories(ctx.instance);
-        } else if (ctx.data) {
+        } else if (ctx.data && !_.isUndefined(ctx.data.addedCategories)) {
             ctx.currentInstance = updateCategories(ctx.data);
         }
         next();
