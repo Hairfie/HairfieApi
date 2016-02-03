@@ -21,8 +21,10 @@ module.exports = function (Yelp) {
             .then(function(result) {
                 if(result.total == 0) {
                     console.log("Pas de business trouvé sur Yelp");
+                    return;
                 } else if(result.total > 1) {
-                    console.log("Plusieurs businesses trouvés", result.businesses)
+                    console.log("Plusieurs businesses trouvés", result.businesses);
+                    return result.businesses;
                 } else {
                     return result.businesses[0];
                 }

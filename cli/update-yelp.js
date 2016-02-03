@@ -15,17 +15,22 @@ module.exports = function (program, app) {
         .action(function () {
 
         var onProgress = onProgress || _.noop;
-        var chunkSize = 50;
+        var chunkSize = 100;
 
         return Promise.ninvoke(Business, 'count')
             .then(function (total) {
                 var loop = function (skip) {
                     onProgress({total: total, done: skip});
 
-                    return Promise.ninvoke(Business, 'find', {limit: chunkSize, skip: skip, order: 'updatedAt ASC'})
+                    return Promise.ninvoke(Business, 'find', {limit: chunkSize, skip: skip, order: 'updatedAt ASC', where: {"address.city": "Paris"}})
                         .then(function (businesses) {
                             return Promise.all(_.map(businesses, function(business) {
-                                return business.getYelpObject();
+                                return business.getYelpId()
+                                .then(function(b) {
+                                    if(!b) return;
+
+                                    return b.getYelpObject();
+                                })
                             }))
                             .then(function () {
                                 return businesses.length < chunkSize ? null : loop(skip + chunkSize);

@@ -16,7 +16,8 @@ var commands = [
     'update-mailchimp',
     'add-tag',
     'send-booking-reminder',
-    'update-yelp'
+    'update-yelp',
+    'update-pages-jaunes'
 ];
 
 commands.forEach(function (command) {

@@ -59,6 +59,9 @@
     "phoneNumber": {
       "type": "string"
     },
+    "phones": {
+      "type": "array"
+    },
     "categories": {
       "type": "array"
     },
