@@ -170,7 +170,7 @@ module.exports = function(Business) {
     Business.prototype.getPhoneNumber = function() {
         if(!this.phoneNumber) return;
 
-        return phoneUtil.format(phoneUtil.parse(this.phoneNumber,'FR'), nodePhone.PhoneNumberFormat.INTERNATIONAL)
+        return phoneUtil.format(phoneUtil.parse(this.phoneNumber,'FR'), nodePhone.PhoneNumberFormat.E164)
     };
 
     function cleanPhoneNumber(business) {
