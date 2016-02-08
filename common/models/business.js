@@ -268,10 +268,11 @@ module.exports = function(Business) {
                 this.isClaimed()
             ])
             .spread(function (numHairfies, tags, categories, isClaimed) {
-                var relevanceScore = 0.4 * Business.ACCOUNT_TYPE_VALUE(this.accountType) / 2
-                    + 0.2 * (this.rating || 0) / 100
-                    + 0.2 * (this.numHairfies || 0) / 250 
-                    + 0.2 * (this.numReviews || 0) / 50; 
+                var relevanceScore = 0.38 * Business.ACCOUNT_TYPE_VALUE(this.accountType) / 2
+                    + 0.19 * (this.rating || 0) / 100
+                    + 0.19 * Math.min((this.numHairfies || 0) / 50, 1) 
+                    + 0.19 * Math.min((this.numReviews || 0) / 20, 1)
+                    + 0.05 * ((this.yelpObject.rating && this.yelpObject.rating) || 0);
 
                     // faire un max à 50
                     // faire un max à 20

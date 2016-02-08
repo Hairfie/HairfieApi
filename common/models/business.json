@@ -16,7 +16,8 @@
       "getCustomers",
       "claim",
       "tags",
-      "timeslots"
+      "timeslots",
+      "updateYelp"
     ],
     "mongodb": {
       "collection": "businesses"

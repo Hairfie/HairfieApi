@@ -66,53 +66,40 @@ module.exports = function (Business) {
 
             return Q.ninvoke(business, 'save');
         })
-        .then(function(business) {
-            return business.yelpObject && business.yelpObject.id;
-        })
         .catch(function(error) {
             console.log("ERROR IN YELP", error);
         })
     };
 
-    // Business.observe('after save', function(ctx, next) {
-    //     if(ctx.instance) {
-    //         ctx.instance = cleanPhoneNumber(ctx.instance);
-    //     } else if (ctx.data) {
-    //         ctx.currentInstance = cleanPhoneNumber(ctx.data);
-    //     }
-    //     next();
-    // });
+    Business.updateYelp = function (req, user, cb) {
+        if (!user) return cb({statusCode: 401});
+
+        user.isManagerOfBusiness(req.params.businessId)
+            .then(function (isManager) {
+                if (!isManager) return cb({statusCode: 403});
+
+                return Q.ninvoke(Business, 'findById', req.params.businessId);
+            })
+            .then(function (business) {
+                if (!business) return cb({statusCode: 404});
+                if(req.body.yelpId) business.yelpId = req.body.yelpId;
+                if(req.body.displayYelp) business.displayYelp = req.body.displayYelp;
+
+                return business.getYelpObject();
+            })
+            .then(function(business) {
+                return cb(null, business);
+            })
+            .fail(cb);
+    };
+
+    Business.remoteMethod('updateYelp', {
+        description: 'Update Yelp Object',
+        accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}},
+            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
+        ],
+        returns: {arg: 'result', root: true},
+        http: { path: '/:businessId/update-yelp', verb: 'POST' }
+    });
 };
-        // .then(function(found, yelpId) {
-        //     if(!found) throw new Error("Multiple or not found, skipping");
-
-        //     if(business.yelpId && !yelpId) {
-        //         return Yelp.business(business.yelpId);
-        //     } else if(yelpId) {
-        //         return Yelp.business(yelpId);
-        //     } else {
-        //         return;
-        //     }
-        // })
-        // .then(function(yelpBusiness) {
-        //     console.log("Found YELP ID", yelpBusiness.id);
-        //     console.log("Hairfie Name : %s  and Id :", business.name, business.id);
-
-        //     var yelpObject = {};
-        //     yelpObject.id = yelpBusiness.id;
-        //     yelpObject.rating = yelpBusiness.rating;
-        //     yelpObject.review_count = yelpBusiness.review_count;
-        //     yelpObject.rating_img_url_small = yelpBusiness.rating_img_url_small;
-        //     yelpObject.rating_img_url = yelpBusiness.rating_img_url;
-        //     yelpObject.reviews = yelpBusiness.reviews;
-        //     yelpObject.rating_img_url_large = yelpBusiness.rating_img_url_large;
-        //     yelpObject.url = yelpBusiness.url
-
-        //     console.log("review_count", yelpObject.review_count);
-        //     console.log("rating", yelpObject.rating);
-
-        //     business.yelpObject = yelpObject;
-        //     business.yelpId = yelpObject.id;
-
-        //     return Q.ninvoke(business, 'save');
-        // })
