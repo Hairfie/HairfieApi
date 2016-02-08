@@ -270,8 +270,11 @@ module.exports = function(Business) {
             .spread(function (numHairfies, tags, categories, isClaimed) {
                 var relevanceScore = 0.4 * Business.ACCOUNT_TYPE_VALUE(this.accountType) / 2
                     + 0.2 * (this.rating || 0) / 100
-                    + 0.2 * (this.numHairfies || 0) / 250
-                    + 0.2 * (this.numReviews || 0) / 50;
+                    + 0.2 * (this.numHairfies || 0) / 250 
+                    + 0.2 * (this.numReviews || 0) / 50; 
+
+                    // faire un max à 50
+                    // faire un max à 20
 
                 if(this.forcedRelevanceScore) relevanceScore = this.forcedRelevanceScore;
 
