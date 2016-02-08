@@ -49,6 +49,7 @@ module.exports = function (Business) {
             console.log("Hairfie Name : %s  and Id :", business.name, business.id);
 
             var yelpObject = {};
+            yelpObject.multipleIds = business.yelpObject.multipleIds;
             yelpObject.id = yelpBusiness.id;
             yelpObject.rating = yelpBusiness.rating;
             yelpObject.review_count = yelpBusiness.review_count;
