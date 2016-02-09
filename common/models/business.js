@@ -257,6 +257,13 @@ module.exports = function(Business) {
         return deferred.promise;
     };
 
+    function bayesianAverage(review_count, rating) {
+        var C = 5;
+        var m = 3;
+
+        return (C*m + rating*review_count) / (C +review_count);
+    } 
+
     Business.prototype.toSearchDocument = function () {
         var BusinessReview = Business.app.models.BusinessReview,
             Hairfie        = Business.app.models.Hairfie;
@@ -268,19 +275,21 @@ module.exports = function(Business) {
                 this.isClaimed()
             ])
             .spread(function (numHairfies, tags, categories, isClaimed) {
+                var yelpScore = (this.yelpObject && this.yelpObject.review_count) ? bayesianAverage(this.yelpObject.review_count, this.yelpObject.rating) : 0;
+
+                if (this.yelpObject && this.yelpObject.review_count) {
+                    console.log("YelpScore : %s with %s reviews and average %s", yelpScore, this.yelpObject.review_count, this.yelpObject.rating);
+                }
+
                 var relevanceScore = 0.38 * Business.ACCOUNT_TYPE_VALUE(this.accountType) / 2
                     + 0.19 * (this.rating || 0) / 100
                     + 0.19 * Math.min((this.numHairfies || 0) / 50, 1) 
                     + 0.19 * Math.min((this.numReviews || 0) / 20, 1)
-                    + 0.05 * ((this.yelpObject.rating && this.yelpObject.rating) || 0) / 5;
-
-                    // faire un max à 50
-                    // faire un max à 20
+                    + 0.05 * yelpScore / 5;
 
                 if(this.forcedRelevanceScore) relevanceScore = this.forcedRelevanceScore;
 
                 console.log("relevanceScore for %s : %s", this.name, relevanceScore);
-                //console.log("categories", categories);
 
                 return {
                     id                 : this.id,
