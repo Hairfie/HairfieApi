@@ -272,7 +272,7 @@ module.exports = function(Business) {
                     + 0.19 * (this.rating || 0) / 100
                     + 0.19 * Math.min((this.numHairfies || 0) / 50, 1) 
                     + 0.19 * Math.min((this.numReviews || 0) / 20, 1)
-                    + 0.05 * ((this.yelpObject.rating && this.yelpObject.rating) || 0);
+                    + 0.05 * ((this.yelpObject.rating && this.yelpObject.rating) || 0) / 5;
 
                     // faire un max à 50
                     // faire un max à 20

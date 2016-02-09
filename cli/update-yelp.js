@@ -10,9 +10,9 @@ module.exports = function (program, app) {
     var Business = app.models.Business;
 
     program
-        .command('update-yelp')
+        .command('update-yelp <cityName>')
         .description('Update Yelp Ids and Reviews')
-        .action(function () {
+        .action(function (cityName) {
 
         var onProgress = onProgress || _.noop;
         var chunkSize = 50;
@@ -22,7 +22,19 @@ module.exports = function (program, app) {
                 var loop = function (skip) {
                     onProgress({total: total, done: skip});
 
-                    return Promise.ninvoke(Business, 'find', {limit: chunkSize, skip: skip, order: 'updatedAt ASC', where: {"address.city": "Paris"}})
+                    var filters = {};
+
+                    if(cityName) {
+                        filters = {limit: chunkSize, skip: skip, order: 'updatedAt ASC', where: {"address.city": cityName}}
+                    } else {
+                        filters = {limit: chunkSize, skip: skip, order: 'updatedAt ASC'}
+                    }
+
+                    console.log("cityName", cityName);
+                    console.log("filters", filters);
+
+
+                    return Promise.ninvoke(Business, 'find', filters)
                         .then(function (businesses) {
                             return Promise.all(_.map(businesses, function(business) {
                                 return business.getYelpId()
