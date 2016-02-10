@@ -49,7 +49,9 @@ module.exports = function (Business) {
             console.log("Hairfie Name : %s  and Id :", business.name, business.id);
 
             var yelpObject = {};
-            yelpObject.multipleIds = business.yelpObject.multipleIds;
+            if(business.yelpObject && business.yelpObject.multipleIds) {
+                yelpObject.multipleIds = business.yelpObject.multipleIds;
+            }
             yelpObject.id = yelpBusiness.id;
             yelpObject.rating = yelpBusiness.rating;
             yelpObject.review_count = yelpBusiness.review_count;
@@ -84,7 +86,13 @@ module.exports = function (Business) {
             .then(function (business) {
                 if (!business) return cb({statusCode: 404});
                 if(req.body.yelpId) business.yelpId = req.body.yelpId;
-                if(req.body.displayYelp) business.displayYelp = req.body.displayYelp;
+                console.log("req.body.displayYelp", _.isBoolean(req.body.displayYelp));
+                if(_.isBoolean(req.body.displayYelp)) {
+                    business.displayYelp = JSON.parse(req.body.displayYelp);
+                }
+
+                console.log("business.displayYelp", business.displayYelp);
+
 
                 return business.getYelpObject();
             })
