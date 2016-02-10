@@ -154,7 +154,7 @@ module.exports = function (Booking) {
                 return [Promise.npost(booking, 'business'), booking];
             })
             .spread(function(business, booking) {
-                Booking.app.models.email.notifyAll('Réservation annulée', {
+                Booking.app.models.email.notifySales('Réservation annulée', {
                     'ID'              : booking.id,
                     'Salon'           : business.name,
                     'Tel du salon'    : business.phoneNumber,
@@ -261,7 +261,7 @@ module.exports = function (Booking) {
             .then(function (business) {
                 var url = Booking.app.urlGenerator.business(business);
 
-                return Booking.app.models.email.notifyAll('Demande de réservation', {
+                return Booking.app.models.email.notifySales('Demande de réservation', {
                     'Booking ID'      : booking.id,
                     'Salon'           : business.name,
                     'Tel du salon'    : business.phoneNumber,
