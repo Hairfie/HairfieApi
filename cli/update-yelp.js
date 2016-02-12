@@ -10,9 +10,14 @@ module.exports = function (program, app) {
     var Business = app.models.Business;
 
     program
-        .command('update-yelp <cityName>')
+        .command('update-yelp')
+        .option('-c, --city [city]', 'CityName')
+        .option('-d, --department [department]', 'County Code')
         .description('Update Yelp Ids and Reviews')
-        .action(function (cityName) {
+        .action(function (program) {
+
+        var city = program.city;
+        var department = program.department;
 
         var onProgress = onProgress || _.noop;
         var chunkSize = 50;
@@ -24,13 +29,14 @@ module.exports = function (program, app) {
 
                     var filters = {};
 
-                    if(cityName) {
-                        filters = {limit: chunkSize, skip: skip, order: 'updatedAt ASC', where: {"address.city": cityName}}
+                    if(city) {
+                        filters = {limit: chunkSize, skip: skip, order: 'updatedAt ASC', where: {"address.city": city}}
+                    } else if(department) {
+                        filters = {limit: chunkSize, skip: skip, order: 'updatedAt ASC', where: {"googleMapsGeo.countyCode": department}}
                     } else {
                         filters = {limit: chunkSize, skip: skip, order: 'updatedAt ASC'}
                     }
 
-                    console.log("cityName", cityName);
                     console.log("filters", filters);
 
 

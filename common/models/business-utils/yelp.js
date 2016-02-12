@@ -86,13 +86,10 @@ module.exports = function (Business) {
             .then(function (business) {
                 if (!business) return cb({statusCode: 404});
                 if(req.body.yelpId) business.yelpId = req.body.yelpId;
-                console.log("req.body.displayYelp", _.isBoolean(req.body.displayYelp));
+
                 if(_.isBoolean(req.body.displayYelp)) {
                     business.displayYelp = JSON.parse(req.body.displayYelp);
                 }
-
-                console.log("business.displayYelp", business.displayYelp);
-
 
                 return business.getYelpObject();
             })
