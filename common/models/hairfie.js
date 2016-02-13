@@ -562,6 +562,12 @@ module.exports = function (Hairfie) {
             params.facetFilters.push('categories:'+category);
         });
 
+        // console.log("tags", req.query.tags);
+        // Promise.ninvoke(Hairfie.app.models.Tag, 'filterFromTagNames', req.query.tags)
+        // .then(function(result) {
+        //     console.log("########## TAGS", result);
+        // })
+        
         // // filter by tags
         // var forcedTags = ['Homme', 'Femme'];
 

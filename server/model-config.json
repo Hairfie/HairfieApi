@@ -201,5 +201,9 @@
   "Yelp": {
     "dataSource": "yelp",
     "public": false
+  },
+  "MemoryTag": {
+    "dataSource": "hairfieMemory",
+    "public": true
   }
 }
