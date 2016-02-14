@@ -169,7 +169,7 @@ function geocode(address, language) {
     var deferred = Promise.defer();
 
     console.log('Geocoding', address, 'in', language);
-
+    
     request
         .get('https://maps.googleapis.com/maps/api/geocode/json')
         .query({
