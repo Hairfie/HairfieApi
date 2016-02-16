@@ -28,7 +28,7 @@ module.exports = function (Tag) {
 
     function filterFromTags(tags) {
         return _.map( _.groupBy(tags, 'categoryId'), function(cat){ 
-            return '(' + lodash.map(cat, 'name.fr').join(',') + ')';
+            return '(' + _.map(cat, 'name.fr').join(',') + ')';
         }).join(',');
     }
 
@@ -36,8 +36,7 @@ module.exports = function (Tag) {
         return Promise.ninvoke(this, 'find', {where: {"name.fr": {"inq": tagNames}}})
         .then(function(tags) {
             console.log("filterFromTagNames", filterFromTags(tags));
-
-            if(!tags) return;
+            if(!tags) return null;
             return filterFromTags(tags);
         })
     }

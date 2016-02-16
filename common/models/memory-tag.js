@@ -4,15 +4,40 @@ var Promise = require('../../common/utils/Promise');
 var _ = require('lodash');
 
 module.exports = function (MemoryTag) {
-    MemoryTag.find = function(filter) {
-        var Tag = MemoryTag.app.models.Tag;
-        console.log("here");
-        return Promise.ninvoke(Tag, 'find', filter);
+    var tags = [];
+
+    function filterFromTags(tags) {
+        return _.map( _.groupBy(tags, 'categoryId'), function(cat){ 
+            return '(' + _.map(cat, 'name.fr').join(',') + ')';
+        }).join(',');
     }
 
-    MemoryTag.findByIds = function(filter, callback) {
+    function tagFromNames(allTags, names) {
+        return _.filter(tags, function(tag) {
+          return _.includes(names, tag.name.fr);
+        });
+    }
+
+    MemoryTag.filterFromTagNames = function(tagNames) {
         var Tag = MemoryTag.app.models.Tag;
-        console.log("######### here");
-        Tag.findByIds.apply(this, arguments)
+        if(_.isEmpty(tags)) {
+            var tagPromise = Promise.ninvoke(Tag, 'find', {})
+            .then(function(result) {
+                console.log("result", result)
+                tags = result;
+                return tags;
+            })
+        } else {
+            tagPromise = Promise(tags);
+        }
+
+        return tagPromise
+        .then(function(allTags) {
+            return tagFromNames(allTags, tagNames);
+        })
+        .then(function(selectedTags) {
+            if(!selectedTags) return null;
+            return filterFromTags(selectedTags);
+        })
     }
 };
