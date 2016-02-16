@@ -79,7 +79,7 @@ module.exports = function (app) {
             next();
         });
 
-        app.get('/v1.2.2/hairfies/search', client.route({ expire: 600 }), function (req, res, next) {
+        app.get('/v1.2.2/hairfies/search', client.route({ expire: 60*30 }), function (req, res, next) {
             next();
         });
     }

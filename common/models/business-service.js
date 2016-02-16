@@ -6,16 +6,16 @@ var _ = require('lodash');
 var q = require('q');
 
 var priceTableMan = [
-    {min: 0 , max: 16},
-    {min: 17, max: 29},
-    {min: 30, max: 49},
+    {min: 0 , max: 20},
+    {min: 21, max: 30},
+    {min: 31, max: 49},
     {min: 50}
 ];
 
 var priceTableWoman = [
-    {min: 0 , max: 24},
-    {min: 25, max: 39},
-    {min: 40, max: 79},
+    {min: 0 , max: 30},
+    {min: 31, max: 50},
+    {min: 51, max: 79},
     {min: 80}
 ];
 
