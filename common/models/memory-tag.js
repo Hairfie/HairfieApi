@@ -14,7 +14,7 @@ module.exports = function (MemoryTag) {
 
     function tagFromNames(allTags, names) {
         return _.filter(tags, function(tag) {
-          return _.includes(names, tag.name.fr);
+            return _.includes(names, tag.name.fr);
         });
     }
 
@@ -35,8 +35,6 @@ module.exports = function (MemoryTag) {
     }
 
     MemoryTag.filterFromTagNames = function(tagNames) {
-
-
         return this.getAllTags()
         .then(function(allTags) {
             return tagFromNames(allTags, tagNames);
