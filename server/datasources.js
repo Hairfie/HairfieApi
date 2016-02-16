@@ -12,6 +12,10 @@ module.exports = {
         password: process.env.MONGO_PASS,
         database: process.env.MONGO_DB
     },
+    hairfieMemory: {
+        name: 'hairfieMemory',
+        connector: 'memory'
+    },
     algoliaSearchEngine: {
         name: "algoliaSearchEngine",
         type: "memory",

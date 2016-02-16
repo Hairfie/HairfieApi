@@ -561,33 +561,7 @@ module.exports = function (Hairfie) {
         _.map(asArray(req.query.categories), function (category) {
             params.facetFilters.push('categories:'+category);
         });
-
-        // // filter by tags
-        // var forcedTags = ['Homme', 'Femme'];
-
-        // var OR = [];
-        // var AND = [];
-
-        // _.forEach(req.query.tags, function(tag) {
-        //     if (_.isEmpty(_.intersection([tag], forcedTags)))
-        //         OR.push(tag);
-        //     else
-        //         AND.push(tag);
-        // });
-
-        // if (req.query.tags) {
-        //     if (OR.length > 0) {
-        //         params.tagFilters = '(' + OR.join(', ') + ')' + (_.isEmpty(AND) ? '' : ', ') + AND.join(', ');
-        //     }
-        //     else {
-        //         params.tagFilters = AND.join(', ');
-        //     }
-        // }
-
-        if (req.query.tags) {
-            params.tagFilters = req.query.tags.join(', ');
-        }
-
+        
         // filter by price
         if (req.query.priceMin) {
             params.numericFilters.push('price.amount >= '+req.query.priceMin);
@@ -604,10 +578,22 @@ module.exports = function (Hairfie) {
             params.facetFilters.push('businessMemberId:'+req.query.businessMemberId);
         }
 
-        console.log("algolia params", params);
 
-        return Hairfie.app.models.AlgoliaSearchEngine
-            .search('hairfie', req.query.q || '', params)
+        var Tag = Hairfie.app.models.Tag;
+        var MemoryTag = Hairfie.app.models.MemoryTag;
+
+        var AlgoliaSearchEngine = Hairfie.app.models.AlgoliaSearchEngine;
+
+        return MemoryTag.filterFromTagNames(req.query.tags)
+            .then(function(tagQuery) {
+                if(tagQuery) {
+                    params.tagFilters = tagQuery;
+                }
+
+                console.log("algolia params", params);
+
+                return AlgoliaSearchEngine.search('hairfie', req.query.q || '', params);
+            })
             .then(function (result) {
                 return [
                     result,
