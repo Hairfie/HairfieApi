@@ -18,20 +18,26 @@ module.exports = function (MemoryTag) {
         });
     }
 
-    MemoryTag.filterFromTagNames = function(tagNames) {
+    MemoryTag.getAllTags = function() {
         var Tag = MemoryTag.app.models.Tag;
         if(_.isEmpty(tags)) {
             var tagPromise = Promise.ninvoke(Tag, 'find', {})
             .then(function(result) {
-                console.log("result", result)
                 tags = result;
                 return tags;
             })
         } else {
             tagPromise = Promise(tags);
+            console.log("########### tagFromMemory ", tags.length);
         }
 
-        return tagPromise
+        return tagPromise;
+    }
+
+    MemoryTag.filterFromTagNames = function(tagNames) {
+
+
+        return this.getAllTags()
         .then(function(allTags) {
             return tagFromNames(allTags, tagNames);
         })
