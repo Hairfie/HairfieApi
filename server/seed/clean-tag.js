@@ -116,9 +116,23 @@ function findAndUpdateTags(tagCategory, tagCategoryId) {
             return Promise.ninvoke(Tag, 'findOne', {where: {"id": tag.oldIds[0]}})
                 .then(function(existingtag) {
                     if(existingtag && existingtag.id == tag.oldIds[0]) {
-                        console.log("tag found", existingtag.name.fr)
+                        console.log("tag found", existingtag.name.fr);
+                        existingtag.position = i;
+                        existingtag.name.fr = tag.name;
+                        existingtag.categoryId = tagCategoryId;
+                        return Promise.npost(existingtag, 'save');
                     } else {
-                        console.log("tag not found", tag.name)
+                        console.log("tag not found", tag.name);
+                        var data = {
+                            name : {
+                                fr: tag.name,
+                                en: tag.name
+                            },
+                            position: i,
+                            categoryId: tagCategoryId
+                        };
+    
+                        return Promise.ninvoke(Tag, 'create', data);
                     }
                     return;
                 })
