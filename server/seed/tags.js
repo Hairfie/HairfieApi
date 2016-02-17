@@ -1,5 +1,5 @@
 var app = require('../..');
-var categoriesValues = require('./tags.json');
+var categoriesValues = require('./newTags.json');
 var q = require('q');
 var TagCategory = app.models.TagCategory;
 var Tag = app.models.Tag;
@@ -24,6 +24,7 @@ function saveCategory(categoryValues, position) {
             position: position
         })
         .then(function (category) {
+            console.log("category :", category);
             return saveTags(category, categoryValues.tags);
         });
 }

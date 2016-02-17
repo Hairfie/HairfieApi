@@ -1,0 +1,672 @@
+[{
+    "tagCategory":{
+        "name": "Pour qui ?",
+        "oldIds": ["8432b2f5-05e2-41a4-9b09-1b5325cb064f"]
+    },
+    "tags": [
+        {
+            "name": "Homme",
+            "oldIds": ["49ff6f97-5206-4d9e-bb78-59a001453dbc"]
+        },
+        {
+            "name": "Femme",
+            "oldIds": ["39ab769b-f20f-4e78-8ae4-7edd79f172ab"]
+        },
+        {
+            "name": "Enfant",
+            "oldIds": ["4442316f-a8d0-435b-806c-8d107c4a8fda"]
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Type de Hairfie",
+        "oldIds": []
+    },
+    "tags": [
+        {
+            "name": "Avant-après",
+            "oldIds": ["3ef2ac6c-c797-4d3e-b1e0-c502c2cd0475"]
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Coupe réalisée",
+        "oldIds": ["31845cef-9426-404f-81f2-620dd793a17f"]
+    },
+    "tags": [
+        {
+            "name": "Coupe simple",
+            "oldIds": ["410eb935-21c4-4f30-ac1e-005e0d747439"]
+        },
+        {
+            "name": "Frange",
+            "oldIds": ["8b12f508-2684-4210-be4c-dc5d93b78cc5"]
+        },
+        {
+            "name": "Carré droit",
+            "oldIds": ["286709cc-d42f-474d-9903-5fe5123145d2"]
+        },
+        {
+            "name": "Carré plongeant",
+            "oldIds": []
+        },
+        {
+            "name": "Carré long",
+            "oldIds": []
+        },
+        {
+            "name": "Dégradé",
+            "oldIds": ["772796d6-ad26-48c9-8dfb-28d1a2228730"]
+        },
+        {
+            "name": "Effilé",
+            "oldIds": []
+        },
+        {
+            "name": "Fondu",
+            "oldIds": []
+        },
+        {
+            "name": "Undercut",
+            "oldIds": []
+        },
+        {
+            "name": "Destructuré",
+            "oldIds": []
+        },
+        {
+            "name": "Asymétrique",
+            "oldIds": []
+        },
+        {
+            "name": "Graphique",
+            "oldIds": []
+        },
+        {
+            "name": "Bol",
+            "oldIds": []
+        },
+        {
+            "name": "Bob",
+            "oldIds": []
+        },
+        {
+            "name": "Garçonne",
+            "oldIds": []
+        },
+        {
+            "name": "Pixie",
+            "oldIds": ["681e97ce-655e-4556-80fc-497f7edfaf9d"]
+        },
+        {
+            "name": "Mullet",
+            "oldIds": []
+        },
+        {
+            "name": "Barbe",
+            "oldIds": ["a78606fb-6267-46a2-a7bc-726a4c7e8f49"]
+        },
+        {
+            "name": "Moustache",
+            "oldIds": ["e131f8a6-3e44-4d1f-ac5f-d632178002bd"]
+        },
+        {
+            "name": "Motifs",
+            "oldIds": ["ad607e85-f684-4e8a-a7fa-af5a02af588d"]
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Technique de coloration",
+        "oldIds": []
+    },
+    "tags": [
+        {
+            "name": "Coloration complète",
+            "oldIds": ["9d86bb9f-5622-4050-bec0-43be3ae8e549"]
+        },
+        {
+            "name": "Gloss",
+            "oldIds": ["b8d15e60-715f-42c3-95f7-09da2bc12606"]
+        },
+        {
+            "name": "Balayage",
+            "oldIds": ["c97f8cf4-007a-44da-92ee-ba40bb997896"]
+        },
+        {
+            "name": "Tie & Dye",
+            "oldIds": ["7542dcc4-bef7-4457-a793-3e99879befa6"]
+        },
+        {
+            "name": "Mèches",
+            "oldIds": ["d1729db7-bb30-4aef-a219-10a9c98ffc7e"]
+        },
+        {
+            "name": "Haircontouring",
+            "oldIds": ["d765b200-a732-4e25-9165-64fd921e9fbf"]
+        },
+        {
+            "name": "Sombré",
+            "oldIds": []
+        },
+        {
+            "name": "Ombré",
+            "oldIds": []
+        },
+        {
+            "name": "Bronde",
+            "oldIds": ["c38e5ed2-a93f-4eff-8ff6-20b1a1305488"]
+        },
+        {
+            "name": "Broux",
+            "oldIds": []
+        },
+        {
+            "name": "Blinger",
+            "oldIds": []
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Lissages",
+        "oldIds": []
+    },
+    "tags": [
+        {
+            "name": "Lissage",
+            "oldIds": ["3c5cfec6-cc98-4be9-8f11-0a5866b73732"]
+        },
+        {
+            "name": "Lissage brésilien",
+            "oldIds": ["31a83eb5-325a-4af1-9c58-4d69544eade6"]
+        },
+        {
+            "name": "Lissage japonais",
+            "oldIds": ["6846d718-ff26-4bf9-bd33-e984a3b81097"]
+        },
+        {
+            "name": "Lissage français",
+            "oldIds": []
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Extensions",
+        "oldIds": []
+    },
+    "tags": [
+        {
+            "name": "Extensions",
+            "oldIds": ["d97fe20f-8744-4b93-8d37-db5d06abc54a"]
+        },
+        {
+            "name": "Tissage",
+            "oldIds": ["e682d91f-d727-42eb-a133-024ddd8129e0"]
+        },
+        {
+            "name": "Coiffage",
+            "oldIds": ["c5d873f5-9b38-4021-b307-d8d377e92a86"]
+        },
+        {
+            "name": "Tresse",
+            "oldIds": ["9b6c1b87-89ce-4697-8aa8-319317e619a9"]
+        },
+        {
+            "name": "Chignon",
+            "oldIds": ["7f616768-55eb-4504-ac15-8174faa1e395"]
+        },
+        {
+            "name": "Boucles",
+            "oldIds": []
+        },
+        {
+            "name": "Coiffé décoiffé",
+            "oldIds": ["8e5d697a-324b-4627-a862-c83cb1e94587"]
+        },
+        {
+            "name": "Attache",
+            "oldIds": []
+        },
+        {
+            "name": "Brushing",
+            "oldIds": ["08f1eb9b-477c-4a6f-8a5c-9c809bbaa6d3"]
+        },
+        {
+            "name": "Raie",
+            "oldIds": []
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Techniques d’ondulation",
+        "oldIds": []
+    },
+    "tags": [
+        {
+            "name": "Permanente",
+            "oldIds": ["21865b8c-630d-46e9-ac3c-4692a20f4070"]
+        },
+        {
+            "name": "Beach Waves",
+            "oldIds": ["3098072f-2abb-4873-a84a-c5ca9f6ac226"]
+        },
+        {
+            "name": "Curl",
+            "oldIds": ["86215b8c-630d-46e9-ac3c-4692a20f5080"]
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "En plus ",
+        "oldIds": []
+    },
+    "tags": [
+        {
+            "name": "Mariage",
+            "oldIds": ["fc9dcc11-2dcc-4db6-8bad-e97b66fb7908"]
+        },
+        {
+            "name": "Conseil visagisme",
+            "oldIds": ["05bdb5c1-e6b7-4366-87cb-6845128eaddf"]
+        },
+        {
+            "name": "Cours de coiffure",
+            "oldIds": ["2209ad34-966a-49a4-b08d-d28b5d87206c"]
+        },
+        {
+            "name": "Relooking",
+            "oldIds": ["a4269956-014c-471f-9384-7169a6b78e34"]
+        },
+        {
+            "name": "Soin",
+            "oldIds": ["0ebc0c86-1e1e-4f06-90b3-da816aac483c"]
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Longueur des cheveux",
+        "oldIds": []
+    },
+    "tags": [
+        {
+            "name": "Court",
+            "oldIds": ["a519cf13-4420-4425-b847-cbb297787750"]
+        },
+        {
+            "name": "Mi-long",
+            "oldIds": ["d03204b8-940b-4e08-abfe-5d8b9847c839"]
+        },
+        {
+            "name": "Long",
+            "oldIds": ["d3489d1d-7753-468e-8d6b-43f07a00ee86"]
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Couleur",
+        "oldIds": []
+    },
+    "tags": [
+        {
+            "name": "Blond",
+            "oldIds": ["2b7d0cbc-4e0a-4aff-a35b-e64256ccb954"]
+        },
+        {
+            "name": "Brun",
+            "oldIds": ["0cb84a82-cab4-4116-8f8f-7b85cb665616"]
+        },
+        {
+            "name": "Roux",
+            "oldIds": ["2498e4be-dff1-48e3-9477-bc63916ca2c1"]
+        },
+        {
+            "name": "Chatain",
+            "oldIds": ["a6056f0e-6fed-49bc-9d43-4f52bf80b0a4"]
+        },
+        {
+            "name": "Gris",
+            "oldIds": ["ebdc8f35-59ec-4789-994b-de592f39f28f"]
+        },
+        {
+            "name": "Flashy",
+            "oldIds": []
+        },
+        {
+            "name": "Pastel",
+            "oldIds": []
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Texture",
+        "oldIds": []
+    },
+    "tags": [
+        {
+            "name": "Raides",
+            "oldIds": ["00e3d441-6190-4487-8eb8-8e578f58d094"]
+        },
+        {
+            "name": "Lisses",
+            "oldIds": ["70eaf7e6-3f8d-4110-a3ba-41b16e521546"]
+        },
+        {
+            "name": "Ondulés",
+            "oldIds": ["a772b1a9-632d-495f-9670-5e2803d0ff32"]
+        },
+        {
+            "name": "Bouclés",
+            "oldIds": ["512db047-0583-47ce-be80-91cd665083cb"]
+        },
+        {
+            "name": "Crépus",
+            "oldIds": ["7992563e-f1db-4259-a3f8-501f04d01d72"]
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Epaisseur",
+        "oldIds": []
+    },
+    "tags": [
+        {
+            "name": "Fins",
+            "oldIds": ["b2353a10-bf61-4c7d-8762-69b4729e8814"]
+        },
+        {
+            "name": "Moyens",
+            "oldIds": ["ba3c7ed8-d567-420e-ab7e-43a8ef423c4f"]
+        },
+        {
+            "name": "Épais",
+            "oldIds": ["f470252e-ca57-4b11-a55b-bf8b1aec1235"]
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Type de cheveux",
+        "oldIds": []
+    },
+    "tags": [
+        {
+            "name": "Afro",
+            "oldIds": ["ef071bf3-19c2-4571-98a7-9f6ad37cf704"]
+        },
+        {
+            "name": "Métisse",
+            "oldIds": ["ff071bf3-19c2-5271-98a7-9f6ad37cf705"]
+        },
+        {
+            "name": "Asiatique",
+            "oldIds": ["d8095363-b1da-4505-8a62-e5ef165baa6c"]
+        },
+        {
+            "name": "Occidental",
+            "oldIds": ["31d73306-de6b-4fd8-a389-2b8b2d2cb02b"]
+        },
+        {
+            "name": "Oriental",
+            "oldIds": []
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Style",
+        "oldIds": []
+    },
+    "tags": [
+        {
+            "name": "Rétro",
+            "oldIds": ["a9d0fdd7-b8d1-40cd-b414-7e73e7eb4b7a"]
+        },
+        {
+            "name": "Décalé",
+            "oldIds": ["12ca3900-2133-4a61-890e-73005a5a2a08"]
+        },
+        {
+            "name": "Tendance",
+            "oldIds": ["ad669284-9974-4f66-9ebf-82dd1e4a50f5"]
+        },
+        {
+            "name": "Hipster",
+            "oldIds": ["e2cf4cbb-54a4-47fe-b826-6e67bfa7b70b"]
+        },
+        {
+            "name": "BCBG",
+            "oldIds": ["32e1793c-553a-4d74-a84e-9678da78806d"]
+        },
+        {
+            "name": "Rock’n’roll",
+            "oldIds": []
+        },
+        {
+            "name": "Classique",
+            "oldIds": ["b3682f7e-30f0-4937-89f7-87d2ac827956"]
+        },
+        {
+            "name": "Jeune",
+            "oldIds": ["a75a919b-e819-4db7-bc6a-1ce67b8bf58f"]
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Produits",
+        "oldIds": ["992af425-d267-4add-8dbe-92de01c57baa"]
+    },
+    "tags": [
+        {
+            "name": "L'Oréal Professionnel",
+            "oldIds": ["66f0f01e-0957-4eda-86d6-3c8d61f6015f"]
+        },
+        {
+            "name": "Inoa",
+            "oldIds": ["a1e165a9-8628-48df-99f9-e22e1535c9fd"]
+        },
+        {
+            "name": "Wella",
+            "oldIds": ["2eae14fd-1b88-4421-bf83-d37046b67330"]
+        },
+        {
+            "name": "Redken",
+            "oldIds": ["77223ee2-7ea8-4f11-b5ee-a91d0d37226b"]
+        },
+        {
+            "name": "Kérastase",
+            "oldIds": ["0502fdaf-545f-42c6-a37b-dcc9706b438c"]
+        },
+        {
+            "name": "La Biosthétique",
+            "oldIds": ["9c993de3-eb1f-40cb-bef5-20f41854a8c1"]
+        },
+        {
+            "name": "Shu Uemura",
+            "oldIds": ["6651169a-d153-4f37-8dff-e53d6f938076"]
+        },
+        {
+            "name": "Hairgum",
+            "oldIds": ["e188fb25-9bf8-4d37-ac3b-b7fe53f023a6"]
+        },
+        {
+            "name": "Leonor Greyl",
+            "oldIds": []
+        },
+        {
+            "name": "Kraemer",
+            "oldIds": ["4ee86b92-372e-4cf6-b9f8-26911a458363"]
+        },
+        {
+            "name": "Generik",
+            "oldIds": ["3eada5a0-086b-46f5-869b-2f374b3217b1"]
+        },
+        {
+            "name": "Schwarzkopf",
+            "oldIds": ["4a2b1bbc-5c10-427e-80af-82b554c899fa"]
+        },
+        {
+            "name": "Pro Fiber",
+            "oldIds": ["ef8946c7-0984-4a15-b179-7df7117cf619"]
+        },
+        {
+            "name": "Sebastian",
+            "oldIds": []
+        },
+        {
+            "name": "Tigi",
+            "oldIds": ["8076169a-d153-4f37-8dff-e53d6f936651"]
+        },
+        {
+            "name": "Amika",
+            "oldIds": []
+        },
+        {
+            "name": "Eugene Perma",
+            "oldIds": ["395169e5-66b6-48b4-985d-6d8e677df73c"]
+        },
+        {
+            "name": "Revlon",
+            "oldIds": ["77f6b264-e70f-479b-a387-549bc070046f"]
+        },
+        {
+            "name": "American Crew",
+            "oldIds": ["6ca525b0-fe9e-4d64-80ad-7499d6534f94"]
+        },
+        {
+            "name": "Petrol Hahn pro.",
+            "oldIds": []
+        },
+        {
+            "name": "Reuzel",
+            "oldIds": []
+        },
+        {
+            "name": "Fauvert",
+            "oldIds": []
+        },
+        {
+            "name": "Furtrerer",
+            "oldIds": ["e83a84cc-615b-4a62-b924-6edbf4890363"]
+        },
+        {
+            "name": "Secret Professionnel",
+            "oldIds": []
+        },
+        {
+            "name": "Nioxin",
+            "oldIds": []
+        },
+        {
+            "name": "Mizani",
+            "oldIds": []
+        },
+        {
+            "name": "Pravana",
+            "oldIds": ["956d0f61-f845-491b-93cd-58dd13669467"]
+        },
+        {
+            "name": "Olaplex",
+            "oldIds": ["ebb8862b-2552-449c-817b-33ff90a8cb1e"]
+        },
+        {
+            "name": "Myriam K",
+            "oldIds": []
+        },
+        {
+            "name": "W3 Organic",
+            "oldIds": ["906d05f2-3c88-49b4-84ac-4f5d64f9e0b0"]
+        },
+        {
+            "name": "Urban Keratin",
+            "oldIds": []
+        },
+        {
+            "name": "Keraline",
+            "oldIds": []
+        },
+        {
+            "name": "Inoar",
+            "oldIds": []
+        },
+        {
+            "name": "Matrix",
+            "oldIds": ["8db84da5-7e2e-42d0-96ba-101a2db8bdbe"]
+        },
+        {
+            "name": "Moroccanoil",
+            "oldIds": ["882443ad-78b6-4b98-8e8c-a57e55d4bfc0"]
+        },
+        {
+            "name": "Goldwell",
+            "oldIds": ["c80d3ac6-c1e2-44e5-9272-16146d682ee2"]
+        },
+        {
+            "name": "Terre de couleur",
+            "oldIds": ["990fb717-8f66-4b91-a989-982e31a9a6d1"]
+        },
+        {
+            "name": "Grave Before Shave",
+            "oldIds": ["652a3f0a-a0fd-4735-89c4-fd7c33054688"]
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Accessoires",
+        "oldIds": []
+    },
+    "tags": [
+        {
+            "name": "Babyliss Pro",
+            "oldIds": []
+        },
+        {
+            "name": "GHD",
+            "oldIds": []
+        },
+        {
+            "name": "Steam Pod",
+            "oldIds": ["8f4d7e1d-43a7-4ac3-9575-ebbabf2b2e95"]
+        },
+        {
+            "name": "Tangle Teezer",
+            "oldIds": []
+        },
+        {
+            "name": "Coriolis",
+            "oldIds": []
+        },
+        {
+            "name": "Balmain",
+            "oldIds": []
+        },
+        {
+            "name": "Great Lengths",
+            "oldIds": []
+        },
+        {
+            "name": "Socap",
+            "oldIds": []
+        },
+        {
+            "name": "SHE",
+            "oldIds": []
+        },
+        {
+            "name": "Jacques Seban",
+            "oldIds": ["0f2e250a-5767-4837-916d-52102655bed2"]
+        }
+    ]
+}]
