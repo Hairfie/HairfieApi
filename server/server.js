@@ -65,7 +65,7 @@ app.use(function (req, res, next) {
 app.use(loopback.compress());
 app.use(loopback.urlencoded({extended: true}));
 app.use(loopback.json());
-app.use(loopback.logger(process.env.LOG_ENV ? process.env.LOG_ENV : 'default'));
+app.use(loopback.logger(process.env.LOG_ENV ? process.env.LOG_ENV : 'combined'));
 
 function corsMiddleware(req, res, next) {
     res.header('Access-Control-Allow-Credentials', true);
