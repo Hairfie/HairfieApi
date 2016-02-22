@@ -25,19 +25,4 @@ module.exports = function (Tag) {
 
         return obj;
     }
-
-    function filterFromTags(tags) {
-        return _.map( _.groupBy(tags, 'categoryId'), function(cat){ 
-            return '(' + _.map(cat, 'name.fr').join(',') + ')';
-        }).join(',');
-    }
-
-    Tag.filterFromTagNames = function(tagNames) {
-        return Promise.ninvoke(this, 'find', {where: {"name.fr": {"inq": tagNames}}})
-        .then(function(tags) {
-            console.log("filterFromTagNames", filterFromTags(tags));
-            if(!tags) return null;
-            return filterFromTags(tags);
-        })
-    }
 };

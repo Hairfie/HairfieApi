@@ -59,7 +59,7 @@ module.exports = function (Hairfie) {
                     .then(function (tags) {
                         return tags ? tags.map(function (tag) { return tag.toRemoteShortObject(context) }) : null;
                     }),
-                Q.ninvoke(this.author).then(function (author) {
+                this.getAuthor(context).then(function (author) {
                         return author ? author.toRemoteShortObject(context) : null;
                     }),
                 this.getBusinessMember().then(function (businessMember) {
@@ -77,9 +77,9 @@ module.exports = function (Hairfie) {
                     selfMade        : !!this.selfMade,
                     tags            : tags,
                     isBeforeAfter   : _.some(tags, function (tag) {
-                        return tag.name == "Avant / Après";
+                        return tag.name == "Avant-après";
                     }),
-                    displayBusiness : businessMember ? true : false,
+                    displayBusiness : business ? true : false,
                     hidden          : this.hidden,
                     customerEmail   : this.customerEmail,
                     createdAt       : this.createdAt,
@@ -108,15 +108,18 @@ module.exports = function (Hairfie) {
                     selfMade        : !!this.selfMade,
                     tags            : tags,
                     isBeforeAfter   : _.some(tags, function (tag) {
-                        return tag.name == "Avant / Après";
+                        return tag.name == "Avant-après";
                     }),
-                    displayBusiness : businessMember ? true : false,
+                    displayBusiness : business ? true : false,
                     hidden          : this.hidden,
                     customerEmail   : this.customerEmail,
                     createdAt       : this.createdAt,
                     updatedAt       : this.updatedAt
                 });
             }.bind(this))
+            .fail(function(error) {
+                console.log("error", error)
+            })
         }
     };
 
@@ -185,8 +188,16 @@ module.exports = function (Hairfie) {
         });
     };
 
-    Hairfie.prototype.getTags = function () {
+    Hairfie.prototype.getOldTags = function() {
         return Q.ninvoke(Hairfie.app.models.Tag, 'findByIds', this.tags || []);
+    }
+
+    Hairfie.prototype.getTags = function () {
+        var MemoryTag = Hairfie.app.models.MemoryTag;
+        return MemoryTag.tagFromIds(this.tags || [])
+            .then(function(tags) {
+                return tags;
+            })
     };
 
     Hairfie.prototype.getCategories = function () {
@@ -203,9 +214,9 @@ module.exports = function (Hairfie) {
         }
     };
 
-    Hairfie.prototype.getAuthor = function() {
+    Hairfie.prototype.getAuthor = function(context) {
         var User = Hairfie.app.models.User;
-
+        console.log("context", context);
         return Q.ninvoke(User, 'findById', this.authorId);
     };
 
@@ -302,6 +313,22 @@ module.exports = function (Hairfie) {
                 });
         }
         next();
+    });
+
+    Hairfie.observe('before save', function updateLikes(ctx, next) {
+        var hairfie = ctx.instance;
+
+        if(hairfie) {
+            hairfie.getNumLikes()
+                .then(function(numLikes) {
+                    hairfie.numLikes = numLikes;
+                    ctx.instance = hairfie;
+                    next();
+                })
+                .fail(next)
+        } else {
+            next();
+        }
     });
 
     Hairfie.observe('before save', function updateLikes(ctx, next) {
