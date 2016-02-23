@@ -5,5 +5,6 @@ module.exports = {
     generateSecretId: require('./generate-secret-id'),
     updateTimestamps: require('./update-timestamps'),
     updateSearchIndex: require('./update-search-index'),
-    hasImages: require('./has-images')
+    hasImages: require('./has-images'),
+    addToCache: require('./add-to-cache.js')
 };
