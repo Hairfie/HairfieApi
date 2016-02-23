@@ -21,7 +21,7 @@ module.exports = function(Business) {
     Hooks.generateId(Business);
     Hooks.updateTimestamps(Business);
     Hooks.updateSearchIndex(Business, {index: 'business'});
-    Hooks.addToCache(Business);
+    Hooks.addToCache(Business, {prefix: 'business'});
 
     Hooks.hasImages(Business, {
         pictures: {
@@ -533,9 +533,13 @@ module.exports = function(Business) {
                 max: req.query.price.max || null
             }
         }
-
-        return Q.ninvoke(Business, 'algoliaSearch', params)
-            .then(processAlgoliaForSearch);
+        if (req.isApiVersion('<1.2.2')) {
+            return Q.ninvoke(Business, 'algoliaSearch', params)
+                .then(processAlgoliaForSearch);
+        } else {
+            return Q.ninvoke(Business, 'algoliaSearch', params)
+                .then(processAlgoliaFromCache);
+        }
     }
 
     Business.mongoNearby = function(here, clientTypes, skip, limit, callback) {
@@ -594,12 +598,7 @@ module.exports = function(Business) {
                 var filterToPush = _.map(_.toArray(filters), function(filter) {
                     return facetFilter + ':' + filter;
                 }).join(',');
-
-                // if (facetFilter == 'categories' || facetFilter == 'categorySlugs') {
-                //     //facetFiltersArr.push('(' + filterToPush + ')');
-                // } else {
                     facetFiltersArr.push(filterToPush)
-                // }
             });
         }
 
@@ -635,16 +634,15 @@ module.exports = function(Business) {
             .nodeify(callback, algoliaParams);
     }
 
-    function processAlgoliaForSearch(result, algoliaParams) {
+    function processAlgoliaForSearch(result, algoliaParams, context) {
         var ids = result.hits.map(function (hit) { return hit.id; });
-        console.log("params in result ?", algoliaParams);
         return Q.denodeify(Business.findByIds.bind(Business))(ids)
             .then(function(businesses) {
                 return {
                     toRemoteObject: function (context) {
                         return {
                             hits: _.map(businesses, function(business) {
-                                return business.toRemoteObject(context)
+                                return business.toRemoteObject(context);
                             }),
                             facets: result.facets,
                             nbHits : result.nbHits,
@@ -655,6 +653,24 @@ module.exports = function(Business) {
                     }
                 }
             });
+    }
+
+    function processAlgoliaFromCache(result, algoliaParams) {
+        var ids = result.hits.map(function (hit) { return hit.id; });
+        return {
+            toRemoteObject: function (context) {
+                return {
+                    hits: _.map(ids, function(id) {
+                        return Business.findFromCache(id);
+                    }),
+                    facets: result.facets,
+                    nbHits : result.nbHits,
+                    page : result.page + 1,
+                    nbPages : result.nbPages,
+                    hitsPerPage : result.hitsPerPage
+                }
+            }
+        }
     }
 
     function processAlgoliaForNearby(result) {

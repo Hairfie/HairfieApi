@@ -12,7 +12,7 @@ module.exports = function (Tag) {
         return {
             id          : this.id,
             href        : Tag.app.urlGenerator.api('tags/'+this.id),
-            name        : context.localized(this.name),
+            name        : context && context.localized(this.name) || this.name.fr,
             position    : this.position
         }
     }

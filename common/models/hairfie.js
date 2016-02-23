@@ -9,6 +9,7 @@ module.exports = function (Hairfie) {
     Hooks.generateId(Hairfie);
     Hooks.updateTimestamps(Hairfie);
     Hooks.updateSearchIndex(Hairfie, {index: 'hairfie'});
+    Hooks.addToCache(Hairfie, {prefix: 'hairfie'});
     Hooks.hasImages(Hairfie, {
         pictures: {
             container: 'hairfies',
@@ -50,7 +51,7 @@ module.exports = function (Hairfie) {
     }, {message: 'all exist'});
 
     Hairfie.prototype.toRemoteObject = function (context) {
-        if (context.isApiVersion('<1.2.1')) {
+        if (context && context.isApiVersion('<1.2.1')) {
             return Q.all([
                 Q.ninvoke(this.business).then(function (business) {
                         return business ? business.toRemoteShortObject(context) : null;
@@ -622,25 +623,45 @@ module.exports = function (Hairfie) {
                 return AlgoliaSearchEngine.search('hairfie', req.query.q || '', params);
             })
             .then(function (result) {
-                return [
-                    result,
-                    Q.ninvoke(Hairfie, 'findByIds', _.map(result.hits, 'objectID'))
-                ];
+                if (req.isApiVersion('<1.2.2')) {
+                    return [
+                        result,
+                        Q.ninvoke(Hairfie, 'findByIds', _.map(result.hits, 'objectID'))
+                    ];
+                } else {
+                    return [result];
+                }
             })
             .spread(function (result, hairfies) {
-                return {
-                    toRemoteObject: function (context) {
-                        return {
-                            hits        : _.map(hairfies, function (hairfie) {
-                                return hairfie.toRemoteObject(context);
-                            }),
-                            numHits     : result.nbHits,
-                            categories  : (result.facets || {}).categories || {},
-                            tags        : (result.facets || {})._tags || {},
-                            price       : (result.facets_stats || {})['price.amount']
-                        };
-                    }
-                };
+                if (req.isApiVersion('<1.2.2')) {
+                    return {
+                        toRemoteObject: function (context) {
+                            return {
+                                hits        : _.map(hairfies, function (hairfie) {
+                                    return hairfie.toRemoteObject(context);
+                                }),
+                                numHits     : result.nbHits,
+                                categories  : (result.facets || {}).categories || {},
+                                tags        : (result.facets || {})._tags || {},
+                                price       : (result.facets_stats || {})['price.amount']
+                            };
+                        }
+                    };
+                } else {
+                    return {
+                        toRemoteObject: function () {
+                            return {
+                                hits        : _.map(_.map(result.hits, 'objectID'), function (id) {
+                                    return Hairfie.findFromCache(id);
+                                }),
+                                numHits     : result.nbHits,
+                                categories  : (result.facets || {}).categories || {},
+                                tags        : (result.facets || {})._tags || {},
+                                price       : (result.facets_stats || {})['price.amount']
+                            };
+                        }
+                    };
+                }
             });
     };
 
