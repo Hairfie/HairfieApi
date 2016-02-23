@@ -21,6 +21,7 @@ module.exports = function(Business) {
     Hooks.generateId(Business);
     Hooks.updateTimestamps(Business);
     Hooks.updateSearchIndex(Business, {index: 'business'});
+    Hooks.addToCache(Business);
 
     Hooks.hasImages(Business, {
         pictures: {
@@ -28,6 +29,7 @@ module.exports = function(Business) {
             multi: true
         }
     });
+
 
     Business.validatesUniquenessOf('friendlyId');
 
@@ -69,7 +71,7 @@ module.exports = function(Business) {
                     return numHairfies;
                 }.bind(this));
         }
-        if (context.isApiVersion('<1.2')) {
+        if (context && context.isApiVersion('<1.2')) {
             console.log("members ...");
             var activeHairdressers =
             Q
@@ -116,7 +118,7 @@ module.exports = function(Business) {
     Business.prototype.toRemoteShortObject = function (context) {
         var pictures = (this.pictures || []).map(function (p) { return p.toRemoteObject(context); });
 
-        if (context.isApiVersion('<1')) {
+        if (context && context.isApiVersion('<1')) {
             var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject(context);
             if(pictures.length == 0) pictures.push(streetViewPicture);
         }

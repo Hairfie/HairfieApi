@@ -83,7 +83,7 @@ module.exports = function (app) {
             next();
         });
 
-        app.get('/v1.2.2/hairfies/search', client.route({ expire: 60*10 }), function (req, res, next) {
+        app.get('/v1.2.2/businesses/search', client.route({ expire: 60*5 }), function (req, res, next) {
             next();
         });
     }
