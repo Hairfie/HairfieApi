@@ -21,7 +21,6 @@ module.exports = function(Business) {
     Hooks.generateId(Business);
     Hooks.updateTimestamps(Business);
     Hooks.updateSearchIndex(Business, {index: 'business'});
-    Hooks.addToCache(Business, {prefix: 'business'});
 
     Hooks.hasImages(Business, {
         pictures: {
@@ -29,7 +28,6 @@ module.exports = function(Business) {
             multi: true
         }
     });
-
 
     Business.validatesUniquenessOf('friendlyId');
 
@@ -71,7 +69,7 @@ module.exports = function(Business) {
                     return numHairfies;
                 }.bind(this));
         }
-        if (context && context.isApiVersion('<1.2')) {
+        if (context.isApiVersion('<1.2')) {
             console.log("members ...");
             var activeHairdressers =
             Q
@@ -118,7 +116,7 @@ module.exports = function(Business) {
     Business.prototype.toRemoteShortObject = function (context) {
         var pictures = (this.pictures || []).map(function (p) { return p.toRemoteObject(context); });
 
-        if (context && context.isApiVersion('<1')) {
+        if (context.isApiVersion('<1')) {
             var streetViewPicture = Picture.fromUrl(GeoPoint(this.gps).streetViewPic(Business.app)).toRemoteObject(context);
             if(pictures.length == 0) pictures.push(streetViewPicture);
         }
@@ -533,13 +531,9 @@ module.exports = function(Business) {
                 max: req.query.price.max || null
             }
         }
-        if (req.isApiVersion('<1.2.2')) {
-            return Q.ninvoke(Business, 'algoliaSearch', params)
-                .then(processAlgoliaForSearch);
-        } else {
-            return Q.ninvoke(Business, 'algoliaSearch', params)
-                .then(processAlgoliaFromCache);
-        }
+
+        return Q.ninvoke(Business, 'algoliaSearch', params)
+            .then(processAlgoliaForSearch);
     }
 
     Business.mongoNearby = function(here, clientTypes, skip, limit, callback) {
@@ -598,7 +592,12 @@ module.exports = function(Business) {
                 var filterToPush = _.map(_.toArray(filters), function(filter) {
                     return facetFilter + ':' + filter;
                 }).join(',');
+
+                // if (facetFilter == 'categories' || facetFilter == 'categorySlugs') {
+                //     //facetFiltersArr.push('(' + filterToPush + ')');
+                // } else {
                     facetFiltersArr.push(filterToPush)
+                // }
             });
         }
 
@@ -634,15 +633,16 @@ module.exports = function(Business) {
             .nodeify(callback, algoliaParams);
     }
 
-    function processAlgoliaForSearch(result, algoliaParams, context) {
+    function processAlgoliaForSearch(result, algoliaParams) {
         var ids = result.hits.map(function (hit) { return hit.id; });
+        console.log("params in result ?", algoliaParams);
         return Q.denodeify(Business.findByIds.bind(Business))(ids)
             .then(function(businesses) {
                 return {
                     toRemoteObject: function (context) {
                         return {
                             hits: _.map(businesses, function(business) {
-                                return business.toRemoteObject(context);
+                                return business.toRemoteObject(context)
                             }),
                             facets: result.facets,
                             nbHits : result.nbHits,
@@ -653,24 +653,6 @@ module.exports = function(Business) {
                     }
                 }
             });
-    }
-
-    function processAlgoliaFromCache(result, algoliaParams) {
-        var ids = result.hits.map(function (hit) { return hit.id; });
-        return {
-            toRemoteObject: function (context) {
-                return {
-                    hits: _.map(ids, function(id) {
-                        return Business.findFromCache(id);
-                    }),
-                    facets: result.facets,
-                    nbHits : result.nbHits,
-                    page : result.page + 1,
-                    nbPages : result.nbPages,
-                    hitsPerPage : result.hitsPerPage
-                }
-            }
-        }
     }
 
     function processAlgoliaForNearby(result) {

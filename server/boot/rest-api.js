@@ -53,11 +53,6 @@ module.exports = function mountRestApi(server) {
 
             if (version) {
                 req.apiVersion = version;
-
-                req.isApiVersion = function (v) {
-                    return semver.satisfies(req.apiVersion, v);
-                };
-    
                 next();
             } else {
                 next({ status: 404, message: 'The specified API version does not exist.' });
