@@ -1,7 +1,6 @@
 'use strict';
 
 var Promise = require('../../common/utils/Promise');
-var Q = require('q');
 var _ = require('lodash');
 
 module.exports = function (MemoryTag) {
@@ -15,13 +14,7 @@ module.exports = function (MemoryTag) {
 
     function tagFromNames(allTags, names) {
         return _.filter(tags, function(tag) {
-            _.includes(names, tag.name.fr);
-        });
-    }
-
-    function tagFromIds(allTags, ids) {
-        return _.filter(allTags, function(tag) {
-            return _.includes(ids, tag.id);
+            return _.includes(names, tag.name.fr);
         });
     }
 
@@ -35,6 +28,7 @@ module.exports = function (MemoryTag) {
             })
         } else {
             tagPromise = Promise(tags);
+            console.log("########### tagFromMemory ", tags.length);
         }
 
         return tagPromise;
@@ -49,20 +43,5 @@ module.exports = function (MemoryTag) {
             if(!selectedTags) return null;
             return filterFromTags(selectedTags);
         })
-    }
-
-    MemoryTag.tagFromIds = function(ids) {
-        return this.getAllTags()
-        .then(function(allTags) {
-            var result = tagFromIds(allTags, ids);
-            return result;
-        })
-        .fail(function (error) {
-            console.log('Error ', error);
-        });
-    }
-
-    MemoryTag.test = function() {
-        return Q(null);
     }
 };
