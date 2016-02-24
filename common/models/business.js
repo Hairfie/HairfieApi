@@ -533,7 +533,7 @@ module.exports = function(Business) {
                 max: req.query.price.max || null
             }
         }
-        if (req.isApiVersion('<1.2.2')) {
+        if (req.isApiVersion('<1.2.3')) {
             return Q.ninvoke(Business, 'algoliaSearch', params)
                 .then(processAlgoliaForSearch);
         } else {

@@ -622,7 +622,7 @@ module.exports = function (Hairfie) {
                 return AlgoliaSearchEngine.search('hairfie', req.query.q || '', params);
             })
             .then(function (result) {
-                if (req.isApiVersion('<1.2.2')) {
+                if (req.isApiVersion('<1.2.3')) {
                     return [
                         result,
                         Q.ninvoke(Hairfie, 'findByIds', _.map(result.hits, 'objectID'))
@@ -632,7 +632,7 @@ module.exports = function (Hairfie) {
                 }
             })
             .spread(function (result, hairfies) {
-                if (req.isApiVersion('<1.2.2')) {
+                if (req.isApiVersion('<1.2.3')) {
                     return {
                         toRemoteObject: function (context) {
                             return {
