@@ -30,6 +30,10 @@ UrlGenerator.prototype.user = function (user) {
     return this.generate('user', {id: user.id});
 };
 
+UrlGenerator.prototype.adminBooking = function (booking) {
+    return this.generate('adminBooking', {id: booking.id});
+};
+
 UrlGenerator.prototype.business = function (business, context) {
     return this.generate('business', {id: business.id, slug: business.slug()}, context);
 };

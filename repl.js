@@ -29,7 +29,8 @@ var urlGenerator = new UrlGenerator({
     baseUrl     : {
         'api'       : app.get('url'),
         'website'   : app.get('webUrl'),
-        'cdn'       : app.get('cdnUrl') || app.get('url')
+        'cdn'       : app.get('cdnUrl') || app.get('url'),
+        'pro'       : app.get('proUrl')
     },
     routes      : require('./server/routes.js')
 });
