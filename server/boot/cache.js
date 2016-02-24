@@ -22,7 +22,8 @@ module.exports = function (app) {
 
     app.cacheClient = client;
 
-    if(!process.env.DISABLE_CACHE) {
+    if(!(_.isBoolean(process.env.DISABLE_CACHE) && !process.env.DISABLE_CACHE))  {
+        console.log("not disabled");
         app.get('/*/blogPosts', client.route({ expire: 3600 }), function (req, res, next) {
             next();
         });
@@ -79,7 +80,9 @@ module.exports = function (app) {
             next();
         });
 
-        app.get('/v1.2.2/hairfies/search', client.route({ expire: 60*30 }), function (req, res, next) {
+        app.get('/v1.2.*/hairfies/search', client.route({ expire: 60*30 }), function (req, res, next) {
+                        console.log("######### cache");
+
             next();
         });
 

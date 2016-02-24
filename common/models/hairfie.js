@@ -217,7 +217,6 @@ module.exports = function (Hairfie) {
 
     Hairfie.prototype.getAuthor = function(context) {
         var User = Hairfie.app.models.User;
-        console.log("context", context);
         return Q.ninvoke(User, 'findById', this.authorId);
     };
 
