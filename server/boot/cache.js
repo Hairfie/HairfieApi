@@ -81,8 +81,6 @@ module.exports = function (app) {
         });
 
         app.get('/v1.2.*/hairfies/search', client.route({ expire: 60*30 }), function (req, res, next) {
-                        console.log("######### cache");
-
             next();
         });
 
