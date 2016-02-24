@@ -116,42 +116,51 @@ module.exports = function(Place) {
             if (error) return cb(error);
             if (place) return cb(null, [place]); // jackpot!
 
-            // 2. Try to create a place using geocoder
-            geocode(address, 'fr')
-                .then(function (results) {
-                    console.log("geocode result :", results);
-                    if (0 == results.lenth) return cb(null, []);
+            Place.findOne({where:{'name.fr': new RegExp(address, 'i')}}, function(error, place) {
+                if (error) return cb(error);
+                if (place) {
+                    return cb(null, [place]); // jackpot!
+                }
 
-                    var result = results[0]; // take first result
+                // 2. Try to create a place using geocoder
+                geocode(address, 'fr')
+                    .then(function (results) {
+                        console.log("geocode result :", results);
+                        if (0 == results.lenth) return cb(null, []);
 
-                    // Try to find existing place for the result using Google's place id
-                    Place.findOne({where: {googlePlaceId: result.place_id}}, function (error, place) {
-                        if (error) return cb(error);
-                        if (place) return cb(null, [place]);
+                        var result = results[0]; // take first result
 
-                        var place = new Place({
-                            googlePlaceId   : result.place_id,
-                            googleTypes     : result.types,
-                            googleComponents: {
-                                fr: result.address_components
-                            },
-                            name            : {
-                                fr: result.formatted_address
-                            },
-                            location        : result.geometry.location,
-                            bounds          : result.geometry.bounds && {
-                                northEast: result.geometry.bounds.northeast,
-                                southWest: result.geometry.bounds.southwest
-                            }
+                        // Try to find existing place for the result using Google's place id
+                        Place.findOne({where: {googlePlaceId: result.place_id}}, function (error, place) {
+                            if (error) return cb(error);
+                            if (place) return cb(null, [place]);
+
+                            var place = new Place({
+                                googlePlaceId   : result.place_id,
+                                googleTypes     : result.types,
+                                googleComponents: {
+                                    fr: result.address_components
+                                },
+                                name            : {
+                                    fr: result.formatted_address
+                                },
+                                location        : result.geometry.location,
+                                bounds          : result.geometry.bounds && {
+                                    northEast: result.geometry.bounds.northeast,
+                                    southWest: result.geometry.bounds.southwest
+                                }
+                            });
+
+                            place.save(function (error, place) {
+                                if (error) cb(error);
+                                else cb(null, [place]);
+                            });
                         });
+                    })
+                    .fail(cb);
 
-                        place.save(function (error, place) {
-                            if (error) cb(error);
-                            else cb(null, [place]);
-                        });
-                    });
-                })
-                .fail(cb);
+            });
+
         });
     };
 
