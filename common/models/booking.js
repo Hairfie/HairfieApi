@@ -282,7 +282,7 @@ module.exports = function (Booking) {
     };
 
     Booking.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, unused, next) {
-        if(ctx.req.user.isManagerOfBusiness(req.params.bookingId)) {
+        if(ctx.req.user.isManagerOfBusiness(ctx.req.params.bookingId)) {
             next();
         } else {
             next({statusCode: 403})
