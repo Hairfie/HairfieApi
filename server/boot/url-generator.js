@@ -10,7 +10,7 @@ module.exports = function (app) {
                 'api'       : app.get('url'),
                 'website'   : app.get('webUrl'),
                 'cdn'       : app.get('cdnUrl') || app.get('url'),
-                'pro'       : app.get('pro')
+                'pro'       : app.get('proUrl')
             },
             routes      : require('../routes.js')
         });

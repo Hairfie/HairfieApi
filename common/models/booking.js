@@ -296,10 +296,11 @@ module.exports = function (Booking) {
         Promise.npost(this, 'business')
             .then(function (business) {
                 var url = Booking.app.urlGenerator.business(business);
+                var bookingUrl = Booking.app.urlGenerator.adminBooking(booking);
 
                 return Booking.app.models.email.notifySales('Demande de réservation', {
                     'Booking ID'      : booking.id,
-                    'Admin URL'       : Booking.app.urlGenerator.adminBooking(booking),
+                    'Admin URL'       : bookingUrl,
                     'Salon'           : business.name,
                     'Ville'           : business.address.zipCode + ' - ' + business.address.city,
                     'Tel du salon'    : business.phoneNumber,
