@@ -208,7 +208,7 @@ module.exports = function (BusinessReview) {
     BusinessReview.delete = function (req, user, next) {
         if (!user) return next({statusCode: 401});
 
-        return Promise.ninvoke(BusinessReview, 'findById', req.params.businesReviewId)
+        return Promise.ninvoke(BusinessReview, 'findById', req.params.businessReviewId)
             .then(function(businessReview) {
                 if (!businessReview) return next({statusCode: 404});
                 var isAllowed = user.admin;
@@ -227,6 +227,6 @@ module.exports = function (BusinessReview) {
         accepts: [
             {arg: 'req', type: 'object', 'http': {source: 'req'}},
         ],
-        http: { path: '/:businesReviewId', verb: 'DELETE' }
+        http: { path: '/:businessReviewId', verb: 'DELETE' }
     });
 };

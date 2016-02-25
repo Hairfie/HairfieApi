@@ -1,6 +1,7 @@
 'use strict';
 
 var moment = require('moment');
+var Promise = require('../../common/utils/Promise');
 
 var _ = require('lodash');
 
@@ -39,6 +40,20 @@ module.exports = function (Top) {
         });
     };
 
+    Top.businessReviews = function(limit) {
+        var limit = Math.max(0, Math.min(20, limit || 10));
+        var BusinessReview = Top.app.models.BusinessReview;
+
+        var filters = { 
+            limit: limit, 
+            where: {
+                rating: { gte: 70 }
+            },
+            order: 'createdAt DESC'
+        };
+        return Promise.ninvoke(BusinessReview, 'find', filters)
+    }
+
     Top.remoteMethod('hairfies', {
         description: 'Returns the top hairfies of the moment',
         accepts: [
@@ -66,6 +81,15 @@ module.exports = function (Top) {
         ],
         returns: {arg: 'Deal', root: true},
         http: { verb: 'GET', path: '/deals' }
+    });
+
+    Top.remoteMethod('businessReviews', {
+        description: 'Returns the top deals of the moment',
+        accepts: [
+            {arg: 'limit', type: 'number', description: 'Maximum number of deals to return (default 10)'}
+        ],
+        returns: {arg: 'Deal', root: true},
+        http: { verb: 'GET', path: '/businessReviews' }
     });
 
 };
