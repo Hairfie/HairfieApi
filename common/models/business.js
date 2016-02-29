@@ -107,6 +107,7 @@ module.exports = function(Business) {
             addedCategories    : this.addedCategories,
             hairfiesCategories : this.hairfiesCategories,
             categories         : this.categories,
+            selections         : this.selections,
             labels             : this.labels,
             createdAt          : this.createdAt,
             updatedAt          : this.updatedAt

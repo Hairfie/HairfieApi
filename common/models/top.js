@@ -47,7 +47,8 @@ module.exports = function (Top) {
         var filters = { 
             limit: limit, 
             where: {
-                rating: { gte: 70 }
+                rating: { gte: 70 },
+                comment: {neq: null}
             },
             order: 'createdAt DESC'
         };
