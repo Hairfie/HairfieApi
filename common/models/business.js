@@ -326,6 +326,7 @@ module.exports = function(Business) {
                     categories         : _.map(categories, 'name'),
                     categoryIds        : _.map(categories, 'id'),
                     categorySlugs      : _.map(categories, 'slug'),
+                    selections         : this.selections || [],
                     averagePrice       : this.averagePrice,
                     isClaimed          : isClaimed,
                     accountType        : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
