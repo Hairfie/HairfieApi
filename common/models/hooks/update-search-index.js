@@ -31,6 +31,7 @@ module.exports = function (Model, options) {
                 else return instance.toSearchDocument();
             })
             .then(function (doc) {
+                console.log("doc", doc);
                 return Engine.saveDocument(options.index, doc);
             })
             .fail(function (error) {

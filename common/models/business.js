@@ -273,9 +273,10 @@ module.exports = function(Business) {
                 Q.ninvoke(Hairfie, 'count', {businessId: this.id}),
                 this.getTags(),
                 this.getCategories(),
+                this.getSelections(),
                 this.isClaimed()
             ])
-            .spread(function (numHairfies, tags, categories, isClaimed) {
+            .spread(function (numHairfies, tags, categories, selections, isClaimed) {
                 var yelpScore = (this.yelpObject && this.yelpObject.review_count) ? bayesianAverage(this.yelpObject.review_count, this.yelpObject.rating) : 0;
 
                 if (this.yelpObject && this.yelpObject.review_count) {
@@ -326,7 +327,8 @@ module.exports = function(Business) {
                     categories         : _.map(categories, 'name'),
                     categoryIds        : _.map(categories, 'id'),
                     categorySlugs      : _.map(categories, 'slug'),
-                    selections         : this.selections || [],
+                    selections         : _.map(selections, 'id'),
+                    selectionsSlug     : _.map(selections, 'slug'),
                     averagePrice       : this.averagePrice,
                     isClaimed          : isClaimed,
                     accountType        : this.accountType ? this.accountType : Business.ACCOUNT_FREE,
@@ -365,6 +367,11 @@ module.exports = function(Business) {
             .spread(function(genderCategories, categories) {
                 return _.uniq(_.union(genderCategories, categories), 'slug');
             });
+    };
+
+    Business.prototype.getSelections = function () {
+        if(!this.selections) return [];
+        return Q.ninvoke(Business.app.models.Selection, 'findByIds', this.selections);
     };
 
     Business.prototype.getGenders = function () {
