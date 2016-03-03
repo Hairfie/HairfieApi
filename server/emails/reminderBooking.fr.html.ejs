@@ -1,6 +1,8 @@
 <p>Bonjour <%= booking.firstName %>,</p>
 
-<p>N'oubliez pas votre RDV chez <%= business.name %> le <%= dateTime %>.
+<p>N'oubliez pas votre RDV chez <%= business.name %> le <%= dateTime %>. </p>
+
+<p>L'adresse du salon : <a href="http://maps.google.com/?q=<%= business.address.street %>, <%= business.address.zipCode %> <%= business.address.city %>"><%= business.address.street %>, <%= business.address.zipCode %> <%= business.address.city %></a>.</p>
 
 <p>Vous avez une question, besoin d'une précision ou un peu de retard ? Contactez directement le salon au <%= business.phoneNumber %>
 </p>
