@@ -321,7 +321,7 @@ module.exports = function(Business) {
                     crossSell          : true,
                     isBookable         : this.isBookable(),
                     bestDiscount       : this.bestDiscount,
-                    priceLevel  : this.priceLevel || null,
+                    priceLevel         : this.priceLevel || null,
                     createdAt          : this.createdAt,
                     _tags              : tags.map(function (t) { return t.name && t.name.fr; }),
                     categories         : _.map(categories, 'name'),

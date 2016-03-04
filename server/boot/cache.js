@@ -62,6 +62,10 @@ module.exports = function (app) {
             next();
         });
 
+        app.get('/*/selections', client.route({ expire: 3600*24 }), function (req, res, next) {
+            next();
+        });
+
         app.get('/*/stations', client.route({ expire: 3600*24 }), function (req, res, next) {
             next();
         });
