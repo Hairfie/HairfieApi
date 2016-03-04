@@ -602,11 +602,11 @@ module.exports = function(Business) {
                     return facetFilter + ':' + filter;
                 }).join(',');
 
-                // if (facetFilter == 'categories' || facetFilter == 'categorySlugs') {
-                //     //facetFiltersArr.push('(' + filterToPush + ')');
-                // } else {
-                    facetFiltersArr.push(filterToPush)
-                // }
+                if (facetFilter == 'priceLevel') {
+                    facetFiltersArr.push('(' + filterToPush + ')');
+                } else {
+                   facetFiltersArr.push(filterToPush)
+                }
             });
         }
 
