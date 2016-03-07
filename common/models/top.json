@@ -5,7 +5,8 @@
     "sharedMethodNames": [
       "hairfies",
       "businessHairfies",
-      "deals"
+      "deals",
+      "businessReviews"
     ]
   },
   "properties": {},

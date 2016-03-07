@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Les bons plans",
+        "label": "Les bons plans",
+        "slug": "les-bons-plans",
+        "position": 0,
+        "description": "BLABLA Coloristes",
+        "active": false
+    },
+    {
+        "name": "Les meilleurs coloristes",
+        "label": "Les meilleurs coloristes",
+        "slug": "les-meilleurs-coloristes",
+        "position": 0,
+        "description": "BLABLA Coloristes",
+        "active": false
+    },
+    {
+        "name": "Les Barbershops",
+        "label": "Les Barbershops",
+        "slug": "les-barbershops",
+        "position": 1,
+        "description": "BLABLA Barbershops",
+        "active": false
+    }
+]

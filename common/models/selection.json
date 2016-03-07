@@ -1,0 +1,46 @@
+{
+  "name": "Selection",
+  "plural": "Selections",
+  "base": "PersistedModel",
+  "options": {
+    "sharedMethodNames": [
+      "find",
+      "findById"
+    ],
+    "mongodb": {
+      "collection": "selections"
+    }
+  },
+  "idInjection": false,
+  "strict": true,
+  "properties": {
+    "id": {
+      "type": "string",
+      "id": true
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "label": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "position": {
+      "type": "number"
+    },
+    "description": {
+        "type": "string"
+    },
+    "active": {
+        "type": "boolean",
+        "default": false
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
+}

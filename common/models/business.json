@@ -72,6 +72,9 @@
     "hairfiesCategories": {
       "type": "array"
     },
+    "selections": {
+      "type": "array"
+    },
     "labels": {
       "type": "array"
     },

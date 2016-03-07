@@ -9,7 +9,6 @@ module.exports = function (Hairfie) {
     Hooks.generateId(Hairfie);
     Hooks.updateTimestamps(Hairfie);
     Hooks.updateSearchIndex(Hairfie, {index: 'hairfie'});
-    Hooks.addToCache(Hairfie, {prefix: 'hairfie'});
     Hooks.hasImages(Hairfie, {
         pictures: {
             container: 'hairfies',
@@ -51,7 +50,7 @@ module.exports = function (Hairfie) {
     }, {message: 'all exist'});
 
     Hairfie.prototype.toRemoteObject = function (context) {
-        if (context && context.isApiVersion('<1.2.1')) {
+        if (context.isApiVersion('<1.2.1')) {
             return Q.all([
                 Q.ninvoke(this.business).then(function (business) {
                         return business ? business.toRemoteShortObject(context) : null;
@@ -60,7 +59,7 @@ module.exports = function (Hairfie) {
                     .then(function (tags) {
                         return tags ? tags.map(function (tag) { return tag.toRemoteShortObject(context) }) : null;
                     }),
-                this.getAuthor(context).then(function (author) {
+                Q.ninvoke(this.author).then(function (author) {
                         return author ? author.toRemoteShortObject(context) : null;
                     }),
                 this.getBusinessMember().then(function (businessMember) {
@@ -78,9 +77,9 @@ module.exports = function (Hairfie) {
                     selfMade        : !!this.selfMade,
                     tags            : tags,
                     isBeforeAfter   : _.some(tags, function (tag) {
-                        return tag.name == "Avant-après";
+                        return tag.name == "Avant / Après";
                     }),
-                    displayBusiness : business ? true : false,
+                    displayBusiness : businessMember ? true : false,
                     hidden          : this.hidden,
                     customerEmail   : this.customerEmail,
                     createdAt       : this.createdAt,
@@ -109,18 +108,15 @@ module.exports = function (Hairfie) {
                     selfMade        : !!this.selfMade,
                     tags            : tags,
                     isBeforeAfter   : _.some(tags, function (tag) {
-                        return tag.name == "Avant-après";
+                        return tag.name == "Avant / Après";
                     }),
-                    displayBusiness : business ? true : false,
+                    displayBusiness : businessMember ? true : false,
                     hidden          : this.hidden,
                     customerEmail   : this.customerEmail,
                     createdAt       : this.createdAt,
                     updatedAt       : this.updatedAt
                 });
             }.bind(this))
-            .fail(function(error) {
-                console.log("error", error)
-            })
         }
     };
 
@@ -189,16 +185,8 @@ module.exports = function (Hairfie) {
         });
     };
 
-    Hairfie.prototype.getOldTags = function() {
-        return Q.ninvoke(Hairfie.app.models.Tag, 'findByIds', this.tags || []);
-    }
-
     Hairfie.prototype.getTags = function () {
-        var MemoryTag = Hairfie.app.models.MemoryTag;
-        return MemoryTag.tagFromIds(this.tags || [])
-            .then(function(tags) {
-                return tags;
-            })
+        return Q.ninvoke(Hairfie.app.models.Tag, 'findByIds', this.tags || []);
     };
 
     Hairfie.prototype.getCategories = function () {
@@ -215,8 +203,9 @@ module.exports = function (Hairfie) {
         }
     };
 
-    Hairfie.prototype.getAuthor = function(context) {
+    Hairfie.prototype.getAuthor = function() {
         var User = Hairfie.app.models.User;
+
         return Q.ninvoke(User, 'findById', this.authorId);
     };
 
@@ -313,22 +302,6 @@ module.exports = function (Hairfie) {
                 });
         }
         next();
-    });
-
-    Hairfie.observe('before save', function updateLikes(ctx, next) {
-        var hairfie = ctx.instance;
-
-        if(hairfie) {
-            hairfie.getNumLikes()
-                .then(function(numLikes) {
-                    hairfie.numLikes = numLikes;
-                    ctx.instance = hairfie;
-                    next();
-                })
-                .fail(next)
-        } else {
-            next();
-        }
     });
 
     Hairfie.observe('before save', function updateLikes(ctx, next) {
@@ -622,6 +595,7 @@ module.exports = function (Hairfie) {
                 return AlgoliaSearchEngine.search('hairfie', req.query.q || '', params);
             })
             .then(function (result) {
+<<<<<<< HEAD
                 if (req.isApiVersion('<1.2.3')) {
                     return [
                         result,
@@ -661,6 +635,27 @@ module.exports = function (Hairfie) {
                         }
                     };
                 }
+=======
+                return [
+                    result,
+                    Q.ninvoke(Hairfie, 'findByIds', _.map(result.hits, 'objectID'))
+                ];
+            })
+            .spread(function (result, hairfies) {
+                return {
+                    toRemoteObject: function (context) {
+                        return {
+                            hits        : _.map(hairfies, function (hairfie) {
+                                return hairfie.toRemoteObject(context);
+                            }),
+                            numHits     : result.nbHits,
+                            categories  : (result.facets || {}).categories || {},
+                            tags        : (result.facets || {})._tags || {},
+                            price       : (result.facets_stats || {})['price.amount']
+                        };
+                    }
+                };
+>>>>>>> master
             });
     };
 

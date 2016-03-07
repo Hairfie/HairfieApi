@@ -7,6 +7,7 @@ module.exports = {
     host: process.env.HOST,
     webUrl: process.env.WEB_URL,
     cdnUrl: process.env.CDN_URL,
+    proUrl: process.env.PRO_URL,
     restApiRoot: '/api',
     legacyExplorer: false,
     locales: commaSeparated(process.env.LOCALES),

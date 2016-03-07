@@ -207,7 +207,15 @@
         {
             "name": "Tissage",
             "oldIds": ["e682d91f-d727-42eb-a133-024ddd8129e0"]
-        },
+        }
+    ]
+},
+{
+    "tagCategory":{
+        "name": "Coiffage",
+        "oldIds": []
+    },
+    "tags": [
         {
             "name": "Coiffage",
             "oldIds": ["c5d873f5-9b38-4021-b307-d8d377e92a86"]

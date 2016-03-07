@@ -15,8 +15,8 @@ module.exports = function (Booking) {
     Booking.STATUS_REQUEST          = 'REQUEST';
     Booking.STATUS_IN_PROCESS       = 'IN_PROCESS';
     Booking.STATUS_CONFIRMED        = 'CONFIRMED';
-    Booking.STATUS_NOT_AVAILABLE    = 'NOT_AVAILABLE';  // Business not available
     Booking.STATUS_CANCELLED        = 'CANCELLED';      // Cancelled by user
+    Booking.STATUS_CANCEL_REQUEST   = 'CANCEL_REQUEST';      // Cancelled by user
     Booking.STATUS_HONORED          = 'HONORED';
     Booking.STATUS_NOSHOW           = 'NOSHOW';
 
@@ -73,6 +73,8 @@ module.exports = function (Booking) {
             userCheckCode       : this.userCheckCode,
             confirmationSentAt  : this.confirmationSentAt,
             newsletter          : this.newsletter,
+            firstTimeCustomer   : this.firstTimeCustomer,
+            cancellation        : this.cancellation ? this.cancellation : {},
             createdAt           : this.createdAt,
             updatedAt           : this.updatedAt
         };
@@ -145,9 +147,43 @@ module.exports = function (Booking) {
                 .then(function (booking) {
                     if (!booking) return cb({statusCode: 404});
 
+                    booking.status = Booking.STATUS_CANCEL_REQUEST;
+
+                    return Promise.npost(booking, 'save');
+                })
+            .then(function(booking) {
+                return [Promise.npost(booking, 'business'), booking];
+            })
+            .spread(function(business, booking) {
+                Booking.app.models.email.notifySales("Demande d'annulation", {
+                    'ID'              : booking.id,
+                    'Salon'           : business.name,
+                    'Tel du salon'    : business.phoneNumber,
+                    'Date & Heure de la demande' : moment(booking.dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
+                    'Client'          : booking.firstName + ' ' + booking.lastName,
+                    'Genre'           : booking.gender,
+                    'Email du client' : booking.email,
+                    'Tel du client'   : booking.phoneNumber,
+                    'Prestation'      : booking.comment,
+                    'Promo'           : booking.discount
+                });
+                return booking;
+            })
+    };
+
+    Booking.adminCancel = function(req, user, cb) {
+        return Promise.ninvoke(Booking, 'findById', req.params.bookingId)
+                .then(function (booking) {
+                    if (!booking) return cb({statusCode: 404});
+
+                    var isAllowed = user.admin;
+                    if (!isAllowed) return cb({statusCode: 403});
+
                     booking.cancelled = true;
                     booking.status = Booking.STATUS_CANCELLED;
-
+                    if(req.body.cancellation) {
+                        booking.cancellation = req.body.cancellation;
+                    }
                     return Promise.npost(booking, 'save');
                 })
             .then(function(booking) {
@@ -246,7 +282,7 @@ module.exports = function (Booking) {
     };
 
     Booking.beforeRemote('*.updateAttributes', Control.isAuthenticated(function (ctx, unused, next) {
-        if(ctx.req.user.admin) {
+        if(ctx.req.user.isManagerOfBusiness(ctx.req.params.bookingId)) {
             next();
         } else {
             next({statusCode: 403})
@@ -260,16 +296,20 @@ module.exports = function (Booking) {
         Promise.npost(this, 'business')
             .then(function (business) {
                 var url = Booking.app.urlGenerator.business(business);
+                var bookingUrl = Booking.app.urlGenerator.adminBooking(booking);
 
                 return Booking.app.models.email.notifySales('Demande de réservation', {
                     'Booking ID'      : booking.id,
+                    'Admin URL'       : bookingUrl,
                     'Salon'           : business.name,
+                    'Ville'           : business.address.zipCode + ' - ' + business.address.city,
                     'Tel du salon'    : business.phoneNumber,
                     'URL du salon'    : url,
                     'Date & Heure de la demande' : moment(booking.dateTime).tz('Europe/Paris').format("D/MM/YYYY [à] HH:mm"),
                     'Client'          : booking.firstName + ' ' + booking.lastName,
                     'Genre'           : booking.gender,
                     'Email du client' : booking.email,
+                    'Nouveau Client ?': booking.firstTimeCustomer,
                     'Tel du client'   : booking.phoneNumber,
                     'Longueur'        : booking.hairLength || "",
                     'Service'         : booking.service || "",
@@ -340,12 +380,22 @@ module.exports = function (Booking) {
     });
 
     Booking.remoteMethod('cancel', {
-        description: 'Cancel the booking',
+        description: 'Cancel Request the booking',
         accepts: [
             {arg: 'req', type: 'object', 'http': {source: 'req'}}
         ],
         returns: {arg: 'result', root: true},
         http: { path: '/:bookingId/cancel', verb: 'POST' }
+    });
+
+    Booking.remoteMethod('adminCancel', {
+        description: 'Cancel the booking',
+        accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}},
+            {arg: 'user', type: 'object', http: function (ctx) { return ctx.req.user; }}
+        ],
+        returns: {arg: 'result', root: true},
+        http: { path: '/:bookingId/adminCancel', verb: 'POST' }
     });
 
     Booking.remoteMethod('delete', {

@@ -39,5 +39,9 @@ module.exports = {
     bookingConfirmation: {
         app: 'website',
         path: '/reservation/:id'
+    },
+    adminBooking: {
+        app: 'pro',
+        path: '/bookings/:id'
     }
 };

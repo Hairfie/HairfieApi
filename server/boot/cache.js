@@ -63,6 +63,10 @@ module.exports = function (app) {
             next();
         });
 
+        app.get('/*/selections', client.route({ expire: 3600*24 }), function (req, res, next) {
+            next();
+        });
+
         app.get('/*/stations', client.route({ expire: 3600*24 }), function (req, res, next) {
             next();
         });
@@ -81,10 +85,6 @@ module.exports = function (app) {
         });
 
         app.get('/v1.2.*/hairfies/search', client.route({ expire: 60*30 }), function (req, res, next) {
-            next();
-        });
-
-        app.get('/v1.2.2/businesses/search', client.route({ expire: 60*5 }), function (req, res, next) {
             next();
         });
     }
