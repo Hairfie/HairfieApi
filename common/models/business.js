@@ -541,8 +541,13 @@ module.exports = function(Business) {
             }
         }
 
-        return Q.ninvoke(Business, 'algoliaSearch', params)
-            .then(processAlgoliaForSearch);
+        if (req.isApiVersion('<1.2.3')) {
+            return Q.ninvoke(Business, 'algoliaSearch', params)
+                .then(processAlgoliaForSearch);
+        } else {
+            return Q.ninvoke(Business, 'algoliaSearch', params)
+                .then(processAlgoliaFromCache);
+        }
     }
 
     Business.mongoNearby = function(here, clientTypes, skip, limit, callback) {

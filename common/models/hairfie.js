@@ -595,25 +595,45 @@ module.exports = function (Hairfie) {
                 return AlgoliaSearchEngine.search('hairfie', req.query.q || '', params);
             })
             .then(function (result) {
-                return [
-                    result,
-                    Q.ninvoke(Hairfie, 'findByIds', _.map(result.hits, 'objectID'))
-                ];
+                if (req.isApiVersion('<1.2.3')) {
+                    return [
+                        result,
+                        Q.ninvoke(Hairfie, 'findByIds', _.map(result.hits, 'objectID'))
+                    ];
+                } else {
+                    return [result];
+                }
             })
             .spread(function (result, hairfies) {
-                return {
-                    toRemoteObject: function (context) {
-                        return {
-                            hits        : _.map(hairfies, function (hairfie) {
-                                return hairfie.toRemoteObject(context);
-                            }),
-                            numHits     : result.nbHits,
-                            categories  : (result.facets || {}).categories || {},
-                            tags        : (result.facets || {})._tags || {},
-                            price       : (result.facets_stats || {})['price.amount']
-                        };
-                    }
-                };
+                if (req.isApiVersion('<1.2.3')) {
+                    return {
+                        toRemoteObject: function (context) {
+                            return {
+                                hits        : _.map(hairfies, function (hairfie) {
+                                    return hairfie.toRemoteObject(context);
+                                }),
+                                numHits     : result.nbHits,
+                                categories  : (result.facets || {}).categories || {},
+                                tags        : (result.facets || {})._tags || {},
+                                price       : (result.facets_stats || {})['price.amount']
+                            };
+                        }
+                    };
+                } else {
+                    return {
+                        toRemoteObject: function () {
+                            return {
+                                hits        : _.map(_.map(result.hits, 'objectID'), function (id) {
+                                    return Hairfie.findFromCache(id);
+                                }),
+                                numHits     : result.nbHits,
+                                categories  : (result.facets || {}).categories || {},
+                                tags        : (result.facets || {})._tags || {},
+                                price       : (result.facets_stats || {})['price.amount']
+                            };
+                        }
+                    };
+                }
             });
     };
 
