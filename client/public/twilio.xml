@@ -1,9 +1,5 @@
 <Response>
-<Say voice="alice">
-Merci pour votre appel.
-</Say>
-<Pause length="1"/>
-<Say voice="alice">
-Hairfie ne réponds pas à ce numéro.
+<Say voice="alice" language="fr-FR">
+Bienvenue chez Hairfie. Ce répondeur n'accepte pas de messages. N'hésitez pas à adresser vos demandes par S M S à ce même numéro. A bientôt sur Hairfie.
 </Say>
 </Response>
