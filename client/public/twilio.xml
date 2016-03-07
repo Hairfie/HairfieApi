@@ -1,0 +1,9 @@
+<Response>
+<Say voice="alice">
+Merci pour votre appel.
+</Say>
+<Pause length="1"/>
+<Say voice="alice">
+Hairfie ne réponds pas à ce numéro.
+</Say>
+</Response>
