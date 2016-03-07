@@ -595,7 +595,6 @@ module.exports = function (Hairfie) {
                 return AlgoliaSearchEngine.search('hairfie', req.query.q || '', params);
             })
             .then(function (result) {
-<<<<<<< HEAD
                 if (req.isApiVersion('<1.2.3')) {
                     return [
                         result,
@@ -635,27 +634,6 @@ module.exports = function (Hairfie) {
                         }
                     };
                 }
-=======
-                return [
-                    result,
-                    Q.ninvoke(Hairfie, 'findByIds', _.map(result.hits, 'objectID'))
-                ];
-            })
-            .spread(function (result, hairfies) {
-                return {
-                    toRemoteObject: function (context) {
-                        return {
-                            hits        : _.map(hairfies, function (hairfie) {
-                                return hairfie.toRemoteObject(context);
-                            }),
-                            numHits     : result.nbHits,
-                            categories  : (result.facets || {}).categories || {},
-                            tags        : (result.facets || {})._tags || {},
-                            price       : (result.facets_stats || {})['price.amount']
-                        };
-                    }
-                };
->>>>>>> master
             });
     };
 
