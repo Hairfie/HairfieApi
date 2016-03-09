@@ -303,6 +303,7 @@ module.exports = function(User) {
         .spread(function(user, businessMembers) {
             var pro = businessMembers.length > 0 ? "YES" : "NO";
             var newsletter = user.newsletter ? "YES" : "NO";
+
             return {
                 email: {email: user.email},
                 merge_vars: {
@@ -310,7 +311,8 @@ module.exports = function(User) {
                     lname: user.lastName,
                     registered: "YES",
                     pro: pro,
-                    newsletter: newsletter
+                    newsletter: newsletter,
+                    gender: user.gender
                 }
             }
         });

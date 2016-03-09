@@ -667,8 +667,15 @@ module.exports = function (Hairfie) {
     };
 
     Hairfie.prototype.toMailchimp = function () {
+        var gender;
+        if(_.includes(this.tags, process.env.WOMAN_TAG_ID)) gender = 'FEMALE';
+        if(_.includes(this.tags, process.env.MAN_TAG_ID)) gender = 'MALE';
+
         return {
-            email: {email: this.customerEmail}
+            email: {email: this.customerEmail},
+            merge_vars: {
+                gender: gender
+            }
         }
     }
 

@@ -334,7 +334,8 @@ module.exports = function (Booking) {
                 gender: this.gender,
                 booking: lastBooking,
                 registered: registered,
-                newsletter: newsletter
+                newsletter: newsletter,
+                gender: this.gender
             }
         }
     }
