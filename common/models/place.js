@@ -23,6 +23,9 @@ module.exports = function(Place) {
                 if(error) next();
                 place.parentPlaceId = parent[0].id;
                 ctx.instance = place;
+                console.log("parentPlaceId", parent[0].id);
+                console.log("place", place);
+                console.log("ctx.instance", ctx.instance);
                 next();
             });
         } else {
@@ -150,7 +153,7 @@ module.exports = function(Place) {
                                     southWest: result.geometry.bounds.southwest
                                 }
                             });
-
+                            console.log("before the save", place);
                             place.save(function (error, place) {
                                 if (error) cb(error);
                                 else cb(null, [place]);

@@ -51,6 +51,10 @@
         "placeId": {
             "index": true,
             "type": "string"
+        },
+        "parentPlaceId": {
+            "index": true,
+            "type": "string"
         }
     },
     "options": {

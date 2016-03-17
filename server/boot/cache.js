@@ -27,7 +27,7 @@ module.exports = function (app) {
             next();
         });
 
-        app.get('/*/tops/hairfies', client.route({ expire: 3600 }), function (req, res, next) {
+        app.get('/*/tops/hairfies', client.route({ expire: 3600*24 }), function (req, res, next) {
             next();
         });
 
@@ -79,7 +79,7 @@ module.exports = function (app) {
             next();
         });
 
-        app.get('/*/businesses/:businessId/similar', client.route({ expire: 600 }), function (req, res, next) {
+        app.get('/*/businesses/:businessId/similar', client.route({ expire: 3600*24 }), function (req, res, next) {
             next();
         });
 

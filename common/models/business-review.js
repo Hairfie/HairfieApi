@@ -62,7 +62,13 @@ module.exports = function (BusinessReview) {
                 .fail(console.log);
             }
 
-            q.ninvoke(BusinessReview.app.models.Business, 'getRating', ctx.instance.businessId);
+            q.ninvoke(BusinessReview.app.models.Business, 'getRating', ctx.instance.businessId)
+                .then(function(business) {
+                    console.log("business has been saved", business);
+                })
+                .fail(function(error) {
+                    console.log("error", error);
+                })
 
             // update review request with reviewId so we know it's used
             businessReview.request(function (error, request) {
@@ -79,7 +85,6 @@ module.exports = function (BusinessReview) {
     });
 
     BusinessReview.observe('after save', function updateNumReviews(ctx, next) {
-        console.log("TEST 2");
         var businessReview = ctx.instance;
         if(businessReview && businessReview.authorId) {
 
