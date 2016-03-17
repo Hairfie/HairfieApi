@@ -35,6 +35,10 @@ module.exports = function (app) {
             next();
         });
 
+        app.get('/*/tops/businessReviews', client.route({ expire: 3600*24 }), function (req, res, next) {
+            next();
+        });
+
         app.get('/*/tops/hairfies/:businessId', function (req, res, next) {
             res.express_redis_cache_name = 'top-hairfies-' + req.params.businessId;
             next();
@@ -74,12 +78,7 @@ module.exports = function (app) {
             next();
         });
 
-        app.get('/*/businesses/:businessId/similar', function (req, res, next) {
-            res.express_redis_cache_name = 'businesses-similar-' + req.params.businessId;
-            next();
-        });
-
-        app.get('/*/businesses/:businessId/similar', client.route({ expire: 3600*24 }), function (req, res, next) {
+        app.get('/*/businesses/:businessId/similar', client.route({ expire: 3600*24*7 }), function (req, res, next) {
             next();
         });
 
