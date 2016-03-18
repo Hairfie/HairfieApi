@@ -17,6 +17,9 @@ module.exports = function (BlogPost) {
         .then(function(data) {
             var cleanData = _.map(_.chunk(data, 3)[0], function(post) {
                 delete post.content;
+                console.log("post", post);
+                var secure_featured_image_thumbnail_url = post.featured_image_thumbnail_url.replace('http://blog.hairfie.com', 'https://d3civsp0amn5z0.cloudfront.net');
+                post.secure_featured_image_thumbnail_url = secure_featured_image_thumbnail_url;
                 return post;
             })
             return cleanData;
