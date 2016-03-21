@@ -30,6 +30,7 @@ module.exports = function(User) {
         if (this.accessToken) { // BC mobile
             user.accessToken = this.accessToken.toRemoteShortObject(context);
         }
+        if(!context.getUser()) return user;
 
         if (!this.equals(context.getUser()) && !context.getUser().admin) {
             return user;
