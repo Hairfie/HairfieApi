@@ -31,7 +31,7 @@ module.exports = function(User) {
             user.accessToken = this.accessToken.toRemoteShortObject(context);
         }
 
-        if (!this.equals(context.getUser())) {
+        if (!this.equals(context.getUser()) && !context.getUser().admin) {
             return user;
         }
 

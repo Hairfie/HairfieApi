@@ -40,6 +40,9 @@
       "type": "string",
       "required": true
     },
+    "title": {
+      "type": "string"
+    },
     "email": {
       "type": "string"
     },
