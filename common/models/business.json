@@ -58,7 +58,8 @@
       }
     },
     "phoneNumber": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "phones": {
       "type": "array"
