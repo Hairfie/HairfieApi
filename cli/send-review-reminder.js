@@ -4,7 +4,7 @@ var Promise = require('../common/utils/Promise');
 
 module.exports = function (program, app) {
     program
-        .command('send-business-review-requests')
+        .command('send-review-reminder')
         .description('Sends the business review request emails')
         .action(function (options) {
             var BusinessReviewRequest = app.models.BusinessReviewRequest;
