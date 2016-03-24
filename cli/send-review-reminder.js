@@ -1,32 +1,39 @@
 'use strict';
 
 var Promise = require('../common/utils/Promise');
+var moment = require('moment');
+moment.locale('fr');
 
 module.exports = function (program, app) {
     program
         .command('send-review-reminder')
-        .description('Sends the business review request emails')
+        .description('Sends the business review reminder emails')
         .action(function (options) {
             var BusinessReviewRequest = app.models.BusinessReviewRequest;
 
-            var todayMorning = new Date();
-            todayMorning.setHours(0, 0, 0, 0);
+            var yesterday = moment().subtract(1, 'days').startOf('days').toISOString();
 
             var where = {
-                reviewId: null,
-                emailSentAt: null
+                and: [
+                    {reviewId: null},
+                    {emailSentAt: {neq: null}},
+                    {dateTime: { lte: yesterday }}
+                ],
+                or: [
+                    { reminderSentAt: null },
+                    { reminderSentAt: { exists: false } }
+                ]
             };
-
             Promise.ninvoke(BusinessReviewRequest, 'find', {where: where})
                 .then(function (requests) {
                     console.log("requests to send", requests.length);
-                    return Promise.all(requests.map(sendBusinessReviewRequest.bind(null, app)));
+                    return Promise.all(requests.map(sendBusinessReviewRequestReminder.bind(null, app)));
                 })
                 .then(onSuccess, onFailure);
         });
 };
 
-function sendBusinessReviewRequest(app, brr) {
+function sendBusinessReviewRequestReminder(app, brr) {
     var Email = app.models.Email;
 
     console.log('Sending request '+brr.id+' to '+brr.email);
@@ -34,11 +41,12 @@ function sendBusinessReviewRequest(app, brr) {
     return Promise.npost(brr, 'business')
         .then(function (business) {
             if (!business) throw new Error("Business not found");
+            console.log("EMAIL SHOULD BE SENT TO :", business.name, brr.dateTime);
 
-            return Email.requestBusinessReview(business, brr);
+            return Email.requestBusinessReviewReminder(business, brr);
         })
         .then(function () {
-            brr.emailSentAt = new Date();
+            brr.reminderSentAt = new Date();
 
             return Promise.npost(brr, 'save');
         })

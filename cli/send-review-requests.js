@@ -38,12 +38,11 @@ function sendBusinessReviewRequest(app, brr) {
             console.log("EMAIL SHOULD BE SENT TO :", business.name, brr.dateTime);
 
             return Email.requestBusinessReview(business, brr);
-            //return;
         })
         .then(function () {
             brr.emailSentAt = new Date();
-            return
-            //return Promise.npost(brr, 'save');
+            //return
+            return Promise.npost(brr, 'save');
         })
         .fail(function (error) {
             console.log('Failed to send '+brr.id+':', error);
