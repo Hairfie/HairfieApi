@@ -5,6 +5,9 @@ var Promise = require('../../common/utils/Promise');
 var _ = require('lodash'); 
 var Hooks = require('./hooks');
 
+var moment = require('moment');
+moment.locale('fr');
+
 module.exports = function (Hairfie) {
     Hooks.generateId(Hairfie);
     Hooks.updateTimestamps(Hairfie);
@@ -412,7 +415,8 @@ module.exports = function (Hairfie) {
         return Q.ninvoke(Hairfie.app.models.BusinessReviewRequest, 'create', {
             businessId  : hairfie.businessId,
             hairfieId   : hairfie.id,
-            email       : hairfie.customerEmail
+            email       : hairfie.customerEmail,
+            dateTime    : moment().tz('Europe/Paris')
         });
     }
 

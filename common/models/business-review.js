@@ -50,7 +50,7 @@ module.exports = function (BusinessReview) {
             if(ctx.isNewInstance) {
                 Promise.npost(businessReview, 'business')
                 .then(function (business) {
-                    return BusinessReview.app.models.email.notifyAll('Un avis a été déposé', {
+                    return BusinessReview.app.models.email.notifySales('Un avis a été déposé', {
                         'ID'              : businessReview.id,
                         'Salon'           : business.name,
                         'Nom'             : businessReview.firstName + ' ' + businessReview.lastName,

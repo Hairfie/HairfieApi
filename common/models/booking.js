@@ -80,6 +80,30 @@ module.exports = function (Booking) {
         };
     };
 
+    Booking.prototype.createReviewRequest = function() {
+        var BusinessReviewRequest = Booking.app.models.BusinessReviewRequest;
+
+        return Promise.ninvoke(BusinessReviewRequest, 'findOrCreate', {where: {bookingId: this.id}}, {
+                bookingId   : this.id,
+                dateTime    : this.dateTime,
+                businessId  : this.businessId,
+                email       : this.email
+            });
+    };
+
+    Booking.prototype.deleteReviewRequest = function() {
+        var BusinessReviewRequest = Booking.app.models.BusinessReviewRequest;
+
+        return Promise.ninvoke(BusinessReviewRequest, 'findOne', {where: {bookingId: this.id}})
+            .then(function(brr) {
+                if(brr) {
+                    return Promise.ninvoke(BusinessReviewRequest, 'deleteById', brr.id);
+                } else {
+                    return;
+                }
+            });
+    };
+
     Booking.userCheck = function(bookingId, userCheckCode, cb) {
         if (!userCheckCode) return cb({statusCode: 401});
 
@@ -125,9 +149,12 @@ module.exports = function (Booking) {
                 booking.confirmed = true;
                 booking.status = Booking.STATUS_CONFIRMED;
 
-                return Promise.npost(booking, 'save');
+                return Promise.all([
+                    booking.createReviewRequest(),
+                    Promise.npost(booking, 'save')
+                ]);
             })
-            .then(function (booking) {
+            .spread(function (businessReviewRequest, booking) {
                 if(!booking.confirmationSentAt) {
                     // notify client of the booking confirmation
                     var Email = Booking.app.models.email;
@@ -184,9 +211,12 @@ module.exports = function (Booking) {
                     if(req.body.cancellation) {
                         booking.cancellation = req.body.cancellation;
                     }
-                    return Promise.npost(booking, 'save');
+                    return Promise.all([
+                        booking.deleteReviewRequest(),
+                        Promise.npost(booking, 'save')
+                    ]);
                 })
-            .then(function(booking) {
+            .spread(function(businessReviewRequest, booking) {
                 return [Promise.npost(booking, 'business'), booking];
             })
             .spread(function(business, booking) {
@@ -219,7 +249,10 @@ module.exports = function (Booking) {
 
                 booking.hidden = true;
 
-                return Promise.npost(booking, 'save');
+                return Promise.all([
+                    booking.deleteReviewRequest(),
+                    Promise.npost(booking, 'save')
+                ]);
             })
     };
 
@@ -243,11 +276,7 @@ module.exports = function (Booking) {
                 booking.status = Booking.STATUS_HONORED;
 
                 return Promise.all([
-                    Promise.ninvoke(Booking.app.models.BusinessReviewRequest, 'create', {
-                        businessId  : booking.businessId,
-                        bookingId   : booking.id,
-                        email       : booking.email
-                    }),
+                    booking.createReviewRequest(),
                     Promise.npost(booking, 'save')
                 ]);
             }).spread(function (businessReviewRequest, booking) {

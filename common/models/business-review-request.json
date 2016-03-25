@@ -23,6 +23,14 @@
       "type": "string",
       "index": true
     },
+    "bookingId": {
+      "type": "string",
+      "index": true
+    },
+    "dateTime": {
+      "type": "Date",
+      "default": null
+    },
     "email": {
       "type": "string",
       "required": true
@@ -32,6 +40,10 @@
       "default": null
     },
     "emailSentAt": {
+      "type": "Date",
+      "default": null
+    },
+    "reminderSentAt": {
       "type": "Date",
       "default": null
     }

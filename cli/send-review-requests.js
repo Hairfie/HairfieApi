@@ -1,20 +1,21 @@
 'use strict';
 
 var Promise = require('../common/utils/Promise');
+var moment = require('moment');
+moment.locale('fr');
 
 module.exports = function (program, app) {
     program
-        .command('send-business-review-requests')
+        .command('send-review-requests')
         .description('Sends the business review request emails')
         .action(function (options) {
             var BusinessReviewRequest = app.models.BusinessReviewRequest;
-
-            var todayMorning = new Date();
-            todayMorning.setHours(0, 0, 0, 0);
+            var now = moment().tz('Europe/Paris');
 
             var where = {
                 reviewId: null,
-                emailSentAt: null
+                emailSentAt: null,
+                dateTime: { lte: now }
             };
 
             Promise.ninvoke(BusinessReviewRequest, 'find', {where: where})
@@ -34,12 +35,13 @@ function sendBusinessReviewRequest(app, brr) {
     return Promise.npost(brr, 'business')
         .then(function (business) {
             if (!business) throw new Error("Business not found");
+            console.log("EMAIL SHOULD BE SENT TO :", business.name, brr.dateTime);
 
             return Email.requestBusinessReview(business, brr);
         })
         .then(function () {
             brr.emailSentAt = new Date();
-
+            //return
             return Promise.npost(brr, 'save');
         })
         .fail(function (error) {

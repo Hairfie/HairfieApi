@@ -111,6 +111,20 @@ module.exports = function (Email) {
         });
     };
 
+
+    Email.requestBusinessReviewReminder = function (business, reviewRequest) {
+        var url = Email.app.urlGenerator;
+
+        return send({
+            to: reviewRequest.email,
+            template: 'requestBusinessReviewReminder',
+            templateVars: {
+                business        : business,
+                writeReviewUrl  : url.businessReviewRequest(reviewRequest),
+            }
+        });
+    };
+
     Email.welcomeBusinessMember = function (business, user) {
         return send({
             to: user.email,
