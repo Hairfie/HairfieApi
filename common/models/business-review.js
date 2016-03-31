@@ -108,7 +108,7 @@ module.exports = function (BusinessReview) {
         'decoration',
         'resultQuality',
         'hygiene',
-        'availability'
+        'availability',
         'business',
         'businessMember',
         'haircut'
