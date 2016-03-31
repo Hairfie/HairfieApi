@@ -159,10 +159,6 @@ module.exports = function (BusinessReview) {
         if (!ctx.req.body.requestId) {
             if (ctx.req.user) {
                 ctx.req.body.authorId = ctx.req.user.id;
-                ctx.req.body.firstName = ctx.req.user.firstName;
-                ctx.req.body.lastName = ctx.req.user.lastName;
-                ctx.req.body.email = ctx.req.user.email;
-                ctx.req.body.phoneNumber = ctx.req.user.phoneNumber;
             }
 
             // fill values with user's ones
