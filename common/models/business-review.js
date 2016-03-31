@@ -109,6 +109,9 @@ module.exports = function (BusinessReview) {
         'resultQuality',
         'hygiene',
         'availability'
+        'business',
+        'businessMember',
+        'haircut'
     ];
 
     BusinessReview.prototype.toRemoteObject = function (context) {
