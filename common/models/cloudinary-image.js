@@ -32,7 +32,7 @@ module.exports = function (CloudinaryImage) {
         if(thumb) {
             return 'hairfies' === container ? [{width: 200, height: 200, crop: "fill", gravity: 'face'}, 'watermark'] : [{width: 200, height: 200, crop: "fill"}];
         } else {
-            return 'hairfies' === container ? [{width: 600, height: 600, crop: "fill", gravity: 'face'}, 'watermark'] : [];
+            return 'hairfies' === container ? [{width: 640, height: 640, crop: "fill", gravity: 'face'}, 'watermark'] : [];
         }
         
     };
