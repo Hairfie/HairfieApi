@@ -21,6 +21,7 @@ module.exports = function (BusinessReviewRequest) {
                 return booking && booking.toRemoteObject(context);
             }),
             email   : this.email,
+            reviewId: this.reviewId,
             canWrite: this.canWrite(),
             used    : !!this.reviewId
         };
