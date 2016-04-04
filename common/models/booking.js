@@ -353,7 +353,7 @@ module.exports = function (Booking) {
     Booking.prototype.toMailchimp = function () {
         var registered = this.userId ? "YES" : "NO";
         var newsletter = this.newsletter ? "YES" : "NO";
-        var lastBooking = moment(this.dateTime).format("DD/MM/YYYY");
+        var lastBooking = this.dateTime ? moment(this.dateTime).format("DD/MM/YYYY") : moment(this.timeslot).format("DD/MM/YYYY");
 
         return {
             email: {email: this.email},
