@@ -55,7 +55,10 @@ module.exports = function (Mailchimp) {
 
         return Q.ninvoke(Booking, 'find', {})
         .then(function(bookings) {
-            return Q.all(_.map(bookings, function(booking) {
+            var cleanedBookings = _.uniq(_.sortBy(bookings, function(b) {
+                return b.dateTime || b.timeslot;
+            }), 'email');
+            return Q.all(_.map(cleanedBookings, function(booking) {
                 return booking.toMailchimp();
             }))
         })

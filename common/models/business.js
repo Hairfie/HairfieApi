@@ -99,6 +99,7 @@ module.exports = function(Business) {
             numHairfies        : this.numHairfies || numHairfies || 0,
             crossSell          : true,
             isBookable         : this.isBookable(),
+            bookable           : this.bookable,
             displayPhoneNumber : this.displayPhoneNumber,
             activeHairdressers : activeHairdressers,
             services           : services,
