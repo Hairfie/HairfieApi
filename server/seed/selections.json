@@ -4,23 +4,63 @@
         "label": "Les bons plans",
         "slug": "les-bons-plans",
         "position": 0,
-        "description": "BLABLA Coloristes",
-        "active": false
+        "description": "",
+        "active": true
     },
     {
         "name": "Les meilleurs coloristes",
         "label": "Les meilleurs coloristes",
         "slug": "les-meilleurs-coloristes",
-        "position": 0,
-        "description": "BLABLA Coloristes",
-        "active": false
+        "position": 1,
+        "description": "",
+        "active": true
     },
     {
         "name": "Les Barbershops",
         "label": "Les Barbershops",
         "slug": "les-barbershops",
-        "position": 1,
-        "description": "BLABLA Barbershops",
+        "position": 2,
+        "description": "",
+        "active": true
+    },
+    {
+        "name": "Les Barbershops",
+        "label": "Les Barbershops",
+        "slug": "les-barbershops",
+        "position": 2,
+        "description": "",
+        "active": true
+    },
+    {
+        "name": "Les pros du visagisme",
+        "label": "Les pros du visagisme",
+        "slug": "coiffeurs-visagistes",
+        "position": 3,
+        "description": "",
+        "active": true
+    },
+    {
+        "name": "Les salons trendy",
+        "label": "Les salons trendy",
+        "slug": "les-salons-trendy",
+        "position": 4,
+        "description": "",
         "active": false
+    },
+    {
+        "name": "Les super pratiques",
+        "label": "Les super pratiques",
+        "slug": "les-salons-pratiques",
+        "position": 5,
+        "description": "",
+        "active": true
+    },
+    {
+        "name": "Coiffure de mariée",
+        "label": "Coiffure de mariée",
+        "slug": "coiffure-de-mariee",
+        "position": 6,
+        "description": "",
+        "active": true
     }
 ]
