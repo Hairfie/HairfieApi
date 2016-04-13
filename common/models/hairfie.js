@@ -596,7 +596,12 @@ module.exports = function (Hairfie) {
 
                 console.log("algolia params", params);
 
-                return AlgoliaSearchEngine.search('hairfie', req.query.q || '', params);
+                if(req.query.sort == 'numLikes') {
+                    return AlgoliaSearchEngine.search('hairfieLikes', req.query.q || '', params);
+                } else {
+                    return AlgoliaSearchEngine.search('hairfie', req.query.q || '', params);
+                }
+
             })
             .then(function (result) {
                 return [

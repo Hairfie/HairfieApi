@@ -69,6 +69,30 @@ module.exports = {
                         'desc(numLikes)',
                         'desc(lastLikeAt)'
                     ]
+                },
+            },
+            hairfieLikes: {
+                index: process.env.ALGOLIA_INDEX_HAIRFIE_LIKES,
+                model: 'Hairfie',
+                settings: {
+                    attributesForFaceting: [
+                        'categories',
+                        '_tags',
+                        'price.amount'
+                    ],
+                    attributesToIndex: [
+                        'business.name',
+                        'business.address.city',
+                        'business.address.streetName',
+                        'business.address.zipCode',
+                        'categories',
+                        '_tags'
+                    ],
+                    customRanking: [
+                        'desc(numLikes)',
+                        'desc(createdAt)',
+                        'desc(lastLikeAt)'
+                    ]
                 }
             }
         },
