@@ -57,8 +57,7 @@ module.exports = function (BusinessReview) {
                         'Email'           : businessReview.email,
                         'Note globale'    : businessReview.rating,
                         'Commentaire'     : businessReview.comment,
-                        'HairfieId'       : businessReview.hairfieId,
-                        'BookingId'       : businessReview.bookingId
+                        'RequestID'       : businessReview.requestId
                     });
                 })
                 .fail(console.log);
