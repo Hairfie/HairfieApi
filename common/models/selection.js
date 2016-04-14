@@ -8,6 +8,11 @@ var getSlug = require('speakingurl');
 module.exports = function(Selection) {
     Hooks.generateId(Selection);
     Hooks.updateTimestamps(Selection);
+    Hooks.hasImages(Selection, {
+        picture: {
+            container: 'categories'
+        }
+    });
 
     Selection.prototype.toRemoteObject =
     Selection.prototype.toRemoteShortObject = function (context) {
@@ -18,6 +23,7 @@ module.exports = function(Selection) {
             label       : this.label,
             slug        : this.slug,
             active      : this.active,
+            picture     : this.picture && this.picture.toRemoteShortObject(context),
             position    : this.position
         };
     };
