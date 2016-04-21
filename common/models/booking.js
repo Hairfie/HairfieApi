@@ -182,7 +182,7 @@ module.exports = function (Booking) {
                 return [Promise.npost(booking, 'business'), booking];
             })
             .spread(function(business, booking) {
-                Booking.app.models.email.notifySales("Demande d'annulation", {
+                Booking.app.models.email.notifySales("Demande annulation client", {
                     'ID'              : booking.id,
                     'Salon'           : business.name,
                     'Tel du salon'    : business.phoneNumber,
@@ -220,7 +220,7 @@ module.exports = function (Booking) {
                 return [Promise.npost(booking, 'business'), booking];
             })
             .spread(function(business, booking) {
-                Booking.app.models.email.notifySales('Réservation annulée', {
+                Booking.app.models.email.notifySales("RDV annulé par admin", {
                     'ID'              : booking.id,
                     'Salon'           : business.name,
                     'Tel du salon'    : business.phoneNumber,

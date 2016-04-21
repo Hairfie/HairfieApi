@@ -40,6 +40,15 @@ module.exports = function (Top) {
         });
     };
 
+    Top.businesses = function (limit, cb) {
+        var limit = Math.max(0, Math.min(20, limit || 10));
+        var Business = Top.app.models.Business;
+
+        Business.find({limit: limit, where: { accountType: 'PREMIUM' } }, function (error, businesses) {
+                cb(error, _.map(businesses, formatBusiness));
+        });
+    };
+
     Top.businessReviews = function(limit) {
         var limit = Math.max(0, Math.min(20, limit || 10));
         var BusinessReview = Top.app.models.BusinessReview;
@@ -84,6 +93,15 @@ module.exports = function (Top) {
         http: { verb: 'GET', path: '/deals' }
     });
 
+    Top.remoteMethod('businesses', {
+        description: 'Returns random businesses',
+        accepts: [
+            {arg: 'limit', type: 'number', description: 'Maximum number of businesses to return (default 10)'}
+        ],
+        returns: {arg: 'Business', root: true},
+        http: { verb: 'GET', path: '/businesses' }
+    });
+
     Top.remoteMethod('businessReviews', {
         description: 'Returns the top deals of the moment',
         accepts: [
@@ -102,6 +120,14 @@ function businessDeal(business) {
                 business: business.toRemoteShortObject(context),
                 discount: business.bestDiscount
             }
+        }
+    };
+}
+
+function formatBusiness(business) {
+    return {
+        toRemoteObject: function (context) {
+            return business.toRemoteObject(context)
         }
     };
 }
