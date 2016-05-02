@@ -184,6 +184,9 @@
     "displayYelp": {
       "type": "boolean",
       "default": true
+    },
+    "timeslotDelta": {
+      "type": "number"
     }
   },
   "validations": [],

@@ -12,7 +12,7 @@ var days = require("../../utils/days.js");
 module.exports = function (Business) {
     Business.timeslots = function (businessId, from, until, next) {
         var interval = 30; //60 Minutes between each timeslot
-        var delay = 28; //Numbers minimum hours before the first timeslots bookable
+        var DEFAULT_DELAY = 24 + 4; //Numbers minimum hours before the first timeslots bookable
 
         if (moment(from) > moment(until))
             next({statusCode: 400, message: 'from must to be before until (time)'});
@@ -26,6 +26,8 @@ module.exports = function (Business) {
                 var day;
                 var date;
                 var i;
+
+                var delay = this.timeslotDelta ||  DEFAULT_DELAY;
 
                 for (i = 0; moment(from) <= moment(from).add(i, 'd') && moment(until) >= moment(from).add(i, 'd'); i++) {
                     date = moment(from).add(i, 'd').format("YYYY-MM-DD");

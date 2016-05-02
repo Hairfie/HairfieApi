@@ -44,7 +44,9 @@ module.exports = function (Top) {
         var limit = Math.max(0, Math.min(20, limit || 10));
         var Business = Top.app.models.Business;
 
-        Business.find({limit: limit, where: { accountType: 'PREMIUM' } }, function (error, businesses) {
+        var skip = Math.floor(Math.random() * (18 - limit + 1)) + 0;
+
+        Business.find({limit: limit, where: { accountType: 'PREMIUM' }, skip: skip }, function (error, businesses) {
                 cb(error, _.map(businesses, formatBusiness));
         });
     };
