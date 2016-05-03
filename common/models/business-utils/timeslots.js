@@ -78,7 +78,7 @@ function dynamicParseDay(day, date, interval, delay, now) {
 
             console.log("slot %s and deltaFromNow %s and delay", slot, deltaFromNow, delay);
 
-            if (deltaFromNow >= 0) {
+            if (deltaFromNow > 0) {
                 if(delay > 0) {
                     delay -= 0.5
                 } else {
