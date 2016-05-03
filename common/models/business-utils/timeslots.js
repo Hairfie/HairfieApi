@@ -12,7 +12,7 @@ var days = require("../../utils/days.js");
 module.exports = function (Business) {
     Business.timeslots = function (businessId, from, until, next) {
         var interval = 30; //60 Minutes between each timeslot
-        var DEFAULT_DELAY = 24 + 4; //Numbers minimum hours before the first timeslots bookable
+        var DEFAULT_DELAY = 5; //Numbers minimum hours before the first timeslots bookable
 
         if (moment(from) > moment(until))
             next({statusCode: 400, message: 'from must to be before until (time)'});
@@ -26,8 +26,10 @@ module.exports = function (Business) {
                 var day;
                 var date;
                 var i;
+                var now = moment().tz('Europe/Paris');
+                var today = now.format("YYYY-MM-DD");
 
-                var delay = this.timeslotDelta ||  DEFAULT_DELAY;
+                var delay = business.timeslotDelta ||  DEFAULT_DELAY;
 
                 for (i = 0; moment(from) <= moment(from).add(i, 'd') && moment(until) >= moment(from).add(i, 'd'); i++) {
                     date = moment(from).add(i, 'd').format("YYYY-MM-DD");
@@ -44,16 +46,8 @@ module.exports = function (Business) {
                         day = business.timetable && business.timetable[day];
                     }
 
-                    if (delay <= 0) {
-                        timeslots[date] = parseDay(day, interval);
-                    }
-                    else if (delay < 24 && !(_.isEmpty(day))) {
-                        timeslots[date] = parseDay(day, interval, delay);
-                        delay = 0;
-                    }
-                    else {
-                        delay -= 24;
-                    }
+                    timeslots[date] = dynamicParseDay(day, date, interval, delay, now).timeslots;
+                    delay = dynamicParseDay(day, date, interval, delay, now).delay;
                 }
                 return timeslots;
             })
@@ -72,20 +66,33 @@ module.exports = function (Business) {
     });
 };
 
-function parseDay(day, interval, delay) {
-    var newBattlements = [];
+function dynamicParseDay(day, date, interval, delay, now) {
+    var newTimeslots = [];
     _.map(day, function(timeslots) {
         var i;
-        for (i = 0; moment(timeslots.endTime, "HH:mm") >= moment(timeslots.startTime, "HH:mm").add((i + 1) * interval, "m"); i++) {
-            var delta = moment(timeslots.startTime, "HH:mm").add(i * interval, "m").diff(moment(timeslots.startTime, "HH:mm"), 'hours');
 
-            if (!(delay && delay > delta))
-                newBattlements.push({
-                    startTime: moment(timeslots.startTime, "HH:mm").add(i * interval, "m").format("HH:mm"),
-                    endTime: moment(timeslots.startTime, "HH:mm").add((i + 1) * interval, "m").format("HH:mm"),
-                    discount: timeslots.discount || ""
-                });
+        for (i = 0; moment(date + ' ' + timeslots.endTime, "YYYY-MM-DD HH:mm") >= moment(date + ' ' +timeslots.startTime, "YYYY-MM-DD HH:mm").add((i + 1) * interval, "m"); i++) {
+
+            var slot = moment(date + ' ' +timeslots.startTime, "YYYY-MM-DD HH:mm").add(i * interval, "m");
+            var deltaFromNow = slot.diff(now, 'hours');
+
+            console.log("slot %s and deltaFromNow %s and delay", slot, deltaFromNow, delay);
+
+            if (deltaFromNow >= 0) {
+                if(delay > 0) {
+                    delay -= 0.5
+                } else {
+                    newTimeslots.push({
+                        startTime: moment(timeslots.startTime, "HH:mm").add(i * interval, "m").format("HH:mm"),
+                        endTime: moment(timeslots.startTime, "HH:mm").add((i + 1) * interval, "m").format("HH:mm"),
+                        discount: timeslots.discount || ""
+                    });
+                }
+            }
         }
     });
-    return newBattlements;
+    return {
+        timeslots :newTimeslots,
+        delay: delay
+    }
 }

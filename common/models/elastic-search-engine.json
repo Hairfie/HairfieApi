@@ -1,0 +1,8 @@
+{
+    "name": "ElasticSearchEngine",
+    "properties": { },
+    "validations": [ ],
+    "relations": { },
+    "acls": [ ],
+    "methods": [ ]
+}

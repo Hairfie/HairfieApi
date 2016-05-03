@@ -16,6 +16,14 @@ module.exports = {
         name: 'hairfieMemory',
         connector: 'memory'
     },
+    elasticSearchEngine: {
+        name: 'elasticSearchEngine',
+        type: 'memory',
+        host: process.env.ELASTIC_HOST,
+        index: process.env.ELASTIC_INDEX,
+        awsKeyId: process.env.AMAZON_S3_KEY_ID,
+        awsSecret: process.env.AMAZON_S3_SECRET
+    },
     algoliaSearchEngine: {
         name: "algoliaSearchEngine",
         type: "memory",
