@@ -4,6 +4,7 @@ var Q = require('q');
 var _ = require('lodash');
 var moment = require('moment');
 require('moment/locale/fr');
+moment.tz.setDefault('Europe/Paris');
 moment.locale('fr');
 
 var publicHolidays = require("../../utils/PublicHolidays.js");
@@ -76,7 +77,7 @@ function dynamicParseDay(day, date, interval, delay, now) {
             var slot = moment(date + ' ' +timeslots.startTime, "YYYY-MM-DD HH:mm").add(i * interval, "m");
             var deltaFromNow = slot.diff(now, 'hours');
 
-            console.log("slot %s and deltaFromNow %s and delay", slot, deltaFromNow, delay);
+            //console.log("slot %s and deltaFromNow %s and delay", slot, deltaFromNow, delay);
 
             if (deltaFromNow > 0) {
                 if(delay > 0) {
