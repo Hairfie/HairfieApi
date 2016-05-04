@@ -74,7 +74,7 @@ function dynamicParseDay(day, date, interval, delay, now) {
         for (i = 0; moment(date + ' ' + timeslots.endTime, "YYYY-MM-DD HH:mm") >= moment(date + ' ' +timeslots.startTime, "YYYY-MM-DD HH:mm").add((i + 1) * interval, "m"); i++) {
 
             var slot = moment(date + ' ' +timeslots.startTime, "YYYY-MM-DD HH:mm").add(i * interval, "m");
-            var deltaFromNow = slot.diff(now, 'hours');
+            var deltaFromNow = slot.diff(now, 'minutes');
 
             //console.log("slot %s and deltaFromNow %s and delay", slot, deltaFromNow, delay);
 
