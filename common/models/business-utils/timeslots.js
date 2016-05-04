@@ -2,8 +2,7 @@
 
 var Q = require('q');
 var _ = require('lodash');
-var moment = require('moment');
-require('moment/locale/fr');
+var moment = require('moment-timezone');
 moment.tz.setDefault('Europe/Paris');
 moment.locale('fr');
 
