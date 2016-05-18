@@ -87,6 +87,8 @@ module.exports = function(Business) {
             var services = this.getServices();
         }
 
+        var displayPhoneNumber = (this.accountType == Business.ACCOUNT_FREE) ? true : false;
+
         return _.assign(this.toRemoteShortObject(context), {
             kind               : this.kind ? this.kind : 'SALON',
             gps                : this.gps,
@@ -100,7 +102,7 @@ module.exports = function(Business) {
             crossSell          : true,
             isBookable         : this.isBookable(),
             bookable           : this.bookable,
-            displayPhoneNumber : this.displayPhoneNumber,
+            displayPhoneNumber : displayPhoneNumber,
             activeHairdressers : activeHairdressers,
             services           : services,
             landingPageUrl     : Business.app.urlGenerator.business(this, context),
@@ -196,7 +198,12 @@ module.exports = function(Business) {
     });
 
     Business.prototype.isBookable = function() {
-        return _.isBoolean(this.bookable) ?  this.bookable : true;
+        var displayBookable = (this.accountType == Business.ACCOUNT_FREE) ? false : true;
+        if(this.bookable == false) {
+            return false;
+        } else {
+            return displayBookable
+        }
     };
 
     Business.prototype.owner = function (cb) {
