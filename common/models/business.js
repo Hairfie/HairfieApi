@@ -198,12 +198,13 @@ module.exports = function(Business) {
     });
 
     Business.prototype.isBookable = function() {
-        var displayBookable = (this.accountType == Business.ACCOUNT_FREE) ? false : true;
-        if(this.bookable == false) {
-            return false;
-        } else {
-            return displayBookable
-        }
+        return false;
+        // var displayBookable = (this.accountType == Business.ACCOUNT_FREE) ? false : true;
+        // if(this.bookable == false) {
+        //     return false;
+        // } else {
+        //     return displayBookable
+        // }
     };
 
     Business.prototype.owner = function (cb) {
