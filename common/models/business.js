@@ -87,7 +87,7 @@ module.exports = function(Business) {
             var services = this.getServices();
         }
 
-        var displayPhoneNumber = (this.accountType == Business.ACCOUNT_FREE || this.accountType == Business.ACCOUNT_PREMIUM) ? true : false;
+        var displayPhoneNumber = true; //(this.accountType == Business.ACCOUNT_FREE || this.accountType == Business.ACCOUNT_PREMIUM) ? true : false;
 
         return _.assign(this.toRemoteShortObject(context), {
             kind               : this.kind ? this.kind : 'SALON',
